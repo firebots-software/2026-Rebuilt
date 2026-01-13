@@ -36,16 +36,24 @@ public class Shoot extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    shooter.rampUp();
+    if (shooter.atSpeed()) {
+      shooter.runPreShooterAtRPS(10);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooter.stop();
+    shooter.runPreShooterAtRPS(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !shooter.objDetected();
   }
 
   protected Vector3 positionToTarget() {

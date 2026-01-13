@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.nio.channels.NetworkChannel;
+import java.nio.file.LinkPermission;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -30,10 +31,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private static double tolerance = 0.1;
   private final LoggedTalonFX motor1, motor2;
+  private final LoggedTalonFX preShooterMotor;
 
   private float targetSpeed = 0f;
 
-  private final DigitalInput objSensor;
+  private final DigitalInput beamBreak;
 
   public static ShooterSubsystem getInstance() {
     if (instance == null) {
@@ -52,6 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     motor1 = new LoggedTalonFX(Constants.Shooter.motor1Constants.port);
     motor2 = new LoggedTalonFX(Constants.Shooter.motor2Constants.port);
+    preShooterMotor = new LoggedTalonFX(Constants.Shooter.preShooterConstants.port);
 
     MotionMagicConfigs mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = targetSpeed;
@@ -63,13 +66,23 @@ public class ShooterSubsystem extends SubsystemBase {
     motor1.getConfigurator().apply(clc);
     motor2.getConfigurator().apply(clc);
 
+    preShooterMotor.getConfigurator().apply(s0c);
+    preShooterMotor.getConfigurator().apply(mmc);
+    preShooterMotor.getConfigurator().apply(clc);
+
     motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Opposed));
 
-    objSensor = new DigitalInput(Constants.Shooter.ObjectDetectorPort);
+    beamBreak = new DigitalInput(Constants.Shooter.ObjectDetectorPort);
   }
 
-  public void shoot() {
+  public void rampUp() {
     motor1.setControl(new MotionMagicVelocityVoltage(targetSpeed));
+  }
+
+  public void runPreShooterAtRPS(double speed) {
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed * 4d);
+    m_velocityControl.withFeedForward(0.1);
+    preShooterMotor.setControl(m_velocityControl);
   }
 
   public void stop() {
@@ -81,7 +94,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean objDetected() {
-    return objSensor.get();
+    return beamBreak.get();
   }
 
   @Override
