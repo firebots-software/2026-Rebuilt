@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.nio.channels.NetworkChannel;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
@@ -33,6 +34,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private final DigitalInput objSensor;
 
   public ShooterSubsystem() {
+    CurrentLimitsConfigs clc =
+        new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(30)
+        .withSupplyCurrentLimit(30);
+
     Slot0Configs s0c = new Slot0Configs().withKP(.4).withKI(.1).withKD(0); 
 
     motor1 = new LoggedTalonFX(Constants.Shooter.motor1Constants.port);
@@ -45,6 +51,8 @@ public class ShooterSubsystem extends SubsystemBase {
     motor2.getConfigurator().apply(s0c);
     motor1.getConfigurator().apply(mmc);
     motor2.getConfigurator().apply(mmc);
+    motor1.getConfigurator().apply(clc);
+    motor2.getConfigurator().apply(clc);
 
     motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Opposed));
 
