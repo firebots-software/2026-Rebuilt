@@ -45,6 +45,8 @@ public final class Constants {
   public static final class Shooter {
     public static final MotorConstants motor1Constants = new MotorConstants(-1);
     public static final MotorConstants motor2Constants = new MotorConstants(-1);
+
+    public static final int ObjectDetectorPort = -1;
   }
 
   public static final class Arm {
