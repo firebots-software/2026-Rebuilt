@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Shoot;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,6 +23,9 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ShooterSubsystem lebron = ShooterSubsystem.getInstance();
+  private final SwerveSubsystem drivetrain = SwerveSubsystem.getInstance();
+  private final ArmSubsystem arm = ArmSubsystem.getInstance();
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -43,7 +48,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    m_driverController.x().whileTrue(new Shoot(lebron));
+    m_driverController.x().whileTrue(new Shoot(lebron, drivetrain, arm));
     lebron.setDefaultCommand(
         new InstantCommand(
             () -> {

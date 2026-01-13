@@ -25,7 +25,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX motor1, motor2;
   private final LoggedTalonFX preShooterMotor;
 
-  private float targetSpeed = 10f;
+  private float targetSpeed = Constants.Shooter.shootSpeedRps;
 
   private final DigitalInput beamBreak;
 

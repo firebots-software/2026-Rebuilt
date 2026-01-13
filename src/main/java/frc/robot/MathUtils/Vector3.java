@@ -1,5 +1,8 @@
 package frc.robot.MathUtils;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+
 public class Vector3 {
   public float x;
   public float y;
@@ -9,6 +12,24 @@ public class Vector3 {
     this.x = x;
     this.y = y;
     this.z = z;
+  }
+
+  public Vector3(double x, double y, double z) {
+    this.x = (float) x;
+    this.y = (float) y;
+    this.z = (float) z;
+  }
+
+  public Vector3(Pose2d pose) {
+    x = (float) pose.getX();
+    y = 0;
+    z = (float) pose.getY();
+  }
+
+    public Vector3(Pose3d pose) {
+    x = (float) pose.getX();
+    y = (float) pose.getY();
+    z = (float) pose.getZ();
   }
 
   public float magnitude() {
@@ -33,6 +54,10 @@ public class Vector3 {
       newVec.plus(vec);
     }
     return newVec;
+  }
+
+  public static Vector3 subtract(Vector3 a, Vector3 b) {
+    return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
   }
 
   public static Vector3 mult(Vector3 a, float m) {

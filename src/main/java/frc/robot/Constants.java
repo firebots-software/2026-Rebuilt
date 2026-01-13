@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -29,6 +29,12 @@ public final class Constants {
     public static final MotorConstants preShooterConstants = new MotorConstants(32);
 
     public static final int ObjectDetectorPort = 1;
+
+    public static Pose3d offset = new Pose3d(0,0,0, new Rotation3d()); //TODO: acquire vals
+
+    public static float shootSpeedRps = 10f;
+    public static float shooterWheelSize = 0f; //TODO: acquire vals
+    public static float projectileInitSpeed = shootSpeedRps * shooterWheelSize * 2f * (float) Math.PI;
   }
 
   public static class MotorConstants {
