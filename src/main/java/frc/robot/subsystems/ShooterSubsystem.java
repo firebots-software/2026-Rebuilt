@@ -34,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX motor1, motor2;
   private final LoggedTalonFX preShooterMotor;
 
-  private float targetSpeed = 0f;
+  private float targetSpeed = 10f;
 
   private final DigitalInput beamBreak;
 
@@ -53,9 +53,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Slot0Configs s0c = new Slot0Configs().withKP(.4).withKI(.1).withKD(0); 
 
-    motor1 = new LoggedTalonFX(Constants.Shooter.motor1Constants.port);
-    motor2 = new LoggedTalonFX(Constants.Shooter.motor2Constants.port);
-    preShooterMotor = new LoggedTalonFX(Constants.Shooter.preShooterConstants.port);
+    motor1 = new LoggedTalonFX(Constants.Shooter.motor1Constants.port, Constants.Arm.CANBUS_NAME);
+    motor2 = new LoggedTalonFX(Constants.Shooter.motor2Constants.port, Constants.Arm.CANBUS_NAME);
+    preShooterMotor = new LoggedTalonFX(Constants.Shooter.preShooterConstants.port, Constants.Arm.CANBUS_NAME);
 
     MotionMagicConfigs mmc = new MotionMagicConfigs();
     mmc.MotionMagicCruiseVelocity = targetSpeed;
