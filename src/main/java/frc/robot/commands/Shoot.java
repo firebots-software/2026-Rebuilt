@@ -5,8 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.MathUtils.Polynomials;
-import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.ShooterSubsystem;
 
 // it will need to rotate swerve and move arm
