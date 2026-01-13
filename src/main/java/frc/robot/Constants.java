@@ -6,24 +6,14 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -38,9 +28,9 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static class Vision{
+  public static class Vision {
 
-    public static enum Cameras{
+    public static enum Cameras {
       RIGHT_CAM("rightCam"),
       LEFT_CAM("leftCam");
 
@@ -69,34 +59,19 @@ public final class Constants {
     public static final double LEFT_PITCH = Units.degreesToRadians(0.0);
     public static final double LEFT_YAW = Units.degreesToRadians(0.0);
 
-
     public static Transform3d getCameraTransform(Cameras camera) {
       switch (camera) {
         case RIGHT_CAM:
-        return new Transform3d(
-          new Translation3d(
-            RIGHT_X,
-            RIGHT_Y,
-            RIGHT_Z),
-          new Rotation3d(
-            RIGHT_ROLL,
-            RIGHT_PITCH,
-            RIGHT_YAW));
+          return new Transform3d(
+              new Translation3d(RIGHT_X, RIGHT_Y, RIGHT_Z),
+              new Rotation3d(RIGHT_ROLL, RIGHT_PITCH, RIGHT_YAW));
         case LEFT_CAM:
-        return new Transform3d(
-          new Translation3d(
-            LEFT_X,
-            LEFT_Y,
-            LEFT_Z),
-          new Rotation3d(
-            LEFT_ROLL,
-            LEFT_PITCH,
-            LEFT_YAW));
+          return new Transform3d(
+              new Translation3d(LEFT_X, LEFT_Y, LEFT_Z),
+              new Rotation3d(LEFT_ROLL, LEFT_PITCH, LEFT_YAW));
         default:
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
     }
-
-
   }
 }
