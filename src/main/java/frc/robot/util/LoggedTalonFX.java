@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,7 +27,7 @@ public class LoggedTalonFX extends TalonFX {
       reference,
       rotorPosition;
 
-  public LoggedTalonFX(String deviceName, int deviceId, String canbus) {
+  public LoggedTalonFX(String deviceName, int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = deviceName;
     init();
@@ -38,7 +39,7 @@ public class LoggedTalonFX extends TalonFX {
     init();
   }
 
-  public LoggedTalonFX(int deviceId, String canbus) {
+  public LoggedTalonFX(int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = "motor " + deviceId;
     init();
