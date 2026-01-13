@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -39,7 +40,7 @@ public class LoggedTalonFX extends TalonFX {
    * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
    *     identify CAN Bus through string. Check phoenix6 documentation for more details.
    */
-  public LoggedTalonFX(String deviceName, int deviceId, String canbus) {
+  public LoggedTalonFX(String deviceName, int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = deviceName;
     init();
@@ -60,7 +61,7 @@ public class LoggedTalonFX extends TalonFX {
    * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
    *     identify CAN Bus through string. Check phoenix6 documentation for more details.
    */
-  public LoggedTalonFX(int deviceId, String canbus) {
+  public LoggedTalonFX(int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = "motor " + deviceId;
     init();
@@ -103,6 +104,9 @@ public class LoggedTalonFX extends TalonFX {
             .withSupplyCurrentLimit(40);
     // WITH A HIGH POWER MECHANISM, MAKE SURE TO INCREASE THE CURRENT LIMITS
     this.getConfigurator().apply(clc);
+
+    // turn this off because new update defaults to 4 Hz which we don't want
+    this.optimizeBusUtilization(0);
   }
 
   public void updateCurrentLimits(double statorCurrentLimit, double supplyCurrentLimit) {
