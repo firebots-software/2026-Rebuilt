@@ -71,9 +71,9 @@ public class VisionSubsystem extends SubsystemBase {
     return cameraList[index];
   }
 
-  // to be completed
   @Override
   public void periodic() {
+    // confirm that all cameras are connected and update cameraConnected respectively
     boolean cameraConnected = photonCamera.isConnected();
     if (!cameraConnected) {
       DogLog.log("Vision/" + cameraTitle + "/CameraConnected", false);
@@ -82,13 +82,18 @@ public class VisionSubsystem extends SubsystemBase {
 
     DogLog.log("Vision/" + cameraTitle + "/CameraConnected", true);
 
+    // add all unread results to results <List>
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
 
+    // comb through every result in results
     for (var result : results) latestVisionResult = result;
   }
 
   public void addFilteredPose() {
+    // initialize new poseEstimator
     PhotonPoseEstimator estimator = poseEstimator;
+
+    //check if camera has targets visible and log
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
       DogLog.log("Vision/" + cameraTitle + "/HasTargets", false);
       return;
@@ -96,6 +101,7 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Vision/" + cameraTitle + "/HasTargets", true);
   }
 
+  // to be completed; method aims to combine final pose estimate with odometry for accurate estimation
   private void processPoseEstimate(
     Pose2d measuredPose,
     double averageDistance,
