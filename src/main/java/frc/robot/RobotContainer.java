@@ -20,6 +20,8 @@ import frc.robot.subsystems.ShooterSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+
+  // lebron is the name of the shootersubsystem bc why not?
   private final ShooterSubsystem lebron = ShooterSubsystem.getInstance();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -44,6 +46,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.x().whileTrue(new Shoot(lebron));
+    // default state of shootersubsystem is to be stopped. Do we need this because end of all commands is lebron stopping already?
     lebron.setDefaultCommand(
         new InstantCommand(
             () -> {

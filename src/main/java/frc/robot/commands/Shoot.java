@@ -38,6 +38,8 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    // only load the game piece into the shooter (run the preshooter) if shooter is at speed
     shooter.rampUp();
     if (shooter.atSpeed()) {
       shooter.runPreShooterAtRPS(10);

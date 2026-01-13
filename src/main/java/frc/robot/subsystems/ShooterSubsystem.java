@@ -37,6 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public ShooterSubsystem() {
+    // curr limits, motor configs, motionmagic configs, sensor initialization
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs().withStatorCurrentLimit(30).withSupplyCurrentLimit(30);
 
@@ -66,6 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
     beamBreak = new DigitalInput(Constants.Shooter.ObjectDetectorPort);
   }
 
+  // spin the shooter up to speed before the game piece goes through it
   public void rampUp() {
     motor1.setControl(new MotionMagicVelocityVoltage(targetSpeed));
   }
@@ -89,10 +91,12 @@ public class ShooterSubsystem extends SubsystemBase {
     stopShooters();
   }
 
+  // returns if your speed error is within the tolerance
   public boolean atSpeed() {
     return Math.abs(motor1.getVelocity().getValueAsDouble() - targetSpeed) <= tolerance;
   }
 
+  // is beambreak sensor true/false
   public boolean objDetected() {
     return beamBreak.get();
   }
