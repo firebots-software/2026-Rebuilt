@@ -1,5 +1,9 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 public class MiscUtils {
   public static Pose2d plus(Pose2d a, Translation2d b) {
     return new Pose2d(
