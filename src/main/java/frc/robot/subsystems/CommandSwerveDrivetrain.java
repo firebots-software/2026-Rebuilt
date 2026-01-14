@@ -6,8 +6,6 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.ctre.phoenix6.swerve.utility.LinearPath;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -216,7 +214,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public void applyFieldSpeeds(ChassisSpeeds speeds) {
     setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
   }
-
 
   @Override
   public void periodic() {
