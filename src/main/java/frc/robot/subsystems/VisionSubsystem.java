@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
-
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem extends SubsystemBase {
   // static member that contains array of all VisionSubsytem cameras
@@ -38,11 +38,21 @@ public class VisionSubsystem extends SubsystemBase {
           1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
           26, 27, 28, 29, 30, 31, 32);
 
+
+
+
+
+
   // NOTE FOR SID/SAKETH: come back to ln 49-75 in 2025 repo
-  
+
+  private double maxDistance = 15.0; // meters, beyond which readings are dropped
+
+
+
+
+
   // normalization maximums
   private double maximumRobotSpeed = 5d;
-  private double maximumAllowedDistance = 15d; // metres
 
   // Noise parameters
   private double calibrationFactor = 1d; // constant multiplier to everything
