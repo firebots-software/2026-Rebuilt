@@ -103,7 +103,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log("ShooterSubsystem/Speed", motor1.getVelocity().getValueAsDouble());
     DogLog.log("ShooterSubsystem/AtSpeed", atSpeed());
-    DogLog.log("ShooterSubsystem/TargetSpeed", targetSpeed);
+    DogLog.log("ShooterSubsystem/TargetSpeed", targetSpeed * 12d / 15d);
     DogLog.log("ShooterSubsystem/ObjectDetected", objDetected());
   }
 
