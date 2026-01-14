@@ -10,7 +10,9 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -27,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX motor1, motor2;
   private final LoggedTalonFX preShooterMotor;
 
-  private float targetSpeed = 30f;
+  private float targetSpeed = 50f;
 
   private final DigitalInput beamBreak;
 
@@ -43,7 +45,8 @@ public class ShooterSubsystem extends SubsystemBase {
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs().withStatorCurrentLimit(30).withSupplyCurrentLimit(30);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(.1).withKI(0).withKD(0).withKV(0.1185);
+    Slot0Configs s0c = new Slot0Configs().withKP(.7).withKI(0).withKD(0).withKV(0.1185);
+    Slot0Configs psS0c = new Slot0Configs().withKP(.1).withKI(0).withKD(0).withKV(0.1185);
 
     motor1 = new LoggedTalonFX(Constants.Shooter.motor1Constants.port);
     motor2 = new LoggedTalonFX(Constants.Shooter.motor2Constants.port);
@@ -55,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
     motor1.getConfigurator().apply(clc);
     motor2.getConfigurator().apply(clc);
 
-    preShooterMotor.getConfigurator().apply(s0c);
+    preShooterMotor.getConfigurator().apply(psS0c);
     preShooterMotor.getConfigurator().apply(clc);
 
     motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -66,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // spin the shooter up to speed before the game piece goes through it
   public void rampUp() {
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(targetSpeed * 12d / 15d);
+        new VelocityVoltage(targetSpeed * 24d / 18d);
     motor1.setControl(m_velocityControl);
   }
 
@@ -91,7 +94,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // returns if your speed error is within the tolerance
   public boolean atSpeed() {
-    return Math.abs(motor1.getVelocity().getValueAsDouble() - targetSpeed) <= tolerance;
+    return Math.abs(motor1.getVelocity().getValueAsDouble() - targetSpeed * 24d / 18d) <= tolerance;
   }
 
   // is beambreak sensor true/false
@@ -102,8 +105,9 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     DogLog.log("ShooterSubsystem/Speed", motor1.getVelocity().getValueAsDouble());
+    DogLog.log("ShooterSubsystem/PSSpeed", preShooterMotor.getVelocity().getValueAsDouble());
     DogLog.log("ShooterSubsystem/AtSpeed", atSpeed());
-    DogLog.log("ShooterSubsystem/TargetSpeed", targetSpeed * 12d / 15d);
+    DogLog.log("ShooterSubsystem/TargetSpeed", targetSpeed * 24d / 18d);
     DogLog.log("ShooterSubsystem/ObjectDetected", objDetected());
   }
 

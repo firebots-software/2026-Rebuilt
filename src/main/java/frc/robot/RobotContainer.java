@@ -47,7 +47,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.x().whileTrue(new Shoot(lebron));
-    m_driverController.a().whileTrue(new Preshooter(lebron));
+    // m_driverController.a().whileTrue(new Preshooter(lebron));
     // default state of shootersubsystem is to be stopped. Do we need this because end of all commands is lebron stopping already?
     // lebron.setDefaultCommand(
     //     new InstantCommand(
