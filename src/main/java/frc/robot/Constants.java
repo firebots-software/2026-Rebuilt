@@ -46,7 +46,6 @@ public final class Constants {
       }
     }
 
-
     // placeholder constants for now; will be updated once robot is delivered
     public static final double RIGHT_X = Units.inchesToMeters(1.0);
     public static final double RIGHT_Y = Units.inchesToMeters(1.0);
@@ -61,7 +60,6 @@ public final class Constants {
     public static final double LEFT_ROLL = Units.degreesToRadians(0.0);
     public static final double LEFT_PITCH = Units.degreesToRadians(0.0);
     public static final double LEFT_YAW = Units.degreesToRadians(0.0);
-
 
     // initializing Transform3d for use in future field visualization
     public static Transform3d getCameraTransform(Cameras camera) {
@@ -78,5 +76,9 @@ public final class Constants {
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
     }
+
+    public static final double TIMESTAMP_DIFF_THRESHOLD = 0.5;
+    public static final double TIMESTAMP_FPGA_CORRECTION = -0.03;
+    public static final double ACCEPTABLE_YAW = 60d;
   }
 }
