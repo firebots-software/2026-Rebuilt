@@ -178,12 +178,12 @@ public class VisionSubsystem extends SubsystemBase {
   // to be completed; method aims to combine final pose estimate with odometry for accurate
   // estimation
   private void processPoseEstimate(
-      Pose2d measuredPose,
-      double averageDistance,
-      double currentSpeed,
-      int tagCount,
-      double timestamp,
-      Matrix<N3, N1> noiseVector) {
+    Pose2d measuredPose,
+    double averageDistance,
+    double currentSpeed,
+    int tagCount,
+    double timestamp,
+    Matrix<N3, N1> noiseVector) {
 
     // Use vision timestamp if within threshold of FPGA timestamp
     double fpgaTimestamp = Timer.getFPGATimestamp();
