@@ -29,9 +29,9 @@ import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
  * Subsystem so it can easily be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-    private static final double kSimLoopPeriod = 0.005; // 5 ms
-    private Notifier m_simNotifier = null;
-    private double m_lastSimTime;
+    //private static final double kSimLoopPeriod = 0.005; // 5 ms
+    //private Notifier m_simNotifier = null;
+    //private double m_lastSimTime;
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -122,9 +122,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, modules);
-        if (Utils.isSimulation()) {
+        /*if (Utils.isSimulation()) {
             startSimThread();
         }
+        */
     }
 
     /**
@@ -146,9 +147,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, odometryUpdateFrequency, modules);
-        if (Utils.isSimulation()) {
+        /*if (Utils.isSimulation()) {
             startSimThread();
         }
+        */
     }
 
     /**
@@ -178,9 +180,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
         super(drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules);
-        if (Utils.isSimulation()) {
+        /*if (Utils.isSimulation()) {
             startSimThread();
         }
+        */
     }
 
     /**
@@ -236,18 +239,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
-    private void startSimThread() {
-        m_lastSimTime = Utils.getCurrentTimeSeconds();
+    
+    // private void startSimThread() {
+    //     m_lastSimTime = Utils.getCurrentTimeSeconds();
 
-        /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(() -> {
-            final double currentTime = Utils.getCurrentTimeSeconds();
-            double deltaTime = currentTime - m_lastSimTime;
-            m_lastSimTime = currentTime;
+    //     /* Run simulation at a faster rate so PID gains behave more reasonably */
+    //     m_simNotifier = new Notifier(() -> {
+    //         final double currentTime = Utils.getCurrentTimeSeconds();
+    //         double deltaTime = currentTime - m_lastSimTime;
+    //         m_lastSimTime = currentTime;
 
-            /* use the measured time delta, get battery voltage from WPILib */
-            updateSimState(deltaTime, RobotController.getBatteryVoltage());
-        });
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
+    //         /* use the measured time delta, get battery voltage from WPILib */
+    //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
+    //     });
+    //     m_simNotifier.startPeriodic(kSimLoopPeriod);
+    // }
 }
