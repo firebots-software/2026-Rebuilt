@@ -1,0 +1,62 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ExampleSubsystem;
+
+/** An example command that uses an example subsystem. */
+public class DriveToPose extends Command {
+  @SuppressWarnings("PMD.UnusedPrivateField")
+  private final CommandSwerveDrivetrain m_swerve;
+  private final LinearPath m_path;
+  private LinearPath.State m_pathState;
+  private Pose2d m_targetPose;
+
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public DriveToPose(CommandSwerveDrivetrain swerve, Pose2d targetPose) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    m_swerve = swerve;
+    m_targetPose = targetPose;
+
+    addRequirements(swerve);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+        m_path = new LinearPath(new TrapezoidProfile.Constraints(1, 1), new TrapezoidProfile.Constraints(0.2, 0.2));
+        m_pathState = new LinearPath.State(currentState.Pose, currentState.Speeds);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if (m_pathState != null) {
+        m_pathState = m_path.calculate(3.0, m_pathState, m_targetPose);
+
+        setControl(m_pathApplyFieldSpeeds.withSpeeds(m_pathState.speeds).withDriveRequestType(DriveRequestType.Velocity));
+    }
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    if (m_path.isFinished(m_pathState)){
+        m_pathState = null;
+        return true;
+    }
+    return false;
+  }
+}
