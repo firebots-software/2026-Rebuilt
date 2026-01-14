@@ -29,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX motor1, motor2;
   private final LoggedTalonFX preShooterMotor;
 
-  private float targetSpeed = 50f;
+  private float targetSpeed = 57f;
 
   private final DigitalInput beamBreak;
 
@@ -52,7 +52,7 @@ public class ShooterSubsystem extends SubsystemBase {
     motor2 = new LoggedTalonFX(Constants.Shooter.motor2Constants.port);
     preShooterMotor =
         new LoggedTalonFX(Constants.Shooter.preShooterConstants.port);
-
+        
     motor1.getConfigurator().apply(s0c);
     motor2.getConfigurator().apply(s0c);
     motor1.getConfigurator().apply(clc);
@@ -61,7 +61,7 @@ public class ShooterSubsystem extends SubsystemBase {
     preShooterMotor.getConfigurator().apply(psS0c);
     preShooterMotor.getConfigurator().apply(clc);
 
-    motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Opposed));
+    motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Aligned));
 
     beamBreak = new DigitalInput(Constants.Shooter.ObjectDetectorPort);
   }
