@@ -84,7 +84,12 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    joystick.x().whileTrue(new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 1))));
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 1))));
   }
 
   public Command getAutonomousCommand() {
