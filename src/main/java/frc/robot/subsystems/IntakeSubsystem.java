@@ -11,28 +11,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTalonFX;
 
 public class IntakeSubsystem extends SubsystemBase {
+  private double targetSpeed = 20d * 2;
   private static IntakeSubsystem instance;
   private LoggedTalonFX motor;
 
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
-  ;
 
   public IntakeSubsystem() {
     // change ports as needed
     motor = new LoggedTalonFX(33);
 
-    Slot0Configs s0c = new Slot0Configs();
+    Slot0Configs s0c = new Slot0Configs().withKP(.1).withKI(0).withKD(0);
 
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
-    MotionMagicConfigs mmc = new MotionMagicConfigs();
 
-    motor.updateCurrentLimits(50, 30);
+    motor.updateCurrentLimits(30, 30);
 
     TalonFXConfigurator mConfig = motor.getConfigurator();
 
     mConfig.apply(s0c);
     mConfig.apply(moc);
-    mConfig.apply(mmc);
   }
 
   public static IntakeSubsystem getInstance() {
@@ -41,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setSpeed(double speed) {
-    motor.setControl(velocityRequest.withVelocity(speed));
+    motor.setControl(velocityRequest.withVelocity(speed * -2d));
   }
 
   public void stop() {
@@ -50,6 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("intakeMotor", motor.getVelocity().getValueAsDouble());
+    DogLog.log("DogLog/intake/motorVelocity", motor.getVelocity().getValueAsDouble());
+    DogLog.log("DogLog/intake/targetSpeed", targetSpeed);
   }
 }
