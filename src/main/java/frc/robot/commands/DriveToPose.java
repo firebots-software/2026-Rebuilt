@@ -7,9 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.Supplier;
 
-/**
- * This Command drives the robot in a linear path to a specific pose.
- */
+/** This Command drives the robot in a linear path to a specific pose. */
 public class DriveToPose extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final CommandSwerveDrivetrain m_swerve;
@@ -23,7 +21,6 @@ public class DriveToPose extends Command {
   private Supplier<Pose2d> m_targetPoseSupplier = null;
 
   /**
-   * 
    * @param swerve Swerve Subsystem.
    * @param targetPose Target Pose (static).
    */
@@ -36,7 +33,6 @@ public class DriveToPose extends Command {
   }
 
   /**
-   * 
    * @param swerve Swerve Subsystem.
    * @param targetPoseSupplier Target Pose Supplier (for changing values of pose not just runtime)
    */
