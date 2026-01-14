@@ -11,7 +11,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 // it will need to rotate swerve and move arm
 
 /** An example command that uses an example subsystem. */
-public class Shoot extends Command {
+public class Preshooter extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final ShooterSubsystem shooter;
 
@@ -26,7 +26,7 @@ public class Shoot extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Shoot(ShooterSubsystem shooter) {
+  public Preshooter(ShooterSubsystem shooter) {
     this.shooter = shooter;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooter);
@@ -39,20 +39,17 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    DogLog.log("ShooterSubsystem/Shooting", true);
+    DogLog.log("ShooterSubsystem/Preshootering", true);
 
     // only load the game piece into the shooter (run the preshooter) if shooter is at speed
-    shooter.rampUp();
-    if (shooter.atSpeed()) {
-      shooter.runPreShooterAtRPS(10);
-    }
+      shooter.runPreShooterAtRPS(20);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooter.stopAll();
-    DogLog.log("ShooterSubsystem/Shooting", false);
+    DogLog.log("ShooterSubsystem/Preshootering", false);
   }
 
   // Returns true when the command should end.

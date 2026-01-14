@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Preshooter;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -46,12 +47,13 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     m_driverController.x().whileTrue(new Shoot(lebron));
+    m_driverController.a().whileTrue(new Preshooter(lebron));
     // default state of shootersubsystem is to be stopped. Do we need this because end of all commands is lebron stopping already?
-    lebron.setDefaultCommand(
-        new InstantCommand(
-            () -> {
-              lebron.stopAll();
-            }, lebron));
+    // lebron.setDefaultCommand(
+    //     new InstantCommand(
+    //         () -> {
+    //           lebron.stopAll();
+    //         }, lebron));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
