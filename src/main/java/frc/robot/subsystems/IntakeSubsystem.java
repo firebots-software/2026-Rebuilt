@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -12,27 +13,27 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTalonFX;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private double targetSpeed = 200d;
+  private double targetSpeed = 100d;
+  private double tolerance = 1;
   private static IntakeSubsystem instance;
   private LoggedTalonFX motor;
-
-  private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
   public IntakeSubsystem() {
     // change ports as needed
     motor = new LoggedTalonFX(33);
+    Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(.1).withKI(0).withKD(0);
-
-    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake)
+    MotorOutputConfigs moc = new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive);
 
-    motor.updateCurrentLimits(30, 30);
+    CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
+        .withStatorCurrentLimit(50.0);  
 
     TalonFXConfigurator mConfig = motor.getConfigurator();
 
     mConfig.apply(s0c);
     mConfig.apply(moc);
+    mConfig.apply(clc);
   }
 
   public static IntakeSubsystem getInstance() {
@@ -42,16 +43,21 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void run() {
-    motor.setControl(velocityRequest.withVelocity(targetSpeed * 2d));
+    motor.setControl(new VelocityVoltage(targetSpeed * 2d).withFeedForward(0.1));
   }
 
   public void stop() {
-    motor.setControl(velocityRequest.withVelocity(0));
+    motor.setControl(new VelocityVoltage(0));
+  }
+
+  public boolean atSpeed() {
+    return Math.abs(motor.getVelocity().getValueAsDouble() - targetSpeed) <= tolerance;
   }
 
   @Override
   public void periodic() {
     DogLog.log("DogLog/intake/motorVelocity", motor.getVelocity().getValueAsDouble());
-    DogLog.log("DogLog/intake/targetSpeed", targetSpeed);
+    DogLog.log("DogLog/intake/targetSpeed", targetSpeed * 2d);
+    DogLog.log("DogLog/intake/atSpeed", atSpeed());
   }
 }
