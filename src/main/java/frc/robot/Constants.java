@@ -54,7 +54,8 @@ public final class Constants {
 
     public static final double DISTANCE_COEFFICIENT_THETA = 0.9;
 
-    public static final double ANGLE_COEFFICIENT_X = 0.5; // noise growth per radian of viewing angle
+    public static final double ANGLE_COEFFICIENT_X =
+        0.5; // noise growth per radian of viewing angle
     public static final double ANGLE_COEFFICIENT_Y = 0.5;
     public static final double ANGLE_COEFFICIENT_THETA = 0.5;
 
