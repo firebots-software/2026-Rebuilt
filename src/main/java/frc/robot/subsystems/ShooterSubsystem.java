@@ -7,12 +7,16 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.*;
@@ -21,11 +25,11 @@ import frc.robot.util.LoggedTalonFX;
 public class ShooterSubsystem extends SubsystemBase {
   private static ShooterSubsystem instance;
 
-  private static double tolerance = 0.1;
+  private static double tolerance = 1;
   private final LoggedTalonFX motor1, motor2;
   private final LoggedTalonFX preShooterMotor;
 
-  private float targetSpeed = 10f;
+  private float targetSpeed = 57f;
 
   private final DigitalInput beamBreak;
 
@@ -41,39 +45,36 @@ public class ShooterSubsystem extends SubsystemBase {
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs().withStatorCurrentLimit(30).withSupplyCurrentLimit(30);
 
-    Slot0Configs s0c = new Slot0Configs().withKP(.4).withKI(.1).withKD(0);
+    Slot0Configs s0c = new Slot0Configs().withKP(.7).withKI(0).withKD(0).withKV(0.1185);
+    Slot0Configs psS0c = new Slot0Configs().withKP(.1).withKI(0).withKD(0).withKV(0.1185);
 
     motor1 = new LoggedTalonFX(Constants.Shooter.motor1Constants.port);
     motor2 = new LoggedTalonFX(Constants.Shooter.motor2Constants.port);
     preShooterMotor =
         new LoggedTalonFX(Constants.Shooter.preShooterConstants.port);
-
-    MotionMagicConfigs mmc = new MotionMagicConfigs();
-    mmc.MotionMagicCruiseVelocity = targetSpeed;
-
+        
     motor1.getConfigurator().apply(s0c);
     motor2.getConfigurator().apply(s0c);
-    motor1.getConfigurator().apply(mmc);
-    motor2.getConfigurator().apply(mmc);
     motor1.getConfigurator().apply(clc);
     motor2.getConfigurator().apply(clc);
 
-    preShooterMotor.getConfigurator().apply(s0c);
-    preShooterMotor.getConfigurator().apply(mmc);
+    preShooterMotor.getConfigurator().apply(psS0c);
     preShooterMotor.getConfigurator().apply(clc);
 
-    motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Opposed));
+    motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Aligned));
 
     beamBreak = new DigitalInput(Constants.Shooter.ObjectDetectorPort);
   }
 
   // spin the shooter up to speed before the game piece goes through it
   public void rampUp() {
-    motor1.setControl(new MotionMagicVelocityVoltage(targetSpeed));
+    VelocityVoltage m_velocityControl =
+        new VelocityVoltage(targetSpeed * 24d / 18d);
+    motor1.setControl(m_velocityControl);
   }
 
   public void runPreShooterAtRPS(double speed) {
-    VelocityVoltage m_velocityControl = new VelocityVoltage(speed * 4d);
+    VelocityVoltage m_velocityControl = new VelocityVoltage(speed * -4d);
     m_velocityControl.withFeedForward(0.1);
     preShooterMotor.setControl(m_velocityControl);
   }
@@ -93,7 +94,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // returns if your speed error is within the tolerance
   public boolean atSpeed() {
-    return Math.abs(motor1.getVelocity().getValueAsDouble() - targetSpeed) <= tolerance;
+    return Math.abs(motor1.getVelocity().getValueAsDouble() - targetSpeed * 24d / 18d) <= tolerance;
   }
 
   // is beambreak sensor true/false
@@ -104,7 +105,9 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     DogLog.log("ShooterSubsystem/Speed", motor1.getVelocity().getValueAsDouble());
+    DogLog.log("ShooterSubsystem/PSSpeed", preShooterMotor.getVelocity().getValueAsDouble());
     DogLog.log("ShooterSubsystem/AtSpeed", atSpeed());
+    DogLog.log("ShooterSubsystem/TargetSpeed", targetSpeed * 24d / 18d);
     DogLog.log("ShooterSubsystem/ObjectDetected", objDetected());
   }
 
