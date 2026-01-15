@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.util.LoggedTalonFX;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private double targetSpeed = 100d;
+  private double targetSpeed = 40d;
   private double tolerance = 1;
   private static IntakeSubsystem instance;
   private LoggedTalonFX motor;
@@ -27,7 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
         .withInverted(InvertedValue.Clockwise_Positive);
 
     CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true)
-        .withStatorCurrentLimit(50.0);  
+        .withStatorCurrentLimit(50.0);
 
     TalonFXConfigurator mConfig = motor.getConfigurator();
 
@@ -42,8 +42,8 @@ public class IntakeSubsystem extends SubsystemBase {
     return instance;
   }
 
-  public void run() {
-    motor.setControl(new VelocityVoltage(targetSpeed * 2d).withFeedForward(0.1));
+  public void run(double speed) {
+    motor.setControl(new VelocityVoltage(speed * 2d).withFeedForward(0.1));
   }
 
   public void stop() {
@@ -51,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean atSpeed() {
-    return Math.abs(motor.getVelocity().getValueAsDouble() - targetSpeed) <= tolerance;
+    return Math.abs(motor.getVelocity().getValueAsDouble() - (targetSpeed * 2d)) <= tolerance;
   }
 
   @Override
