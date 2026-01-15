@@ -61,8 +61,8 @@ public class DriveToPose extends Command {
   public void initialize() {
     DogLog.log("Init Current Pose", swerve.getCurrentState().Pose);
     DogLog.log("Init Target Pose", targetPose);
-    // DogLog.log("Init Linear Path", path.toString());
-    // DogLog.log("Init Linear Path State", pathState.toString());
+    DogLog.log("Init Linear Path", path.toString());
+    DogLog.log("Init Linear Path State", pathState.toString());
     DogLog.log("Init Target Pose", targetPose);
     DogLog.log("Init Target Pose Supplier", targetPoseSupplier.toString());
 
@@ -108,8 +108,8 @@ public class DriveToPose extends Command {
     DogLog.log("Current Pose", swerve.getCurrentState().toString());
     DogLog.log("Target Pose", targetPose);
     DogLog.log("Curr time", currTime);
-    DogLog.log("Init Linear Path", path.toString());
-    DogLog.log("Init Linear Path State", pathState.toString());
+    DogLog.log("Path created", path != null);
+    DogLog.log("Path state", pathState != null);
     DogLog.log("Init Target Pose", targetPose);
     DogLog.log("Init Target Pose Supplier", targetPoseSupplier.toString());
   }
