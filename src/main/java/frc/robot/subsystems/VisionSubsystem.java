@@ -106,7 +106,7 @@ public class VisionSubsystem extends SubsystemBase {
     // add all unread results to results <List>
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
 
-    // comb through every result in results
+    // Go through all results (if there are any) and update the latest result with the last
     for (var result : results) latestVisionResult = result;
   }
 
