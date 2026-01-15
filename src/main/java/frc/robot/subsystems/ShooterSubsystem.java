@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.*;
 import frc.robot.util.LoggedTalonFX;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -31,7 +30,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private float targetSpeed = 57f;
 
-  private final DigitalInput beamBreak;
 
   public static ShooterSubsystem getInstance() {
     if (instance == null) {
@@ -62,8 +60,6 @@ public class ShooterSubsystem extends SubsystemBase {
     preShooterMotor.getConfigurator().apply(clc);
 
     motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Aligned));
-
-    beamBreak = new DigitalInput(Constants.Shooter.ObjectDetectorPort);
   }
 
   // spin the shooter up to speed before the game piece goes through it
@@ -97,10 +93,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return Math.abs(motor1.getVelocity().getValueAsDouble() - targetSpeed * 24d / 18d) <= tolerance;
   }
 
-  // is beambreak sensor true/false
-  public boolean objDetected() {
-    return beamBreak.get();
-  }
+
 
   @Override
   public void periodic() {
@@ -108,7 +101,6 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("ShooterSubsystem/PSSpeed", preShooterMotor.getVelocity().getValueAsDouble());
     DogLog.log("ShooterSubsystem/AtSpeed", atSpeed());
     DogLog.log("ShooterSubsystem/TargetSpeed", targetSpeed * 24d / 18d);
-    DogLog.log("ShooterSubsystem/ObjectDetected", objDetected());
   }
 
   @Override

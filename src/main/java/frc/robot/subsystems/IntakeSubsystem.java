@@ -9,18 +9,25 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
 public class IntakeSubsystem extends SubsystemBase {
   private double targetSpeed = 40d;
   private double tolerance = 1;
+
   private static IntakeSubsystem instance;
   private LoggedTalonFX motor;
+  private final DigitalInput beamBreak;
+
 
   public IntakeSubsystem() {
     // change ports as needed
     motor = new LoggedTalonFX(33);
+    beamBreak = new DigitalInput(Constants.Intake.ObjectDetectorPort);
+
     Slot0Configs s0c = new Slot0Configs().withKP(0.1).withKI(0).withKD(0);
 
     MotorOutputConfigs moc = new MotorOutputConfigs()
@@ -54,10 +61,16 @@ public class IntakeSubsystem extends SubsystemBase {
     return Math.abs(motor.getVelocity().getValueAsDouble() - (targetSpeed * 2d)) <= tolerance;
   }
 
+  // is beambreak sensor true/false
+  public boolean beamBroken() {
+    return beamBreak.get();
+  }
+
   @Override
   public void periodic() {
     DogLog.log("DogLog/intake/motorVelocity", motor.getVelocity().getValueAsDouble());
     DogLog.log("DogLog/intake/targetSpeed", targetSpeed * 2d);
     DogLog.log("DogLog/intake/atSpeed", atSpeed());
+    DogLog.log("ShooterSubsystem/ObjectDetected", beamBroken());
   }
 }

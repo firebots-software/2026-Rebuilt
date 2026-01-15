@@ -32,8 +32,6 @@ public final class Constants {
     public static final MotorConstants motor1Constants = new MotorConstants(35);
     public static final MotorConstants motor2Constants = new MotorConstants(34);
     public static final MotorConstants preShooterConstants = new MotorConstants(32);
-
-    public static final int ObjectDetectorPort = 1;
   }
 
   public static final class Arm {
@@ -47,6 +45,10 @@ public final class Constants {
     public static final double armKV = 2.49;
 
     public static final double statorCurrentLimit = 40.0;
+  }
+
+  public static final class Intake {
+    public static final int ObjectDetectorPort = 1;
   }
 
   public static class MotorConstants {
