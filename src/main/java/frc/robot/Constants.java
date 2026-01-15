@@ -18,8 +18,8 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int kForwardMotorPort = 1;
-    public static final int kOppositeMotorPort = 2;
+    public static final int kForwardMotorPort = 0;
+    public static final int kOppositeMotorPort = 32;
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
   }
