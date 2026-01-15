@@ -89,7 +89,7 @@ public class RobotContainer {
         .whileTrue(
             new DriveToPose(
                 drivetrain,
-                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 1))));
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
   }
 
   public Command getAutonomousCommand() {
