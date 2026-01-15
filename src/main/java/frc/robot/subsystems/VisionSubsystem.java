@@ -161,16 +161,17 @@ public class VisionSubsystem extends SubsystemBase {
     // TODO: re-implement lines 200-205 in 2025 repo
 
     // check for and get pose from PhotonVision
-    Optional<EstimatedRobotPose> maybePose = estimator.update(latestVisionResult);
-    if (maybePose.isEmpty()) {
+    Optional<EstimatedRobotPose> poseEstimationUpdate = estimator.update(latestVisionResult);
+    if (poseEstimationUpdate.isEmpty()) {
       DogLog.log("Vision/" + cameraTitle + "/AvailablePose", false);
       return;
     }
     DogLog.log("Vision/" + cameraTitle + "/AvailablePose", true);
 
     // get estimatedPose and convert it to Pose2d
-    EstimatedRobotPose estimatedPose = maybePose.get();
+    EstimatedRobotPose estimatedPose = poseEstimationUpdate.get();
     Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
+    DogLog.log("Vision/" + cameraTitle + "/Pose2d", measuredPose);
 
     // TODO: re-implement lines 218-281 in 2025 repo
   }
