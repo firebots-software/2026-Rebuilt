@@ -83,7 +83,8 @@ public class RobotContainer {
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     joystick.x().whileTrue(new InstantCommand(() -> intake.runDutyCycle(-1.0)));
-    joystick.y().whileTrue(new InstantCommand(() -> intake.runVoltage(6.7)));
+    joystick.y().whileTrue(new InstantCommand(() -> intake.runDutyCycle(0)));
+   
 
 
     drivetrain.registerTelemetry(logger::telemeterize);
