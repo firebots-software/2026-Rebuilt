@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -110,6 +111,16 @@ public class DriveToPose extends Command {
     // DogLog.log("Init Target Pose Supplier", targetPoseSupplier.toString());
   }
 
+  private boolean atPosition() {
+    return (swerve.getCurrentState().Pose.getX() - targetPose.getX()
+            <= Constants.SwerveConstants.targetPositionError)
+        && (swerve.getCurrentState().Pose.getY() - targetPose.getY()
+            <= Constants.SwerveConstants.targetPositionError)
+        && (swerve.getCurrentState().Pose.getRotation().getRadians()
+                - targetPose.getRotation().getRadians()
+            <= Constants.SwerveConstants.targetAngleError);
+  }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
@@ -121,6 +132,7 @@ public class DriveToPose extends Command {
       // pathState = null;
       return true;
     }
+    // return atPosition();
     return false;
   }
 }
