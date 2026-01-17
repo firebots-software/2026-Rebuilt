@@ -125,12 +125,15 @@ public class VisionSubsystem extends SubsystemBase {
             .min()
             .orElse(Double.NaN);
 
+    DogLog.log("Vision/closestTagDistance", minDistance);
+
     // average distance to all visible april tags
     double averageDistance =
         latestVisionResult.getTargets().stream()
             .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
             .average()
             .orElse(Double.NaN);
+    DogLog.log("Vision/averageTagDistance", averageDistance);
 
     // 2025-reefscape has a validTags list on lines 160-166, replacing it with a list of all tags
     // for 26
@@ -224,8 +227,11 @@ public class VisionSubsystem extends SubsystemBase {
     if (poseEstimationUpdate.isPresent()) {
       EstimatedRobotPose estimatedRobotPose = poseEstimationUpdate.get();
       Pose2d visionPose = estimatedRobotPose.estimatedPose.toPose2d();
+      DogLog.log("Vision/PoseEstimationAvailable", true);
 
       DogLog.log("Vision/VisionPoseEstimate", visionPose);
+    } else {
+      DogLog.log("Vision/PoseEstimationAvailable", false);
     }
 
     // TODO: re-implement lines 218-281 in 2025 repo
@@ -276,19 +282,14 @@ public class VisionSubsystem extends SubsystemBase {
     double tagFactor = 1d / Math.sqrt(effectiveTags);
 
     // distance term (d^2)
-    // if distance less than field size cap the distrust, otherwise don't
-    double distanceFactor =
-        (distance < (17.548 + 0.67))
-            ? Math.min(
-                baseNoise
-                    + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance),
-                1.167)
-            : (baseNoise
-                + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance));
+    // Changed from last year: Purely distrust based on distance (as opposed to capping distrust for
+    // closer tags)
+    double distanceFactor = baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
 
     // Speed term (quadratic)
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
     double speedFactor = 1d + speedCoefficient * (vNorm * vNorm);
+
     DogLog.log("Vision/calibrationFactor", calibrationFactor);
     DogLog.log("Vision/tagFactor", tagFactor);
     DogLog.log("Vision/distanceFactor", distanceFactor);
