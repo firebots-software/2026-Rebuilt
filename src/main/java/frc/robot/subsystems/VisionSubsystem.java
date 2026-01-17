@@ -284,7 +284,8 @@ public class VisionSubsystem extends SubsystemBase {
     // distance term (d^2)
     // Changed from last year: Purely distrust based on distance (as opposed to capping distrust for
     // closer tags)
-    double distanceFactor = baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
+    double distanceFactor =
+        baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
 
     // Speed term (quadratic)
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
