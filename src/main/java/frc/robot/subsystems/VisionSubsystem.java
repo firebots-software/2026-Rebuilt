@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -106,7 +105,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Go through all results (if there are any) and update the latest result with the last
     for (var result : results) latestVisionResult = result;
-
   }
 
   public void addFilteredPose() {
@@ -231,15 +229,13 @@ public class VisionSubsystem extends SubsystemBase {
     if (poseEstimationUpdate.isEmpty()) {
       DogLog.log("Vision/PoseEstimationAvailable", false);
       return;
-    } 
-
+    }
 
     EstimatedRobotPose estimatedRobotPose = poseEstimationUpdate.get();
     Pose2d visionPose = estimatedRobotPose.estimatedPose.toPose2d();
     DogLog.log("Vision/PoseEstimationAvailable", true);
 
     DogLog.log("Vision/VisionPoseEstimate", visionPose);
-
 
     // TODO: re-implement lines 218-281 in 2025 repo
   }
@@ -291,8 +287,8 @@ public class VisionSubsystem extends SubsystemBase {
     // distance term (d^2)
     // Changed from last year: Purely distrust based on distance (as opposed to capping distrust for
     // closer tags)
-    //double distanceFactor =
-        //baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
+    // double distanceFactor =
+    // baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
 
     double distanceFactor =
         (distance < (17.548 + 0.67))
@@ -302,7 +298,6 @@ public class VisionSubsystem extends SubsystemBase {
                 1.167)
             : (baseNoise
                 + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance));
-
 
     // Speed term (quadratic)
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
@@ -339,6 +334,4 @@ public class VisionSubsystem extends SubsystemBase {
     double computedStdDevs = calibrationFactor * tagFactor * distanceFactor * speedFactor;
     return computedStdDevs;
   }
-
 }
-
