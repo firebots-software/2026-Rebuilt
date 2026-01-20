@@ -105,6 +105,13 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Go through all results (if there are any) and update the latest result with the last
     for (var result : results) latestVisionResult = result;
+
+    // log blob yaw and area if blob is present
+    getLargestBlob().ifPresent(blob -> {
+      DogLog.log("Vision/BlobYaw", blob.getYaw());
+      DogLog.log("Vision/BlobArea", blob.getArea());
+    });
+
   }
 
   public void addFilteredPose() {
@@ -322,4 +329,23 @@ public class VisionSubsystem extends SubsystemBase {
     double computedStdDevs = calibrationFactor * tagFactor * distanceFactor * speedFactor;
     return computedStdDevs;
   }
+
+  public Optional<PhotonTrackedTarget> getLargestBlob() {
+    if (latestVisionResult == null) return Optional.empty();
+    List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
+    if (targets.isEmpty()) return Optional.empty();
+
+    // returns the largest by area
+    return targets.stream()
+      .max((a, b) -> Double.compare(a.getArea(), b.getArea()));
+  }
+
+  public Optional<Double> getYawToBlob() {
+    return getLargestBlob().map(PhotonTrackedTarget::getYaw);
+  }
+
+  public Optional<Double> getAreaOfBlob() {
+    return getLargestBlob().map(PhotonTrackedTarget::getArea);
+  }
+
 }
