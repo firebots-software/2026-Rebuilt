@@ -1,5 +1,5 @@
 {
- "name":"Untitled",
+ "name":"CristianoRonaldo",
  "version":2,
  "type":"Swerve",
  "variables":{
@@ -57,16 +57,16 @@
   },
   "bumper":{
    "front":{
-    "exp":"19.5 in",
-    "val":0.4953
+    "exp":"0 in",
+    "val":0.0
    },
    "side":{
-    "exp":"17.5 in",
-    "val":0.4445
+    "exp":"0 in",
+    "val":0.0
    },
    "back":{
-    "exp":"19.5 in",
-    "val":0.4953
+    "exp":"0 in",
+    "val":0.0
    }
   },
   "differentialTrackWidth":{
