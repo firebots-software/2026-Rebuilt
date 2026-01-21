@@ -4,10 +4,10 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ResetArm extends Command {
+public class ArmToTarget extends Command {
   private ArmSubsystem armSubsystem;
 
-  public ResetArm(ArmSubsystem armSubsystem) {
+  public ArmToTarget(ArmSubsystem armSubsystem) {
     this.armSubsystem = armSubsystem;
   }
 
@@ -19,7 +19,7 @@ public class ResetArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.resetPosition();
+    armSubsystem.setPosToTarget();
   }
 
   // Called once the command ends or is interrupted.

@@ -49,6 +49,9 @@ public final class Constants {
     public static double armKP = 1.0;
     public static double armKI = 0.0;
     public static double armKD = 0.0;
+    public static final double armKS = 0.16969;
+    public static final double armKG = 0.34;
+    public static final double armKV = 2.49;
 
     public static final double absoluteEncoderHorizontal = 0.6655;
     public static final double absoluteHorizontalOffset = 0.05;

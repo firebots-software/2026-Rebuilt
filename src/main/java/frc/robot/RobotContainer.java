@@ -10,6 +10,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IntakeCommands.RunIntake;
 import frc.robot.commands.IntakeCommands.RunIntakeUntilDetection;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ArmCommands.ArmToTarget;
 import frc.robot.commands.ArmCommands.ResetArm;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -60,6 +61,8 @@ public class RobotContainer {
         .whileTrue(new RunIntakeUntilDetection(intakeSubsystem, lebron));
     m_driverController.x().whileTrue(new Shoot(lebron));
     m_driverController.y().whileTrue(new ResetArm(armSubsystem));
+    m_driverController.rightTrigger().whileTrue(new ArmToTarget(armSubsystem));
+    
     // m_driverController.a().whileTrue(new Preshooter(lebron));
     // default state of shootersubsystem is to be stopped. Do we need this because end of all
     // commands is lebron stopping already?

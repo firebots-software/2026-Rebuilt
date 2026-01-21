@@ -23,6 +23,8 @@ public class ArmSubsystem extends SubsystemBase {
   private DutyCycleEncoder encoder;
   private double targetDegrees;
 
+  private double armOffset;
+
   public ArmSubsystem() {
     // initialize motors
     topLeft = new LoggedTalonFX(Constants.Arm.topLeftMotor.port, Constants.Arm.canbus);
@@ -35,16 +37,16 @@ public class ArmSubsystem extends SubsystemBase {
         .withKP(Constants.Arm.armKP)
         .withKI(Constants.Arm.armKI)
         .withKD(Constants.Arm.armKD);
-    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast);
+    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
 
     // define master/followers
     master = topLeft;
     Follower follower = new Follower(Constants.Arm.topLeftMotor.port, MotorAlignmentValue.Aligned);
     // bottom left motor needs to be inverted
     Follower invertedFollower = new Follower(Constants.Arm.topLeftMotor.port, MotorAlignmentValue.Opposed);
-    topRight.setControl(follower);
-    bottomRight.setControl(follower);
-    bottomLeft.setControl(invertedFollower);
+    topRight.setControl(invertedFollower);
+    bottomRight.setControl(invertedFollower);
+    bottomLeft.setControl(follower);
 
     TalonFXConfigurator masterConfig = master.getConfigurator();
     TalonFXConfigurator topRightConfig = topRight.getConfigurator();
@@ -74,6 +76,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     encoder = new DutyCycleEncoder(0);
     targetDegrees = 4.0; // intake angle
+
+    // set arm offset
+    armOffset = getDegrees();
+    resetPosition();
   }
 
   public static ArmSubsystem getInstance() {
@@ -83,11 +89,15 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double calculateRots(double degrees) {
-    return (degrees / 360d) * Constants.Arm.conversionFactor;
+    return ((degrees / 360d) * Constants.Arm.conversionFactor) + Constants.Arm.absoluteHorizontalOffset + armOffset;
   }
 
   public void setPosition(double degrees) {
     master.setControl(new MotionMagicVoltage(calculateRots(MathUtil.clamp(degrees, 3, 110))));
+  }
+
+  public void setTarget(double degrees) {
+    targetDegrees = degrees;
   }
 
   public void setPosToTarget() {
@@ -100,28 +110,30 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private double getAbsolutePosition() {
-    // return (encoder.get()
-    // - Constants.Arm.absoluteEncoderHorizontal
-    // + Constants.Arm.absoluteHorizontalOffset
-    // + 1d)
-    // % 1;
-
     return (encoder.get()
-        - Constants.Arm.absoluteEncoderHorizontal);
+        - Constants.Arm.absoluteEncoderHorizontal
+        + Constants.Arm.absoluteHorizontalOffset
+        + 1d)
+        % 1;
   }
 
   public void resetPosition() {
     master.setPosition(getAbsolutePosition() * Constants.Arm.conversionFactor);
   }
 
+  public void resetOffset() {
+    armOffset = getDegrees();
+  }
+
   @Override
   public void periodic() {
-    DogLog.log("DogLog/Arm/targetAngle", targetDegrees);
+    DogLog.log("DogLog/Arm/targetAngle", targetDegrees + armOffset);
     DogLog.log("DogLog/Arm/masterVelocity", master.getVelocity().getValueAsDouble());
     DogLog.log("DogLog/Arm/masterPosition", master.getPosition().getValueAsDouble());
     DogLog.log("DogLog/Arm/armDegrees", getDegrees());
+    DogLog.log("DogLog/Arm/armDegreesCorrected", getDegrees() - armOffset);
     DogLog.log("DogLog/Arm/armDegreesAbsolute", getAbsolutePosition());
+    DogLog.log("DogLog/Arm/armOffset", armOffset);
     DogLog.log("DogLog/Arm/rawEncoderValue", encoder.get());
-    DogLog.log("DogLog/Arm/isResetRunning", false);
   }
 }
