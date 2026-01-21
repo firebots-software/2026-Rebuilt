@@ -66,7 +66,8 @@ public final class Constants {
     // initializes cameras for use in VisionSubsystem
     public static enum Cameras {
       RIGHT_CAM("rightCam"),
-      LEFT_CAM("leftCam");
+      LEFT_CAM("leftCam"),
+      COLOR_CAM("colorCam");
 
       private String loggingName;
 
@@ -111,6 +112,13 @@ public final class Constants {
     public static final double LEFT_PITCH = Units.degreesToRadians(-12.5);
     public static final double LEFT_YAW = Units.degreesToRadians(-40);
 
+    public static final double COLOR_X = Units.inchesToMeters(8.867);
+    public static final double COLOR_Y = Units.inchesToMeters(12.478);
+    public static final double COLOR_Z = Units.inchesToMeters(6.158);
+    public static final double COLOR_ROLL = Units.degreesToRadians(0.0);
+    public static final double COLOR_PITCH = Units.degreesToRadians(-12.5);
+    public static final double COLOR_YAW = Units.degreesToRadians(-40);
+
     // initializing Transform3d for use in future field visualization
     public static Transform3d getCameraTransform(Cameras camera) {
       switch (camera) {
@@ -119,6 +127,10 @@ public final class Constants {
               new Translation3d(RIGHT_X, RIGHT_Y, RIGHT_Z),
               new Rotation3d(RIGHT_ROLL, RIGHT_PITCH, RIGHT_YAW));
         case LEFT_CAM:
+          return new Transform3d(
+              new Translation3d(LEFT_X, LEFT_Y, LEFT_Z),
+              new Rotation3d(LEFT_ROLL, LEFT_PITCH, LEFT_YAW));
+        case COLOR_CAM:
           return new Transform3d(
               new Translation3d(LEFT_X, LEFT_Y, LEFT_Z),
               new Rotation3d(LEFT_ROLL, LEFT_PITCH, LEFT_YAW));

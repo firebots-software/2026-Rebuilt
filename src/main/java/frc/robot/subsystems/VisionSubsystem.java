@@ -27,7 +27,7 @@ public class VisionSubsystem extends SubsystemBase {
   private static VisionSubsystem[] cameraList =
       new VisionSubsystem[Constants.Vision.Cameras.values().length];
 
-  // Camera datatype with only 2 options, left or right
+  // Camera datatype with only 3 options, left, right, or color
   private final Constants.Vision.Cameras cameraID;
 
   private String cameraTitle;
@@ -74,7 +74,12 @@ public class VisionSubsystem extends SubsystemBase {
     this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     // initialize poseEstimator
-    poseEstimator = new PhotonPoseEstimator(fieldLayout, cameraToRobot);
+    if (cameraID != Constants.Vision.Cameras.COLOR_CAM) {
+      poseEstimator = new PhotonPoseEstimator(fieldLayout, cameraToRobot);
+    } else {
+      poseEstimator = null; // color camera does not need pose estimation
+    }
+
 
     cameraTitle = cameraID.getLoggingName();
     latestVisionResult = null;
@@ -106,15 +111,24 @@ public class VisionSubsystem extends SubsystemBase {
     // Go through all results (if there are any) and update the latest result with the last
     for (var result : results) latestVisionResult = result;
 
-    // log blob yaw and area if blob is present
-    getLargestBlob().ifPresent(blob -> {
-      DogLog.log("Vision/BlobYaw", blob.getYaw());
-      DogLog.log("Vision/BlobArea", blob.getArea());
-    });
+    // log yaw and area of blob if present
+    Optional<PhotonTrackedTarget> blob = getLargestBlob();
+    blob.ifPresentOrElse(
+      b -> {
+        DogLog.log("Vision/BlobPresent", true);
+        DogLog.log("Vision/BlobYaw", b.getYaw());
+        DogLog.log("Vision/BlobArea", b.getArea());
+      },
+      () -> DogLog.log("Vision/BlobPresent", false)
+    );
+
 
   }
 
   public void addFilteredPose() {
+    // skip pose estimation for color camera
+    if (poseEstimator == null) return;
+
     // initialize new poseEstimator
     PhotonPoseEstimator estimator = poseEstimator;
 
@@ -144,6 +158,16 @@ public class VisionSubsystem extends SubsystemBase {
 
     // 2025-reefscape has a validTags list on lines 160-166, replacing it with a list of all tags
     // for 26
+
+    // skip AprilTag pose estimation for color cameras
+    if (cameraID == Constants.Vision.Cameras.COLOR_CAM) {
+      getLargestBlob().ifPresent(blob -> {
+        DogLog.log("Vision/BlobPresent", true);
+        DogLog.log("Vision/BlobYaw", blob.getYaw());
+        DogLog.log("Vision/BlobArea", blob.getArea());
+      });
+      return;
+    }
 
     // creates a list of all detected tags and logs for debugging
     List<PhotonTrackedTarget> tags =
