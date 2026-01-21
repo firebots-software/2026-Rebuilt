@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandGroups.Intake;
-import frc.robot.commands.IntakeCommands.RunIntake;
-import frc.robot.commands.IntakeCommands.RunIntakeUntilDetection;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.ArmCommands.ArmToTarget;
 import frc.robot.commands.ArmCommands.ResetArm;
+import frc.robot.commands.IntakeCommands.RunIntake;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -57,14 +56,12 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().whileTrue(new RunIntake(intakeSubsystem));
-    m_driverController
-        .rightBumper()
-        .whileTrue(new Intake(intakeSubsystem, lebron));
+    m_driverController.rightBumper().whileTrue(new Intake(intakeSubsystem, lebron));
     m_driverController.x().whileTrue(new Shoot(lebron));
     m_driverController.y().whileTrue(new ResetArm(armSubsystem));
     m_driverController.rightTrigger().onTrue(new ArmToTarget(armSubsystem));
     m_driverController.a().whileTrue(new ResetArm(armSubsystem));
-    
+
     // m_driverController.a().whileTrue(new Preshooter(lebron));
     // default state of shootersubsystem is to be stopped. Do we need this because end of all
     // commands is lebron stopping already?

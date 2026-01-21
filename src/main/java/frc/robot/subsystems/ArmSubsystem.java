@@ -32,22 +32,25 @@ public class ArmSubsystem extends SubsystemBase {
     bottomLeft = new LoggedTalonFX(Constants.Arm.bottomLeftMotor.port, Constants.Arm.canbus);
     bottomRight = new LoggedTalonFX(Constants.Arm.bottomRightMotor.port, Constants.Arm.canbus);
 
-    CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true).withStatorCurrentLimit(40);
-    Slot0Configs s0c = new Slot0Configs()
-        .withKP(Constants.Arm.armKP)
-        .withKI(Constants.Arm.armKI)
-        .withKD(Constants.Arm.armKD);
-        // serrano almost pretzels
-        // .withKS(Constants.Arm.armKS)
-        // .withKG(Constants.Arm.armKG)
-        // .withKV(Constants.Arm.armKV);
+    CurrentLimitsConfigs clc =
+        new CurrentLimitsConfigs().withStatorCurrentLimitEnable(true).withStatorCurrentLimit(40);
+    Slot0Configs s0c =
+        new Slot0Configs()
+            .withKP(Constants.Arm.armKP)
+            .withKI(Constants.Arm.armKI)
+            .withKD(Constants.Arm.armKD);
+    // serrano almost pretzels
+    // .withKS(Constants.Arm.armKS)
+    // .withKG(Constants.Arm.armKG)
+    // .withKV(Constants.Arm.armKV);
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
 
     // define master/followers
     master = topLeft;
     Follower follower = new Follower(Constants.Arm.topLeftMotor.port, MotorAlignmentValue.Aligned);
     // bottom left motor needs to be inverted
-    Follower invertedFollower = new Follower(Constants.Arm.topLeftMotor.port, MotorAlignmentValue.Opposed);
+    Follower invertedFollower =
+        new Follower(Constants.Arm.topLeftMotor.port, MotorAlignmentValue.Opposed);
     topRight.setControl(invertedFollower);
     bottomRight.setControl(invertedFollower);
     bottomLeft.setControl(follower);
@@ -87,8 +90,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public static ArmSubsystem getInstance() {
-    if (instance == null)
-      instance = new ArmSubsystem();
+    if (instance == null) instance = new ArmSubsystem();
     return instance;
   }
 
@@ -114,8 +116,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private double getAbsolutePosition() {
-    return (encoder.get()
-        - Constants.Arm.absoluteEncoderHorizontal);
+    return (encoder.get() - Constants.Arm.absoluteEncoderHorizontal);
   }
 
   public void resetPosition() {

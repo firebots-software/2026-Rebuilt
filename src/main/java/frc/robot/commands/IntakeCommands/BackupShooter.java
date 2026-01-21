@@ -5,35 +5,34 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class BackupShooter extends Command {
-    private ShooterSubsystem shooterSubsystem;
-    private IntakeSubsystem intakeSubsystem;
-    
-    public BackupShooter(ShooterSubsystem shooter, IntakeSubsystem intake) {
-        shooterSubsystem = shooter;
-        intakeSubsystem = intake;
-        addRequirements(shooter, intake);
-    }
+  private ShooterSubsystem shooterSubsystem;
+  private IntakeSubsystem intakeSubsystem;
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+  public BackupShooter(ShooterSubsystem shooter, IntakeSubsystem intake) {
+    shooterSubsystem = shooter;
+    intakeSubsystem = intake;
+    addRequirements(shooter, intake);
+  }
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        shooterSubsystem.runPreShooterAtRPS(-40);
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-        shooterSubsystem.stopPreShooter();
-    }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    shooterSubsystem.runPreShooterAtRPS(-40);
+  }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return !intakeSubsystem.beamBroken();
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    shooterSubsystem.stopPreShooter();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return !intakeSubsystem.beamBroken();
+  }
 }
