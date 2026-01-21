@@ -44,9 +44,9 @@ public class ArmSubsystem extends SubsystemBase {
     Follower follower = new Follower(Constants.Arm.topLeftMotor.port, MotorAlignmentValue.Aligned);
     // bottom left motor needs to be inverted
     Follower invertedFollower = new Follower(Constants.Arm.topLeftMotor.port, MotorAlignmentValue.Opposed);
-    topRight.setControl(follower);
-    bottomRight.setControl(follower);
-    bottomLeft.setControl(invertedFollower);
+    topRight.setControl(invertedFollower);
+    bottomRight.setControl(invertedFollower);
+    bottomLeft.setControl(follower);
 
     TalonFXConfigurator masterConfig = master.getConfigurator();
     TalonFXConfigurator topRightConfig = topRight.getConfigurator();
@@ -70,8 +70,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     mmc = new MotionMagicConfigs();
     // change values as needed
-    mmc.MotionMagicCruiseVelocity = 50;
-    mmc.MotionMagicAcceleration = 50;
+    mmc.MotionMagicCruiseVelocity = 80;
+    mmc.MotionMagicAcceleration = 80;
     masterConfig.apply(mmc);
 
     encoder = new DutyCycleEncoder(0);
@@ -89,7 +89,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public double calculateRots(double degrees) {
-    return ((degrees / 360d) * Constants.Arm.conversionFactor) + armOffset;
+    return ((degrees / 360d) * Constants.Arm.conversionFactor);
   }
 
   public void setPosition(double degrees) {

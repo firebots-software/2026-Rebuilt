@@ -62,7 +62,8 @@ public class RobotContainer {
         .whileTrue(new Intake(intakeSubsystem, lebron));
     m_driverController.x().whileTrue(new Shoot(lebron));
     m_driverController.y().whileTrue(new ResetArm(armSubsystem));
-    m_driverController.rightTrigger().whileTrue(new ArmToTarget(armSubsystem));
+    m_driverController.rightTrigger().onTrue(new ArmToTarget(armSubsystem));
+    m_driverController.a().whileTrue(new ResetArm(armSubsystem));
     
     // m_driverController.a().whileTrue(new Preshooter(lebron));
     // default state of shootersubsystem is to be stopped. Do we need this because end of all
