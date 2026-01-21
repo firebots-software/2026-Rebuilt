@@ -74,8 +74,10 @@ public class VisionSubsystem extends SubsystemBase {
     // load field layout
     this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-    // initialize poseEstimator - changes on ln 77 (breaks on new), 175 (breaks on new), 229, 
-    poseEstimator = new PhotonPoseEstimator(fieldLayout,PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraToRobot);
+    // initialize poseEstimator - changes on ln 77 (breaks on new), 175 (breaks on new), 229,
+    poseEstimator =
+        new PhotonPoseEstimator(
+            fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraToRobot);
 
     cameraTitle = cameraID.getLoggingName();
     latestVisionResult = null;
@@ -173,7 +175,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // check for and get pose from PhotonVision
     Optional<EstimatedRobotPose> poseEstimationUpdate = estimator.update(latestVisionResult);
-    
+
     if (poseEstimationUpdate.isEmpty()) {
       DogLog.log("Vision/" + cameraTitle + "/AvailablePose", false);
       return;
@@ -228,9 +230,8 @@ public class VisionSubsystem extends SubsystemBase {
         noiseVector);
 
     if (poseEstimationUpdate.isEmpty()) {
-          DogLog.log("Vision/PoseEstimationAvailable", false);
-          return;
-
+      DogLog.log("Vision/PoseEstimationAvailable", false);
+      return;
     }
 
     EstimatedRobotPose estimatedRobotPose = poseEstimationUpdate.get();
@@ -238,8 +239,6 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Vision/PoseEstimationAvailable", true);
 
     DogLog.log("Vision/VisionPoseEstimate", visionPose);
-    
-
 
     // TODO: re-implement lines 218-281 in 2025 repo
   }
