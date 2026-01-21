@@ -37,6 +37,10 @@ public class ArmSubsystem extends SubsystemBase {
         .withKP(Constants.Arm.armKP)
         .withKI(Constants.Arm.armKI)
         .withKD(Constants.Arm.armKD);
+        // serrano almost pretzels
+        // .withKS(Constants.Arm.armKS)
+        // .withKG(Constants.Arm.armKG)
+        // .withKV(Constants.Arm.armKV);
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
 
     // define master/followers
