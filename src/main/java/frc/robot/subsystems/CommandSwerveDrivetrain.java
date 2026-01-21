@@ -12,6 +12,7 @@ import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -193,7 +194,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public void followPath(SwerveSample sample) {
-      m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
+      m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI); //every run?
 
       var pose = getState().Pose;
 
@@ -253,6 +254,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   public void applyFieldSpeeds(ChassisSpeeds speeds) {
     setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
+  }
+
+  public void resetPose(Pose2d pose) {
+    super.resetPose(pose);
   }
 
   @Override
