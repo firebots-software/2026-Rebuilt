@@ -106,6 +106,12 @@ public class VisionSubsystem extends SubsystemBase {
 
     // add all unread results to results <List>
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
+    if (!results.isEmpty()) {
+      latestVisionResult = results.get(results.size() - 1);
+      DogLog.log("Vision/" + cameraTitle + "/HasUnreadResults", true);
+    } else {
+     DogLog.log("Vision/" + cameraTitle + "/HasUnreadResults", false);
+    }
 
     // Go through all results (if there are any) and update the latest result with the last
   }
@@ -141,13 +147,14 @@ public class VisionSubsystem extends SubsystemBase {
       DogLog.log("ProtoVision/Distance", Double.NaN);
       DogLog.log("ProtoVision/X", Double.NaN);
       DogLog.log("ProtoVision/Y", Double.NaN);
+      return;
     }
 
-    var camToTag = nearestTarget.getBestCameraToTarget();
+    var camToTag = nearestTarget.getBestCameraToTarget().getTranslation();
 
-    double distance = camToTag.getTranslation().getNorm();
+    double distance = camToTag.getNorm();
     double x = camToTag.getX();
-    double y = camToTag.getZ();
+    double y = camToTag.getY();
 
     DogLog.log("ProtoVision/Distance", distance);
     DogLog.log("ProtoVision/X", x);
