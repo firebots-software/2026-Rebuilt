@@ -12,13 +12,11 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -123,8 +121,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
     DogLog.log("ProtoVision/" + cameraTitle + "/HasTargets", true);
 
-
-
     // distance to closest april tag
     double minDistance =
         latestVisionResult.getTargets().stream()
@@ -135,11 +131,11 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Vision/closestTagDistance", minDistance);
 
     var nearestTarget =
-    latestVisionResult.getTargets().stream()
-        .min(Comparator.comparingDouble(
-            t -> t.getBestCameraToTarget().getTranslation().getNorm()
-        ))
-        .orElse(null);
+        latestVisionResult.getTargets().stream()
+            .min(
+                Comparator.comparingDouble(
+                    t -> t.getBestCameraToTarget().getTranslation().getNorm()))
+            .orElse(null);
 
     if (nearestTarget == null) {
       DogLog.log("ProtoVision/Distance", Double.NaN);
@@ -163,7 +159,6 @@ public class VisionSubsystem extends SubsystemBase {
             .average()
             .orElse(Double.NaN);
     DogLog.log("Vision/averageTagDistance", averageDistance);
-
 
     // 2025-reefscape has a validTags list on lines 160-166, replacing it with a list of all tags
     // for 26

@@ -182,7 +182,7 @@ public final class Constants {
     // initializes cameras for use in VisionSubsystem
     public static enum Cameras {
       MAIN_CAM("mainCam");
-      
+
       private String loggingName;
 
       Cameras(String name) {
@@ -233,7 +233,7 @@ public final class Constants {
           return new Transform3d(
               new Translation3d(RIGHT_X, RIGHT_Y, RIGHT_Z),
               new Rotation3d(RIGHT_ROLL, RIGHT_PITCH, RIGHT_YAW));
-        
+
         default:
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
