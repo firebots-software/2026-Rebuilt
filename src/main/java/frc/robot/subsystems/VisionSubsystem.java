@@ -118,10 +118,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     // check if camera has targets visible and log
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-      DogLog.log("Vision/" + cameraTitle + "/HasTargets", false);
+      DogLog.log("ProtoVision/" + cameraTitle + "/HasTargets", false);
       return;
     }
-    DogLog.log("Vision/" + cameraTitle + "/HasTargets", true);
+    DogLog.log("ProtoVision/" + cameraTitle + "/HasTargets", true);
 
 
 
