@@ -150,6 +150,8 @@ public class VisionSubsystem extends SubsystemBase {
       return;
     }
 
+
+    // Start section of logging position of april tag (PROTO)
     var camToTag = nearestTarget.getBestCameraToTarget().getTranslation();
 
     double distance = camToTag.getNorm();
@@ -166,6 +168,8 @@ public class VisionSubsystem extends SubsystemBase {
             .average()
             .orElse(Double.NaN);
     DogLog.log("Vision/averageTagDistance", averageDistance);
+    // End section of logging position of april tag
+
 
     // 2025-reefscape has a validTags list on lines 160-166, replacing it with a list of all tags
     // for 26
