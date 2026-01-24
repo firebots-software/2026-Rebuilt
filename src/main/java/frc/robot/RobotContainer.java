@@ -8,12 +8,15 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import dev.doglog.DogLog;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveToPose;
@@ -62,6 +65,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Note that X is defined as forward according to WPILib convention,
     // and Y is defined as to the left according to WPILib convention.
+    joystick.y().whileTrue(new InstantCommand(() -> DogLog.log("test", 1)));
     drivetrain.setDefaultCommand(
 
         // Drivetrain will execute this command periodically
@@ -97,15 +101,15 @@ public class RobotContainer {
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // dtp
-    joystick
-        .x()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
+    // joystick
+    //     .x()
+    //     .whileTrue(
+    //         new DriveToPose(
+    //             drivetrain,
+    //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
     // choreo
-    // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
+    joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
     // Auto sequence
     // joystick.x().whileTrue(new SequentialCommandGroup(new DriveToPose(drivetrain, () ->
