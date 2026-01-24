@@ -8,7 +8,6 @@ import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,26 +25,30 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor = new LoggedTalonFX(Constants.Intake.intakeMotor.port);
     armMotor = new LoggedTalonFX(Constants.Intake.Arm.armMotor.port);
 
-    Slot0Configs intakeSlot0Configs = new Slot0Configs()
-        .withKV(Constants.Intake.intakeKV)
-        .withKP(Constants.Intake.intakeKP)
-        .withKI(Constants.Intake.intakeKI)
-        .withKD(Constants.Intake.intakeKD);
+    Slot0Configs intakeSlot0Configs =
+        new Slot0Configs()
+            .withKV(Constants.Intake.intakeKV)
+            .withKP(Constants.Intake.intakeKP)
+            .withKI(Constants.Intake.intakeKI)
+            .withKD(Constants.Intake.intakeKD);
 
-    Slot0Configs armSlot0Configs = new Slot0Configs()
-        .withKV(Constants.Intake.Arm.armKV)
-        .withKP(Constants.Intake.Arm.armKP)
-        .withKI(Constants.Intake.Arm.armKI)
-        .withKD(Constants.Intake.Arm.armKD);
+    Slot0Configs armSlot0Configs =
+        new Slot0Configs()
+            .withKV(Constants.Intake.Arm.armKV)
+            .withKP(Constants.Intake.Arm.armKP)
+            .withKI(Constants.Intake.Arm.armKI)
+            .withKD(Constants.Intake.Arm.armKD);
 
-    CurrentLimitsConfigs intakeCurrentLimitsConfigs = new CurrentLimitsConfigs()
-        .withStatorCurrentLimitEnable(true)
-        .withStatorCurrentLimit(Constants.Intake.intakeStatorCurrentLimit)
-        .withSupplyCurrentLimit(Constants.Intake.intakeSupplyCurrentLimit);
+    CurrentLimitsConfigs intakeCurrentLimitsConfigs =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimitEnable(true)
+            .withStatorCurrentLimit(Constants.Intake.intakeStatorCurrentLimit)
+            .withSupplyCurrentLimit(Constants.Intake.intakeSupplyCurrentLimit);
 
-    CurrentLimitsConfigs armCurrentLimitsConfigs = new CurrentLimitsConfigs()
-        .withStatorCurrentLimitEnable(true)
-        .withStatorCurrentLimit(Constants.Intake.Arm.armStatorCurrentLimit);
+    CurrentLimitsConfigs armCurrentLimitsConfigs =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimitEnable(true)
+            .withStatorCurrentLimit(Constants.Intake.Arm.armStatorCurrentLimit);
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
     TalonFXConfigurator intakeMotorConfig = intakeMotor.getConfigurator();
@@ -55,14 +58,14 @@ public class IntakeSubsystem extends SubsystemBase {
     armMotorConfig.apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
     intakeMotorConfig.apply(intakeSlot0Configs);
     intakeMotorConfig.apply(intakeCurrentLimitsConfigs);
-    intakeMotorConfig.apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
+    intakeMotorConfig.apply(
+        new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
 
     encoder = new DutyCycleEncoder(Constants.Intake.Arm.encoderPort);
   }
 
   public static IntakeSubsystem getInstance() {
-    if (instance == null)
-      instance = new IntakeSubsystem();
+    if (instance == null) instance = new IntakeSubsystem();
     return instance;
   }
 
@@ -84,7 +87,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean atSpeed() {
-    return Math.abs(intakeMotor.getVelocity().getValueAsDouble() - Constants.Intake.intakeTargetSpeed) <= tolerance;
+    return Math.abs(
+            intakeMotor.getVelocity().getValueAsDouble() - Constants.Intake.intakeTargetSpeed)
+        <= tolerance;
   }
 
   @Override

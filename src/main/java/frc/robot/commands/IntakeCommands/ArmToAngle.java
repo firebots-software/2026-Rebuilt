@@ -5,12 +5,12 @@
 package frc.robot.commands.IntakeCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class ArmToAngle extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final IntakeSubsystem intakeSubsystem;
+
   private double position;
 
   public ArmToAngle(IntakeSubsystem subsystem, double position) {
