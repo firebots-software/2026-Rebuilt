@@ -185,6 +185,9 @@ public final class Constants {
       public static final double MUSCLE_UP_BACK = 0; // TODO: get vals
 
       public static final int MOTOR_PORT = -1; // TODO: get vals
+
+      public static final int ENCODER_PORT = -1; // TODO: get vals
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
     }
 
     public static class SitUp {
@@ -198,6 +201,9 @@ public final class Constants {
       public static final double SIT_BACK_ANGLE = 0; // TODO: get vals
 
       public static final int MOTOR_PORT = -1; // TODO: get vals
+
+      public static final int ENCODER_PORT = -1; // TODO: get vals
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
     }
 
     public static class PullUp {

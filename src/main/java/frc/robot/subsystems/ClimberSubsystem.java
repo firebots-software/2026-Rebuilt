@@ -9,6 +9,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -22,6 +23,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final LoggedTalonFX muscleUpMotor, sitUpMotor, pullUpMotorR, pullUpMotorL;
   private double sitUpTargetDeg, muscleUpTargetDeg, pullUpTargetPosition;
+
+  private final DutyCycleEncoder muscleUpEncoder, sitUpEncoder;
 
   public static ClimberSubsystem getInstance() {
     if (instance == null) {
@@ -79,6 +82,9 @@ public class ClimberSubsystem extends SubsystemBase {
     sitUpMotor.getConfigurator().apply(mmc);
     pullUpMotorR.getConfigurator().apply(mmc);
     pullUpMotorL.getConfigurator().apply(mmc);
+
+    sitUpEncoder = new DutyCycleEncoder(Constants.Climber.SitUp.ENCODER_PORT);
+    muscleUpEncoder = new DutyCycleEncoder(Constants.Climber.MuscleUp.ENCODER_PORT);
   }
 
   public void setSitUpPosition(double degrees) {
@@ -121,20 +127,35 @@ public class ClimberSubsystem extends SubsystemBase {
         <= pullUpTolerance;
   }
 
+  public double getMuscleUpPosInRotationsFromEncoder() {
+    return muscleUpEncoder.get() * Constants.Climber.MuscleUp.ENCODER_ROTATIONS_TO_ARM_ROTATIONS;
+  }
+
+  public double getSitUpPosInRotationsFromEncoder() {
+    return sitUpEncoder.get() * Constants.Climber.SitUp.ENCODER_ROTATIONS_TO_ARM_ROTATIONS;
+  }
+
   @Override
   public void periodic() {
     DogLog.log(
-        "Climber/SitUpPosition",
+        "Climber/SitUpPositionDeg",
         sitUpMotor.getPosition().getValueAsDouble()
             * Constants.Climber.SitUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT);
     DogLog.log(
-        "Climber/MuscleUpPosition",
+        "Climber/MuscleUpPositionDeg",
         muscleUpMotor.getPosition().getValueAsDouble()
             * Constants.Climber.MuscleUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT);
     DogLog.log(
-        "Climber/PullUpPosition",
+        "Climber/PullUpPositionMeter",
         pullUpMotorR.getPosition().getValueAsDouble()
             * Constants.Climber.PullUp.MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL);
+
+    DogLog.log(
+        "Climber/SitUpPositionFromEncoderRots",
+        getSitUpPosInRotationsFromEncoder());
+    DogLog.log(
+        "Climber/MuscleUpPositionFromEncoderRots",
+        getMuscleUpPosInRotationsFromEncoder());
   }
 
   @Override
