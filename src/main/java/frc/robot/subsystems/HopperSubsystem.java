@@ -43,7 +43,7 @@ public class HopperSubsystem extends SubsystemBase {
     motor.getConfigurator().apply(moc);
   }
 
-  public void rampUp() {
+  public void runHopper() {
     motor.setControl(
         new VelocityVoltage(
             Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC
