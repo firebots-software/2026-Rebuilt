@@ -316,4 +316,26 @@ public final class Constants {
       }
     }
   }
+
+  public static final class Shooter {
+    public static final MotorConstants warmUpMotor1 = new MotorConstants(35); // TODO
+    public static final MotorConstants warmUpMotor2 = new MotorConstants(34); // TODO
+    public static final MotorConstants warmUpMotor3 = new MotorConstants(32); // TODO
+
+    public static final double SHOOTER_KP = 0.0; // TODO
+    public static final double SHOOTER_KI = 0.0; // TODO
+    public static final double SHOOTER_KD = 0.0; // TODO
+    public static final double SHOOTER_KV = 0.0; // TODO
+    public static final double SHOOTER_KA = 0.0; // TODO
+    public static final double STATOR_CURRENT_LIMIT = 30.0;
+    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+  }
+
+  public static class MotorConstants {
+    public int port;
+
+    public MotorConstants(int port) {
+      this.port = port;
+    }
+  }
 }

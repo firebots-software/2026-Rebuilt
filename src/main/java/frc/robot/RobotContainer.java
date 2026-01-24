@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.ShooterCommands.ShootAtSpeed;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -42,6 +44,7 @@ public class RobotContainer {
 
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
+  public final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
 
   public RobotContainer() {
 
@@ -112,6 +115,8 @@ public class RobotContainer {
         .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
     drivetrain.registerTelemetry(logger::telemeterize);
+
+    joystick.rightTrigger().whileTrue(new ShootAtSpeed(shooterSubsystem));
   }
 
   public Command getAutonomousCommand() {
