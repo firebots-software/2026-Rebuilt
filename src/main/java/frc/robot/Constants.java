@@ -19,7 +19,7 @@ public final class Constants {
 
   public static class Intake {
     public static final int MOTOR1_PORT = 0; // motor 1 port
-    public static final int MOTOR2_PORT  = 0; // motor 2 port 
+    public static final int MOTOR2_PORT  = 32; // motor 2 port 
   }
 
   public static enum SwerveDrivePIDValues {

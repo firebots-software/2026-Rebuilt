@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
   private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
-  private IntakeSubsystem() {
+  public IntakeSubsystem() {
     // Initialize motors
     motor1 =
         new LoggedTalonFX(
