@@ -15,11 +15,10 @@ import frc.robot.Constants;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import java.util.stream.Collectors;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -56,6 +55,9 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
+  private Optional<MultiTargetPNPResult> visionResult;
+  Optional<EstimatedRobotPose> visionEst;
+  private List<PhotonTrackedTarget> tags;
   private final BooleanSupplier isRedSide;
   private final AprilTagFieldLayout fieldLayout;
 
@@ -74,10 +76,13 @@ public class VisionSubsystem extends SubsystemBase {
     // load field layout
     this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-    // initialize poseEstimator - changes on ln 77 (breaks on new), 175 (breaks on new), 229,
-    poseEstimator =
-        new PhotonPoseEstimator(
-            fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, cameraToRobot);
+    // initialize poseEstimator - changes on ln 77 (breaks on new), 177
+    poseEstimator = new PhotonPoseEstimator(fieldLayout, cameraToRobot);
+    if (poseEstimator != null) {
+      DogLog.log("Vision/PoseEstimator", true);
+      return;
+    }
+    DogLog.log("Vision/PoseEstimator", false);
 
     cameraTitle = cameraID.getLoggingName();
     latestVisionResult = null;
@@ -93,100 +98,77 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Vision/isRunning", true);
-    // confirm that all cameras are connected and update cameraConnected respectively
-    boolean cameraConnected = photonCamera.isConnected();
-    if (!cameraConnected) {
-      DogLog.log("Vision/" + cameraTitle + "/CameraConnected", false);
-      return;
+    visionEst = Optional.empty();
+    latestVisionResult = null;
+
+    for (PhotonPipelineResult result : photonCamera.getAllUnreadResults()) {
+      latestVisionResult = result;
+      visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
+      if (visionEst.isEmpty()) {
+        visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
+      }
     }
 
-    DogLog.log("Vision/" + cameraTitle + "/CameraConnected", true);
-
-    // add all unread results to results <List>
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-
-    // Go through all results (if there are any) and update the latest result with the last
-    for (var result : results) latestVisionResult = result;
+    DogLog.log("Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());
   }
 
   public void addFilteredPose() {
-    // initialize new poseEstimator
-    PhotonPoseEstimator estimator = poseEstimator;
-
-    // check if camera has targets visible and log
-    if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
+    // Ensure we have a valid pose estimate and vision result from periodic()
+    if (visionEst.isEmpty() || latestVisionResult == null) {
       DogLog.log("Vision/" + cameraTitle + "/HasTargets", false);
       return;
     }
     DogLog.log("Vision/" + cameraTitle + "/HasTargets", true);
 
-    // distance to closest april tag
-    double minDistance =
-        latestVisionResult.getTargets().stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .min()
-            .orElse(Double.NaN);
+    // Extract pose estimate
+    EstimatedRobotPose estimatedPose = visionEst.get();
+    Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
+    DogLog.log("Vision/MeasuredPose", measuredPose);
 
-    DogLog.log("Vision/closestTagDistance", minDistance);
-
-    // average distance to all visible april tags
-    double averageDistance =
-        latestVisionResult.getTargets().stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .average()
-            .orElse(Double.NaN);
-    DogLog.log("Vision/averageTagDistance", averageDistance);
-
-    // 2025-reefscape has a validTags list on lines 160-166, replacing it with a list of all tags
-    // for 26
-
-    // creates a list of all detected tags and logs for debugging
-    List<PhotonTrackedTarget> tags =
-        latestVisionResult.getTargets().stream().collect(Collectors.toList());
-
-    DogLog.log("Vision/tagsLength", tags.size());
-
-    // log area and yaw for all detected april tags
-    for (PhotonTrackedTarget tag : tags) {
-      DogLog.log("Vision/" + cameraTitle + "/Area", tag.getArea());
-      DogLog.log("Vision/" + cameraTitle + "/Yaw", tag.getYaw());
-    }
-
+    // Get detected tags
+    tags = latestVisionResult.getTargets();
     if (tags.isEmpty()) {
       DogLog.log("Vision/" + cameraTitle + "/Tags", false);
       return;
     }
     DogLog.log("Vision/" + cameraTitle + "/Tags", true);
 
-    // do nothing if no minDistance detected or if minDistance is too large
+    // Distance calculations
+    double minDistance =
+        tags.stream()
+            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+            .min()
+            .orElse(Double.NaN);
+
+    double averageDistance =
+        tags.stream()
+            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+            .average()
+            .orElse(Double.NaN);
+
+    DogLog.log("Vision/closestTagDistance", minDistance);
+    DogLog.log("Vision/averageTagDistance", averageDistance);
+
+    // Reject invalid or distant measurements
     if (Double.isNaN(minDistance) || minDistance > maxDistance) {
       DogLog.log("Vision/" + cameraTitle + "/ThrownOutDistance", true);
       return;
     }
     DogLog.log("Vision/" + cameraTitle + "/ThrownOutDistance", false);
 
-    // TODO: re-implement lines 200-205 in 2025 repo
+    // Log yaw + area for debugging
+    for (PhotonTrackedTarget tag : tags) {
+      DogLog.log("Vision/" + cameraTitle + "/TagYaw", tag.getYaw());
+      DogLog.log("Vision/" + cameraTitle + "/TagArea", tag.getArea());
+    }
 
     int tagCount = tags.size();
+    DogLog.log("Vision/tagCount", tagCount);
 
-    // get from swerve
-    double currentSpeed = 0d;
+    // TODO: Replace with real swerve speed
+    double currentSpeed = 0.0;
 
-    // check for and get pose from PhotonVision
-    Optional<EstimatedRobotPose> poseEstimationUpdate = estimator.update(latestVisionResult);
-
-    if (poseEstimationUpdate.isEmpty()) {
-      DogLog.log("Vision/" + cameraTitle + "/AvailablePose", false);
-      return;
-    }
-    DogLog.log("Vision/" + cameraTitle + "/AvailablePose", true);
-
-    // get estimatedPose and convert it to Pose2d
-    EstimatedRobotPose estimatedPose = poseEstimationUpdate.get();
-    Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
-    DogLog.log("Vision/testPose", measuredPose);
-
+    // Compute noise model
     double nX =
         computeNoiseXY(
             baseNoiseX,
@@ -221,26 +203,22 @@ public class VisionSubsystem extends SubsystemBase {
 
     Matrix<N3, N1> noiseVector = VecBuilder.fill(nX, nY, nTH);
 
+    // Send to pose estimator / swerve
     processPoseEstimate(
         measuredPose,
         averageDistance,
         currentSpeed,
         tagCount,
-        latestVisionResult.getTimestampSeconds(),
+        estimatedPose.timestampSeconds,
         noiseVector);
 
-    if (poseEstimationUpdate.isEmpty()) {
-      DogLog.log("Vision/PoseEstimationAvailable", false);
-      return;
+    DogLog.log("Vision/VisionPoseEstimate", measuredPose);
+
+    if (measuredPose == null) {
+      DogLog.log("Vision/measuredPoseAvailable", false);
+    } else {
+      DogLog.log("Vision/measuredPoseAvailable", true);
     }
-
-    EstimatedRobotPose estimatedRobotPose = poseEstimationUpdate.get();
-    Pose2d visionPose = estimatedRobotPose.estimatedPose.toPose2d();
-    DogLog.log("Vision/PoseEstimationAvailable", true);
-
-    DogLog.log("Vision/VisionPoseEstimate", visionPose);
-
-    // TODO: re-implement lines 218-281 in 2025 repo
   }
 
   // to be completed; method aims to combine final pose estimate with odometry for accurate
