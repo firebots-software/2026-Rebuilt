@@ -109,7 +109,8 @@ public final class Constants {
           SwerveSteerPIDValues.PROTO,
           RobotDimensions.PROTO,
           "rio",
-          BumperThickness.PROTO),
+          BumperThickness.PROTO,
+          3.375),
       JAMES_HARDEN(
           Rotations.of(-0.0834960938), // front left
           Rotations.of(-0.4912109375), // front right
@@ -141,7 +142,7 @@ public final class Constants {
       public final SwerveSteerPIDValues SWERVE_STEER_PID_VALUES;
       public final RobotDimensions ROBOT_DIMENSIONS;
       public final String CANBUS_NAME;
-
+      public final double COUPLE_RATIO;
       public final BumperThickness BUMPER_THICKNESS;
 
       SwerveType(
@@ -154,7 +155,8 @@ public final class Constants {
           SwerveSteerPIDValues swerveSteerPIDValues,
           RobotDimensions robotDimensions,
           String canbus_name,
-          BumperThickness thickness) {
+          BumperThickness thickness,
+          double coupled_ratio) {
         FRONT_LEFT_ENCODER_OFFSET = fl;
         FRONT_RIGHT_ENCODER_OFFSET = fr;
         BACK_LEFT_ENCODER_OFFSET = bl;
@@ -165,6 +167,7 @@ public final class Constants {
         ROBOT_DIMENSIONS = robotDimensions;
         CANBUS_NAME = canbus_name;
         BUMPER_THICKNESS = thickness;
+        COUPLE_RATIO = coupled_ratio;
       }
     }
   }
