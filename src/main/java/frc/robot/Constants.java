@@ -168,4 +168,23 @@ public final class Constants {
       }
     }
   }
+
+  public static class Climber {
+    public static class MuscleUp {
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 250d;
+      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+    }
+    public static class SitUp {
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 100d;
+      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+
+      public static final double CURRENT_SUPPLY_LIMIT = 60;
+      public static final double CURRENT_STATOR_LIMIT = 100;
+    }
+    public static class PullUp {
+      public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 17d;
+      public static final double PULLEY_BELT_LENGTH_M = 0; //TODO: get actaul value
+      public static final double MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL = MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
+    }
+  }
 }
