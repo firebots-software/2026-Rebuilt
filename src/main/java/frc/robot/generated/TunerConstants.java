@@ -140,7 +140,7 @@ public class TunerConstants {
   private static final int kFrontLeftEncoderId = 21;
   // private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.383056640625);
   private static final Angle kFrontLeftEncoderOffset = Constants.Swerve.WHICH_SWERVE_ROBOT.FRONT_LEFT_ENCODER_OFFSET; //Rotations.of(0.096923828125);
-  private static final boolean kFrontLeftSteerMotorInverted = false;
+  private static final boolean kFrontLeftSteerMotorInverted = Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kFrontLeftEncoderInverted = false;
 
   // private static final Distance kFrontLeftXPos = Inches.of(11.26);
@@ -156,7 +156,7 @@ public class TunerConstants {
   private static final int kFrontRightEncoderId = 22;
   // private static final Angle kFrontRightEncoderOffset = Rotations.of(0.159423828125);
   private static final Angle kFrontRightEncoderOffset = Constants.Swerve.WHICH_SWERVE_ROBOT.FRONT_RIGHT_ENCODER_OFFSET;//Rotations.of(0.03271484375);
-  private static final boolean kFrontRightSteerMotorInverted = false;
+  private static final boolean kFrontRightSteerMotorInverted = Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kFrontRightEncoderInverted = false;
 
   // private static final Distance kFrontRightXPos = Inches.of(11.26);
@@ -170,7 +170,7 @@ public class TunerConstants {
   private static final int kBackLeftEncoderId = 20;
   // private static final Angle kBackLeftEncoderOffset = Rotations.of(0.2119140625);
   private static final Angle kBackLeftEncoderOffset = Constants.Swerve.WHICH_SWERVE_ROBOT.BACK_LEFT_ENCODER_OFFSET; //Rotations.of(0.02587890625);
-  private static final boolean kBackLeftSteerMotorInverted = false;
+  private static final boolean kBackLeftSteerMotorInverted = Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kBackLeftEncoderInverted = false;
 
   // private static final Distance kBackLeftXPos = Inches.of(-11.26);
@@ -184,7 +184,7 @@ public class TunerConstants {
   private static final int kBackRightEncoderId = 23;
   // private static final Angle kBackRightEncoderOffset = Rotations.of(-0.378662109375);
   private static final Angle kBackRightEncoderOffset = Constants.Swerve.WHICH_SWERVE_ROBOT.BACK_RIGHT_ENCODER_OFFSET; //Rotations.of(-0.09765625);
-  private static final boolean kBackRightSteerMotorInverted = false;
+  private static final boolean kBackRightSteerMotorInverted = Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kBackRightEncoderInverted = false;
 
   // private static final Distance kBackRightXPos = Inches.of(-11.26);
