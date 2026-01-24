@@ -9,7 +9,7 @@ public class AutoRoutines {
   final AutoTrajectory moveForward;
   final AutoRoutine routine;
 
-  public AutoRoutines(AutoFactory factory) {    
+  public AutoRoutines(AutoFactory factory) {
     routine = factory.newRoutine("CristianoRonaldo.chor");
     moveForward = routine.trajectory("MoveForward.traj");
 

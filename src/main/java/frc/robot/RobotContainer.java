@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveToPose;
@@ -50,16 +49,12 @@ public class RobotContainer {
 
   private final AutoChooser autoChooser = new AutoChooser();
 
-//   private final Command choreoCommand;
-
   public RobotContainer() {
     autoFactory = drivetrain.createAutoFactory();
     autoRoutines = new AutoRoutines(autoFactory);
 
     autoChooser.addRoutine("CristianoRonaldo", autoRoutines::moveForwardAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
-    // choreoCommand = autoRoutines.getPathAsCommand();
 
     configureBindings();
   }
@@ -102,8 +97,12 @@ public class RobotContainer {
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // dtp
-    // joystick.x().whileTrue(new DriveToPose(drivetrain, () ->
-    // MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
     // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
@@ -113,15 +112,18 @@ public class RobotContainer {
     // MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 2))), new
     // InstantCommand(() -> drivetrain.applyFieldSpeeds(new ChassisSpeeds()))));
 
+    // Acc auto sequence: choreo forward, dtp back
     // joystick
     //     .x()
     //     .whileTrue(
-    //         new SequentialCommandGroup(
-    //             new DriveToPose(
-    //                 drivetrain,
-    //                 () ->
-    //                     MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0, 1))),
-    //             autoRoutines.getPathAsCommand()));
+    //         autoRoutines
+    //             .getPathAsCommand()
+    //             .andThen(
+    //                 new DriveToPose(
+    //                     drivetrain,
+    //                     () ->
+    //                         MiscUtils.plus(
+    //                             drivetrain.getCurrentState().Pose, new Translation2d(0, 1)))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

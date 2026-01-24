@@ -25,8 +25,8 @@ public class DriveToPose extends Command {
   private Pose2d targetPose = null;
   private Supplier<Pose2d> targetPoseSupplier = null;
 
-  private final PIDController xController = new PIDController(5.0, 0.0, 0.0);
-  private final PIDController yController = new PIDController(5.0, 0.0, 0.0);
+  private final PIDController xController = new PIDController(2.0, 0.0, 0.0);
+  private final PIDController yController = new PIDController(2.0, 0.0, 0.0);
   private final PIDController headingController = new PIDController(5, 0.0, 0.0);
 
   double startTime;
@@ -53,6 +53,10 @@ public class DriveToPose extends Command {
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
 
+    path =
+      new LinearPath(
+          new TrapezoidProfile.Constraints(1, 1), new TrapezoidProfile.Constraints(0.2, 0.2));
+
     addRequirements(swerve);
   }
 
@@ -61,13 +65,13 @@ public class DriveToPose extends Command {
   public void initialize() {
     startTime = Utils.getCurrentTimeSeconds();
 
+    swerve.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0));
+
     if (targetPoseSupplier != null) {
       targetPose = targetPoseSupplier.get();
     }
 
-    path =
-        new LinearPath(
-            new TrapezoidProfile.Constraints(1, 1), new TrapezoidProfile.Constraints(0.2, 0.2));
+
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
 
