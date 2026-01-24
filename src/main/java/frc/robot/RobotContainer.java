@@ -8,15 +8,12 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -26,35 +23,28 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75)
-            .in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  private double MaxSpeed =
+      TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private double MaxAngularRate =
+      RotationsPerSecond.of(0.75)
+          .in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1)
-            .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(
-                    DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  /* Setting up bindings for necessary control of the swerve drive platform */
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(MaxSpeed * 0.1)
+          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+  private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController joystick = new CommandXboxController(0);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-<<<<<<< HEAD
-    private final AutoFactory autoFactory;
-    private final AutoRoutines autoRoutines;
-    private final AutoChooser autoChooser = new AutoChooser();
-    private final Command choreoCommand;
-
-    public RobotContainer() {
-        autoFactory = drivetrain.createAutoFactory();
-        autoRoutines = new AutoRoutines(autoFactory);
-=======
   private final AutoFactory autoFactory;
   private final AutoRoutines autoRoutines;
 
@@ -65,22 +55,14 @@ public class RobotContainer {
   public RobotContainer() {
     autoFactory = drivetrain.createAutoFactory();
     autoRoutines = new AutoRoutines(autoFactory);
-    
->>>>>>> bdce9d83beca71c0644c7987a6523b7f93480361
 
-        autoChooser.addRoutine("CristianoRonaldo", autoRoutines::simplePathAuto);
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+    autoChooser.addRoutine("CristianoRonaldo", autoRoutines::simplePathAuto);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
-<<<<<<< HEAD
-    choreoCommand = autoRoutines.getPathAsCommand(); 
-    configureBindings();
-  }
-=======
     choreoCommand = autoRoutines.getPathAsCommand();
 
     configureBindings();
   }
->>>>>>> bdce9d83beca71c0644c7987a6523b7f93480361
 
   private void configureBindings() {
     // Note that X is defined as forward according to WPILib convention,
@@ -119,25 +101,31 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+    // dtp
+    // joystick.x().whileTrue(new DriveToPose(drivetrain, () ->
+    // MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
-    //dtp
-    // joystick.x().whileTrue(new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
-
-
-    //choreo
+    // choreo
     joystick.x().onTrue(choreoCommand);
 
-    //Auto sequence
-<<<<<<< HEAD
-    joystick.x().whileTrue(new SequentialCommandGroup(new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 2))), new InstantCommand(() -> drivetrain.applyFieldSpeeds(new ChassisSpeeds()))));
-=======
-    // joystick.x().whileTrue(new SequentialCommandGroup(new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0, 1))), autoRoutines.getPathAsCommand()));
->>>>>>> bdce9d83beca71c0644c7987a6523b7f93480361
+    // Auto sequence
+    // joystick.x().whileTrue(new SequentialCommandGroup(new DriveToPose(drivetrain, () ->
+    // MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 2))), new
+    // InstantCommand(() -> drivetrain.applyFieldSpeeds(new ChassisSpeeds()))));
+    joystick
+        .x()
+        .whileTrue(
+            new SequentialCommandGroup(
+                new DriveToPose(
+                    drivetrain,
+                    () ->
+                        MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0, 1))),
+                autoRoutines.getPathAsCommand()));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
-    public Command getAutonomousCommand() {
-        return autoChooser.selectedCommand();
-    }
+  public Command getAutonomousCommand() {
+    return autoChooser.selectedCommand();
+  }
 }
