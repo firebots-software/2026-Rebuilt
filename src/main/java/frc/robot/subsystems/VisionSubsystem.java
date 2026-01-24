@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -55,6 +56,8 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
+  private Optional<MultiTargetPNPResult> visionResult;
+  private List<PhotonTrackedTarget> tags;
   private final BooleanSupplier isRedSide;
   private final AprilTagFieldLayout fieldLayout;
 
@@ -77,6 +80,7 @@ public class VisionSubsystem extends SubsystemBase {
     poseEstimator = new PhotonPoseEstimator(fieldLayout, cameraToRobot);
     if (poseEstimator != null) {
       DogLog.log("Vision/PoseEstimator", true);
+      return;
     }
     DogLog.log("Vision/PoseEstimator", false);
 
@@ -111,7 +115,24 @@ public class VisionSubsystem extends SubsystemBase {
     for (int i = 0; i < results.size(); i++) {
       latestVisionResult = results.get(i);
     }
+
+    if (!latestVisionResult.getMultiTagResult().isEmpty()) {
+      visionResult = latestVisionResult.getMultiTagResult();
+    }
+
+    if (visionResult.isEmpty()) {
+      DogLog.log("Vision/" + cameraTitle + "/MultiTagResultAvailable", false);
+    } else {
+      DogLog.log("Vision/" + cameraTitle + "/MultiTagResultAvailable", true);
+    }
+
     DogLog.log("Vision/latestVisionResult", latestVisionResult.toString());
+    DogLog.log("Vision/visionResult", visionResult.toString());
+    if (results.isEmpty()) {
+      DogLog.log("Vision/resultsEmpty", true);
+    } else {
+      DogLog.log("Vision/resultsEmpty", false);
+    }
   }
 
   public void addFilteredPose() {
@@ -146,8 +167,7 @@ public class VisionSubsystem extends SubsystemBase {
     // for 26
 
     // creates a list of all detected tags and logs for debugging
-    List<PhotonTrackedTarget> tags =
-        latestVisionResult.getTargets().stream().collect(Collectors.toList());
+    tags = latestVisionResult.getTargets().stream().collect(Collectors.toList());
 
     DogLog.log("Vision/tagsLength", tags.size());
 
@@ -173,6 +193,7 @@ public class VisionSubsystem extends SubsystemBase {
     // TODO: re-implement lines 200-205 in 2025 repo
 
     int tagCount = tags.size();
+    DogLog.log("Vision/tagCount", tagCount);
 
     // get from swerve
     double currentSpeed = 0d;
