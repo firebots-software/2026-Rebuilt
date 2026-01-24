@@ -50,16 +50,16 @@ public class RobotContainer {
 
   private final AutoChooser autoChooser = new AutoChooser();
 
-  private final Command choreoCommand;
+//   private final Command choreoCommand;
 
   public RobotContainer() {
     autoFactory = drivetrain.createAutoFactory();
     autoRoutines = new AutoRoutines(autoFactory);
 
-    autoChooser.addRoutine("CristianoRonaldo", autoRoutines::moveForwareAuto);
+    autoChooser.addRoutine("CristianoRonaldo", autoRoutines::moveForwardAuto);
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    choreoCommand = autoRoutines.getPathAsCommand();
+    // choreoCommand = autoRoutines.getPathAsCommand();
 
     configureBindings();
   }
@@ -106,7 +106,7 @@ public class RobotContainer {
     // MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
     // choreo
-    joystick.x().whileTrue(choreoCommand);
+    // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
     // Auto sequence
     // joystick.x().whileTrue(new SequentialCommandGroup(new DriveToPose(drivetrain, () ->

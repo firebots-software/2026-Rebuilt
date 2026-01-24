@@ -16,11 +16,11 @@ public class AutoRoutines {
     routine.active().onTrue(moveForward.resetOdometry().andThen(moveForward.cmd()));
   }
 
-  public AutoRoutine moveForwareAuto() {
+  public AutoRoutine moveForwardAuto() {
     return routine;
   }
 
   public Command getPathAsCommand() {
-    return moveForward.resetOdometry().andThen(moveForward.cmd());
+    return routine.cmd();
   }
 }
