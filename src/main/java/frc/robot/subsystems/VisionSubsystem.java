@@ -108,7 +108,10 @@ public class VisionSubsystem extends SubsystemBase {
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
 
     // Go through all results (if there are any) and update the latest result with the last
-    for (var result : results) latestVisionResult = result;
+    for (int i = 0; i < results.size(); i++) {
+      latestVisionResult = results.get(i);
+    }
+    DogLog.log("Vision/latestVisionResult", latestVisionResult.toString());
   }
 
   public void addFilteredPose() {
