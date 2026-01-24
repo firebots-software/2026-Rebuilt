@@ -54,10 +54,33 @@ public final class Constants {
   }
 
   public static final class Intake {
-    public static final int ObjectDetectorPort = 1;
+    public static final class Arm {
+      public static final MotorConstants armMotor = new MotorConstants(34);
+
+      public static final double armKV = 0.14;
+      public static final double armKP = 0.1;
+      public static final double armKI = 0;
+      public static final double armKD = 0;
+
+      public static final double armStatorCurrentLimit = 40.0;
+
+      public static final int encoderPort = 0;
+
+      public static final double armPosRetracted = 90.0;
+      public static final double armPosExtended = 15.0;
+      public static final double armPosIdle = 45.0; // subject to change
+    }
+
     public static final MotorConstants intakeMotor = new MotorConstants(33);
-    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
-    public static final double STATOR_CURRENT_LIMIT = 50.0;
+
+    public static final double intakeKV = 0.14;
+    public static final double intakeKP = 0.1;
+    public static final double intakeKI = 0;
+    public static final double intakeKD = 0;
+
+    public static final double intakeSupplyCurrentLimit = 30.0;
+    public static final double intakeStatorCurrentLimit = 50.0;
+    public static final double intakeTargetSpeed = 40.0; // subject to change
   }
 
   public static class MotorConstants {

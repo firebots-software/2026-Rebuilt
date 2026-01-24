@@ -8,34 +8,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.IntakeSubsystem;
 
-/** An example command that uses an example subsystem. */
-public class RunIntake extends Command {
+public class ArmToAngle extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final IntakeSubsystem intakeSubsystem;
+  private double position;
 
-  public RunIntake(IntakeSubsystem subsystem) {
+  public ArmToAngle(IntakeSubsystem subsystem, double position) {
     intakeSubsystem = subsystem;
-    // Use addRequirements() here to declare subsystem dependencies.
+    this.position = position;
     addRequirements(subsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.run(Constants.Intake.intakeTargetSpeed);
+    intakeSubsystem.setArmDegrees(position);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    intakeSubsystem.stop();
-  }
+  public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
