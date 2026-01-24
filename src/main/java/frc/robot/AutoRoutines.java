@@ -6,24 +6,21 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class AutoRoutines {
-  private final AutoFactory m_factory;
+  final AutoTrajectory moveForward;
+  final AutoRoutine routine;
 
-  public AutoRoutines(AutoFactory factory) {
-    m_factory = factory;
+  public AutoRoutines(AutoFactory factory) {    
+    routine = factory.newRoutine("CristianoRonaldo.chor");
+    moveForward = routine.trajectory("MoveForward.traj");
+
+    routine.active().onTrue(moveForward.resetOdometry().andThen(moveForward.cmd()));
   }
 
-  public AutoRoutine simplePathAuto() {
-    final AutoRoutine routine = m_factory.newRoutine("CristianoRonaldo.chor");
-    final AutoTrajectory simplePath = routine.trajectory("MoveForward.traj");
-
-    routine.active().onTrue(simplePath.resetOdometry().andThen(simplePath.cmd()));
+  public AutoRoutine moveForwareAuto() {
     return routine;
   }
 
   public Command getPathAsCommand() {
-    AutoRoutine routine = simplePathAuto();
-    AutoTrajectory trajectory = routine.trajectory("MoveForward.traj");
-
-    return trajectory.cmd();
+    return moveForward.resetOdometry().andThen(moveForward.cmd());
   }
 }
