@@ -70,7 +70,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void run(double speed) {
-    intakeMotor.setControl(new VelocityVoltage(speed).withFeedForward(0.1));
+    intakeMotor.setControl(
+        new VelocityVoltage(speed / Constants.Intake.motorRotsToIntakeRots).withFeedForward(0.1));
   }
 
   public void stop() {
@@ -79,7 +80,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setArmDegrees(double angle) {
     // PositionTorqueCurrentFOC might not be the right control request
-    armMotor.setControl(new PositionTorqueCurrentFOC(angle).withFeedForward(0.1));
+    armMotor.setControl(
+        new PositionTorqueCurrentFOC(angle / Constants.Intake.Arm.motorRotsToArmDegrees)
+            .withFeedForward(0.1));
   }
 
   public double getAbsolutePosition() {

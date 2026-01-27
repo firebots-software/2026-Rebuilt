@@ -21,6 +21,9 @@ public final class Constants {
     public static final class Arm {
       public static final MotorConstants armMotor = new MotorConstants(34);
 
+      public static final double motorRotsToArmRots = 1d / 77.8;
+      public static final double motorRotsToArmDegrees = motorRotsToArmRots * 360d;
+
       public static final double armKV = 0.14;
       public static final double armKP = 0.1;
       public static final double armKI = 0;
@@ -37,6 +40,8 @@ public final class Constants {
 
     public static final MotorConstants intakeMotor = new MotorConstants(33);
 
+    public static final double motorRotsToIntakeRots = 1d / 2.6667;
+
     public static final double intakeKV = 0.14;
     public static final double intakeKP = 0.1;
     public static final double intakeKI = 0;
@@ -44,7 +49,7 @@ public final class Constants {
 
     public static final double intakeSupplyCurrentLimit = 30.0;
     public static final double intakeStatorCurrentLimit = 50.0;
-    public static final double intakeTargetSpeed = 40.0; // subject to change
+    public static final double intakeTargetSpeed = 40.0 / motorRotsToIntakeRots; // subject to change
   }
 
   public static class MotorConstants {
