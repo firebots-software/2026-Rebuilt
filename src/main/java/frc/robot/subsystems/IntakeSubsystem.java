@@ -1,29 +1,35 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
 public class IntakeSubsystem extends SubsystemBase {
-  private double tolerance = 1;
-
   private static IntakeSubsystem instance;
   private LoggedTalonFX armMotor, intakeMotor;
-  private DutyCycleEncoder encoder;
+  private CANcoder cancoder;
+  private double targetAngle;
 
   public IntakeSubsystem() {
     intakeMotor = new LoggedTalonFX(Constants.Intake.intakeMotor.port);
     armMotor = new LoggedTalonFX(Constants.Intake.Arm.armMotor.port);
+    targetAngle = Constants.Intake.Arm.armPosInitial;
 
     Slot0Configs intakeSlot0Configs =
         new Slot0Configs()
@@ -61,7 +67,26 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotorConfig.apply(
         new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
 
-    encoder = new DutyCycleEncoder(Constants.Intake.Arm.encoderPort);
+    // create a new FusedCANcoder class which combines data from the CANcoder and
+    // the arm motor's encoder
+    cancoder = new CANcoder(Constants.Intake.Arm.encoderPort);
+    CANcoderConfiguration ccConfig = new CANcoderConfiguration();
+    // zero the magnet
+    ccConfig
+        .MagnetSensor
+        .withAbsoluteSensorDiscontinuityPoint(Rotations.of(0.5))
+        .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+        .withMagnetOffset(Rotations.of(0.4));
+    cancoder.getConfigurator().apply(ccConfig);
+
+    TalonFXConfiguration fxConfig = new TalonFXConfiguration();
+    fxConfig
+        .Feedback
+        .withFeedbackRemoteSensorID(cancoder.getDeviceID())
+        .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+        .withSensorToMechanismRatio(Constants.Intake.Arm.encoderRotsToArmRots)
+        .withRotorToSensorRatio(Constants.Intake.Arm.armDegreesToMotorRots);
+    armMotorConfig.apply(fxConfig);
   }
 
   public static IntakeSubsystem getInstance() {
@@ -79,33 +104,57 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setArmDegrees(double angle) {
+    targetAngle = angle;
     // PositionTorqueCurrentFOC might not be the right control request
     armMotor.setControl(
         new PositionTorqueCurrentFOC(angle * Constants.Intake.Arm.motorRotsToArmDegrees)
             .withFeedForward(0.1));
   }
 
-  public double getAbsolutePosition() {
-    return encoder.get() / Constants.Intake.encoderRotsToIntakeRots;
+  public double getCancoderPosition() {
+    // uses the cancoder's position data directly
+    return cancoder.getAbsolutePosition().getValueAsDouble()
+        / Constants.Intake.encoderRotsToIntakeRots;
   }
 
-  public double getAbsolutePositionRaw() {
-    return encoder.get();
+  public double getCancoderPositionRaw() {
+    return cancoder.getAbsolutePosition().getValueAsDouble();
+  }
+
+  public double getEncoderPosition() {
+    // uses the fusedcancoder (more accurate)
+    return armMotor.getPosition().getValueAsDouble() / Constants.Intake.encoderRotsToIntakeRots;
+  }
+
+  public double getEncoderPositionRaw() {
+    return armMotor.getPosition().getValueAsDouble();
   }
 
   public boolean atSpeed() {
     return Math.abs(
             intakeMotor.getVelocity().getValueAsDouble() - Constants.Intake.intakeTargetSpeed)
-        <= tolerance;
+        <= Constants.Intake.Arm.armToleranceDegrees;
   }
 
   @Override
   public void periodic() {
-    DogLog.log("Intake/motorVelocity", intakeMotor.getVelocity().getValueAsDouble());
     DogLog.log("Intake/targetSpeed", Constants.Intake.intakeTargetSpeed);
     DogLog.log("Intake/atSpeed", atSpeed());
+
+    DogLog.log("Intake/motorVelocity", intakeMotor.getVelocity().getValueAsDouble());
+    DogLog.log(
+        "Intake/motorVelocityFeet",
+        intakeMotor.getVelocity().getValueAsDouble()
+            * Constants.Intake.intakeRotsPerSecToFeetPerSec);
+    DogLog.log("Intake/motorPos", intakeMotor.getPosition().getValueAsDouble());
+
     DogLog.log("Intake/motorCurrent", intakeMotor.getStatorCurrent().getValueAsDouble());
-    DogLog.log("Intake/absEncoderPos", getAbsolutePosition());
-    DogLog.log("Intake/absEncoderPosRaw", getAbsolutePositionRaw());
+    DogLog.log("Intake/CANcoderPos", getCancoderPosition());
+    DogLog.log("Intake/CANcoderPosRaw", getCancoderPositionRaw());
+    DogLog.log("Intake/FusedCANcoderPos", getEncoderPosition());
+    DogLog.log("Intake/FusedCANcoderPosRaw", getEncoderPositionRaw());
+
+    DogLog.log("Intake/armMotorVelocity", armMotor.getVelocity().getValueAsDouble());
+    DogLog.log("Intake/targetAngle", targetAngle);
   }
 }

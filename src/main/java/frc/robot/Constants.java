@@ -19,6 +19,7 @@ public final class Constants {
       public static final double motorRotsToArmRots = 1d / 77.8;
       public static final double motorRotsToArmDegrees = motorRotsToArmRots * 360d;
       public static final double armDegreesToMotorRots = 1 / motorRotsToArmDegrees;
+      public static final double encoderRotsToArmRots = 2.666;
 
       public static final double armKV = 0.14;
       public static final double armKP = 0.1;
@@ -29,6 +30,9 @@ public final class Constants {
 
       public static final int encoderPort = 0;
 
+      public static double armToleranceDegrees = 1;
+
+      public static final double armPosInitial = 0;
       public static final double armPosRetracted = 90.0;
       public static final double armPosExtended = 15.0;
       public static final double armPosIdle = 45.0; // subject to change
@@ -38,6 +42,9 @@ public final class Constants {
 
     public static final double motorRotsToIntakeRots = 1d / 2.6667;
     public static final double encoderRotsToIntakeRots = 2.666;
+    // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the wheel in feet
+    // wheel circumference can be used to convert from intake rotations/sec -> feet/sec
+    public static final double intakeRotsPerSecToFeetPerSec = (3 / 12) * Math.PI;
 
     public static final double intakeKV = 0.14;
     public static final double intakeKP = 0.1;

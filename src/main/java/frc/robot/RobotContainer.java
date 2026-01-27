@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.IntakeCommands.RunIntake;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -85,7 +84,50 @@ public class RobotContainer {
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // right bumper -> run intake
-    if (Constants.intakeOnRobot) joystick.rightBumper().whileTrue(new RunIntake(intakeSubsystem));
+    if (Constants.intakeOnRobot)
+      joystick
+          .rightBumper()
+          .whileTrue(
+              Commands.runEnd(
+                  () -> intakeSubsystem.run(Constants.Intake.intakeTargetSpeed),
+                  intakeSubsystem::stop,
+                  intakeSubsystem));
+
+    // left trigger + x -> arm to initial pos (0)
+    joystick
+        .leftTrigger()
+        .and(joystick.x())
+        .onTrue(
+            Commands.runOnce(
+                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosInitial),
+                intakeSubsystem));
+
+    // left trigger + a -> arm to extended pos (15)
+    joystick
+        .leftTrigger()
+        .and(joystick.a())
+        .onTrue(
+            Commands.runOnce(
+                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosExtended),
+                intakeSubsystem));
+
+    // left trigger + b -> arm to idle pos (45)
+    joystick
+        .leftTrigger()
+        .and(joystick.b())
+        .onTrue(
+            Commands.runOnce(
+                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosIdle),
+                intakeSubsystem));
+
+    // left trigger + y -> arm to retracted pos (90)
+    joystick
+        .leftTrigger()
+        .and(joystick.y())
+        .onTrue(
+            Commands.runOnce(
+                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosRetracted),
+                intakeSubsystem));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
