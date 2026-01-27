@@ -50,7 +50,8 @@ public final class Constants {
 
     public static final double intakeSupplyCurrentLimit = 30.0;
     public static final double intakeStatorCurrentLimit = 50.0;
-    public static final double intakeTargetSpeed = 40.0 / motorRotsToIntakeRots; // subject to change
+    public static final double intakeTargetSpeed =
+        40.0 / motorRotsToIntakeRots; // subject to change
   }
 
   public static class MotorConstants {
