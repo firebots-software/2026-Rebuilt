@@ -185,37 +185,37 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     */
   }
 
-  // public AutoFactory createAutoFactory() {
-  //   return createAutoFactory((sample, isStart) -> {});
-  // }
+  public AutoFactory createAutoFactory() {
+    return createAutoFactory((sample, isStart) -> {});
+  }
 
-  // public AutoFactory createAutoFactory(TrajectoryLogger<SwerveSample> trajLogger) {
-  //   return new AutoFactory(
-  //       () -> getCurrentState().Pose,
-  //       this::resetPose,
-  //       this::followPath,
-  //       true,
-  //       this,
-  //       trajLogger); // getState().pose
-  // }
+  public AutoFactory createAutoFactory(TrajectoryLogger<SwerveSample> trajLogger) {
+    return new AutoFactory(
+        () -> getCurrentState().Pose,
+        this::resetPose,
+        this::followPath,
+        false,
+        this,
+        trajLogger); // getState().pose
+  }
 
-  // public void followPath(SwerveSample sample) {
-  //   m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI); // every run?
+  public void followPath(SwerveSample sample) {
+    m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI); // every run?
 
-  //   var pose = getState().Pose;
+    var pose = getState().Pose;
 
-  //   var targetSpeeds = sample.getChassisSpeeds();
-  //   targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
-  //   targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
-  //   targetSpeeds.omegaRadiansPerSecond +=
-  //       m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
+    var targetSpeeds = sample.getChassisSpeeds();
+    targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
+    targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
+    targetSpeeds.omegaRadiansPerSecond +=
+        m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
 
-  //   setControl(
-  //       m_pathApplyFieldSpeeds
-  //           .withSpeeds(targetSpeeds)
-  //           .withWheelForceFeedforwardsX(sample.moduleForcesX())
-  //           .withWheelForceFeedforwardsY(sample.moduleForcesY()));
-  // }
+    setControl(
+        m_pathApplyFieldSpeeds
+            .withSpeeds(targetSpeeds)
+            .withWheelForceFeedforwardsX(sample.moduleForcesX())
+            .withWheelForceFeedforwardsY(sample.moduleForcesY()));
+  }
 
   /**
    * Returns a command that applies the specified control request to this swerve drivetrain.

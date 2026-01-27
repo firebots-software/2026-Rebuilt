@@ -7,16 +7,23 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
+import choreo.auto.AutoFactory;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.DriveToPose;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.MiscUtils;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -41,17 +48,17 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  //   private final AutoFactory autoFactory;
-  //   private final AutoRoutines autoRoutines;
+    private final AutoFactory autoFactory;
+    private final AutoRoutines autoRoutines;
 
   private final AutoChooser autoChooser = new AutoChooser();
 
   public RobotContainer() {
-    // autoFactory = drivetrain.createAutoFactory();
-    // autoRoutines = new AutoRoutines(autoFactory);
+    autoFactory = drivetrain.createAutoFactory();
+    autoRoutines = new AutoRoutines(autoFactory);
 
-    // autoChooser.addRoutine("CristianoRonaldo", autoRoutines::moveForwardAuto);
-    // SmartDashboard.putData("Auto Chooser", autoChooser);
+    autoChooser.addRoutine("CristianoRonaldo", autoRoutines::moveForwardAuto);
+    SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
   }
@@ -106,23 +113,9 @@ public class RobotContainer {
     // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
-    // Auto sequence
-    // joystick.x().whileTrue(new SequentialCommandGroup(new DriveToPose(drivetrain, () ->
-    // MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 2))), new
-    // InstantCommand(() -> drivetrain.applyFieldSpeeds(new ChassisSpeeds()))));
-
     // Acc auto sequence: choreo forward, dtp back
-    // joystick
-    //     .x()
-    //     .whileTrue(
-    //         autoRoutines
-    //             .getPathAsCommand()
-    //             .andThen(
-    //                 new DriveToPose(
-    //                     drivetrain,
-    //                     () ->
-    //                         MiscUtils.plus(
-    //                             drivetrain.getCurrentState().Pose, new Translation2d(0, 1)))));
+
+    joystick.x().whileTrue(new SequentialCommandGroup(autoRoutines.getPathAsCommand(), new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
