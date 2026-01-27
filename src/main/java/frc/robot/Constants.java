@@ -46,7 +46,8 @@ public final class Constants {
 
     public static final double intakeSupplyCurrentLimit = 30.0;
     public static final double intakeStatorCurrentLimit = 50.0;
-    public static final double intakeTargetSpeed = 40.0 / motorRotsToIntakeRots; // subject to change
+    public static final double intakeTargetSpeed =
+        40.0 / motorRotsToIntakeRots; // subject to change
   }
 
   public static class MotorConstants {
@@ -64,7 +65,6 @@ public final class Constants {
       L2(6.75, 21.428571428571427),
       L3(6.12, 21.428571428571427),
       FIVEN_L3(5.2734375, 26.09090909091);
-
       public final double DRIVE_GEAR_RATIO, STEER_GEAR_RATIO;
 
       SwerveLevel(double drive, double steer) {
@@ -80,7 +80,6 @@ public final class Constants {
       // //0.12301
       JAMES_HARDEN(0.36, 0d, 0d, 0.2425, 0.11560693641, 0), // 0.041539 //0.12301
       COBRA(0.1, 0d, 0d, 0d, 0.124, 0d); // 0.041539 //0.12301
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveDrivePIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -98,7 +97,6 @@ public final class Constants {
       PROTO(20d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(38.982d, 2.4768d, 0d, 0.23791d, 0d, 0.1151d),
       COBRA(100d, 0d, 0.5, 0.1, 2.49, 0d);
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveSteerPIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -116,7 +114,6 @@ public final class Constants {
       PROTO(Inches.of(22.52), Inches.of(22.834)), // length, width
       JAMES_HARDEN(Inches.of(26.75), Inches.of(22.75)), // length, width
       COBRA(Inches.of(29.0), Inches.of(26.0)); // length, width
-
       public final Distance length, width;
 
       RobotDimensions(Distance length, Distance width) {
@@ -191,7 +188,6 @@ public final class Constants {
           BumperThickness.COBRA,
           3.5714285714285716,
           false);
-
       public final Angle FRONT_LEFT_ENCODER_OFFSET,
           FRONT_RIGHT_ENCODER_OFFSET,
           BACK_LEFT_ENCODER_OFFSET,
