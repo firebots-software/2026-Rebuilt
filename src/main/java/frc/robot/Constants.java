@@ -55,7 +55,7 @@ public final class Constants {
       this.port = port;
     }
   }
-  
+
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.PROTO;
 
@@ -226,3 +226,5 @@ public final class Constants {
         INVERTED_MODULES = invertedModules;
       }
     }
+  }
+}
