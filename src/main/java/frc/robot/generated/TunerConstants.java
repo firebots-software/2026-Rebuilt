@@ -86,17 +86,17 @@ public class TunerConstants {
 
   // Theoretical free speed (m/s) at 12 V applied output;
   // This needs to be tuned to your individual robot
-  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(11.71);
+  public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(5.85);
 
   // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
   // This may need to be tuned to your individual robot
   private static final double kCoupleRatio =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.COUPLE_RATIO; // 3.375;
+      Constants.Swerve.WHICH_SWERVE_ROBOT.COUPLE_RATIO;
 
   private static final double kDriveGearRatio =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_LEVEL.DRIVE_GEAR_RATIO; // 5.2734375;
+      Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_LEVEL.DRIVE_GEAR_RATIO;
   private static final double kSteerGearRatio =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_LEVEL.STEER_GEAR_RATIO; // 26.09090909091;
+      Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_LEVEL.STEER_GEAR_RATIO;
   private static final Distance kWheelRadius = Inches.of(4);
 
   private static final boolean kInvertLeftSide = false;
@@ -147,77 +147,63 @@ public class TunerConstants {
   private static final int kFrontLeftDriveMotorId = 4;
   private static final int kFrontLeftSteerMotorId = 3;
   private static final int kFrontLeftEncoderId = 21;
-  // private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.383056640625);
   private static final Angle kFrontLeftEncoderOffset =
       Constants.Swerve.WHICH_SWERVE_ROBOT
-          .FRONT_LEFT_ENCODER_OFFSET; // Rotations.of(0.096923828125);
+          .FRONT_LEFT_ENCODER_OFFSET;
   private static final boolean kFrontLeftSteerMotorInverted =
       Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kFrontLeftEncoderInverted = false;
 
-  // private static final Distance kFrontLeftXPos = Inches.of(11.26);
-  // private static final Distance kFrontLeftYPos = Inches.of(11.417);
   private static final Distance kFrontLeftXPos =
       Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0);
-  //   length/2.0;
-  //   Inches.of(14.5);
   private static final Distance kFrontLeftYPos =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0); // Inches.of(13);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0);
 
   // Front Right
   private static final int kFrontRightDriveMotorId = 6;
   private static final int kFrontRightSteerMotorId = 5;
   private static final int kFrontRightEncoderId = 22;
-  // private static final Angle kFrontRightEncoderOffset = Rotations.of(0.159423828125);
   private static final Angle kFrontRightEncoderOffset =
       Constants.Swerve.WHICH_SWERVE_ROBOT
-          .FRONT_RIGHT_ENCODER_OFFSET; // Rotations.of(0.03271484375);
+          .FRONT_RIGHT_ENCODER_OFFSET;
   private static final boolean kFrontRightSteerMotorInverted =
       Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kFrontRightEncoderInverted = false;
 
-  // private static final Distance kFrontRightXPos = Inches.of(11.26);
-  // private static final Distance kFrontRightYPos = Inches.of(-11.417);
   private static final Distance kFrontRightXPos =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0); // Inches.of(14.5);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0);
   private static final Distance kFrontRightYPos =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0); // Inches.of(-13);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0);
 
   // Back Left
   private static final int kBackLeftDriveMotorId = 2;
   private static final int kBackLeftSteerMotorId = 1;
   private static final int kBackLeftEncoderId = 20;
-  // private static final Angle kBackLeftEncoderOffset = Rotations.of(0.2119140625);
   private static final Angle kBackLeftEncoderOffset =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.BACK_LEFT_ENCODER_OFFSET; // Rotations.of(0.02587890625);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.BACK_LEFT_ENCODER_OFFSET;
   private static final boolean kBackLeftSteerMotorInverted =
       Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kBackLeftEncoderInverted = false;
 
-  // private static final Distance kBackLeftXPos = Inches.of(-11.26);
   private static final Distance kBackLeftXPos =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0); // Inches.of(-14.5);
-  // private static final Distance kBackLeftYPos = Inches.of(11.417);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0);
   private static final Distance kBackLeftYPos =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0); // Inches.of(13);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0);
 
   // Back Right
   private static final int kBackRightDriveMotorId = 8;
   private static final int kBackRightSteerMotorId = 7;
   private static final int kBackRightEncoderId = 23;
-  // private static final Angle kBackRightEncoderOffset = Rotations.of(-0.378662109375);
   private static final Angle kBackRightEncoderOffset =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.BACK_RIGHT_ENCODER_OFFSET; // Rotations.of(-0.09765625);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.BACK_RIGHT_ENCODER_OFFSET;
   private static final boolean kBackRightSteerMotorInverted =
       Constants.Swerve.WHICH_SWERVE_ROBOT.INVERTED_MODULES;
   private static final boolean kBackRightEncoderInverted = false;
 
-  // private static final Distance kBackRightXPos = Inches.of(-11.26);
-  // private static final Distance kBackRightYPos = Inches.of(-11.417);
   private static final Distance kBackRightXPos =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0); // Inches.of(-14.5);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0);
   private static final Distance kBackRightYPos =
-      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0); // Inches.of(-13);
+      Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0);
 
   public static final SwerveModuleConstants<
           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
