@@ -25,30 +25,26 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor = new LoggedTalonFX(Constants.Intake.intakeMotor.port);
     armMotor = new LoggedTalonFX(Constants.Intake.Arm.armMotor.port);
 
-    Slot0Configs intakeSlot0Configs =
-        new Slot0Configs()
-            .withKV(Constants.Intake.intakeKV)
-            .withKP(Constants.Intake.intakeKP)
-            .withKI(Constants.Intake.intakeKI)
-            .withKD(Constants.Intake.intakeKD);
+    Slot0Configs intakeSlot0Configs = new Slot0Configs()
+        .withKV(Constants.Intake.intakeKV)
+        .withKP(Constants.Intake.intakeKP)
+        .withKI(Constants.Intake.intakeKI)
+        .withKD(Constants.Intake.intakeKD);
 
-    Slot0Configs armSlot0Configs =
-        new Slot0Configs()
-            .withKV(Constants.Intake.Arm.armKV)
-            .withKP(Constants.Intake.Arm.armKP)
-            .withKI(Constants.Intake.Arm.armKI)
-            .withKD(Constants.Intake.Arm.armKD);
+    Slot0Configs armSlot0Configs = new Slot0Configs()
+        .withKV(Constants.Intake.Arm.armKV)
+        .withKP(Constants.Intake.Arm.armKP)
+        .withKI(Constants.Intake.Arm.armKI)
+        .withKD(Constants.Intake.Arm.armKD);
 
-    CurrentLimitsConfigs intakeCurrentLimitsConfigs =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimitEnable(true)
-            .withStatorCurrentLimit(Constants.Intake.intakeStatorCurrentLimit)
-            .withSupplyCurrentLimit(Constants.Intake.intakeSupplyCurrentLimit);
+    CurrentLimitsConfigs intakeCurrentLimitsConfigs = new CurrentLimitsConfigs()
+        .withStatorCurrentLimitEnable(true)
+        .withStatorCurrentLimit(Constants.Intake.intakeStatorCurrentLimit)
+        .withSupplyCurrentLimit(Constants.Intake.intakeSupplyCurrentLimit);
 
-    CurrentLimitsConfigs armCurrentLimitsConfigs =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimitEnable(true)
-            .withStatorCurrentLimit(Constants.Intake.Arm.armStatorCurrentLimit);
+    CurrentLimitsConfigs armCurrentLimitsConfigs = new CurrentLimitsConfigs()
+        .withStatorCurrentLimitEnable(true)
+        .withStatorCurrentLimit(Constants.Intake.Arm.armStatorCurrentLimit);
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
     TalonFXConfigurator intakeMotorConfig = intakeMotor.getConfigurator();
@@ -65,13 +61,14 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public static IntakeSubsystem getInstance() {
-    if (instance == null) instance = new IntakeSubsystem();
+    if (instance == null)
+      instance = new IntakeSubsystem();
     return instance;
   }
 
   public void run(double speed) {
     intakeMotor.setControl(
-        new VelocityVoltage(speed / Constants.Intake.motorRotsToIntakeRots).withFeedForward(0.1));
+        new VelocityVoltage(speed * Constants.Intake.motorRotsToIntakeRots).withFeedForward(0.1));
   }
 
   public void stop() {
@@ -81,7 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setArmDegrees(double angle) {
     // PositionTorqueCurrentFOC might not be the right control request
     armMotor.setControl(
-        new PositionTorqueCurrentFOC(angle / Constants.Intake.Arm.motorRotsToArmDegrees)
+        new PositionTorqueCurrentFOC(angle * Constants.Intake.Arm.motorRotsToArmDegrees)
             .withFeedForward(0.1));
   }
 
@@ -91,8 +88,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean atSpeed() {
     return Math.abs(
-            intakeMotor.getVelocity().getValueAsDouble() - Constants.Intake.intakeTargetSpeed)
-        <= tolerance;
+        intakeMotor.getVelocity().getValueAsDouble() - Constants.Intake.intakeTargetSpeed) <= tolerance;
   }
 
   @Override

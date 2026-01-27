@@ -23,6 +23,7 @@ public final class Constants {
 
       public static final double motorRotsToArmRots = 1d / 77.8;
       public static final double motorRotsToArmDegrees = motorRotsToArmRots * 360d;
+      public static final double armDegreesToMotorRots = 1 / motorRotsToArmDegrees;
 
       public static final double armKV = 0.14;
       public static final double armKP = 0.1;
