@@ -54,8 +54,8 @@ public class DriveToPose extends Command {
     this.targetPose = targetPoseSupplier.get();
 
     path =
-      new LinearPath(
-          new TrapezoidProfile.Constraints(1, 1), new TrapezoidProfile.Constraints(0.2, 0.2));
+        new LinearPath(
+            new TrapezoidProfile.Constraints(1, 1), new TrapezoidProfile.Constraints(0.2, 0.2));
 
     addRequirements(swerve);
   }
@@ -70,7 +70,6 @@ public class DriveToPose extends Command {
     if (targetPoseSupplier != null) {
       targetPose = targetPoseSupplier.get();
     }
-
 
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
