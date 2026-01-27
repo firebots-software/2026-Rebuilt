@@ -112,7 +112,7 @@ public final class Constants {
           RobotDimensions.PROTO,
           "rio",
           BumperThickness.PROTO,
-          3.375,
+          3.5714285714285716,
           true),
       JAMES_HARDEN(
           Rotations.of(-0.0834960938), // front left
