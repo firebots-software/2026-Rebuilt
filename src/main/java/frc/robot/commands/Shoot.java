@@ -54,7 +54,7 @@ public class Shoot extends Command {
   @Override
   public void execute() {
     Pose3d target = new Pose3d();
-    shooter.rampUp(shootingSpeed(target));
+    shooter.rampUp(shootingSpeed(target, 5));
     pointAtTarget(positionToTarget(null));
     if (shooter.atSpeed() && pointingAtTarget(positionToTarget(null))) {
       shooter.runPreShooterAtRPS(10);
