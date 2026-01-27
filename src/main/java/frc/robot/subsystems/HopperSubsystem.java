@@ -13,8 +13,9 @@ import frc.robot.util.LoggedTalonFX;
 public class HopperSubsystem extends SubsystemBase {
   private static HopperSubsystem instance;
 
-  private static double tolerance = 0.1;
+  private static double tolerance = Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
   private final LoggedTalonFX motor;
+  private double targetSpeed = 0;
 
   public static HopperSubsystem getInstance() {
     if (instance == null) {
@@ -43,21 +44,20 @@ public class HopperSubsystem extends SubsystemBase {
     motor.getConfigurator().apply(moc);
   }
 
-  public void runHopper() {
+  public void runHopper(double speed) {
+    targetSpeed = speed;
     motor.setControl(
-        new VelocityVoltage(
-            Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC
-                / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
+        new VelocityVoltage(speed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
   }
 
   public void stop() {
+    targetSpeed = 0;
     motor.setControl(new VelocityVoltage(0));
   }
 
   public boolean atSpeed() {
     return motor.getVelocity().getValueAsDouble()
-            - Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC
-                / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL
+            - targetSpeed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL
         <= tolerance;
   }
 

@@ -186,5 +186,7 @@ public final class Constants {
     public static final double kP = .4; // TODO: get actual vals
     public static final double kI = 0;
     public static final double kD = 0;
+
+    public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = .1;
   }
 }
