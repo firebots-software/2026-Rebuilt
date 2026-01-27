@@ -14,6 +14,9 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
+  public static final String CANBUS_NAME = "";
+  public static final boolean visionOnRobot = false;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
