@@ -33,6 +33,10 @@ public final class Constants {
       public static final double armPosRetracted = 90.0;
       public static final double armPosExtended = 15.0;
       public static final double armPosIdle = 45.0; // subject to change
+
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 77.8d; //MRD
+      public static final double MOTOR_ROTS_TO_ARM_DEGREES = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double ARM_DEGREES_TO_MOTOR_ROTS = 1d / MOTOR_ROTS_TO_ARM_DEGREES;
     }
 
     public static final MotorConstants intakeMotor = new MotorConstants(33);
@@ -45,6 +49,8 @@ public final class Constants {
     public static final double intakeSupplyCurrentLimit = 30.0;
     public static final double intakeStatorCurrentLimit = 50.0;
     public static final double intakeTargetSpeed = 40.0; // subject to change
+
+    public static final double INTAKE_ROLLER_ROTS_TO_MOTOR_ROTS = 2.6666667d; //MRD
   }
 
   public static class MotorConstants {
