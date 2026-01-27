@@ -15,9 +15,8 @@ import frc.robot.Constants;
 import frc.robot.MathUtils.MiscMath;
 import frc.robot.MathUtils.Polynomials;
 import frc.robot.MathUtils.Vector3;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 
 // it will need to rotate swerve and move arm
 
@@ -25,14 +24,13 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class Shoot extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final ShooterSubsystem shooter;
-  private final SwerveSubsystem drivetrain;
-  private final ArmSubsystem arm;
-
-  // private final SwerveSubsystem swerve;
+  private final CommandSwerveDrivetrain drivetrain;
 
   static final float MAX_TIME = 10f;
   static final float angularTolerance = 1f;
   static final float maxRotSpeed = .1f;
+
+  static final double shooterAngleDeg = 75;
 
   float timer;
 
@@ -41,12 +39,11 @@ public class Shoot extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Shoot(ShooterSubsystem shooter, SwerveSubsystem drivetrain, ArmSubsystem arm) {
+  public Shoot(ShooterSubsystem shooter, CommandSwerveDrivetrain drivetrain) {
     this.shooter = shooter;
     this.drivetrain = drivetrain;
-    this.arm = arm;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter, drivetrain, arm);
+    addRequirements(shooter, drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -56,7 +53,8 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooter.rampUp();
+    Pose3d target = new Pose3d();
+    shooter.rampUp(shootingSpeed(target));
     pointAtTarget(positionToTarget(null));
     if (shooter.atSpeed() && pointingAtTarget(positionToTarget(null))) {
       shooter.runPreShooterAtRPS(10);
@@ -76,8 +74,7 @@ public class Shoot extends Command {
   }
 
   private void pointAtTarget(Vector3 target) {
-    arm.setTargetDegrees(Math.atan2(Math.sqrt(Math.pow(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, 2) + Math.pow(Vector3.subtract(new Vector3(drivetrain.getPose()), target).z, 2)), target.y));
-    drivetrain.setRobotSpeeds(
+    drivetrain.applyFieldSpeeds(
       new ChassisSpeeds(
         drivetrain.getRobotSpeeds().vxMetersPerSecond,
         drivetrain.getRobotSpeeds().vyMetersPerSecond,
@@ -88,45 +85,44 @@ public class Shoot extends Command {
 
   private boolean pointingAtTarget(Vector3 target) {
     boolean hullAimed = Math.atan2(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, Vector3.subtract(new Vector3(drivetrain.getPose()), target).z) - drivetrain.getPose().getRotation().getRadians() <= angularTolerance;
-    boolean armAimed = arm.atTarget(angularTolerance);
-    return hullAimed && armAimed;
+    return hullAimed;
   }
 
-  protected Vector3 positionToTarget(Pose3d target) {
-    BuiltInAccelerometer acc = new BuiltInAccelerometer();
-    Vector3 a = Vector3.mult(new Vector3(acc.getX(), acc.getY(), acc.getZ()), -1);
-
-    Vector3 v = Vector3.mult(new Vector3(drivetrain.getFieldSpeeds().vxMetersPerSecond, 0, drivetrain.getFieldSpeeds().vyMetersPerSecond), -1);
+  protected double shootingSpeed(Pose3d target, int precision) {
+    Vector3 relativeVel = Vector3.mult(new Vector3(drivetrain.getFieldSpeeds().vxMetersPerSecond, drivetrain.getFieldSpeeds().vyMetersPerSecond, 0), -1);
 
     Pose3d gunOffset = MiscMath.RotatedPosAroundVertical(Constants.Shooter.offset, drivetrain.getPose().getRotation().getRadians());
     Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getPose()), new Vector3(gunOffset));
-    Vector3 p = Vector3.subtract(new Vector3(target), gunPos);
+    Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
 
-    float s = Constants.Shooter.projectileInitSpeed;
+    Vector3 correctedPos = new Vector3(target);
+    double correctedSpeed = speedForDist(relativePos.magnitude());
+    double prevTof = 0;
+    for (int i = 0; i < precision; i++) {
+      double tof = 2 * correctedSpeed * Math.sin(Math.toRadians(shooterAngleDeg)) / 9.81;
+      correctedPos = Vector3.add(correctedPos, Vector3.mult(relativePos, tof - prevTof));
+      correctedSpeed = speedForDist(Vector3.subtract(correctedPos, gunPos).magnitude());
+      prevTof = tof;
+    }
 
-    float[] coefficients = new float[5];
-    coefficients[0] = (float) ((Math.pow(a.x, 2f) + Math.pow(a.y, 2f) + Math.pow(a.z, 2f)) / 4f);
-    coefficients[1] = (a.x * v.x + a.y * v.y + a.z * v.z);
-    coefficients[2] =
-        (float)
-            (Math.pow(v.x, 2f)
-                + p.x * a.x
-                + Math.pow(v.y, 2f)
-                + p.y * a.y
-                + Math.pow(v.z, 2f)
-                + p.z * a.z
-                - Math.pow(s, 2f));
-    coefficients[3] = 2f * (p.x * v.x + p.y * v.y + p.z * v.z);
-    coefficients[4] = (float) (Math.pow(p.x, 2f) + Math.pow(p.y, 2f) + Math.pow(p.z, 2f));
+    return correctedSpeed;
+  }
 
-    float timeOfFlight = Polynomials.newtonRaphson(MAX_TIME, 5, 5f, coefficients);
+  private double speedForDist(double d) {
+    return Math.sqrt(d * 9.81 / Math.sin(Math.toRadians(shooterAngleDeg) * 2));
+  }
 
-    // if (timeOfFlight == -Mathf.Infinity) return targetedObj.transform.position;
+  protected Vector3 positionToTarget(Pose3d target) { //fixed shooting speed, also Z is altitude btw
+    Pose3d gunOffset = MiscMath.RotatedPosAroundVertical(Constants.Shooter.offset, drivetrain.getPose().getRotation().getRadians());
+    Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getPose()), new Vector3(gunOffset));
+    Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
 
-    Vector3 accPlusGravity = Vector3.add(a, new Vector3(0, 9.8f, 0));
+    double timeOfFlight = relativePos.magnitude() / (shootingSpeed(target) * Math.sin(Math.toRadians(shooterAngleDeg)));
+
+    Vector3 relativeVel = Vector3.mult(new Vector3(drivetrain.getFieldSpeeds().vxMetersPerSecond, drivetrain.getFieldSpeeds().vyMetersPerSecond, 0), -1);
+
     return Vector3.add(
-        p,
-        Vector3.mult(v, timeOfFlight),
-        Vector3.mult(accPlusGravity, (float) Math.pow(timeOfFlight, 2) * 1 / 2f));
+        new Vector3(target),
+        Vector3.mult(relativeVel, timeOfFlight));
   }
 }

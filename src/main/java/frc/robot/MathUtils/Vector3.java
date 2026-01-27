@@ -22,8 +22,8 @@ public class Vector3 {
 
   public Vector3(Pose2d pose) {
     x = (float) pose.getX();
-    y = 0;
-    z = (float) pose.getY();
+    y = (float) pose.getY();
+    z = 0;
   }
 
     public Vector3(Pose3d pose) {
@@ -61,6 +61,10 @@ public class Vector3 {
   }
 
   public static Vector3 mult(Vector3 a, float m) {
+    return new Vector3(a.x * m, a.y * m, a.z * m);
+  }
+
+  public static Vector3 mult(Vector3 a, double m) {
     return new Vector3(a.x * m, a.y * m, a.z * m);
   }
 }

@@ -10,9 +10,9 @@ public class MiscMath {
 
     public static Pose3d RotatedPosAroundVertical(Pose3d pose, double r) {
         return new Pose3d(
-            pose.getX() * Math.cos(r) - pose.getZ() * Math.sin(r), 
-            pose.getY(),
-            pose.getX() * Math.sin(r) + pose.getZ() * Math.cos(r), 
+            pose.getX() * Math.cos(r) - pose.getY() * Math.sin(r), 
+            pose.getX() * Math.sin(r) + pose.getY() * Math.cos(r),
+            pose.getZ(), 
             pose.getRotation()
         );
     }

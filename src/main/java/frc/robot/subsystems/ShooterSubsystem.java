@@ -25,9 +25,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX motor1, motor2;
   private final LoggedTalonFX preShooterMotor;
 
-  private float targetSpeed = Constants.Shooter.shootSpeedRps;
-
   private final DigitalInput beamBreak;
+
+  private double targetSpeed = 0;
 
   public static ShooterSubsystem getInstance() {
     if (instance == null) {
@@ -47,18 +47,13 @@ public class ShooterSubsystem extends SubsystemBase {
     preShooterMotor =
         new LoggedTalonFX(Constants.Shooter.preShooterConstants.port);
 
-    MotionMagicConfigs mmc = new MotionMagicConfigs();
-    mmc.MotionMagicCruiseVelocity = targetSpeed;
 
     motor1.getConfigurator().apply(s0c);
     motor2.getConfigurator().apply(s0c);
-    motor1.getConfigurator().apply(mmc);
-    motor2.getConfigurator().apply(mmc);
     motor1.getConfigurator().apply(clc);
     motor2.getConfigurator().apply(clc);
 
     preShooterMotor.getConfigurator().apply(s0c);
-    preShooterMotor.getConfigurator().apply(mmc);
     preShooterMotor.getConfigurator().apply(clc);
 
     motor2.setControl(new Follower(motor1.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -66,8 +61,9 @@ public class ShooterSubsystem extends SubsystemBase {
     beamBreak = new DigitalInput(Constants.Shooter.ObjectDetectorPort);
   }
 
-  public void rampUp() {
-    motor1.setControl(new MotionMagicVelocityVoltage(targetSpeed));
+  public void rampUp(double targetSpeed) {
+    this.targetSpeed = targetSpeed;
+    motor1.setControl(new VelocityVoltage(targetSpeed));
   }
 
   public void runPreShooterAtRPS(double speed) {
