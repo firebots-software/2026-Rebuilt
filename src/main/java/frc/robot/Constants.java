@@ -11,7 +11,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.PROTO;
 
     public static enum SwerveLevel {
       L2(6.75, 21.428571428571427),
@@ -98,7 +98,9 @@ public final class Constants {
           SwerveSteerPIDValues.SERRANO,
           RobotDimensions.SERRANO,
           "Patrice the Pineapple",
-          BumperThickness.SERRANO),
+          BumperThickness.SERRANO,
+          3.5714285714285716,
+          true),
       PROTO(
           Rotations.of(0.3876953125), // front left
           Rotations.of(0.159912109375), // front right
@@ -109,7 +111,9 @@ public final class Constants {
           SwerveSteerPIDValues.PROTO,
           RobotDimensions.PROTO,
           "rio",
-          BumperThickness.PROTO),
+          BumperThickness.PROTO,
+          3.375,
+          true),
       JAMES_HARDEN(
           Rotations.of(-0.0834960938), // front left
           Rotations.of(-0.4912109375), // front right
@@ -120,7 +124,9 @@ public final class Constants {
           SwerveSteerPIDValues.JAMES_HARDEN,
           RobotDimensions.JAMES_HARDEN,
           "JamesHarden",
-          BumperThickness.JAMES_HARDEN),
+          BumperThickness.JAMES_HARDEN,
+          3.5714285714285716,
+          true),
       COBRA(
           Rotations.of(0.096923828125), // front left, 21
           Rotations.of(0.03271484375), // front right, 22
@@ -131,7 +137,9 @@ public final class Constants {
           SwerveSteerPIDValues.COBRA,
           RobotDimensions.COBRA,
           "Viper",
-          BumperThickness.COBRA);
+          BumperThickness.COBRA,
+          3.5714285714285716,
+          false);
       public final Angle FRONT_LEFT_ENCODER_OFFSET,
           FRONT_RIGHT_ENCODER_OFFSET,
           BACK_LEFT_ENCODER_OFFSET,
@@ -141,8 +149,9 @@ public final class Constants {
       public final SwerveSteerPIDValues SWERVE_STEER_PID_VALUES;
       public final RobotDimensions ROBOT_DIMENSIONS;
       public final String CANBUS_NAME;
-
+      public final double COUPLE_RATIO;
       public final BumperThickness BUMPER_THICKNESS;
+      public final boolean INVERTED_MODULES;
 
       SwerveType(
           Angle fl,
@@ -154,7 +163,9 @@ public final class Constants {
           SwerveSteerPIDValues swerveSteerPIDValues,
           RobotDimensions robotDimensions,
           String canbus_name,
-          BumperThickness thickness) {
+          BumperThickness thickness,
+          double coupled_ratio,
+          boolean invertedModules) {
         FRONT_LEFT_ENCODER_OFFSET = fl;
         FRONT_RIGHT_ENCODER_OFFSET = fr;
         BACK_LEFT_ENCODER_OFFSET = bl;
@@ -165,6 +176,8 @@ public final class Constants {
         ROBOT_DIMENSIONS = robotDimensions;
         CANBUS_NAME = canbus_name;
         BUMPER_THICKNESS = thickness;
+        COUPLE_RATIO = coupled_ratio;
+        INVERTED_MODULES = invertedModules;
       }
     }
   }
