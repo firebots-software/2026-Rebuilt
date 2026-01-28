@@ -20,6 +20,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class RobotContainer {
+
   private double MaxSpeed =
       TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
   private double MaxAngularRate =
@@ -45,6 +46,8 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem shooterSubsystem = ShooterSubsystem.getInstance();
+  public final ShooterSubsystem lebron =
+      Constants.shooterOnRobot ? new ShooterSubsystem() : null;
 
   public RobotContainer() {
 
@@ -116,7 +119,7 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    joystick.rightTrigger().whileTrue(new ShootAtSpeed(shooterSubsystem));
+    joystick.rightTrigger().whileTrue(new ShootAtSpeed(lebron));
   }
 
   public Command getAutonomousCommand() {
