@@ -118,6 +118,8 @@ public class VisionSubsystem extends SubsystemBase {
         DogLog.log("Vision/BlobPresent", true);
         DogLog.log("Vision/BlobYaw", b.getYaw());
         DogLog.log("Vision/BlobArea", b.getArea());
+        DogLog.log("Vision/BlobPitch", b.getPitch());
+        DogLog.log("Vision/BlobSkew", b.getSkew());
       },
       () -> DogLog.log("Vision/BlobPresent", false)
     );
@@ -376,4 +378,11 @@ public class VisionSubsystem extends SubsystemBase {
     return getLargestBlob().map(PhotonTrackedTarget::getArea);
   }
 
+  public Optional<Double> getPitchToBlob() {
+    return getLargestBlob().map(PhotonTrackedTarget::getPitch);
+  }
+
+  public Optional<Double> getSkewToBlob() {
+    return getLargestBlob().map(PhotonTrackedTarget::getSkew);
+  }
 }
