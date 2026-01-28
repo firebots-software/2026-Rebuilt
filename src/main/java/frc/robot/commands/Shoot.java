@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Vector;
@@ -17,8 +20,9 @@ import frc.robot.Constants;
 import frc.robot.MathUtils.MiscMath;
 import frc.robot.MathUtils.Polynomials;
 import frc.robot.MathUtils.Vector3;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+//import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 
 // it will need to rotate swerve and move arm
 
@@ -26,7 +30,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class Shoot extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final ShooterSubsystem shooter;
-  private final CommandSwerveDrivetrain drivetrain;
+  private final SwerveSubsystem drivetrain;
 
   static final float MAX_TIME = 10f;
   static final float angularTolerance = 1f;
@@ -41,11 +45,11 @@ public class Shoot extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Shoot(ShooterSubsystem shooter, CommandSwerveDrivetrain drivetrain) {
-    this.shooter = shooter;
+  public Shoot(SwerveSubsystem drivetrain, ShooterSubsystem shooter) {
     this.drivetrain = drivetrain;
+    this.shooter = shooter;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooter, drivetrain);
+    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
@@ -55,20 +59,25 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose3d target = new Pose3d();
+    Pose3d target = Constants.Landmarks.BLUE_HUB;
     shooter.rampUp(shootingSpeed(target, 5));
-    pointAtTarget(positionToTarget(target));
-    if (shooter.atSpeed() && pointingAtTarget(positionToTarget(null))) {
+    pointAtTarget(positionToTarget(target, 5));
+    if (shooter.atSpeed() && pointingAtTarget(positionToTarget(target, 5))) {
       shooter.runPreShooterAtRPS(10);
     }
 
-    DogLog.log("Shoot/shootSpeed1pres", shootingSpeed(target, 1));
-    DogLog.log("Shoot/shootSpeed2pres", shootingSpeed(target, 2));
-    DogLog.log("Shoot/shootSpeed3pres", shootingSpeed(target, 3));
-    DogLog.log("Shoot/shootSpeed4pres", shootingSpeed(target, 4));
-    DogLog.log("Shoot/shootSpeed5pres", shootingSpeed(target, 5));
+    DogLog.log("Shoot/isPointing", pointingAtTarget(positionToTarget(target, 5)));
+
+    for (int i = 1; i <= 5; i++) {
+      DogLog.log("Shoot/shootSpeed" + i + "prec", shootingSpeed(target, i));
+    }
+
+    DogLog.log("Shoot/tof", 2 * shootingSpeed(target, 5) * Math.sin(Math.toRadians(shooterAngleDeg)) / 9.81);
+
     DogLog.log("Shoot/target", target);
-    DogLog.log("Shoot/positionTargeting", new Pose3d(positionToTarget(target).x, positionToTarget(target).y, positionToTarget(target).z, new Rotation3d()));
+    for (int i = 1; i <= 5; i++) {
+      DogLog.log("Shoot/positionTargeting" + i + "prec", new Pose3d(positionToTarget(target, i).x, positionToTarget(target, i).y, positionToTarget(target, i).z, new Rotation3d()));
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -84,13 +93,15 @@ public class Shoot extends Command {
   }
 
   private void pointAtTarget(Vector3 target) {
-    drivetrain.applyFieldSpeeds(
-      new ChassisSpeeds(
-        drivetrain.getRobotSpeeds().vxMetersPerSecond,
-        drivetrain.getRobotSpeeds().vyMetersPerSecond,
-        -1 * MiscMath.clamp(Math.atan2(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, Vector3.subtract(new Vector3(drivetrain.getPose()), target).z) - drivetrain.getPose().getRotation().getRadians(), -maxRotSpeed, maxRotSpeed)
-      )
-    );
+    double turnrate = -1 * MiscMath.clamp(Math.atan2(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, Vector3.subtract(new Vector3(drivetrain.getPose()), target).y) - drivetrain.getPose().getRotation().getRadians(), -maxRotSpeed, maxRotSpeed);
+    DogLog.log("Shoot/rot", -1 * (Math.atan2(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, Vector3.subtract(new Vector3(drivetrain.getPose()), target).y) - drivetrain.getPose().getRotation().getRadians()));
+  }
+
+  public double turnRate() {
+    Pose3d targetPose = Constants.Landmarks.BLUE_HUB;
+    Vector3 target = positionToTarget(targetPose, 5);
+    return -1 * MiscMath.clamp(Math.atan2(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, Vector3.subtract(new Vector3(drivetrain.getPose()), target).y) - drivetrain.getPose().getRotation().getRadians(), -maxRotSpeed, maxRotSpeed);
+    //DogLog.log("Shoot/rot", -1 * (Math.atan2(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, Vector3.subtract(new Vector3(drivetrain.getPose()), target).y) - drivetrain.getPose().getRotation().getRadians()));
   }
 
   private boolean pointingAtTarget(Vector3 target) {
@@ -110,7 +121,7 @@ public class Shoot extends Command {
     double prevTof = 0;
     for (int i = 0; i < precision; i++) {
       double tof = 2 * correctedSpeed * Math.sin(Math.toRadians(shooterAngleDeg)) / 9.81;
-      correctedPos = Vector3.add(correctedPos, Vector3.mult(relativePos, tof - prevTof));
+      correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
       correctedSpeed = speedForDist(Vector3.subtract(correctedPos, gunPos).magnitude());
       prevTof = tof;
     }
@@ -122,12 +133,12 @@ public class Shoot extends Command {
     return Math.sqrt(d * 9.81 / Math.sin(Math.toRadians(shooterAngleDeg) * 2));
   }
 
-  protected Vector3 positionToTarget(Pose3d target) { //fixed shooting speed, also Z is altitude btw
+  protected Vector3 positionToTarget(Pose3d target, int precision) { //fixed shooting speed, also Z is altitude btw
     Pose3d gunOffset = MiscMath.RotatedPosAroundVertical(Constants.Shooter.offset, drivetrain.getPose().getRotation().getRadians());
     Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getPose()), new Vector3(gunOffset));
     Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
 
-    double timeOfFlight = relativePos.magnitude() / (shootingSpeed(target) * Math.sin(Math.toRadians(shooterAngleDeg)));
+    double timeOfFlight = 2 * shootingSpeed(target, precision) * Math.sin(Math.toRadians(shooterAngleDeg)) / 9.81;
 
     Vector3 relativeVel = Vector3.mult(new Vector3(drivetrain.getFieldSpeeds().vxMetersPerSecond, drivetrain.getFieldSpeeds().vyMetersPerSecond, 0), -1);
 
