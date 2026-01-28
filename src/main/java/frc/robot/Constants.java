@@ -14,6 +14,9 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
+  public static final String CANBUS_NAME = "Patrice the Pineapple";
+  public static final boolean shooterOnRobot = false;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
@@ -254,6 +257,32 @@ public final class Constants {
         default:
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
+    }
+  }
+
+  public static final class Shooter {
+    public static final MotorConstants warmUpMotor1 = new MotorConstants(35); // TODO
+    public static final MotorConstants warmUpMotor2 = new MotorConstants(34); // TODO
+    public static final MotorConstants warmUpMotor3 = new MotorConstants(32); // TODO
+
+    public static final double SHOOTER_KP = 0.0; // TODO
+    public static final double SHOOTER_KI = 0.0; // TODO
+    public static final double SHOOTER_KD = 0.0; // TODO
+    public static final double SHOOTER_KV = 0.0; // TODO
+    public static final double SHOOTER_KA = 0.0; // TODO
+    public static final double STATOR_CURRENT_LIMIT = 30.0;
+    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+
+    public static final double SHOOTER_WHEEL_GEAR_RATIO = 1.25;
+    public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
+    public static final double SHOOT_FOR_AUTO = 104.72;
+  }
+
+  public static class MotorConstants {
+    public int port;
+
+    public MotorConstants(int port) {
+      this.port = port;
     }
   }
 }
