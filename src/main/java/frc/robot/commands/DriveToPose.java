@@ -55,7 +55,7 @@ public class DriveToPose extends Command {
 
     path =
         new LinearPath(
-            new TrapezoidProfile.Constraints(1, 1), new TrapezoidProfile.Constraints(0.2, 0.2));
+            new TrapezoidProfile.Constraints(0.5, 0.5), new TrapezoidProfile.Constraints(0.2, 0.2));
 
     addRequirements(swerve);
   }

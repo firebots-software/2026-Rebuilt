@@ -56,17 +56,33 @@ public class RobotContainer {
     autoRoutines = new AutoRoutines(autoFactory);
 
     // autoChooser.addRoutine("CristianoRonaldo", autoRoutines::moveForwardAuto);
-    autoChooser.addCmd(
-        "sequence",
-        () ->
-            autoRoutines
-                .getPathAsCommand()
-                .andThen(
-                    new DriveToPose(
-                        drivetrain,
-                        () ->
-                            MiscUtils.plus(
-                                drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
+
+    // autoChooser.addCmd(
+    //     "sequence",
+    //     () ->
+    //         autoRoutines
+    //             .getPathAsCommand()
+    //             .andThen(
+    //                 new DriveToPose(
+    //                     drivetrain,
+    //                     () ->
+    //                         MiscUtils.plus(
+    //                             drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
+    Command trajCommand =
+        autoFactory
+            .resetOdometry("MoveForward.traj")
+            .andThen(
+                autoFactory
+                    .trajectoryCmd("MoveForward.traj")
+                    .andThen(
+                        new DriveToPose(
+                            drivetrain,
+                            () ->
+                                MiscUtils.plus(
+                                    drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
+
+    autoChooser.addCmd("sequence", () -> trajCommand);
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     configureBindings();
@@ -126,23 +142,17 @@ public class RobotContainer {
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
     // Auto sequence: choreo forward, dtp back
-    joystick
-        .x()
-        .onTrue(
-            autoRoutines
-                .getPathAsCommand()
-                .andThen(
-                    new DriveToPose(
-                        drivetrain,
-                        () ->
-                            MiscUtils.plus(
-                                drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
-    // joystick.y().onTrue(new InstantCommand(() -> DogLog.log("Logs Check", 3)));
-
-    // Auto sequence as command groups
-    // joystick.x().whileTrue(new SequentialCommandGroup(new AutoRoutinesCommand(autoFactory), new
-    // DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new
-    // Translation2d(1, 0)))));
+    // joystick
+    //     .x()
+    //     .onTrue(
+    //         autoRoutines
+    //             .getPathAsCommand()
+    //             .andThen(
+    //                 new DriveToPose(
+    //                     drivetrain,
+    //                     () ->
+    //                         MiscUtils.plus(
+    //                             drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
