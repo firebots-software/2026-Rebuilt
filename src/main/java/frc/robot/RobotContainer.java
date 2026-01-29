@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -126,7 +127,7 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // dtp
+    // dtp no rotation; x=Ftb, y=sts
     // joystick
     //     .x()
     //     .whileTrue(
@@ -135,10 +136,15 @@ public class RobotContainer {
     //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1,
     // 0))));
 
-    // choreo
-    // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
+    //dtp with rotation
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Transform2d(new Translation2d(0, 0), new Rotation2d(3)))));
 
-    // choreo with commands
+    // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
     // Auto sequence: choreo forward, dtp back

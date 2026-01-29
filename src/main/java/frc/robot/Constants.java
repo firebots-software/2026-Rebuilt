@@ -13,8 +13,8 @@ public final class Constants {
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
 
-    public static final double targetPositionError = 0.5;
-    public static final double targetAngleError = 0.3;
+    public static final double targetPositionError = 0.05;
+    public static final double targetAngleError = 0.02;
 
     public static enum SwerveLevel {
       L2(6.75, 21.428571428571427),

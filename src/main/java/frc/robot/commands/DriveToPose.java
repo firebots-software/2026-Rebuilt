@@ -106,8 +106,12 @@ public class DriveToPose extends Command {
       swerve.applyFieldSpeeds(speeds);
     }
 
-    DogLog.log("Current Pose", swerve.getCurrentState().Pose);
-    DogLog.log("Target Pose", targetPose);
+    DogLog.log("Current Pose X", swerve.getCurrentState().Pose.getX());
+    DogLog.log("Current Pose Y", swerve.getCurrentState().Pose.getY());
+    DogLog.log("Current Pose Rotation", swerve.getCurrentState().Pose.getRotation().getRadians());
+    DogLog.log("Target Pose X", targetPose.getX());
+    DogLog.log("Target Pose Y", targetPose.getY());
+    DogLog.log("Target Pose Rotation", targetPose.getRotation().getRadians());
     DogLog.log("Curr time", currTime);
     DogLog.log("Path created", path != null);
     DogLog.log("Path state", pathState != null);
