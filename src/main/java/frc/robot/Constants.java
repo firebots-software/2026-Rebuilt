@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final String CANBUS_NAME = "Patrice the Pineapple";
-  public static final boolean visionOnRobot = false;
+  public static final boolean visionOnRobot = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
