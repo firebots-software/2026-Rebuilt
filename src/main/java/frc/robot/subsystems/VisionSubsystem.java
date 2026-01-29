@@ -164,9 +164,26 @@ public class VisionSubsystem extends SubsystemBase {
                 DogLog.log("Vision/BlobPresent", true);
                 DogLog.log("Vision/BlobYaw", blob.getYaw());
                 DogLog.log("Vision/BlobArea", blob.getArea());
-                //calculating fuel gage percentage by dividing area of the ball by the max ball area then multiplying by 100 and rounding to nearest 10
-                DogLog.log("Vision/FuelGuage", ((double) Math.round(blob.getArea()/Constants.Vision.MAX_DETECTABLE_FUEL_AREA_PERCENTAGE*100.0/10.0))*10.0);
-                DogLog.log("Vision/FuelGuageRealistic", ((double) Math.round(blob.getArea()/Constants.Vision.REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE*100.0/10.0))*10.0);
+                // calculating fuel gage percentage by dividing area of the ball by the max ball
+                // area then multiplying by 100 and rounding to nearest 10
+                DogLog.log(
+                    "Vision/FuelGuage",
+                    ((double)
+                            Math.round(
+                                blob.getArea()
+                                    / Constants.Vision.MAX_DETECTABLE_FUEL_AREA_PERCENTAGE
+                                    * 100.0
+                                    / 10.0))
+                        * 10.0);
+                DogLog.log(
+                    "Vision/FuelGuageRealistic",
+                    ((double)
+                            Math.round(
+                                blob.getArea()
+                                    / Constants.Vision.REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE
+                                    * 100.0
+                                    / 10.0))
+                        * 10.0);
               });
       return;
     }
