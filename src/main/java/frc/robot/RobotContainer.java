@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -38,6 +39,9 @@ public class RobotContainer {
   private final CommandXboxController joystick = new CommandXboxController(0);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+  public final IntakeSubsystem intakeSubsystem =
+      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
 
   public RobotContainer() {
     configureBindings();
@@ -78,6 +82,33 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    // right bumper -> run intake
+    if (Constants.intakeOnRobot) joystick.rightBumper().whileTrue(intakeSubsystem.runIntake());
+
+    // left trigger + x -> arm to initial pos (0)
+    joystick
+        .leftTrigger()
+        .and(joystick.x())
+        .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_INITIAL));
+
+    // left trigger + a -> arm to extended pos (15)
+    joystick
+        .leftTrigger()
+        .and(joystick.a())
+        .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+
+    // left trigger + b -> arm to idle pos (45)
+    joystick
+        .leftTrigger()
+        .and(joystick.b())
+        .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+
+    // left trigger + y -> arm to retracted pos (90)
+    joystick
+        .leftTrigger()
+        .and(joystick.y())
+        .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
