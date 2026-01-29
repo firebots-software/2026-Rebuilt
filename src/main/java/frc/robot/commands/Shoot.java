@@ -56,7 +56,6 @@ public class Shoot extends Command {
     //this.shooter = shooter;
     this.redside = redside;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
