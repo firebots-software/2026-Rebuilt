@@ -8,8 +8,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class Intake extends ParallelCommandGroup {
   public Intake(IntakeSubsystem intake) {
     addCommands(
-        Commands.runOnce(() -> intake.setArmDegrees(Constants.Intake.Arm.armPosExtended), intake),
-        Commands.runEnd(
-            () -> intake.run(Constants.Intake.intakeTargetSpeed), intake::stop, intake));
+  intake.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED),
+        intake.runIntake());
   }
 }

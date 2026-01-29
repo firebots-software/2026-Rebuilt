@@ -41,7 +41,7 @@ public class RobotContainer {
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   public final IntakeSubsystem intakeSubsystem =
-      Constants.intakeOnRobot ? IntakeSubsystem.getInstance() : null;
+      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
 
   public RobotContainer() {
     configureBindings();
@@ -87,47 +87,31 @@ public class RobotContainer {
     if (Constants.intakeOnRobot)
       joystick
           .rightBumper()
-          .whileTrue(
-              Commands.runEnd(
-                  () -> intakeSubsystem.run(Constants.Intake.intakeTargetSpeed),
-                  intakeSubsystem::stop,
-                  intakeSubsystem));
+          .whileTrue(intakeSubsystem.runIntake());
 
     // left trigger + x -> arm to initial pos (0)
     joystick
         .leftTrigger()
         .and(joystick.x())
-        .onTrue(
-            Commands.runOnce(
-                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosInitial),
-                intakeSubsystem));
+    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_INITIAL));
 
     // left trigger + a -> arm to extended pos (15)
     joystick
         .leftTrigger()
         .and(joystick.a())
-        .onTrue(
-            Commands.runOnce(
-                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosExtended),
-                intakeSubsystem));
+    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
 
     // left trigger + b -> arm to idle pos (45)
     joystick
         .leftTrigger()
         .and(joystick.b())
-        .onTrue(
-            Commands.runOnce(
-                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosIdle),
-                intakeSubsystem));
+    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
 
     // left trigger + y -> arm to retracted pos (90)
     joystick
         .leftTrigger()
         .and(joystick.y())
-        .onTrue(
-            Commands.runOnce(
-                () -> intakeSubsystem.setArmDegrees(Constants.Intake.Arm.armPosRetracted),
-                intakeSubsystem));
+    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

@@ -14,47 +14,50 @@ public final class Constants {
 
   public static final class Intake {
     public static final class Arm {
-      public static final MotorConstants armMotor = new MotorConstants(34);
+      public static final MotorConstants ARM_MOTOR = new MotorConstants(34);
 
-      public static final double motorRotsToArmRots = 1d / 77.8;
-      public static final double motorRotsToArmDegrees = motorRotsToArmRots * 360d;
-      public static final double armDegreesToMotorRots = 1 / motorRotsToArmDegrees;
-      public static final double encoderRotsToArmRots = 2.666;
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 77.8;
+      public static final double MOTOR_ROTS_TO_ARM_DEGREES = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double ARM_DEGREES_TO_MOTOR_ROTS = 1 / MOTOR_ROTS_TO_ARM_DEGREES;
+      public static final double ENCODER_ROTS_TO_ARM_ROTS = 2.666;
 
-      public static final double armKV = 0.14;
-      public static final double armKP = 0.1;
-      public static final double armKI = 0;
-      public static final double armKD = 0;
+      public static final double ARM_KV = 0.14;
+      public static final double ARM_KP = 0.1;
+      public static final double ARM_KI = 0;
+      public static final double ARM_KD = 0;
+      public static final double ARM_FEEDFORWARD = 0.1;
 
-      public static final double armStatorCurrentLimit = 40.0;
+      public static final double ARM_STATOR_CURRENT_LIMIT = 40.0;
 
-      public static final int encoderPort = 0;
+      public static final int ENCODER_PORT = 0;
+      public static final double ENCODER_OFFSET = 0; // subject to change
 
-      public static double armToleranceDegrees = 1;
+      public static double ARM_TOLERANCE_DEGREES = 1;
 
-      public static final double armPosInitial = 0;
-      public static final double armPosRetracted = 90.0;
-      public static final double armPosExtended = 15.0;
-      public static final double armPosIdle = 45.0; // subject to change
+      public static final double ARM_DEGREES_UPPER_LIMIT = 95.0;
+      public static final double ARM_POS_INITIAL = 0;
+      public static final double ARM_POS_RETRACTED = 90.0;
+      public static final double ARM_POS_EXTENDED = 15.0;
+      public static final double ARM_POS_IDLE = 45.0; // subject to change
     }
 
-    public static final MotorConstants intakeMotor = new MotorConstants(33);
+  public static final MotorConstants INTAKE_MOTOR = new MotorConstants(33);
 
-    public static final double motorRotsToIntakeRots = 1d / 2.6667;
-    public static final double encoderRotsToIntakeRots = 2.666;
-    // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the wheel in feet
-    // wheel circumference can be used to convert from intake rotations/sec -> feet/sec
-    public static final double intakeRotsPerSecToFeetPerSec = (3 / 12) * Math.PI;
+  public static final double MOTOR_ROTS_TO_INTAKE_ROTS = 1d / 2.6667;
+  public static final double ENCODER_ROTS_TO_INTAKE_ROTS = 2.666;
+  // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the wheel in feet
+  // wheel circumference can be used to convert from intake rotations/sec -> feet/sec
+  public static final double INTAKE_ROTS_PER_SEC_TO_FEET_PER_SEC = (3 / 12) * Math.PI;
 
-    public static final double intakeKV = 0.14;
-    public static final double intakeKP = 0.1;
-    public static final double intakeKI = 0;
-    public static final double intakeKD = 0;
+  public static final double INTAKE_KV = 0.14;
+  public static final double INTAKE_KP = 0.1;
+  public static final double INTAKE_KI = 0;
+  public static final double INTAKE_KD = 0;
+  public static final double INTAKE_FEEDFORWARD = 0.1;
 
-    public static final double intakeSupplyCurrentLimit = 30.0;
-    public static final double intakeStatorCurrentLimit = 50.0;
-    public static final double intakeTargetSpeed =
-        40.0 / motorRotsToIntakeRots; // subject to change
+  public static final double INTAKE_SUPPLY_CURRENT_LIMIT = 30.0;
+  public static final double INTAKE_STATOR_CURRENT_LIMIT = 50.0;
+  public static final double INTAKE_TARGET_SPEED = 40.0 / MOTOR_ROTS_TO_INTAKE_ROTS; // subject to change
   }
 
   public static class MotorConstants {
