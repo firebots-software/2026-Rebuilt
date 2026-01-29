@@ -1,5 +1,5 @@
 package frc.robot.subsystems;
- 
+
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -15,8 +15,8 @@ import frc.robot.Constants;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import org.photonvision.EstimatedRobotPose;
 import java.util.stream.Collectors;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.MultiTargetPNPResult;
@@ -138,177 +138,177 @@ public class VisionSubsystem extends SubsystemBase {
   public void addFilteredPose() {
 
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-    DogLog.log("Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());
+      DogLog.log("Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());
 
-    // Ensure we have a valid pose estimate and vision result from periodic()
-    if (visionEst.isEmpty() || latestVisionResult == null) {
-      DogLog.log("Vision/" + cameraTitle + "/HasTargets", false);
-      return;
-    }
-    DogLog.log("Vision/" + cameraTitle + "/HasTargets", true);
+      // Ensure we have a valid pose estimate and vision result from periodic()
+      if (visionEst.isEmpty() || latestVisionResult == null) {
+        DogLog.log("Vision/" + cameraTitle + "/HasTargets", false);
+        return;
+      }
+      DogLog.log("Vision/" + cameraTitle + "/HasTargets", true);
 
-    // distance to closest april tag
-    double minDistance =
-        latestVisionResult.getTargets().stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .min()
-            .orElse(Double.NaN);
+      // distance to closest april tag
+      double minDistance =
+          latestVisionResult.getTargets().stream()
+              .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+              .min()
+              .orElse(Double.NaN);
 
-    DogLog.log("Vision/closestTagDistance", minDistance);
+      DogLog.log("Vision/closestTagDistance", minDistance);
 
-    // average distance to all visible april tags
-    double averageDistance =
-        latestVisionResult.getTargets().stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .average()
-            .orElse(Double.NaN);
-    DogLog.log("Vision/averageTagDistance", averageDistance);
+      // average distance to all visible april tags
+      double averageDistance =
+          latestVisionResult.getTargets().stream()
+              .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+              .average()
+              .orElse(Double.NaN);
+      DogLog.log("Vision/averageTagDistance", averageDistance);
 
-    // 2025-reefscape has a validTags list on lines 160-166, replacing it with a list of all tags
-    // for 26
+      // 2025-reefscape has a validTags list on lines 160-166, replacing it with a list of all tags
+      // for 26
 
-    // skip AprilTag pose estimation for color cameras
-    if (cameraID == Constants.Vision.Cameras.COLOR_CAM) {
-      getLargestBlob()
-          .ifPresent(
-              blob -> {
-                DogLog.log("Vision/BlobPresent", true);
-                DogLog.log("Vision/BlobYaw", blob.getYaw());
-                DogLog.log("Vision/BlobArea", blob.getArea());
-                // calculating fuel gage percentage by dividing area of the ball by the max ball
-                // area then multiplying by 100 and rounding to nearest 10
-                DogLog.log(
-                    "Vision/FuelGuage",
-                    ((double)
-                            Math.round(
-                                blob.getArea()
-                                    / Constants.Vision.MAX_DETECTABLE_FUEL_AREA_PERCENTAGE
-                                    * 100.0
-                                    / 10.0))
-                        * 10.0);
-                DogLog.log(
-                    "Vision/FuelGuageRealistic",
-                    ((double)
-                            Math.round(
-                                blob.getArea()
-                                    / Constants.Vision.REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE
-                                    * 100.0
-                                    / 10.0))
-                        * 10.0);
-              });
-      return;
-    }
+      // skip AprilTag pose estimation for color cameras
+      if (cameraID == Constants.Vision.Cameras.COLOR_CAM) {
+        getLargestBlob()
+            .ifPresent(
+                blob -> {
+                  DogLog.log("Vision/BlobPresent", true);
+                  DogLog.log("Vision/BlobYaw", blob.getYaw());
+                  DogLog.log("Vision/BlobArea", blob.getArea());
+                  // calculating fuel gage percentage by dividing area of the ball by the max ball
+                  // area then multiplying by 100 and rounding to nearest 10
+                  DogLog.log(
+                      "Vision/FuelGuage",
+                      ((double)
+                              Math.round(
+                                  blob.getArea()
+                                      / Constants.Vision.MAX_DETECTABLE_FUEL_AREA_PERCENTAGE
+                                      * 100.0
+                                      / 10.0))
+                          * 10.0);
+                  DogLog.log(
+                      "Vision/FuelGuageRealistic",
+                      ((double)
+                              Math.round(
+                                  blob.getArea()
+                                      / Constants.Vision.REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE
+                                      * 100.0
+                                      / 10.0))
+                          * 10.0);
+                });
+        return;
+      }
 
-    // creates a list of all detected tags and logs for debugging
-    List<PhotonTrackedTarget> tags =
-        latestVisionResult.getTargets().stream().collect(Collectors.toList());
+      // creates a list of all detected tags and logs for debugging
+      List<PhotonTrackedTarget> tags =
+          latestVisionResult.getTargets().stream().collect(Collectors.toList());
 
-    // log area and yaw for all detected april tags
-    for (PhotonTrackedTarget tag : tags) {
-      DogLog.log("Vision/" + cameraTitle + "/Area", tag.getArea());
-      DogLog.log("Vision/" + cameraTitle + "/Yaw", tag.getYaw());
-    }
-    // Extract pose estimate
-    EstimatedRobotPose estimatedPose = visionEst.get();
-    Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
-    DogLog.log("Vision/MeasuredPose", measuredPose);
+      // log area and yaw for all detected april tags
+      for (PhotonTrackedTarget tag : tags) {
+        DogLog.log("Vision/" + cameraTitle + "/Area", tag.getArea());
+        DogLog.log("Vision/" + cameraTitle + "/Yaw", tag.getYaw());
+      }
+      // Extract pose estimate
+      EstimatedRobotPose estimatedPose = visionEst.get();
+      Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
+      DogLog.log("Vision/MeasuredPose", measuredPose);
 
-    // Get detected tags
-    tags = latestVisionResult.getTargets();
-    if (tags.isEmpty()) {
-      DogLog.log("Vision/" + cameraTitle + "/Tags", false);
-      return;
-    }
-    DogLog.log("Vision/" + cameraTitle + "/Tags", true);
+      // Get detected tags
+      tags = latestVisionResult.getTargets();
+      if (tags.isEmpty()) {
+        DogLog.log("Vision/" + cameraTitle + "/Tags", false);
+        return;
+      }
+      DogLog.log("Vision/" + cameraTitle + "/Tags", true);
 
-    // Distance calculations
-    minDistance =
-        tags.stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .min()
-            .orElse(Double.NaN);
+      // Distance calculations
+      minDistance =
+          tags.stream()
+              .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+              .min()
+              .orElse(Double.NaN);
 
-    averageDistance =
-        tags.stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .average()
-            .orElse(Double.NaN);
+      averageDistance =
+          tags.stream()
+              .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+              .average()
+              .orElse(Double.NaN);
 
-    DogLog.log("Vision/closestTagDistance", minDistance);
-    DogLog.log("Vision/averageTagDistance", averageDistance);
+      DogLog.log("Vision/closestTagDistance", minDistance);
+      DogLog.log("Vision/averageTagDistance", averageDistance);
 
-    // Reject invalid or distant measurements
-    if (Double.isNaN(minDistance) || minDistance > maxDistance) {
-      DogLog.log("Vision/" + cameraTitle + "/ThrownOutDistance", true);
-      return;
-    }
-    DogLog.log("Vision/" + cameraTitle + "/ThrownOutDistance", false);
+      // Reject invalid or distant measurements
+      if (Double.isNaN(minDistance) || minDistance > maxDistance) {
+        DogLog.log("Vision/" + cameraTitle + "/ThrownOutDistance", true);
+        return;
+      }
+      DogLog.log("Vision/" + cameraTitle + "/ThrownOutDistance", false);
 
-    // Log yaw + area for debugging
-    for (PhotonTrackedTarget tag : tags) {
-      DogLog.log("Vision/" + cameraTitle + "/TagYaw", tag.getYaw());
-      DogLog.log("Vision/" + cameraTitle + "/TagArea", tag.getArea());
-    }
+      // Log yaw + area for debugging
+      for (PhotonTrackedTarget tag : tags) {
+        DogLog.log("Vision/" + cameraTitle + "/TagYaw", tag.getYaw());
+        DogLog.log("Vision/" + cameraTitle + "/TagArea", tag.getArea());
+      }
 
-    int tagCount = tags.size();
-    DogLog.log("Vision/tagCount", tagCount);
+      int tagCount = tags.size();
+      DogLog.log("Vision/tagCount", tagCount);
 
-    // TODO: Replace with real swerve speed
-    double currentSpeed = 0.0;
+      // TODO: Replace with real swerve speed
+      double currentSpeed = 0.0;
 
-    // Compute noise model
-    double nX =
-        computeNoiseXY(
-            baseNoiseX,
-            Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
-            Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
-            Constants.Vision.ANGLE_COEFFICIENT_X,
-            Constants.Vision.SPEED_COEFFICIENT_X,
-            averageDistance,
-            currentSpeed,
-            tagCount);
+      // Compute noise model
+      double nX =
+          computeNoiseXY(
+              baseNoiseX,
+              Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
+              Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
+              Constants.Vision.ANGLE_COEFFICIENT_X,
+              Constants.Vision.SPEED_COEFFICIENT_X,
+              averageDistance,
+              currentSpeed,
+              tagCount);
 
-    double nY =
-        computeNoiseXY(
-            baseNoiseY,
-            Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
-            Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
-            Constants.Vision.ANGLE_COEFFICIENT_Y,
-            Constants.Vision.SPEED_COEFFICIENT_Y,
-            averageDistance,
-            currentSpeed,
-            tagCount);
+      double nY =
+          computeNoiseXY(
+              baseNoiseY,
+              Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
+              Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
+              Constants.Vision.ANGLE_COEFFICIENT_Y,
+              Constants.Vision.SPEED_COEFFICIENT_Y,
+              averageDistance,
+              currentSpeed,
+              tagCount);
 
-    double nTH =
-        computeNoiseHeading(
-            baseNoiseTheta,
-            Constants.Vision.DISTANCE_COEFFICIENT_THETA,
-            Constants.Vision.ANGLE_COEFFICIENT_THETA,
-            Constants.Vision.SPEED_COEFFICIENT_THETA,
-            averageDistance,
-            currentSpeed,
-            tagCount);
+      double nTH =
+          computeNoiseHeading(
+              baseNoiseTheta,
+              Constants.Vision.DISTANCE_COEFFICIENT_THETA,
+              Constants.Vision.ANGLE_COEFFICIENT_THETA,
+              Constants.Vision.SPEED_COEFFICIENT_THETA,
+              averageDistance,
+              currentSpeed,
+              tagCount);
 
-    Matrix<N3, N1> noiseVector = VecBuilder.fill(nX, nY, nTH);
+      Matrix<N3, N1> noiseVector = VecBuilder.fill(nX, nY, nTH);
 
-    // Send to pose estimator / swerve
-    processPoseEstimate(
-        measuredPose,
-        averageDistance,
-        currentSpeed,
-        tagCount,
-        estimatedPose.timestampSeconds,
-        noiseVector);
+      // Send to pose estimator / swerve
+      processPoseEstimate(
+          measuredPose,
+          averageDistance,
+          currentSpeed,
+          tagCount,
+          estimatedPose.timestampSeconds,
+          noiseVector);
 
-    DogLog.log("Vision/VisionPoseEstimate", measuredPose);
+      DogLog.log("Vision/VisionPoseEstimate", measuredPose);
 
-    if (measuredPose == null) {
-      DogLog.log("Vision/measuredPoseAvailable", false);
-    } else {
-      DogLog.log("Vision/measuredPoseAvailable", true);
+      if (measuredPose == null) {
+        DogLog.log("Vision/measuredPoseAvailable", false);
+      } else {
+        DogLog.log("Vision/measuredPoseAvailable", true);
+      }
     }
   }
-}
 
   // to be completed; method aims to combine final pose estimate with odometry for accurate
   // estimation
