@@ -140,7 +140,7 @@ public class RobotContainer {
         .whileTrue(
             new DriveToPose(
                 drivetrain,
-                () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Transform2d(new Translation2d(0, 0), new Rotation2d(3)))));
+                () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Transform2d(new Translation2d(1, 0), new Rotation2d(1)))));
 
     // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
