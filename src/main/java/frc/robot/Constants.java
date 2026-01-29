@@ -14,7 +14,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final String CANBUS_NAME = "Patrice the Pineapple";
+  public static final String CANBUS_NAME = "JamesHarden";
   public static final boolean visionOnRobot = true;
 
   public static class OperatorConstants {

@@ -106,12 +106,13 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     visionEst = Optional.empty();
     latestVisionResult = null;
-
-    for (PhotonPipelineResult result : photonCamera.getAllUnreadResults()) {
-      latestVisionResult = result;
-      visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEst.isEmpty()) {
-        visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
+    if (cameraID != Constants.Vision.Cameras.COLOR_CAM){
+      for (PhotonPipelineResult result : photonCamera.getAllUnreadResults()) {
+        latestVisionResult = result;
+        visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
+        if (visionEst.isEmpty()) {
+          visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
+        }
       }
     }
 
