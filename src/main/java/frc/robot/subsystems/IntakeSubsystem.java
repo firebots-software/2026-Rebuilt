@@ -5,15 +5,12 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,14 +74,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Commands
   public Command runIntakeDutyCycle(double dutyCycleProportion) {
-    return Commands.startEnd(() -> this.setProportion(dutyCycleProportion), () -> this.setProportion(0), this);
+    return Commands.startEnd(
+        () -> this.setProportion(dutyCycleProportion), () -> this.setProportion(0), this);
   }
 
   public Command runIntakeVelocity(double velocity) {
     return Commands.startEnd(() -> this.setVelocity(velocity), () -> this.setVelocity(0), this);
   }
-  
+
   @Override
-  public void periodic() {
-  }
+  public void periodic() {}
 }

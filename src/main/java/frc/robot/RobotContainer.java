@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -57,7 +56,8 @@ public class RobotContainer {
     //         () ->
     //             drive
     //                 .withVelocityX(
-    //                     -joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+    //                     -joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y
+    // (forward)
     //                 .withVelocityY(
     //                     -joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
     //                 .withRotationalRate(
@@ -79,8 +79,8 @@ public class RobotContainer {
                             * MaxAngularRate) // Drive counterclockwise with negative X (left)
             ));
 
-    joystick.a().whileTrue(intake.runIntakeDutyCycle(0.5));
-    joystick.rightBumper().whileTrue(shooter.runIntakeDutyCycle(0.5));
+    joystick.a().whileTrue(intake.runIntakeDutyCycle(-0.8));
+    joystick.rightBumper().whileTrue(shooter.runIntakeDutyCycle(1.0));
     // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     // joystick
     //     .b()
