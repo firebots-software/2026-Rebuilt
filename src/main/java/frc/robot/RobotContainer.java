@@ -10,6 +10,7 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +21,7 @@ import frc.robot.commands.DriveToPose;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
+import java.util.function.Supplier;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -120,7 +122,8 @@ public class RobotContainer {
     //     .whileTrue(
     //         new DriveToPose(
     //             drivetrain,
-    //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0, 1))));
+    //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0,
+    // 1))));
 
     joystick
         .y()
@@ -130,13 +133,17 @@ public class RobotContainer {
                 () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
     // dtp with rotation
-     joystick
-       .x()
-       .whileTrue(
-           new DriveToPose(
-               drivetrain,
-               () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Pose2d(new Translation2d(1, 0), new Rotation2d(1)))));
-   
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                (Supplier<Pose2d>)
+                    () ->
+                        MiscUtils.plusWithRotation(
+                            drivetrain.getCurrentState().Pose,
+                            new Pose2d(new Translation2d(0, 1), new Rotation2d(1)))));
+
     // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
