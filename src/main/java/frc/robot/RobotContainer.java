@@ -50,13 +50,13 @@ public class RobotContainer {
     if (Constants.visionOnRobot) {
       visionRight = VisionSubsystem.getInstance(Constants.Vision.Cameras.RIGHT_CAM, () -> true);
       visionLeft = VisionSubsystem.getInstance(Constants.Vision.Cameras.LEFT_CAM, () -> true);
-      
+
       visionColor = ObjectDetection.getInstance(Constants.Vision.Cameras.COLOR_CAM);
 
     } else {
       visionRight = null;
       visionLeft = null;
-      
+
       visionColor = null;
     }
 
