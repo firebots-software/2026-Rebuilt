@@ -130,13 +130,13 @@ public class RobotContainer {
                 () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
     // dtp with rotation
-    joystick
-        .x()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Pose2d(new Translation2d(1, 0), new Rotation2d(1)))));
-
+     joystick
+       .x()
+       .whileTrue(
+           new DriveToPose(
+               drivetrain,
+               () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Pose2d(new Translation2d(1, 0), new Rotation2d(1)))));
+   
     // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
