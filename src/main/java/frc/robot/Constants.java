@@ -36,6 +36,9 @@ public final class Constants {
   public static class Shooter {
     public static final int MOTOR1_PORT = -1;
 
+    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final double STATOR_CURRENT_LIMIT = 50.0;
+
     public static final double KP  = 1.0;
     public static final double KI  = 0.0;
     public static final double KD  = 0.0;
