@@ -71,7 +71,7 @@ public class RobotContainer {
     Command trajCommand =
         autoFactory
             .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
+            .andThen(autoFactory.trajectoryCmd("MoveForward.traj")).andThen(new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
     autoChooser.addCmd("sequence", () -> trajCommand);
 
@@ -116,34 +116,6 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // dtp no rotation; x=Ftb, y=sts
-    // joystick
-    //     .x()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //             drivetrain,
-    //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0,
-    // 1))));
-
-    joystick
-        .y()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
-
-    // dtp with rotation
-    joystick
-        .x()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                (Supplier<Pose2d>)
-                    () ->
-                        MiscUtils.plusWithRotation(
-                            drivetrain.getCurrentState().Pose,
-                            new Pose2d(new Translation2d(0, 1), new Rotation2d(1)))));
-
     // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
@@ -161,7 +133,6 @@ public class RobotContainer {
     //                         MiscUtils.plus(
     //                             drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
     // joystick.x().whileTrue(trajCommand);
-
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
