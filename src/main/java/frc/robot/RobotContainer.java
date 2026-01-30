@@ -95,7 +95,7 @@ public class RobotContainer {
 
    //dtp with rotation
    joystick
-       .x()
+       .y()
        .whileTrue(
            new DriveToPose(
                drivetrain,
