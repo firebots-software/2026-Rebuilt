@@ -279,6 +279,5 @@ public final class Constants {
       public static final double MEDIUM = 70.0;
       public static final double FULL = 100.0;
     }
-
   }
 }

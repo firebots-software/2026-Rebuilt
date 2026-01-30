@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.FUEL_GAUGE;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -177,17 +176,15 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void logThresholdStates(double max, double maxRealistic) {
 
-    DogLog.log("Vision/FuelGauge/empty", ( max >= FUEL_GAUGE.EMPTY) );
-    DogLog.log("Vision/FuelGauge/low", ( max >= FUEL_GAUGE.LOW ));
-    DogLog.log("Vision/FuelGauge/medium", ( max >= FUEL_GAUGE.MEDIUM ));
-    DogLog.log("Vision/FuelGauge/full", ( max >= FUEL_GAUGE.FULL ));
+    DogLog.log("Vision/FuelGauge/empty", (max >= FUEL_GAUGE.EMPTY));
+    DogLog.log("Vision/FuelGauge/low", (max >= FUEL_GAUGE.LOW));
+    DogLog.log("Vision/FuelGauge/medium", (max >= FUEL_GAUGE.MEDIUM));
+    DogLog.log("Vision/FuelGauge/full", (max >= FUEL_GAUGE.FULL));
 
-    DogLog.log("Vision/FuelGauge/realEmpty", ( maxRealistic >= FUEL_GAUGE.EMPTY ));
-    DogLog.log("Vision/FuelGauge/realLow", ( maxRealistic >= FUEL_GAUGE.LOW ));
-    DogLog.log("Vision/FuelGauge/realMedium", ( maxRealistic >= FUEL_GAUGE.MEDIUM ));
-    DogLog.log("Vision/FuelGauge/realFull", ( maxRealistic >= FUEL_GAUGE.FULL ));
-    
-
+    DogLog.log("Vision/FuelGauge/realEmpty", (maxRealistic >= FUEL_GAUGE.EMPTY));
+    DogLog.log("Vision/FuelGauge/realLow", (maxRealistic >= FUEL_GAUGE.LOW));
+    DogLog.log("Vision/FuelGauge/realMedium", (maxRealistic >= FUEL_GAUGE.MEDIUM));
+    DogLog.log("Vision/FuelGauge/realFull", (maxRealistic >= FUEL_GAUGE.FULL));
   }
 
   public void addFilteredPose() { // All VISION:
