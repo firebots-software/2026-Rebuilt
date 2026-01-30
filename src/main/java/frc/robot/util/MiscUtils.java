@@ -10,7 +10,11 @@ public class MiscUtils {
     return new Pose2d(
         a.getX() + b.getX(), a.getY() + b.getY(), new Rotation2d(a.getRotation().getRadians()));
   }
+
   public static Pose2d plusWithRotation(Pose2d a, Transform2d b) {
-    return new Pose2d(a.getX() + b.getX(), a.getY() + b.getY(), new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
+    return new Pose2d(
+        a.getX() + b.getX(),
+        a.getY() + b.getY(),
+        new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
   }
 }
