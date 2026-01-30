@@ -11,6 +11,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class ObjectDetection extends SubsystemBase {
 
+  private static ObjectDetection[] cameraList;
+
   private final Constants.Vision.Cameras cameraID;
   private String cameraTitle;
 
@@ -22,6 +24,12 @@ public class ObjectDetection extends SubsystemBase {
     photonCamera = new PhotonCamera(cameraID.toString());
 
     cameraTitle = cameraID.getLoggingName();
+  }
+
+  public static ObjectDetection getInstance(Constants.Vision.Cameras cameraID) {
+    int index = cameraID.ordinal();
+    if (cameraList[index] == null) cameraList[index] = new ObjectDetection(cameraID);
+    return cameraList[index];
   }
 
   public void periodic() {
