@@ -138,6 +138,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // log yaw and area of blob if present
     // OBJ:
+
     Optional<PhotonTrackedTarget> blob = getLargestBlob();
     blob.ifPresentOrElse(
         b -> {
@@ -145,24 +146,27 @@ public class VisionSubsystem extends SubsystemBase {
           DogLog.log("Vision/BlobYaw", b.getYaw());
           DogLog.log("Vision/BlobPitch", b.getPitch());
           DogLog.log("Vision/BlobSkew", b.getSkew());
-          DogLog.log(
-              "Vision/FuelGuage",
+          double maxFuelPercentage =
               ((double)
                       Math.round(
                           b.getArea()
                               / Constants.Vision.MAX_DETECTABLE_FUEL_AREA_PERCENTAGE
                               * 100.0
                               / 10.0))
-                  * 10.0);
-          DogLog.log(
-              "Vision/FuelGuageRealistic",
+                  * 10.0;
+
+          double maxFuelRealisticPercentage =
               ((double)
                       Math.round(
                           b.getArea()
                               / Constants.Vision.REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE
                               * 100.0
                               / 10.0))
-                  * 10.0);
+                  * 10.0;
+
+          DogLog.log("Vision/FuelGauge", maxFuelPercentage);
+          DogLog.log("Vision/FuelGaugeRealistic", maxFuelRealisticPercentage);
+
         },
         () -> DogLog.log("Vision/BlobPresent", false));
     // :OBJ
