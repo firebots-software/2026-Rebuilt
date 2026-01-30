@@ -42,8 +42,7 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  public final VisionSubsystem visionRight, visionLeft;
-  public final ObjectDetection visionColor;
+  public final VisionSubsystem visionRight, visionLeft, visionColor;
 
   public RobotContainer() {
 
@@ -51,7 +50,7 @@ public class RobotContainer {
       visionRight = VisionSubsystem.getInstance(Constants.Vision.Cameras.RIGHT_CAM, () -> true);
       visionLeft = VisionSubsystem.getInstance(Constants.Vision.Cameras.LEFT_CAM, () -> true);
 
-      visionColor = ObjectDetection.getInstance(Constants.Vision.Cameras.COLOR_CAM);
+      visionColor = VisionSubsystem.getInstance(Constants.Vision.Cameras.COLOR_CAM, () -> true);
 
     } else {
       visionRight = null;
