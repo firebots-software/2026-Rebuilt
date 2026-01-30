@@ -166,7 +166,6 @@ public class VisionSubsystem extends SubsystemBase {
 
           DogLog.log("Vision/FuelGauge", maxFuelPercentage);
           DogLog.log("Vision/FuelGaugeRealistic", maxFuelRealisticPercentage);
-
         },
         () -> DogLog.log("Vision/BlobPresent", false));
     // :OBJ
