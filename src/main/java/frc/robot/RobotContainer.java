@@ -120,6 +120,9 @@ public class RobotContainer {
     drivetrain.registerTelemetry(logger::telemeterize);
 
     joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
+  }
 
+  public Command getAutonomousCommand() {
+    return Commands.print("No autonomous command configured");
   }
 }
