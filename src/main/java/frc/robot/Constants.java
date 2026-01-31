@@ -272,7 +272,9 @@ public final class Constants {
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
     }
+  }
 
+  public static class ObjectDetection {
     public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
 
     public static enum FuelGauge { // LAST: 20, 50, 70, 100

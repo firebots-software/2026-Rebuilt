@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Vision.FuelGauge;
+import frc.robot.Constants.ObjectDetection.FuelGauge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,37 +68,41 @@ public class ObjectDetection extends SubsystemBase {
                   * 10.0;
 
           latestMeasurements.add(maxFuelRealisticPercentage);
-          while (latestMeasurements.size() > Constants.Vision.MAX_FUEL_GAUGE_MEASUREMENTS) {
+          while (latestMeasurements.size() > Constants.ObjectDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
             latestMeasurements.remove(0);
           }
 
           double avgRealisticPercentage = 0;
-          for (double i : latestMeasurements) {
-            avgRealisticPercentage += i;
-          }
 
-          avgRealisticPercentage = avgRealisticPercentage / latestMeasurements.size();
+          if (!latestMeasurements.isEmpty()) {
+            for (double i : latestMeasurements) {
+              avgRealisticPercentage += i;
+            }
+            avgRealisticPercentage = avgRealisticPercentage / latestMeasurements.size();
+          } else {
+            avgRealisticPercentage = maxFuelRealisticPercentage;
+          }
 
           DogLog.log("Vision/FuelGauge", maxFuelPercentage);
           DogLog.log("Vision/FuelGaugeRealistic", maxFuelRealisticPercentage);
           DogLog.log("Vision/AvgFuelGaugeRealistic", avgRealisticPercentage);
 
-          logThresholdState(maxFuelPercentage, maxFuelRealisticPercentage);
+          logThresholdState(avgRealisticPercentage, maxFuelRealisticPercentage);
         },
         () -> DogLog.log("Vision/BlobPresent", false));
   }
 
-  public void logThresholdState(double max, double maxRealistic) {
-    FuelGauge gauge, realisticGauge;
+  public void logThresholdState(double avgRealistic, double maxRealistic) {
+    FuelGauge avgGauge, realisticGauge;
 
-    if (max < FuelGauge.EMPTY.getThreshold()) {
-      gauge = FuelGauge.EMPTY;
-    } else if (max < FuelGauge.LOW.getThreshold()) {
-      gauge = FuelGauge.LOW;
-    } else if (max < FuelGauge.MEDIUM.getThreshold()) {
-      gauge = FuelGauge.MEDIUM;
+    if (avgRealistic < FuelGauge.EMPTY.getThreshold()) {
+      avgGauge = FuelGauge.EMPTY;
+    } else if (avgRealistic < FuelGauge.LOW.getThreshold()) {
+      avgGauge = FuelGauge.LOW;
+    } else if (avgRealistic < FuelGauge.MEDIUM.getThreshold()) {
+      avgGauge = FuelGauge.MEDIUM;
     } else {
-      gauge = FuelGauge.FULL;
+      avgGauge = FuelGauge.FULL;
     }
 
     if (maxRealistic < FuelGauge.EMPTY.getThreshold()) {
@@ -111,7 +115,7 @@ public class ObjectDetection extends SubsystemBase {
       realisticGauge = FuelGauge.FULL;
     }
 
-    DogLog.log("Vision/FuelGaugeLevel", gauge.toString());
+    DogLog.log("Vision/FuelGaugeLevel", avgGauge.toString());
     DogLog.log("Vision/FuelGaugeRealisticLevel", realisticGauge.toString());
   }
 
