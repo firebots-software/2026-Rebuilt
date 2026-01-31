@@ -4,6 +4,8 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.FuelGauge;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.PhotonCamera;
@@ -14,6 +16,8 @@ public class ObjectDetection extends SubsystemBase {
 
   private static ObjectDetection[] cameraList =
       new ObjectDetection[Constants.Vision.Cameras.values().length];
+  
+  private static ArrayList<Double> latestMeasurements = new ArrayList<>();
 
   private final Constants.Vision.Cameras cameraID;
   private String cameraTitle;
@@ -64,8 +68,21 @@ public class ObjectDetection extends SubsystemBase {
                               / 10.0))
                   * 10.0;
 
+          latestMeasurements.add(maxFuelRealisticPercentage);
+          while (latestMeasurements.size() > Constants.Vision.MAX_FUEL_GAUGE_MEASUREMENTS) {
+            latestMeasurements.remove(0);
+          }
+
+          double avgRealisticPercentage = 0;
+          for (double i : latestMeasurements) {
+            avgRealisticPercentage += i;
+          }
+
+          avgRealisticPercentage = avgRealisticPercentage/latestMeasurements.size();
+
           DogLog.log("Vision/FuelGauge", maxFuelPercentage);
           DogLog.log("Vision/FuelGaugeRealistic", maxFuelRealisticPercentage);
+          DogLog.log("Vision/AvgFuelGaugeRealistic", avgRealisticPercentage);
 
           logThresholdState(maxFuelPercentage, maxFuelRealisticPercentage);
         },

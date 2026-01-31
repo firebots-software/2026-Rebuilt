@@ -273,6 +273,8 @@ public final class Constants {
       }
     }
 
+    public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 20;
+
     public static enum FuelGauge { // LAST: 20, 50, 70, 100
       EMPTY(10.0),
       LOW(35.0),
