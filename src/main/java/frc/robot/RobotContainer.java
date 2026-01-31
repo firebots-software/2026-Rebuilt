@@ -39,9 +39,12 @@ public class RobotContainer {
   private final CommandXboxController joystick = new CommandXboxController(0);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-  public final HopperSubsystem hopperSubsystem = HopperSubsystem.getInstance();
+
+  public final HopperSubsystem hopperSubsystem =
+      Constants.hopperOnRobot ? new HopperSubsystem() : null;
 
   public RobotContainer() {
+
     configureBindings();
   }
 
@@ -85,11 +88,7 @@ public class RobotContainer {
 
     joystick
         .leftBumper()
-        .whileTrue(
-            Commands.runEnd(
-                () -> hopperSubsystem.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC),
-                hopperSubsystem::stop,
-                hopperSubsystem));
+        .whileTrue(hopperSubsystem.RunHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC));
   }
 
   public Command getAutonomousCommand() {

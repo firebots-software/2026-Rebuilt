@@ -7,6 +7,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
+  public static final boolean hopperOnRobot = false;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
@@ -186,6 +188,9 @@ public final class Constants {
     public static final double kP = .4; // TODO: get actual vals
     public static final double kI = 0;
     public static final double kD = 0;
+
+    public static final double HOPPER_STATOR_LIMIT = 30.0;
+    public static final double HOPPER_SUPPLY_LIMIT = 30.0;
 
     public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = .1;
   }

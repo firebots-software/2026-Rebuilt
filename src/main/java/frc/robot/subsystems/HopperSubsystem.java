@@ -6,6 +6,8 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -13,20 +15,14 @@ import frc.robot.util.LoggedTalonFX;
 public class HopperSubsystem extends SubsystemBase {
   private static HopperSubsystem instance;
 
-  private static double tolerance = Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
   private final LoggedTalonFX motor;
   private double targetSpeed = 0;
 
-  public static HopperSubsystem getInstance() {
-    if (instance == null) {
-      instance = new HopperSubsystem();
-    }
-    return instance;
-  }
-
   public HopperSubsystem() {
     CurrentLimitsConfigs clc =
-        new CurrentLimitsConfigs().withStatorCurrentLimit(30).withSupplyCurrentLimit(30);
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Hopper.HOPPER_STATOR_LIMIT)
+            .withSupplyCurrentLimit(Constants.Hopper.HOPPER_SUPPLY_LIMIT);
 
     Slot0Configs s0c =
         new Slot0Configs()
@@ -58,7 +54,13 @@ public class HopperSubsystem extends SubsystemBase {
   public boolean atSpeed() {
     return motor.getVelocity().getValueAsDouble()
             - targetSpeed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL
-        <= tolerance;
+        <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
+  }
+
+  // Commands
+  public Command RunHopper(double speed) {
+    return Commands.runEnd(
+        () -> this.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC), this::stop, this);
   }
 
   @Override
