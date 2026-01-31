@@ -6,7 +6,9 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -215,6 +217,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
   }
 
+  public void resetPose(Pose2d pose) { // new
+    super.resetPose(pose);
+  }
+
   @Override
   public void periodic() {
     /*
@@ -237,6 +243,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
               });
     }
+    if (this.getCurrentCommand() != null) {
+      DogLog.log("String command", this.getCurrentCommand().toString());
+    }
+    DogLog.log("CurrPoseX", getCurrentState().Pose.getX());
+    DogLog.log("CurrPoseX", getCurrentState().Pose.getY());
+    DogLog.log("CurrPoseX", getCurrentState().Pose.getRotation());
   }
   // private void startSimThread() {
   //     m_lastSimTime = Utils.getCurrentTimeSeconds();
