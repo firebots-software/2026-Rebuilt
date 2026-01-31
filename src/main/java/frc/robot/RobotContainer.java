@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +20,6 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.util.MiscUtils;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.MiscUtils;
 
@@ -131,7 +129,12 @@ public class RobotContainer {
     if (Constants.shooterOnRobot) {
       joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
     }
-    joystick.x().whileTrue(new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
