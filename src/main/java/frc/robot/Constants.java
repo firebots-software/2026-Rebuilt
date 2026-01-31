@@ -14,10 +14,68 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
+  public static final boolean intakeOnRobot = false;
   public static final boolean visionOnRobot = false;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
+
+  public static final class Intake {
+    public static final class Arm {
+      public static final MotorConstants ARM_MOTOR = new MotorConstants(34);
+
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 77.8;
+      public static final double MOTOR_ROTS_TO_ARM_DEGREES = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double ARM_DEGREES_TO_MOTOR_ROTS = 1 / MOTOR_ROTS_TO_ARM_DEGREES;
+      public static final double ENCODER_ROTS_TO_ARM_ROTS = 2.666;
+
+      public static final double ARM_KV = 0.14;
+      public static final double ARM_KP = 0.1;
+      public static final double ARM_KI = 0;
+      public static final double ARM_KD = 0;
+      public static final double ARM_FEEDFORWARD = 0.1;
+
+      public static final double ARM_STATOR_CURRENT_LIMIT = 40.0;
+
+      public static final int ENCODER_PORT = 0;
+      public static final double ENCODER_OFFSET = 0; // subject to change
+
+      public static double ARM_TOLERANCE_DEGREES = 1;
+
+      public static final double ARM_DEGREES_UPPER_LIMIT = 95.0;
+      public static final double ARM_POS_INITIAL = 0;
+      public static final double ARM_POS_RETRACTED = 90.0;
+      public static final double ARM_POS_EXTENDED = 15.0;
+      public static final double ARM_POS_IDLE = 45.0; // subject to change
+    }
+
+    public static final MotorConstants INTAKE_MOTOR = new MotorConstants(33);
+
+    public static final double MOTOR_ROTS_TO_INTAKE_ROTS = 1d / 2.6667;
+    public static final double ENCODER_ROTS_TO_INTAKE_ROTS = 2.666;
+    // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the wheel in feet
+    // wheel circumference can be used to convert from intake rotations/sec -> feet/sec
+    public static final double INTAKE_ROTS_PER_SEC_TO_FEET_PER_SEC = (3 / 12) * Math.PI;
+
+    public static final double INTAKE_KV = 0.14;
+    public static final double INTAKE_KP = 0.1;
+    public static final double INTAKE_KI = 0;
+    public static final double INTAKE_KD = 0;
+    public static final double INTAKE_FEEDFORWARD = 0.1;
+
+    public static final double INTAKE_SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final double INTAKE_STATOR_CURRENT_LIMIT = 50.0;
+    public static final double INTAKE_TARGET_SPEED =
+        40.0 / MOTOR_ROTS_TO_INTAKE_ROTS; // subject to change
+  }
+
+  public static class MotorConstants {
+    public int port;
+
+    public MotorConstants(int port) {
+      this.port = port;
+    }
   }
 
   public static class Swerve {
