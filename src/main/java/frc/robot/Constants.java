@@ -18,6 +18,7 @@ public final class Constants {
   public static final boolean intakeOnRobot = false;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
+  public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -249,6 +250,66 @@ public final class Constants {
         COUPLE_RATIO = coupled_ratio;
         INVERTED_MODULES = invertedModules;
       }
+    }
+  }
+
+  public static class Climber {
+    public static final double mmcV = 80; // TODO: acquire good ones
+    public static final double mmcA = 80;
+
+    public static final double KP = .4;
+    public static final double KI = 0;
+    public static final double KD = 0;
+
+    public static final double DEFAULT_SUPPLY_CURRENT = 30.0;
+    public static final double DEFAULT_STATOR_CURRENT = 30.0;
+
+    public static class MuscleUp {
+      public static final double MUSCLE_UP_TOLERANCE = 0.1;
+
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 250d;
+      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+
+      public static final double MUSCLE_UP_FORWARD = 0; // TODO: get vals
+      public static final double MUSCLE_UP_BACK = 0; // TODO: get vals
+
+      public static final int MOTOR_PORT = -1; // TODO: get vals
+
+      public static final int ENCODER_PORT = -1; // TODO: get vals
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+    }
+
+    public static class SitUp {
+      public static final double SIT_UP_TOLERANCE = .1;
+
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 100d;
+      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+
+      public static final double CURRENT_SUPPLY_LIMIT = 60;
+      public static final double CURRENT_STATOR_LIMIT = 100;
+
+      public static final double SIT_UP_ANGLE = 0; // TODO: get vals
+      public static final double SIT_BACK_ANGLE = 0; // TODO: get vals
+
+      public static final int MOTOR_PORT = -1; // TODO: get vals
+
+      public static final int ENCODER_PORT = -1; // TODO: get vals
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+    }
+
+    public static class PullUp {
+      public static final double PULL_UP_TOLERANCE = .1;
+
+      public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 17d;
+      public static final double PULLEY_BELT_LENGTH_M = 0; // TODO: get actual value
+      public static final double MOTOR_ROTS_PER_METERS_OF_BELT_TRAVERSAL =
+          MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
+
+      public static final double REACH_POS = 0; // TODO: get vals
+      public static final double PULL_DOWN_POS = 0; // TODO: get vals
+
+      public static final int MOTOR_PORT_L = -1; // TODO: get vals
+      public static final int MOTOR_PORT_R = -1; // TODO: get vals
     }
   }
 
