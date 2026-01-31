@@ -273,7 +273,7 @@ public final class Constants {
       }
     }
 
-    public static enum FuelGauge { //LAST: 20, 50, 70, 100
+    public static enum FuelGauge { // LAST: 20, 50, 70, 100
       EMPTY(10.0),
       LOW(35.0),
       MEDIUM(80.0),
