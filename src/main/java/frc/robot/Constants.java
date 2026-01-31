@@ -273,10 +273,10 @@ public final class Constants {
       }
     }
 
-    public static enum FuelGauge {
-      EMPTY(20.0),
-      LOW(50.0),
-      MEDIUM(70.0),
+    public static enum FuelGauge { //LAST: 20, 50, 70, 100
+      EMPTY(10.0),
+      LOW(35.0),
+      MEDIUM(80.0),
       FULL(100.0);
 
       private double threshold;
