@@ -108,7 +108,9 @@ public class Shoot extends Command {
 
   public double targetAngle(Pose3d targetNoOffset) {
     Vector3 target = positionToTarget(targetNoOffset, 5);
-    return Math.atan2(Vector3.subtract(new Vector3(drivetrain.getPose()), target).x, Vector3.subtract(new Vector3(drivetrain.getPose()), target).y);
+    DogLog.log("Shoot/difx", Vector3.subtract(target, new Vector3(drivetrain.getPose())).x);
+    DogLog.log("Shoot/dify", Vector3.subtract(target, new Vector3(drivetrain.getPose())).y);
+    return Math.atan2(Vector3.subtract(target, new Vector3(drivetrain.getPose())).y, Vector3.subtract(target, new Vector3(drivetrain.getPose())).x);
   }
 
   private boolean pointingAtTarget(Vector3 target) {
