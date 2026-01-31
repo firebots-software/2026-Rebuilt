@@ -90,8 +90,10 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+    // INTAKE COMMANDS
     // right bumper -> run intake
-    if (Constants.intakeOnRobot) joystick.rightBumper().whileTrue(intakeSubsystem.runIntake());
+    if (Constants.intakeOnRobot) {
+        joystick.rightBumper().whileTrue(intakeSubsystem.runIntake());
 
     // left trigger + x -> arm to initial pos (0)
     joystick
@@ -116,10 +118,13 @@ public class RobotContainer {
         .leftTrigger()
         .and(joystick.y())
         .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+    }
+
+    if (Constants.shooterOnRobot) {
+        joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
+    }
 
     drivetrain.registerTelemetry(logger::telemeterize);
-
-    joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
   }
 
   public Command getAutonomousCommand() {
