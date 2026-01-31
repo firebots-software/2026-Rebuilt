@@ -12,7 +12,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class ObjectDetection extends SubsystemBase {
 
-  private static ObjectDetection[] cameraList;
+  private static ObjectDetection[] cameraList = new ObjectDetection[Constants.Vision.Cameras.values().length];
 
   private final Constants.Vision.Cameras cameraID;
   private String cameraTitle;
