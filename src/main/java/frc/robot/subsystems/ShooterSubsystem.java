@@ -18,7 +18,7 @@ import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, master;
+  private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
 
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
 
@@ -36,7 +36,7 @@ public class ShooterSubsystem extends SubsystemBase {
     warmUpMotor1.setControl(follower);
     warmUpMotor2.setControl(follower);
     warmUpMotor3.setControl(follower);
-    master = warmUpMotor1;
+    shooter = warmUpMotor1;
 
     Slot0Configs s0c =
         new Slot0Configs()
@@ -83,7 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // so now max is 104.72 and min is 71.2
   public void setSpeed(double speed) {
     targetSpeed = speed / 2;
-    master.setControl(velocityRequest.withVelocity(calculateFtToRPS(targetSpeed)));
+    shooter.setControl(velocityRequest.withVelocity(calculateFtToRPS(targetSpeed)));
   }
 
   public void stop() {
@@ -91,12 +91,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    return Math.abs(calculateFtToRPS(targetSpeed) - master.getVelocity().getValueAsDouble())
+    return Math.abs(calculateFtToRPS(targetSpeed) - shooter.getVelocity().getValueAsDouble())
         <= tolerance;
   }
 
   public double getCurrentSpeed() {
-    return calculateRPSToFt(master.getVelocity().getValueAsDouble());
+    return calculateRPSToFt(shooter.getVelocity().getValueAsDouble());
   }
 
   // Comands
