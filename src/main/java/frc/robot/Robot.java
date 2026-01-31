@@ -35,13 +35,13 @@ public class Robot extends TimedRobot {
     if (Constants.visionOnRobot) {
       visionRight = VisionSubsystem.getInstance(Constants.Vision.Cameras.RIGHT_CAM, () -> true);
       visionLeft = VisionSubsystem.getInstance(Constants.Vision.Cameras.LEFT_CAM, () -> true);
-
+      
       visionColor = VisionSubsystem.getInstance(Constants.Vision.Cameras.COLOR_CAM, () -> true);
 
     } else {
       visionRight = null;
       visionLeft = null;
-
+      
       visionColor = null;
     }
   }
