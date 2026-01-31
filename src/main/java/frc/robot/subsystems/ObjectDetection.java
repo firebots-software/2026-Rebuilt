@@ -4,7 +4,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.FuelGauge;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,7 @@ public class ObjectDetection extends SubsystemBase {
 
   private static ObjectDetection[] cameraList =
       new ObjectDetection[Constants.Vision.Cameras.values().length];
-  
+
   private static ArrayList<Double> latestMeasurements = new ArrayList<>();
 
   private final Constants.Vision.Cameras cameraID;
@@ -78,7 +77,7 @@ public class ObjectDetection extends SubsystemBase {
             avgRealisticPercentage += i;
           }
 
-          avgRealisticPercentage = avgRealisticPercentage/latestMeasurements.size();
+          avgRealisticPercentage = avgRealisticPercentage / latestMeasurements.size();
 
           DogLog.log("Vision/FuelGauge", maxFuelPercentage);
           DogLog.log("Vision/FuelGaugeRealistic", maxFuelRealisticPercentage);
