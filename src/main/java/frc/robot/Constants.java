@@ -2,10 +2,20 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.configs.*;
+import com.ctre.phoenix6.swerve.*;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.*;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
+  public static final boolean visionOnRobot = false;
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
@@ -101,7 +111,9 @@ public final class Constants {
           SwerveSteerPIDValues.SERRANO,
           RobotDimensions.SERRANO,
           "Patrice the Pineapple",
-          BumperThickness.SERRANO),
+          BumperThickness.SERRANO,
+          3.5714285714285716,
+          true),
       PROTO(
           Rotations.of(0.3876953125), // front left
           Rotations.of(0.159912109375), // front right
@@ -112,7 +124,9 @@ public final class Constants {
           SwerveSteerPIDValues.PROTO,
           RobotDimensions.PROTO,
           "rio",
-          BumperThickness.PROTO),
+          BumperThickness.PROTO,
+          3.5714285714285716,
+          true),
       JAMES_HARDEN(
           Rotations.of(-0.0834960938), // front left
           Rotations.of(-0.4912109375), // front right
@@ -123,7 +137,9 @@ public final class Constants {
           SwerveSteerPIDValues.JAMES_HARDEN,
           RobotDimensions.JAMES_HARDEN,
           "JamesHarden",
-          BumperThickness.JAMES_HARDEN),
+          BumperThickness.JAMES_HARDEN,
+          3.5714285714285716,
+          true),
       COBRA(
           Rotations.of(0.096923828125), // front left, 21
           Rotations.of(0.03271484375), // front right, 22
@@ -134,7 +150,9 @@ public final class Constants {
           SwerveSteerPIDValues.COBRA,
           RobotDimensions.COBRA,
           "Viper",
-          BumperThickness.COBRA);
+          BumperThickness.COBRA,
+          3.5714285714285716,
+          false);
       public final Angle FRONT_LEFT_ENCODER_OFFSET,
           FRONT_RIGHT_ENCODER_OFFSET,
           BACK_LEFT_ENCODER_OFFSET,
@@ -144,8 +162,9 @@ public final class Constants {
       public final SwerveSteerPIDValues SWERVE_STEER_PID_VALUES;
       public final RobotDimensions ROBOT_DIMENSIONS;
       public final String CANBUS_NAME;
-
+      public final double COUPLE_RATIO;
       public final BumperThickness BUMPER_THICKNESS;
+      public final boolean INVERTED_MODULES;
 
       SwerveType(
           Angle fl,
@@ -157,7 +176,9 @@ public final class Constants {
           SwerveSteerPIDValues swerveSteerPIDValues,
           RobotDimensions robotDimensions,
           String canbus_name,
-          BumperThickness thickness) {
+          BumperThickness thickness,
+          double coupled_ratio,
+          boolean invertedModules) {
         FRONT_LEFT_ENCODER_OFFSET = fl;
         FRONT_RIGHT_ENCODER_OFFSET = fr;
         BACK_LEFT_ENCODER_OFFSET = bl;
@@ -168,6 +189,75 @@ public final class Constants {
         ROBOT_DIMENSIONS = robotDimensions;
         CANBUS_NAME = canbus_name;
         BUMPER_THICKNESS = thickness;
+        COUPLE_RATIO = coupled_ratio;
+        INVERTED_MODULES = invertedModules;
+      }
+    }
+  }
+
+  public static class Vision {
+
+    // initializes cameras for use in VisionSubsystem
+    public static enum Cameras {
+      RIGHT_CAM("rightCam"),
+      LEFT_CAM("leftCam");
+
+      private String loggingName;
+
+      Cameras(String name) {
+        loggingName = name;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+    }
+
+    // Constants for noise calculation
+    public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
+    public static final double DISTANCE_EXPONENTIAL_BASE_X = 2.97294;
+    public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_Y = 0.0046074;
+    public static final double DISTANCE_EXPONENTIAL_BASE_Y = 2.97294;
+
+    public static final double DISTANCE_COEFFICIENT_THETA = 0.9;
+
+    public static final double ANGLE_COEFFICIENT_X =
+        0.5; // noise growth per radian of viewing angle
+    public static final double ANGLE_COEFFICIENT_Y = 0.5;
+    public static final double ANGLE_COEFFICIENT_THETA = 0.5;
+
+    public static final double SPEED_COEFFICIENT_X = 0.5; // noise growth per fraction of max speed
+    public static final double SPEED_COEFFICIENT_Y = 0.5;
+    public static final double SPEED_COEFFICIENT_THETA = 0.5;
+
+    // placeholder constants for now; will be updated once robot is delivered
+    public static final double RIGHT_X = Units.inchesToMeters(8.867);
+    public static final double RIGHT_Y = Units.inchesToMeters(-12.4787);
+    public static final double RIGHT_Z = Units.inchesToMeters(6.158);
+    public static final double RIGHT_ROLL = Units.degreesToRadians(0.0);
+    public static final double RIGHT_PITCH = Units.degreesToRadians(-12.5);
+    public static final double RIGHT_YAW = Units.degreesToRadians(40);
+
+    public static final double LEFT_X = Units.inchesToMeters(8.867);
+    public static final double LEFT_Y = Units.inchesToMeters(12.478);
+    public static final double LEFT_Z = Units.inchesToMeters(6.158);
+    public static final double LEFT_ROLL = Units.degreesToRadians(0.0);
+    public static final double LEFT_PITCH = Units.degreesToRadians(-12.5);
+    public static final double LEFT_YAW = Units.degreesToRadians(-40);
+
+    // initializing Transform3d for use in future field visualization
+    public static Transform3d getCameraTransform(Cameras camera) {
+      switch (camera) {
+        case RIGHT_CAM:
+          return new Transform3d(
+              new Translation3d(RIGHT_X, RIGHT_Y, RIGHT_Z),
+              new Rotation3d(RIGHT_ROLL, RIGHT_PITCH, RIGHT_YAW));
+        case LEFT_CAM:
+          return new Transform3d(
+              new Translation3d(LEFT_X, LEFT_Y, LEFT_Z),
+              new Rotation3d(LEFT_ROLL, LEFT_PITCH, LEFT_YAW));
+        default:
+          throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
     }
   }

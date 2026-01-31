@@ -12,8 +12,8 @@
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":0.0, "y":0.0, "w":16.541, "h":8.0692}}, "enabled":false},
-    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":0.5}}, "enabled":true},
-    {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":0.5}}, "enabled":true}],
+    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":2.5}}, "enabled":true},
+    {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":5.0}}, "enabled":true}],
   "targetDt":0.05
  },
  "params":{
@@ -27,8 +27,8 @@
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":{"exp":"0 m", "val":0.0}, "y":{"exp":"0 m", "val":0.0}, "w":{"exp":"16.541 m", "val":16.541}, "h":{"exp":"8.0692 m", "val":8.0692}}}, "enabled":false},
-    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":{"exp":"0.5 m / s ^ 2", "val":0.5}}}, "enabled":true},
-    {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":{"exp":"0.5 m / s", "val":0.5}}}, "enabled":true}],
+    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":{"exp":"2.5 m / s ^ 2", "val":2.5}}}, "enabled":true},
+    {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":{"exp":"5 m / s", "val":5.0}}}, "enabled":true}],
   "targetDt":{
    "exp":"0.05 s",
    "val":0.05
@@ -37,24 +37,24 @@
  "trajectory":{
   "config":{
    "frontLeft":{
-    "x":0.2794,
-    "y":0.2794
+    "x":0.6095999999999999,
+    "y":0.5334
    },
    "backLeft":{
-    "x":-0.2794,
-    "y":0.2794
+    "x":-0.6095999999999999,
+    "y":0.5334
    },
-   "mass":68.0388555,
-   "inertia":6.0,
+   "mass":19.232316488,
+   "inertia":3.4581,
    "gearing":6.5,
    "radius":0.0508,
-   "vmax":628.3185307179587,
-   "tmax":1.2,
-   "cof":1.5,
+   "vmax":586.4306286700947,
+   "tmax":1.3,
+   "cof":0.75,
    "bumper":{
-    "front":0.635,
-    "side":0.646684,
-    "back":0.63881
+    "front":0.4826,
+    "side":0.4826,
+    "back":0.4826
    },
    "differentialTrackWidth":0.5588
   },

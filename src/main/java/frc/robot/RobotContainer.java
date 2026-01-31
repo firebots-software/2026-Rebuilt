@@ -10,6 +10,7 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +21,7 @@ import frc.robot.commands.DriveToPose;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
+import java.util.function.Supplier;
 
 public class RobotContainer {
   private double MaxSpeed =
@@ -53,19 +55,11 @@ public class RobotContainer {
     autoFactory = drivetrain.createAutoFactory();
     autoRoutines = new AutoRoutines(autoFactory);
 
-    // autoChooser.addRoutine("CristianoRonaldo", autoRoutines::moveForwardAuto);
+    // Command trajCommand =
+    //     autoFactory
+    //         .resetOdometry("MoveForward.traj")
+    //         .andThen(autoFactory.trajectoryCmd("MoveForward.traj")).andThen(new DriveToPose(drivetrain, () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(-1, 0))));
 
-    // autoChooser.addCmd(
-    //     "sequence",
-    //     () ->
-    //         autoRoutines
-    //             .getPathAsCommand()
-    //             .andThen(
-    //                 new DriveToPose(
-    //                     drivetrain,
-    //                     () ->
-    //                         MiscUtils.plus(
-    //                             drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
     Command trajCommand =
         autoFactory
             .resetOdometry("LongDistance.traj")
