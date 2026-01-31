@@ -93,7 +93,7 @@ public class RobotContainer {
     //         ));
 
     joystick.a().whileTrue(intake.runIntakeDutyCycle(-0.8));
-    joystick.rightBumper().whileTrue(shooter.runIntakeDutyCycle(1.0));
+    joystick.rightBumper().whileTrue(shooter.runIntakeDutyCycle(0.9));
     // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     // joystick
     //     .b()
