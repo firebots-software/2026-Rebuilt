@@ -312,6 +312,7 @@ public final class Constants {
       public static final int MOTOR_PORT_R = -1; // TODO: get vals
     }
   }
+
   public static class Hopper {
     public static final double MOTOR_ROTS_TO_PULLEY_ROTS = .2d; // MRD
     private static final double PULLEY_LENGTH_MM = 220d * 5d; // 220 teeth, 5mm per
