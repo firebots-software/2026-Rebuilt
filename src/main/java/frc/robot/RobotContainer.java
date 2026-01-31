@@ -44,6 +44,7 @@ public class RobotContainer {
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
 
   public RobotContainer() {
+
     configureBindings();
   }
 
