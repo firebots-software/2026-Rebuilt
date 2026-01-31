@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -85,22 +84,24 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-  // dtp no rotation; x=Ftb, y=sts
-   joystick
-       .x()
-       .whileTrue(
-           new DriveToPose(
-               drivetrain,
-               () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1,
-   0))));
+    // dtp no rotation; x=Ftb, y=sts
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
 
-   //dtp with rotation
-   joystick
-       .y()
-       .whileTrue(
-           new DriveToPose(
-               drivetrain,
-               () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Pose2d(new Translation2d(1, 0), new Rotation2d(Math.PI)))));
+    // dtp with rotation
+    joystick
+        .y()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () ->
+                    MiscUtils.plusWithRotation(
+                        drivetrain.getCurrentState().Pose,
+                        new Pose2d(new Translation2d(1, 0), new Rotation2d(Math.PI)))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
