@@ -11,7 +11,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
 
     public static final double targetPositionError = 0.05;
     public static final double targetAngleError = 0.02;

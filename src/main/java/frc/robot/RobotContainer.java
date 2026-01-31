@@ -10,13 +10,10 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveToPose;
@@ -72,9 +69,23 @@ public class RobotContainer {
     Command trajCommand =
         autoFactory
             .resetOdometry("LongDistance.traj")
-            .andThen(
-                autoFactory
-                    .trajectoryCmd("LongDistance.traj"));
+            .andThen(autoFactory.trajectoryCmd("LongDistance.traj"))
+            .andThen(new DriveToPose(
+                            drivetrain,
+                            () ->
+                                MiscUtils.plus(
+                                    drivetrain.getCurrentState().Pose, new Translation2d(-1, 0))))
+            .andThen(new DriveToPose(
+                            drivetrain,
+                            () ->
+                                MiscUtils.plus(
+                                    drivetrain.getCurrentState().Pose, new Translation2d(0, 1))))
+            .andThen(new DriveToPose(
+                            drivetrain,
+                            () ->
+                                MiscUtils.plus(
+                                    drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
+
 
     autoChooser.addCmd("sequence", () -> trajCommand);
 
@@ -128,30 +139,31 @@ public class RobotContainer {
     //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1,
     // 0))));
 
-    //dtp with rotation
+    // dtp with rotation
     // joystick
     //     .x()
     //     .whileTrue(
     //         new DriveToPose(
     //             drivetrain,
-    //             () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Transform2d(new Translation2d(1, 0), new Rotation2d(1)))));
+    //             () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new
+    // Transform2d(new Translation2d(1, 0), new Rotation2d(1)))));
 
     // choreo
     // joystick.x().whileTrue(autoRoutines.getPathAsCommand());
 
     // Auto sequence: choreo forward, dtp back
     Command trajCommand =
-    autoFactory
-        .resetOdometry("MoveForward.traj")
-        .andThen(
-            autoFactory
-                .trajectoryCmd("MoveForward.traj")
-                .andThen(
-                    new DriveToPose(
-                        drivetrain,
-                        () ->
-                            MiscUtils.plus(
-                                drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
+        autoFactory
+            .resetOdometry("MoveForward.traj")
+            .andThen(
+                autoFactory
+                    .trajectoryCmd("MoveForward.traj")
+                    .andThen(
+                        new DriveToPose(
+                            drivetrain,
+                            () ->
+                                MiscUtils.plus(
+                                    drivetrain.getCurrentState().Pose, new Translation2d(1, 0)))));
     joystick.x().whileTrue(trajCommand);
 
     drivetrain.registerTelemetry(logger::telemeterize);
