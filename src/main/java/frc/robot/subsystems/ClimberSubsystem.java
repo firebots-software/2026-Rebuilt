@@ -80,7 +80,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void setSitUpPosition(double degrees) {
     sitUpTargetDeg = degrees / Constants.Climber.SitUp.MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
-    sitUpMotor.setControl(new MotionMagicVoltage(sitUpTargetDeg));
+    sitUpMotor.setControl(new MotionMagicVoltage(sitUpTargetDeg)); //rotations
   }
 
   public void setMuscleUpPosition(double degrees) {

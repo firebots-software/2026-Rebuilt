@@ -54,7 +54,7 @@ public class HopperSubsystem extends SubsystemBase {
   public boolean atSpeed() {
     return motor.getVelocity().getValueAsDouble()
             - targetSpeed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL
-        <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
+        <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC; //absolute
   }
 
   // Commands

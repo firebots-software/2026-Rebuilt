@@ -16,4 +16,20 @@ public class MiscUtils {
         a.getY() + b.getY(),
         new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
   }
+
+  // public static double degreesToRadians() {
+
+  // }
+
+  // public static double radiansToDegrees() {
+
+  // }
+
+  // public static double rotationsToDegrees() {
+
+  // }
+
+  // public static double pulleyRotationsToMeters() {
+
+  // }
 }

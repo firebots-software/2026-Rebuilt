@@ -250,18 +250,4 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getY());
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getRotation());
   }
-  // private void startSimThread() {
-  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-  //     /* Run simulation at a faster rate so PID gains behave more reasonably */
-  //     m_simNotifier = new Notifier(() -> {
-  //         final double currentTime = Utils.getCurrentTimeSeconds();
-  //         double deltaTime = currentTime - m_lastSimTime;
-  //         m_lastSimTime = currentTime;
-
-  //         /* use the measured time delta, get battery voltage from WPILib */
-  //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
-  //     });
-  //     m_simNotifier.startPeriodic(kSimLoopPeriod);
-  // }
 }
