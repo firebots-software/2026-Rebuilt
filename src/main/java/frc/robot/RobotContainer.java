@@ -6,9 +6,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,6 +24,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
 
@@ -87,8 +86,9 @@ public class RobotContainer {
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
             redside,
-            (BooleanSupplier) (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
-            drivetrain); 
+            (BooleanSupplier)
+                (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
+            drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
@@ -103,7 +103,8 @@ public class RobotContainer {
     //         () ->
     //             drive
     //                 .withVelocityX(
-    //                     -joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+    //                     -joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y
+    // (forward)
     //                 .withVelocityY(
     //                     -joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
     //                 .withRotationalRate(
