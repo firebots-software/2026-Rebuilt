@@ -42,7 +42,7 @@ public class TunerConstants {
           .withKS(Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_PID_VALUES.KS)
           .withKV(Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_PID_VALUES.KV);
 
-    protected ProfiledPIDController headingProfiledPIDController;
+  protected ProfiledPIDController headingProfiledPIDController;
 
   // The closed-loop output type to use for the steer motors;
   // This affects the PID/FF gains for the steer motors

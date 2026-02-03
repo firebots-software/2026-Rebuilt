@@ -21,10 +21,11 @@ import java.util.function.BooleanSupplier;
 public class Shoot extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final ShooterSubsystem shooter;
+
   private final HopperSubsystem hopper;
   private final CommandSwerveDrivetrain drivetrain;
   private final BooleanSupplier redside;
-  
+
   public static double targetAngle = 0;
 
   /**
@@ -32,7 +33,11 @@ public class Shoot extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public Shoot(CommandSwerveDrivetrain drivetrain, ShooterSubsystem shooter, HopperSubsystem hopper, BooleanSupplier redside) {
+  public Shoot(
+      CommandSwerveDrivetrain drivetrain,
+      ShooterSubsystem shooter,
+      HopperSubsystem hopper,
+      BooleanSupplier redside) {
     this.drivetrain = drivetrain;
     this.shooter = shooter;
     this.hopper = hopper;
@@ -60,12 +65,17 @@ public class Shoot extends Command {
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/isPointing", pointingAtTarget());
 
     for (int i = 1; i <= 5; i++) {
-      DogLog.log("Subsystems/ShooterSubsystem/Shoot/shootSpeedMetersPerSec/" + i + "prec", shootingSpeed(target, i));
+      DogLog.log(
+          "Subsystems/ShooterSubsystem/Shoot/shootSpeedMetersPerSec/" + i + "prec",
+          shootingSpeed(target, i));
     }
 
     DogLog.log(
         "Shoot/tof",
-        2 * shootingSpeed(target, 5) * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES)) / 9.81);
+        2
+            * shootingSpeed(target, 5)
+            * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+            / 9.81);
 
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/target", target);
     for (int i = 1; i <= 5; i++) {
@@ -82,7 +92,8 @@ public class Shoot extends Command {
 
     Pose3d gunOffset =
         MiscMath.RotatedPosAroundVertical(
-            Constants.Shooter.OFFSET_FROM_ROBOT_CENTER, drivetrain.getState().Pose.getRotation().getRadians());
+            Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
+            drivetrain.getState().Pose.getRotation().getRadians());
     Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(gunOffset));
     Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/distanceToTarget", relativePos.magnitude());
@@ -113,14 +124,19 @@ public class Shoot extends Command {
   private boolean pointingAtTarget() {
     double desiredRobotHullAngle = targetAngle;
 
-    double robotHullAngle = (drivetrain.getState().Pose.getRotation().getRadians() + (2 * Math.PI)) % (2 * Math.PI);
+    double robotHullAngle =
+        (drivetrain.getState().Pose.getRotation().getRadians() + (2 * Math.PI)) % (2 * Math.PI);
 
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/rotationalError", Math.abs(desiredRobotHullAngle - robotHullAngle));
-    boolean hullAimed = Math.abs(desiredRobotHullAngle - robotHullAngle) <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
+    DogLog.log(
+        "Subsystems/ShooterSubsystem/Shoot/rotationalError",
+        Math.abs(desiredRobotHullAngle - robotHullAngle));
+    boolean hullAimed =
+        Math.abs(desiredRobotHullAngle - robotHullAngle)
+            <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
     return hullAimed;
   }
 
-  private double shootingSpeed(Pose3d target, int precision) { //meters per sec
+  private double shootingSpeed(Pose3d target, int precision) { // meters per sec
     Vector3 relativeVel =
         Vector3.mult(
             new Vector3(
@@ -131,7 +147,8 @@ public class Shoot extends Command {
 
     Pose3d gunOffset =
         MiscMath.RotatedPosAroundVertical(
-            Constants.Shooter.OFFSET_FROM_ROBOT_CENTER, drivetrain.getState().Pose.getRotation().getRadians());
+            Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
+            drivetrain.getState().Pose.getRotation().getRadians());
     Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(gunOffset));
     Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
 
@@ -139,7 +156,11 @@ public class Shoot extends Command {
     double correctedSpeed = speedForDist(relativePos.magnitude());
     double prevTof = 0;
     for (int i = 0; i < precision; i++) {
-      double tof = 2 * correctedSpeed * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES)) / 9.81;
+      double tof =
+          2
+              * correctedSpeed
+              * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+              / 9.81;
       correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
       correctedSpeed = speedForDist(Vector3.subtract(correctedPos, gunPos).magnitude());
       prevTof = tof;
@@ -149,12 +170,19 @@ public class Shoot extends Command {
   }
 
   private double speedForDist(double d) {
-    return Math.sqrt(d * 9.81 / Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
+    return Math.sqrt(
+        d
+            * 9.81
+            / Math.sin(
+                Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
   }
 
   private Vector3 positionToTarget(Pose3d target, int precision) {
     double timeOfFlight =
-        2 * shootingSpeed(target, precision) * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES)) / 9.81;
+        2
+            * shootingSpeed(target, precision)
+            * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+            / 9.81;
 
     Vector3 relativeVel =
         Vector3.mult(
