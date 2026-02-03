@@ -24,7 +24,8 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem extends SubsystemBase {
   // static member that contains array of all VisionSubsytem cameras
-  private static VisionSubsystem[] cameraList = new VisionSubsystem[Constants.Vision.Cameras.values().length];
+  private static VisionSubsystem[] cameraList =
+      new VisionSubsystem[Constants.Vision.Cameras.values().length];
 
   private final Constants.Vision.Cameras cameraID;
 
@@ -32,9 +33,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   // list of all april tags, not sorted by red/blue alliance due to neccessity of
   // accessing both
-  private static final List<Integer> TAG_IDS = List.of(
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-      26, 27, 28, 29, 30, 31, 32);
+  private static final List<Integer> TAG_IDS =
+      List.of(
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+          26, 27, 28, 29, 30, 31, 32);
 
   // NOTE FOR SID/SAKETH: come back to ln 57-70 in 2025 repo
 
@@ -83,8 +85,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public static VisionSubsystem getInstance(Constants.Vision.Cameras cameraID) {
     int index = cameraID.ordinal();
-    if (cameraList[index] == null)
-      cameraList[index] = new VisionSubsystem(cameraID);
+    if (cameraList[index] == null) cameraList[index] = new VisionSubsystem(cameraID);
     return cameraList[index];
   }
 
@@ -110,8 +111,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Go through all results (if there are any) and update the latest result with
     // the last
-    for (var result : results)
-      latestVisionResult = result;
+    for (var result : results) latestVisionResult = result;
   }
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
@@ -131,18 +131,20 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     // distance to closest april tag
-    double minDistance = latestVisionResult.getTargets().stream()
-        .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-        .min()
-        .orElse(Double.NaN);
+    double minDistance =
+        latestVisionResult.getTargets().stream()
+            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+            .min()
+            .orElse(Double.NaN);
 
     DogLog.log("Subsystems/Vision/closestTagDistance", minDistance);
 
     // average distance to all visible april tags
-    double averageDistance = latestVisionResult.getTargets().stream()
-        .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-        .average()
-        .orElse(Double.NaN);
+    double averageDistance =
+        latestVisionResult.getTargets().stream()
+            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+            .average()
+            .orElse(Double.NaN);
     DogLog.log("Subsystems/Vision/averageTagDistance", averageDistance);
 
     // 2025-reefscape has a validTags list on lines 160-166, replacing it with a
@@ -151,7 +153,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     // VISION: to end
     // creates a list of all detected tags and logs for debugging
-    List<PhotonTrackedTarget> tags = latestVisionResult.getTargets().stream().collect(Collectors.toList());
+    List<PhotonTrackedTarget> tags =
+        latestVisionResult.getTargets().stream().collect(Collectors.toList());
 
     // log area and yaw for all detected april tags
     for (PhotonTrackedTarget tag : tags) {
@@ -172,15 +175,17 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags", true);
 
     // Distance calculations
-    minDistance = tags.stream()
-        .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-        .min()
-        .orElse(Double.NaN);
+    minDistance =
+        tags.stream()
+            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+            .min()
+            .orElse(Double.NaN);
 
-    averageDistance = tags.stream()
-        .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-        .average()
-        .orElse(Double.NaN);
+    averageDistance =
+        tags.stream()
+            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+            .average()
+            .orElse(Double.NaN);
 
     DogLog.log("Subsystems/Vision/closestTagDistance", minDistance);
     DogLog.log("Subsystems/Vision/averageTagDistance", averageDistance);
@@ -205,34 +210,37 @@ public class VisionSubsystem extends SubsystemBase {
     double currentSpeed = 0.0;
 
     // Compute noise model
-    double nX = computeNoiseXY(
-        baseNoiseX,
-        Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
-        Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
-        Constants.Vision.ANGLE_COEFFICIENT_X,
-        Constants.Vision.SPEED_COEFFICIENT_X,
-        averageDistance,
-        currentSpeed,
-        tagCount);
+    double nX =
+        computeNoiseXY(
+            baseNoiseX,
+            Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
+            Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
+            Constants.Vision.ANGLE_COEFFICIENT_X,
+            Constants.Vision.SPEED_COEFFICIENT_X,
+            averageDistance,
+            currentSpeed,
+            tagCount);
 
-    double nY = computeNoiseXY(
-        baseNoiseY,
-        Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
-        Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
-        Constants.Vision.ANGLE_COEFFICIENT_Y,
-        Constants.Vision.SPEED_COEFFICIENT_Y,
-        averageDistance,
-        currentSpeed,
-        tagCount);
+    double nY =
+        computeNoiseXY(
+            baseNoiseY,
+            Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
+            Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
+            Constants.Vision.ANGLE_COEFFICIENT_Y,
+            Constants.Vision.SPEED_COEFFICIENT_Y,
+            averageDistance,
+            currentSpeed,
+            tagCount);
 
-    double nTH = computeNoiseHeading(
-        baseNoiseTheta,
-        Constants.Vision.DISTANCE_COEFFICIENT_THETA,
-        Constants.Vision.ANGLE_COEFFICIENT_THETA,
-        Constants.Vision.SPEED_COEFFICIENT_THETA,
-        averageDistance,
-        currentSpeed,
-        tagCount);
+    double nTH =
+        computeNoiseHeading(
+            baseNoiseTheta,
+            Constants.Vision.DISTANCE_COEFFICIENT_THETA,
+            Constants.Vision.ANGLE_COEFFICIENT_THETA,
+            Constants.Vision.SPEED_COEFFICIENT_THETA,
+            averageDistance,
+            currentSpeed,
+            tagCount);
 
     Matrix<N3, N1> noiseVector = VecBuilder.fill(nX, nY, nTH);
 
@@ -270,9 +278,10 @@ public class VisionSubsystem extends SubsystemBase {
     // Use vision timestamp if within threshold of FPGA timestamp
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
-    double chosenTimestamp = (timestampDiff > timestampDiffThreshold)
-        ? fpgaTimestamp + timestampFPGACorrection
-        : timestamp;
+    double chosenTimestamp =
+        (timestampDiff > timestampDiffThreshold)
+            ? fpgaTimestamp + timestampFPGACorrection
+            : timestamp;
 
     swerve.addVisionMeasurement(measuredPose, chosenTimestamp, noiseVector);
   }
@@ -308,13 +317,14 @@ public class VisionSubsystem extends SubsystemBase {
     // baseNoise + distanceExponentialCoefficient *
     // Math.pow(distanceExponentialBase, distance);
 
-    double distanceFactor = (distance < (17.548 + 0.67))
-        ? Math.min(
-            baseNoise
-                + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance),
-            1.167)
-        : (baseNoise
-            + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance));
+    double distanceFactor =
+        (distance < (17.548 + 0.67))
+            ? Math.min(
+                baseNoise
+                    + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance),
+                1.167)
+            : (baseNoise
+                + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance));
 
     // Speed term (quadratic)
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
