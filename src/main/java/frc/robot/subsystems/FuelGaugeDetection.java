@@ -68,7 +68,7 @@ public class FuelGaugeDetection extends SubsystemBase {
                               / 10.0))
                   * 10.0;
 
-          latestMeasurements.add(maxFuelRealisticPercentage);
+          latestMeasurements.add(b.getArea());
           while (latestMeasurements.size()
               > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
             latestMeasurements.remove(0);
@@ -89,7 +89,7 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/FuelGaugeRealistic", maxFuelRealisticPercentage);
           DogLog.log("Subsystems/FuelGauge/AvgFuelGaugeRealistic", avgRealisticPercentage);
 
-          logThresholdState(avgRealisticPercentage, maxFuelRealisticPercentage);
+          logThresholdState(avgRealisticPercentage, b.getArea());
         },
         () -> DogLog.log("Subsystems/FuelGauge/BlobPresent", false));
   }

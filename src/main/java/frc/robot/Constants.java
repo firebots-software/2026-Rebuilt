@@ -16,7 +16,7 @@ import edu.wpi.first.units.measure.Distance;
 public final class Constants {
   public static final boolean hopperOnRobot = false;
   public static final boolean intakeOnRobot = false;
-  public static final boolean visionOnRobot = false;
+  public static final boolean visionOnRobot = true;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
 
@@ -420,12 +420,12 @@ public final class Constants {
   public static class FuelGaugeDetection {
     public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
-    public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 23.00;
+    public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
 
     public static enum FuelGauge { // LAST: 20, 50, 70, 100
-      EMPTY(10.0),
-      LOW(35.0),
-      MEDIUM(80.0),
+      EMPTY(2.0),
+      LOW(9.0),
+      MEDIUM(12.0),
       FULL(100.0);
 
       private double threshold;
