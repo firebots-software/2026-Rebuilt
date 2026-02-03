@@ -25,7 +25,7 @@ public class DriveToPose extends Command {
   private Pose2d targetPose = null;
   private Supplier<Pose2d> targetPoseSupplier = null;
 
-  private final PIDController xController = new PIDController(2.0, 0.0, 0.0);
+  private final PIDController xController = new PIDController(2.0, 0.0, 0.0); //make constants
   private final PIDController yController = new PIDController(2.0, 0.0, 0.0);
   private final PIDController headingController = new PIDController(5, 0.0, 0.0);
 
