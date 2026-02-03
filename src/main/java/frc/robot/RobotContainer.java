@@ -19,6 +19,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.commandGroups.WarmUpAndShoot;
 
 public class RobotContainer {
 
@@ -125,6 +126,10 @@ public class RobotContainer {
 
     if (Constants.shooterOnRobot) {
       joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
+    }
+
+    if(Constants.shooterOnRobot && Constants.hopperOnRobot) {
+        joystick.leftBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
