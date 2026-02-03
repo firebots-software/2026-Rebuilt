@@ -119,17 +119,17 @@ public class DriveToPose extends Command {
       swerve.applyFieldSpeeds(speeds);
     }
 
-    DogLog.log("DriveToPose/Current Pose X", swerve.getCurrentState().Pose.getX()); // fix logs
-    DogLog.log("DriveToPose/Current Pose Y", swerve.getCurrentState().Pose.getY());
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Current Pose X", swerve.getCurrentState().Pose.getX()); // fix logs
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Current Pose Y", swerve.getCurrentState().Pose.getY());
     DogLog.log(
-        "DriveToPose/Current Pose Rotation",
+        "CommandSwerveDrivetrain/DriveToPose/Current Pose Rotation",
         swerve.getCurrentState().Pose.getRotation().getRadians());
-    DogLog.log("DriveToPose/Target Pose X", targetPose.getX());
-    DogLog.log("DriveToPose/Target Pose Y", targetPose.getY());
-    DogLog.log("DriveToPose/Target Pose Rotation", targetPose.getRotation().getRadians());
-    DogLog.log("DriveToPose/Curr time", currTime);
-    DogLog.log("DriveToPose/Path created", path != null);
-    DogLog.log("DriveToPose/Path state", pathState != null);
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Target Pose X", targetPose.getX());
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Target Pose Rotation", targetPose.getRotation().getRadians());
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Target Pose Y", targetPose.getY());
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Curr time", currTime);
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Path created", path != null);
+    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Path state", pathState != null);
     // DogLog.log("Init Target Pose Supplier", targetPoseSupplier.toString());
   }
 

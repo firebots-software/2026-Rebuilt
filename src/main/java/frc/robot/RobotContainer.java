@@ -129,6 +129,7 @@ public class RobotContainer {
     if (Constants.shooterOnRobot) {
       joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
     }
+    
     joystick
         .x()
         .whileTrue(
