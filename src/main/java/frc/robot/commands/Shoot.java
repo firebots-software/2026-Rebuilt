@@ -92,6 +92,8 @@ public class Shoot extends Command {
     Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getPose()), new Vector3(gunOffset));
     Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
     DogLog.log("Shoot/dist", relativePos.magnitude());
+
+    DogLog.log("Shoot/isCommie", redside.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.

@@ -21,6 +21,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX motor1, motor2;
   private final LoggedTalonFX preShooterMotor;
   private final double wheelradius = 2d / 12d / 3d;
+  private final double noteVelToSpinnerSurfaceVel = 1.5;
 
   private double targetSpeed = 0;
 
@@ -58,7 +59,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void rampUp(double speed) {
     targetSpeed = speed;
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(speed * (24d / 18d) / (2 * 3.14 * wheelradius));
+        new VelocityVoltage(speed * (24d / 18d) / (2 * 3.14 * wheelradius) * noteVelToSpinnerSurfaceVel);
     motor1.setControl(m_velocityControl);
   }
 
@@ -85,7 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean atSpeed() {
     return Math.abs(
             motor1.getVelocity().getValueAsDouble()
-                - targetSpeed * (24d / 18d) / (2 * 3.14 * wheelradius))
+                - targetSpeed * (24d / 18d) / (2 * 3.14 * wheelradius) * noteVelToSpinnerSurfaceVel)
         <= tolerance;
   }
 

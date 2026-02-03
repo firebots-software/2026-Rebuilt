@@ -29,7 +29,7 @@ public class RobotContainer {
   private final ShooterSubsystem lebron = ShooterSubsystem.getInstance();
   private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
   private BooleanSupplier redside = () -> redAlliance;
-  private static boolean redAlliance = true;
+  private static boolean redAlliance;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
