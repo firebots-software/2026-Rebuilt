@@ -24,7 +24,7 @@ public class Shoot extends Command {
   private final BooleanSupplier redside;
 
   static final float MAX_TIME = 10f;
-  static final float angularTolerance = .01f;
+  static final float angularTolerance = .1f;
   static final float maxRotSpeed = .1f;
 
   static final double shooterAngleDeg = 45;
@@ -58,12 +58,12 @@ public class Shoot extends Command {
         redside.getAsBoolean() ? Constants.Landmarks.RED_HUB : Constants.Landmarks.BLUE_HUB;
     shooter.rampUp(shootingSpeed(target, 5));
     // pointAtTarget(positionToTarget(target, 5));
-    if (shooter.atSpeed() && pointingAtTarget(positionToTarget(target, 5))) {
+    if (shooter.atSpeed() && pointingAtTarget()) {
       shooter.runPreShooterAtRPS(10);
     }
     targetAngle = targetAngle(target);
 
-    DogLog.log("Shoot/isPointing", pointingAtTarget(positionToTarget(target, 5)));
+    DogLog.log("Shoot/isPointing", pointingAtTarget());
 
     for (int i = 1; i <= 5; i++) {
       DogLog.log("Shoot/shootSpeed/" + i + "prec", shootingSpeed(target, i));
@@ -125,14 +125,14 @@ public class Shoot extends Command {
         + (shootsback ? 3.14 : 0);
   }
 
-  private boolean pointingAtTarget(Vector3 target) {
-    boolean hullAimed =
-        Math.atan2(
-                    Vector3.subtract(new Vector3(drivetrain.getPose()), target).x,
-                    Vector3.subtract(new Vector3(drivetrain.getPose()), target).z)
-                + (shootsback ? 3.14 : 0)
-                - drivetrain.getPose().getRotation().getRadians()
-            <= angularTolerance;
+  private boolean pointingAtTarget() {
+    double desiredRobotHullAngle = targetAngle;
+
+    double robotHullAngle = (drivetrain.getPose().getRotation().getRadians() + 6.28) % 6.28d;
+    DogLog.log("Shoot/robothullangle", robotHullAngle);
+
+    DogLog.log("Shoot/error", Math.abs(desiredRobotHullAngle - robotHullAngle));
+    boolean hullAimed = Math.abs(desiredRobotHullAngle - robotHullAngle) <= angularTolerance;
     return hullAimed;
   }
 
