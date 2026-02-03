@@ -54,7 +54,7 @@ public class Shoot extends Command {
   public void execute() {
     Pose3d target =
         redside.getAsBoolean() ? Constants.Landmarks.RED_HUB : Constants.Landmarks.BLUE_HUB;
-    shooter.setSpeed(Units.metersToFeet(shootingSpeed(target, 5)));
+    shooter.setSpeed(Units.metersToFeet(shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
     if (shooter.isAtSpeed() && pointingAtTarget()) {
       hopper.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC);
     } else {
@@ -64,7 +64,7 @@ public class Shoot extends Command {
 
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/isPointing", pointingAtTarget());
 
-    for (int i = 1; i <= 5; i++) {
+    for (int i = 1; i <= Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
       DogLog.log(
           "Subsystems/ShooterSubsystem/Shoot/shootSpeedMetersPerSec/" + i + "prec",
           shootingSpeed(target, i));
@@ -73,12 +73,12 @@ public class Shoot extends Command {
     DogLog.log(
         "Shoot/tof",
         2
-            * shootingSpeed(target, 5)
+            * shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
             * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
             / 9.81);
 
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/target", target);
-    for (int i = 1; i <= 5; i++) {
+    for (int i = 1; i <= Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
       DogLog.log(
           "Subsystems/ShooterSubsystem/Shoot/positionTargeting/" + i + "prec",
           new Pose3d(
@@ -114,7 +114,7 @@ public class Shoot extends Command {
   }
 
   public double targetAngle(Pose3d targetNoOffset) {
-    Vector3 target = positionToTarget(targetNoOffset, 5);
+    Vector3 target = positionToTarget(targetNoOffset, Constants.Shooter.TARGETING_CALCULATION_PRECISION);
     return Math.atan2(
             Vector3.subtract(target, new Vector3(drivetrain.getState().Pose)).y,
             Vector3.subtract(target, new Vector3(drivetrain.getState().Pose)).x)

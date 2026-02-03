@@ -441,6 +441,8 @@ public final class Constants {
     public static final boolean SHOOTS_BACKWARDS = false;
 
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
+
+    public static final int TARGETING_CALCULATION_PRECISION = 5;
   }
 
   public static class OI {
