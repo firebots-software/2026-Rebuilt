@@ -54,7 +54,9 @@ public class Shoot extends Command {
   public void execute() {
     Pose3d target =
         redside.getAsBoolean() ? Constants.Landmarks.RED_HUB : Constants.Landmarks.BLUE_HUB;
-    shooter.setSpeed(Units.metersToFeet(shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
+    shooter.setSpeed(
+        Units.metersToFeet(
+            shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
     if (shooter.isAtSpeed() && pointingAtTarget()) {
       hopper.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC);
     } else {
@@ -114,7 +116,8 @@ public class Shoot extends Command {
   }
 
   public double targetAngle(Pose3d targetNoOffset) {
-    Vector3 target = positionToTarget(targetNoOffset, Constants.Shooter.TARGETING_CALCULATION_PRECISION);
+    Vector3 target =
+        positionToTarget(targetNoOffset, Constants.Shooter.TARGETING_CALCULATION_PRECISION);
     return Math.atan2(
             Vector3.subtract(target, new Vector3(drivetrain.getState().Pose)).y,
             Vector3.subtract(target, new Vector3(drivetrain.getState().Pose)).x)
