@@ -134,7 +134,7 @@ public class RobotContainer {
         .whileTrue(
             new DriveToPose(
                 drivetrain,
-                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(1, 0))));
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0, 1))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

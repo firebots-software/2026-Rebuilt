@@ -25,9 +25,21 @@ public class DriveToPose extends Command {
   private Pose2d targetPose = null;
   private Supplier<Pose2d> targetPoseSupplier = null;
 
-  private final PIDController xController = new PIDController(2.0, 0.0, 0.0); //make constants
-  private final PIDController yController = new PIDController(2.0, 0.0, 0.0);
-  private final PIDController headingController = new PIDController(5, 0.0, 0.0);
+  private final PIDController xController =
+      new PIDController(
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kPX,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kIX,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kDX);
+  private final PIDController yController =
+      new PIDController(
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kPY,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kIY,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kDY);
+  private final PIDController headingController =
+      new PIDController(
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kPR,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kIR,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kDR);
 
   double startTime;
 
@@ -55,7 +67,8 @@ public class DriveToPose extends Command {
 
     path =
         new LinearPath(
-            new TrapezoidProfile.Constraints(0.5, 0.5), new TrapezoidProfile.Constraints(0.2, 0.2));
+            new TrapezoidProfile.Constraints(0.5, 0.5),
+            new TrapezoidProfile.Constraints(0.2, 0.2)); // constants
 
     addRequirements(swerve);
   }
@@ -106,15 +119,17 @@ public class DriveToPose extends Command {
       swerve.applyFieldSpeeds(speeds);
     }
 
-    DogLog.log("Current Pose X", swerve.getCurrentState().Pose.getX());
-    DogLog.log("Current Pose Y", swerve.getCurrentState().Pose.getY());
-    DogLog.log("Current Pose Rotation", swerve.getCurrentState().Pose.getRotation().getRadians());
-    DogLog.log("Target Pose X", targetPose.getX());
-    DogLog.log("Target Pose Y", targetPose.getY());
-    DogLog.log("Target Pose Rotation", targetPose.getRotation().getRadians());
-    DogLog.log("Curr time", currTime);
-    DogLog.log("Path created", path != null);
-    DogLog.log("Path state", pathState != null);
+    DogLog.log("DriveToPose/Current Pose X", swerve.getCurrentState().Pose.getX()); // fix logs
+    DogLog.log("DriveToPose/Current Pose Y", swerve.getCurrentState().Pose.getY());
+    DogLog.log(
+        "DriveToPose/Current Pose Rotation",
+        swerve.getCurrentState().Pose.getRotation().getRadians());
+    DogLog.log("DriveToPose/Target Pose X", targetPose.getX());
+    DogLog.log("DriveToPose/Target Pose Y", targetPose.getY());
+    DogLog.log("DriveToPose/Target Pose Rotation", targetPose.getRotation().getRadians());
+    DogLog.log("DriveToPose/Curr time", currTime);
+    DogLog.log("DriveToPose/Path created", path != null);
+    DogLog.log("DriveToPose/Path state", pathState != null);
     // DogLog.log("Init Target Pose Supplier", targetPoseSupplier.toString());
   }
 
