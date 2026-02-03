@@ -58,7 +58,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void rampUp(double speed) {
     targetSpeed = speed;
     VelocityVoltage m_velocityControl =
-        new VelocityVoltage(speed * 24d / 18d / (2 * 3.14 * wheelradius));
+        new VelocityVoltage(speed * (24d / 18d) / (2 * 3.14 * wheelradius));
     motor1.setControl(m_velocityControl);
   }
 
@@ -85,15 +85,15 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean atSpeed() {
     return Math.abs(
             motor1.getVelocity().getValueAsDouble()
-                - targetSpeed * 24d / 18d / (2 * 3.14 * wheelradius))
+                - targetSpeed * (24d / 18d) / (2 * 3.14 * wheelradius))
         <= tolerance;
   }
 
   @Override
   public void periodic() {
     DogLog.log(
-        "ShooterSubsystem/Speed",
-        motor1.getVelocity().getValueAsDouble() / 24 * 18 * (2 * 3.14 * wheelradius));
+        "ShooterSubsystem/MotorSpeed",
+        motor1.getVelocity().getValueAsDouble());
     DogLog.log("ShooterSubsystem/PSSpeed", preShooterMotor.getVelocity().getValueAsDouble());
     DogLog.log("ShooterSubsystem/AtSpeed", atSpeed());
     DogLog.log("ShooterSubsystem/TargetSpeed", targetSpeed);

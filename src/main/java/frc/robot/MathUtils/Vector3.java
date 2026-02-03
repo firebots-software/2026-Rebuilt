@@ -33,7 +33,7 @@ public class Vector3 {
   }
 
   public float magnitude() {
-    return (float) Math.sqrt((Math.pow(y, 2f) + Math.pow(y, 2f) + Math.pow(y, 2f)));
+    return (float) Math.sqrt((Math.pow(x, 2f) + Math.pow(y, 2f) + Math.pow(z, 2f)));
   }
 
   public void plus(Vector3 other) {
