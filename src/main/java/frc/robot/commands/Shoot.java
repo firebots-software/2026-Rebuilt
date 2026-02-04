@@ -17,7 +17,6 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.BooleanSupplier;
 
-/** An example command that uses an example subsystem. */
 public class Shoot extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final ShooterSubsystem shooter;
@@ -42,7 +41,6 @@ public class Shoot extends Command {
     this.shooter = shooter;
     this.hopper = hopper;
     this.redside = redside;
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.

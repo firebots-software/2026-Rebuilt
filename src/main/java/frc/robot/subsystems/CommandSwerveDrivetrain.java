@@ -57,8 +57,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           0.4, //
           0,
           new TrapezoidProfile.Constraints(
-              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE - 1.5, // -1 was good
-              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND
+              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND - 1.5, // -1 was good
+              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND
                   - 16)); // -13 was good
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */

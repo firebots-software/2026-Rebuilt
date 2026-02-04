@@ -46,11 +46,14 @@ public class SwerveJoystickCommand extends Command {
     this.fieldRelativeFunction = fieldRelativeFunction;
     this.squaredTurn = true;
     this.xLimiter =
-        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
+        new SlewRateLimiter(
+            Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND);
     this.yLimiter =
-        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND);
+        new SlewRateLimiter(
+            Constants.Swerve.TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND);
     this.turningLimiter =
-        new SlewRateLimiter(Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND);
+        new SlewRateLimiter(
+            Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND);
     this.swerveDrivetrain = swerveSubsystem;
     this.fixedRotation = () -> false;
     this.redSide = () -> false;
@@ -60,84 +63,7 @@ public class SwerveJoystickCommand extends Command {
     addRequirements(swerveDrivetrain);
   }
 
-  // Sets everything, not field relative
-  public SwerveJoystickCommand(
-      DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction,
-      DoubleSupplier turningSpdFunction,
-      DoubleSupplier speedControlFunction,
-      CommandSwerveDrivetrain swerveSubsystem) {
-
-    this(
-        frontBackFunction,
-        leftRightFunction,
-        turningSpdFunction,
-        speedControlFunction,
-        () -> false,
-        swerveSubsystem);
-  }
-
-  // //anthony's
-  // public SwerveJoystickCommand(
-  //     DoubleSupplier frontBackFunction,
-  //     DoubleSupplier leftRightFunction,
-  //     DoubleSupplier speedControlFunction,
-  //     BooleanSupplier fieldRelativeFunction,
-  //     SwerveSubsystem swerveSubsystem,
-  //     Supplier<Rotation2d> targetRotationSupplier) {
-  //      this(
-  //       frontBackFunction,
-  //       leftRightFunction,
-  //       () -> swerveSubsystem.calculateRequiredRotationalRate(targetRotationSupplier.get()),
-  //       speedControlFunction,
-  //       fieldRelativeFunction,
-  //       swerveSubsystem);
-  // }
-
-  // setty
-  public SwerveJoystickCommand(
-      DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction,
-      DoubleSupplier turningSpdFunction,
-      DoubleSupplier speedControlFunction,
-      BooleanSupplier fieldRelativeFunction,
-      // SwerveSubsystem swerveSubsystem,
-      BooleanSupplier redSide,
-      BooleanSupplier targetRotationSupplier,
-      BooleanSupplier LeftL1,
-      BooleanSupplier RightL1,
-      CommandSwerveDrivetrain swerveSubsystem) {
-    this(
-        frontBackFunction,
-        leftRightFunction,
-        turningSpdFunction,
-        speedControlFunction,
-        fieldRelativeFunction,
-        swerveSubsystem);
-    this.fixedRotation = targetRotationSupplier;
-    this.redSide = redSide;
-    this.leftL1 = LeftL1;
-    this.rightL1 = RightL1;
-  }
-
-  public SwerveJoystickCommand(
-      DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction,
-      DoubleSupplier turningSpdFunction,
-      DoubleSupplier speedControlFunction,
-      CommandSwerveDrivetrain swerveSubsystem,
-      boolean squaredTurn) {
-
-    this(
-        frontBackFunction,
-        leftRightFunction,
-        turningSpdFunction,
-        speedControlFunction,
-        swerveSubsystem);
-    this.squaredTurn = squaredTurn;
-  }
-
-  // shmidt
+  // tim's
   public SwerveJoystickCommand(
       DoubleSupplier frontBackFunction,
       DoubleSupplier leftRightFunction,
@@ -172,7 +98,7 @@ public class SwerveJoystickCommand extends Command {
         turningSpdFunction.getAsDouble(); // turning speed is (anti-clockwise +, clockwise -)
 
     // 2. Normalize inputs
-    double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
+    double length = xSpeed * xSpeed + ySpeed * ySpeed; // actually length squared
     if (length > 1d) {
       length = Math.sqrt(length);
       xSpeed /= length;
@@ -213,8 +139,6 @@ public class SwerveJoystickCommand extends Command {
             * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
 
     // Final values to apply to drivetrain
-    final double x = xSpeed;
-    final double y = ySpeed;
     double turn = turningSpeed;
 
     DogLog.log("Commands/joystickCommand/xSpeed", xSpeed);
@@ -232,8 +156,11 @@ public class SwerveJoystickCommand extends Command {
 
     SwerveRequest drive =
         !fieldRelativeFunction.getAsBoolean()
-            ? fieldCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)
-            : robotCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn);
+            ? fieldCentricDrive.withVelocityX(xSpeed).withVelocityY(ySpeed).withRotationalRate(turn)
+            : robotCentricDrive
+                .withVelocityX(xSpeed)
+                .withVelocityY(ySpeed)
+                .withRotationalRate(turn);
 
     // Applies request
     this.swerveDrivetrain.setControl(drive);

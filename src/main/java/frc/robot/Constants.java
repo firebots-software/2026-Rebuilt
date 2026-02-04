@@ -260,11 +260,12 @@ public final class Constants {
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 10.917;
     public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
-    public static final double TELE_DRIVE_MAX_ACCELERATION_UNITS_PER_SECOND = 8;
+    public static final double TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND = 8;
     public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
         (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
-    public static final double TELE_DRIVE_MAX_ANGULAR_RATE = 10.917;
-    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_UNITS_PER_SECOND = 26.971;
+    public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
+    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
+        26.971;
   }
 
   public static class Climber {
@@ -451,25 +452,15 @@ public final class Constants {
     public static final int JOYSTICK_A_PORT = 0;
 
     public enum XBoxButtonID {
-      /** A. */
       A(1),
-      /** B. */
       B(2),
-      /** X. */
       X(3),
-      /** Y. */
       Y(4),
-      /** Left bumper. */
       LeftBumper(5),
-      /** Right bumper. */
       RightBumper(6),
-      /** Left stick. */
       LeftStick(9),
-      /** Right stick. */
       RightStick(10),
-      /** Back. */
       Back(7),
-      /** Start. */
       Start(8);
       public final int value;
 
