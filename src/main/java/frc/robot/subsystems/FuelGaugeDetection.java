@@ -55,37 +55,11 @@ public class FuelGaugeDetection extends SubsystemBase {
           double smoothedRawArea = 0.0;
           double smoothedMultipleBalls = 0.0;
 
-          latestRawMeasurements.add(rawArea);
-          while (latestRawMeasurements.size()
-              > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
-            latestRawMeasurements.remove(0);
-          }
-
-          if (!latestRawMeasurements.isEmpty()) {
-            for (double i : latestRawMeasurements) {
-              smoothedRawArea += i;
-            }
-            smoothedRawArea = smoothedRawArea / latestRawMeasurements.size();
-          } else {
-            smoothedRawArea = rawArea;
-          }
+          updateLatestList(latestRawMeasurements, rawArea, smoothedRawArea);
 
           double avgMultipleBalls = getLargestBallsAvg(3);
 
-          latestMultipleMeasurements.add(avgMultipleBalls);
-          while (latestMultipleMeasurements.size()
-              > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
-            latestMultipleMeasurements.remove(0);
-          }
-
-          if (!latestMultipleMeasurements.isEmpty()) {
-            for (double i : latestMultipleMeasurements) {
-              smoothedMultipleBalls += i;
-            }
-            smoothedMultipleBalls = smoothedMultipleBalls / latestMultipleMeasurements.size();
-          } else {
-            smoothedMultipleBalls = avgMultipleBalls;
-          }
+          updateLatestList(latestMultipleMeasurements, avgMultipleBalls, smoothedMultipleBalls);
 
           DogLog.log("Subsystems/FuelGauge/RawArea", rawArea);
           DogLog.log("Subsystems/FuelGauge/SmoothedRawArea", smoothedRawArea);
@@ -94,6 +68,22 @@ public class FuelGaugeDetection extends SubsystemBase {
           logThresholdState(smoothedRawArea, rawArea, smoothedMultipleBalls);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BlobPresent", false));
+  }
+
+  private void updateLatestList(ArrayList<Double> list, double area, double smoothedArea) {
+    list.add(area);
+    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
+      list.remove(0);
+    }
+
+    if (!list.isEmpty()) {
+      for (double i : list) {
+        smoothedArea += i;
+      }
+      smoothedArea = smoothedArea / list.size();
+    } else {
+      smoothedArea = area;
+    }
   }
 
   public void logThresholdState(double smoothedArea, double rawArea, double smoothedMultipleBalls) {
