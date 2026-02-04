@@ -92,39 +92,31 @@ public class FuelGaugeDetection extends SubsystemBase {
   public void logThresholdState(double smoothedArea, double rawArea, double smoothedMultipleBalls) {
     FuelGauge smoothGauge, rawGauge, multipleBallsGauge;
 
-    if (smoothedArea < FuelGauge.EMPTY.getThreshold()) {
-      smoothGauge = FuelGauge.EMPTY;
-    } else if (smoothedArea < FuelGauge.LOW.getThreshold()) {
-      smoothGauge = FuelGauge.LOW;
-    } else if (smoothedArea < FuelGauge.MEDIUM.getThreshold()) {
-      smoothGauge = FuelGauge.MEDIUM;
-    } else {
-      smoothGauge = FuelGauge.FULL;
-    }
+    smoothGauge = setFuelGauge(smoothedArea);
 
-    if (rawArea < FuelGauge.EMPTY.getThreshold()) {
-      rawGauge = FuelGauge.EMPTY;
-    } else if (rawArea < FuelGauge.LOW.getThreshold()) {
-      rawGauge = FuelGauge.LOW;
-    } else if (rawArea < FuelGauge.MEDIUM.getThreshold()) {
-      rawGauge = FuelGauge.MEDIUM;
-    } else {
-      rawGauge = FuelGauge.FULL;
-    }
+    rawGauge = setFuelGauge(rawArea);
 
-    if (smoothedMultipleBalls < FuelGauge.EMPTY.getThreshold()) {
-      multipleBallsGauge = FuelGauge.EMPTY;
-    } else if (smoothedMultipleBalls < FuelGauge.LOW.getThreshold()) {
-      multipleBallsGauge = FuelGauge.LOW;
-    } else if (smoothedMultipleBalls < FuelGauge.MEDIUM.getThreshold()) {
-      multipleBallsGauge = FuelGauge.MEDIUM;
-    } else {
-      multipleBallsGauge = FuelGauge.FULL;
-    }
+    multipleBallsGauge = setFuelGauge(smoothedMultipleBalls);
 
     DogLog.log("Subsystems/FuelGauge/SmoothedGaugeLevel", smoothGauge.toString());
     DogLog.log("Subsystems/FuelGauge/RawGaugeLevel", rawGauge.toString());
     DogLog.log("Subsystems/FuelGauge/MultipleBallsGaugeLevel", multipleBallsGauge.toString());
+  }
+
+  private FuelGauge setFuelGauge(double area) {
+    FuelGauge gauge;
+
+    if (area < FuelGauge.EMPTY.getThreshold()) {
+      gauge = FuelGauge.EMPTY;
+    } else if (area < FuelGauge.LOW.getThreshold()) {
+      gauge = FuelGauge.LOW;
+    } else if (area < FuelGauge.MEDIUM.getThreshold()) {
+      gauge = FuelGauge.MEDIUM;
+    } else {
+      gauge = FuelGauge.FULL;
+    }
+
+    return gauge;
   }
 
   public Optional<PhotonTrackedTarget> getLargestBall() {
