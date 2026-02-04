@@ -17,6 +17,8 @@ public class FuelGaugeDetection extends SubsystemBase {
       new FuelGaugeDetection[Constants.Vision.Cameras.values().length];
 
   private static ArrayList<Double> latestMeasurements = new ArrayList<>();
+  private static ArrayList<Double> multipleBallMeasurements = new ArrayList<>();
+
 
   private final Constants.Vision.Cameras cameraID;
   private String cameraTitle;
@@ -56,7 +58,8 @@ public class FuelGaugeDetection extends SubsystemBase {
             latestMeasurements.remove(0);
           }
 
-          double avgRealisticPercentage = 0;
+          double avgRealisticPercentage = 0.0;
+          double smoothedMultipleBalls = 0.0;
 
           if (!latestMeasurements.isEmpty()) {
             for (double i : latestMeasurements) {
@@ -69,11 +72,26 @@ public class FuelGaugeDetection extends SubsystemBase {
 
           double avgMultipleBalls = getLargestBallsAvg(3);
 
+          multipleBallMeasurements.add(avgMultipleBalls);
+          while (multipleBallMeasurements.size()
+              > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
+            multipleBallMeasurements.remove(0);
+          }
+
+          if (!multipleBallMeasurements.isEmpty()) {
+            for (double i : multipleBallMeasurements) {
+              smoothedMultipleBalls += i;
+            }
+            smoothedMultipleBalls = smoothedMultipleBalls / multipleBallMeasurements.size();
+          } else {
+            smoothedMultipleBalls = avgMultipleBalls;
+          }
+
           DogLog.log("Subsystems/FuelGauge/FuelGauge", b.getArea());
           DogLog.log("Subsystems/FuelGauge/AvgFuelGauge", avgRealisticPercentage);
-          DogLog.log("Subsystems/FuelGauge/MultipleBallsGauge", avgMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/MultipleBallsGauge", smoothedMultipleBalls);
 
-          logThresholdState(avgRealisticPercentage, b.getArea(), avgMultipleBalls);
+          logThresholdState(avgRealisticPercentage, b.getArea(), smoothedMultipleBalls);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BlobPresent", false));
   }
@@ -129,7 +147,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     if (latestVisionResult == null) return 0.0;
     List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
 
-    numBalls = Math.max(numBalls, targets.size());
+    numBalls = Math.min(numBalls, targets.size());
 
     for (int i = 0; i < numBalls; i++) {
       sum += targets.get(i).getArea();
