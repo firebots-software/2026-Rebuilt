@@ -52,14 +52,13 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/BallSkew", b.getSkew());
 
           double rawArea = b.getArea();
-          double smoothedRawArea = 0.0;
-          double smoothedMultipleBalls = 0.0;
 
-          updateLatestList(latestRawMeasurements, rawArea, smoothedRawArea);
+          double smoothedRawArea = updateLatestList(latestRawMeasurements, rawArea);
 
           double avgMultipleBalls = getLargestBallsAvg(3);
 
-          updateLatestList(latestMultipleMeasurements, avgMultipleBalls, smoothedMultipleBalls);
+          double smoothedMultipleBalls =
+              updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
 
           DogLog.log("Subsystems/FuelGauge/RawArea", rawArea);
           DogLog.log("Subsystems/FuelGauge/SmoothedRawArea", smoothedRawArea);
@@ -70,7 +69,9 @@ public class FuelGaugeDetection extends SubsystemBase {
         () -> DogLog.log("Subsystems/FuelGauge/BlobPresent", false));
   }
 
-  private void updateLatestList(ArrayList<Double> list, double area, double smoothedArea) {
+  private double updateLatestList(ArrayList<Double> list, double area) {
+    double smoothedArea = 0.0;
+
     list.add(area);
     while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
       list.remove(0);
@@ -84,6 +85,8 @@ public class FuelGaugeDetection extends SubsystemBase {
     } else {
       smoothedArea = area;
     }
+
+    return smoothedArea;
   }
 
   public void logThresholdState(double smoothedArea, double rawArea, double smoothedMultipleBalls) {
