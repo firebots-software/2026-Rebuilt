@@ -41,6 +41,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController debugJoystick = new CommandXboxController(3);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -96,22 +97,22 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // right bumper -> run intake
     if (Constants.intakeOnRobot) {
-      joystick.rightBumper().whileTrue(intakeSubsystem.runIntake());
+      debugJoystick.rightBumper().whileTrue(intakeSubsystem.runIntake());
 
       // left trigger + x -> arm to initial pos (0)
-      joystick
+      debugJoystick
           .leftTrigger()
           .and(joystick.x())
           .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_INITIAL));
 
       // left trigger + a -> arm to extended pos (15)
-      joystick
+      debugJoystick
           .leftTrigger()
           .and(joystick.a())
           .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
 
       // left trigger + b -> arm to idle pos (45)
-      joystick
+      debugJoystick
           .leftTrigger()
           .and(joystick.b())
           .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
@@ -124,7 +125,17 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
-      joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
+      debugJoystick.leftBumper().whileTrue(lebron.ShootAtSpeed());
+    }
+
+    if (Constants.hopperOnRobot) {
+        debugJoystick.rightTrigger().whileTrue(hopperSubsystem.RunHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC));
+    }
+
+    if (Constants.climberOnRobot) {
+        debugJoystick.povUp().onTrue(climberSubsystem.SetPullUpToPosition(Constants.Climber.PullUp.REACH_POS));
+        debugJoystick.povLeft().onTrue(climberSubsystem.SetSitUpToAngle(Constants.Climber.SitUp.SIT_UP_ANGLE));
+        debugJoystick.povDown().onTrue(climberSubsystem.SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
