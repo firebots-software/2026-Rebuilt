@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     DogLog.setOptions(
-        new DogLogOptions().withNtPublish(false).withCaptureDs(true).withLogExtras(true));
+        new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
   }
 
   @Override
