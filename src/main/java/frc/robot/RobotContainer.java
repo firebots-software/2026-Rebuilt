@@ -13,6 +13,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveToPose;
@@ -55,6 +57,8 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
+  public final HopperSubsystem hopper = new HopperSubsystem();
 
   public RobotContainer() {
 
@@ -147,8 +151,16 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
-
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoShoot();
+    //return Commands.print("No autonomous command configured");
   }
+
+    public Command autoShoot() {
+    return new SequentialCommandGroup(
+        shooter.ShootAtSpeed(), 
+        new WaitUntilCommand(() -> shooter.isAtSpeed()),
+        hopper.RunHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC).withTimeout(6.7),
+        Commands.runOnce(() -> shooter.stop()));
+    }
 }

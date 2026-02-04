@@ -81,6 +81,12 @@ public final class Constants {
     }
   }
 
+  public final class FeatureFlags{
+    public static final boolean NEW_SHOOTER_LOGIC = false;
+    public static final boolean USE_VISION = true;
+    public static final boolean EXPERIMENTAL_AUTO = false;
+  }
+
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
 
@@ -173,7 +179,7 @@ public final class Constants {
     }
 
     public static enum SwerveDriveToPoseProfileValues {
-      SERRANO(5.067, 8, 5.067, 8),
+      SERRANO(2, 2, 2, 2),
       PROTO(0.5, 0.5, 0.2, 0.2),
       JAMES_HARDEN(0.5, 0.5, 0.2, 0.2),
       COBRA(0.5, 0.5, 0.2, 0.2);
