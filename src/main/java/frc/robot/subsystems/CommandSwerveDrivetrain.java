@@ -44,9 +44,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean m_hasAppliedOperatorPerspective = false;
 
-  private final PIDController m_pathXController = new PIDController(0.1, 0, 0);
-  private final PIDController m_pathYController = new PIDController(0.1, 0, 0);
-  private final PIDController m_pathThetaController = new PIDController(3.67, 0, 0);
+  private final PIDController m_pathXController = new PIDController(Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kPX, Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kIX, Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kDX);
+  private final PIDController m_pathYController = new PIDController(Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kPY, Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kIY, Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kDY);
+  private final PIDController m_pathThetaController = new PIDController(Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kPR, Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kIR, Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kDR);
 
   private SwerveDriveState currentState;
 
