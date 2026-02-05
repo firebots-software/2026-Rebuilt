@@ -52,6 +52,23 @@ public class DriveToPose extends Command {
     this.swerve = swerve;
     this.targetPose = targetPose;
 
+    path =
+        new LinearPath(
+            new TrapezoidProfile.Constraints(
+                Constants.Swerve.WHICH_SWERVE_ROBOT
+                    .SWERVE_DRIVE_TO_POSE_PROFILE_VALUES
+                    .maxVelocityLinear,
+                Constants.Swerve.WHICH_SWERVE_ROBOT
+                    .SWERVE_DRIVE_TO_POSE_PROFILE_VALUES
+                    .maxAccelerationLinear),
+            new TrapezoidProfile.Constraints(
+                Constants.Swerve.WHICH_SWERVE_ROBOT
+                    .SWERVE_DRIVE_TO_POSE_PROFILE_VALUES
+                    .maxVelocityAngular,
+                Constants.Swerve.WHICH_SWERVE_ROBOT
+                    .SWERVE_DRIVE_TO_POSE_PROFILE_VALUES
+                    .maxAccelerationAngular)); // constants
+
     addRequirements(swerve);
   }
 
@@ -89,7 +106,7 @@ public class DriveToPose extends Command {
   @Override
   public void initialize() {
     headingController.enableContinuousInput(-Math.PI, Math.PI);
-    
+
     startTime = Utils.getCurrentTimeSeconds();
 
     swerve.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0));
@@ -134,8 +151,7 @@ public class DriveToPose extends Command {
     }
 
     DogLog.log(
-        "CommandSwerveDrivetrain/DriveToPose/Current Pose X",
-        swerve.getCurrentState().Pose.getX());
+        "CommandSwerveDrivetrain/DriveToPose/Current Pose X", swerve.getCurrentState().Pose.getX());
     DogLog.log(
         "CommandSwerveDrivetrain/DriveToPose/Current Pose Y", swerve.getCurrentState().Pose.getY());
     DogLog.log(
