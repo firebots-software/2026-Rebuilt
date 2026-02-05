@@ -88,6 +88,8 @@ public class DriveToPose extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+    
     startTime = Utils.getCurrentTimeSeconds();
 
     swerve.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0));
@@ -133,7 +135,7 @@ public class DriveToPose extends Command {
 
     DogLog.log(
         "CommandSwerveDrivetrain/DriveToPose/Current Pose X",
-        swerve.getCurrentState().Pose.getX()); // fix logs
+        swerve.getCurrentState().Pose.getX());
     DogLog.log(
         "CommandSwerveDrivetrain/DriveToPose/Current Pose Y", swerve.getCurrentState().Pose.getY());
     DogLog.log(
@@ -147,7 +149,6 @@ public class DriveToPose extends Command {
     DogLog.log("CommandSwerveDrivetrain/DriveToPose/Curr time", currTime);
     DogLog.log("CommandSwerveDrivetrain/DriveToPose/Path created", path != null);
     DogLog.log("CommandSwerveDrivetrain/DriveToPose/Path state", pathState != null);
-    // DogLog.log("Init Target Pose Supplier", targetPoseSupplier.toString());
   }
 
   private boolean atPosition() {

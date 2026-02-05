@@ -92,7 +92,7 @@ public final class Constants {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
 
     public static final double targetPositionError = 0.25;
-    public static final double targetAngleError = 0.3;
+    public static final double targetAngleError = 0.175;
 
     public static enum SwerveLevel {
       L2(6.75, 21.428571428571427),
@@ -143,7 +143,7 @@ public final class Constants {
     }
 
     public static enum SwerveDriveToPosePIDValues {
-      SERRANO(12.67, 0, 0, 12.67, 0, 0, 5.67, 0, 0),
+      SERRANO(3.167, 0, 0, 4.167, 0, 0, 3.567, 0, 0),
       PROTO(0, 0, 0, 0, 0, 0, 0, 0, 0),
       JAMES_HARDEN(0, 0, 0, 0, 0, 0, 0, 0, 0),
       COBRA(2, 0, 0, 2, 0, 0, 5, 0, 0);
