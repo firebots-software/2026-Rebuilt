@@ -8,16 +8,19 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -49,6 +52,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
+
+  private ProfiledPIDController headingProfiledPIDController =
+      new ProfiledPIDController(
+          3.7, // 4 was good
+          0.4, //
+          0,
+          new TrapezoidProfile.Constraints(
+              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND - 1.5, // -1 was good
+              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND
+                  - 16)); // -13 was good
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation =
@@ -261,6 +274,30 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
               });
     }
+  }
+
+  // private void startSimThread() {
+  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+  //     /* Run simulation at a faster rate so PID gains behave more reasonably */
+  //     m_simNotifier = new Notifier(() -> {
+  //         final double currentTime = Utils.getCurrentTimeSeconds();
+  //         double deltaTime = currentTime - m_lastSimTime;
+  //         m_lastSimTime = currentTime;
+
+  //         /* use the measured time delta, get battery voltage from WPILib */
+  //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
+  //     });
+  //     m_simNotifier.startPeriodic(kSimLoopPeriod);
+  // }
+
+  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
+    double omega =
+        // headingProfiledPIDController.getSetpoint().velocity+
+        headingProfiledPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    return omega;
+  }
     if (this.getCurrentCommand() != null) {
       DogLog.log("CommandSwerveDrivetrain/String command", this.getCurrentCommand().toString());
     }

@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -333,6 +334,20 @@ public final class Constants {
         INVERTED_MODULES = invertedModules;
       }
     }
+
+    // TODO: CHANGE FOR NEW ROBOT
+    // these outline the speed calculations
+    public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.868;
+    // 5.944; // before: 4.8768;// 18ft/s = 5.486, 19m/s = 5.791ft/s, 19.5m/s = 5.944 ft/s,
+    public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 10.917;
+    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
+    public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
+    public static final double TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND = 8;
+    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
+        (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
+    public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
+    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
+        26.971;
   }
 
   public static class Climber {
@@ -501,5 +516,68 @@ public final class Constants {
     public static final double SHOOTER_WHEEL_GEAR_RATIO = 1.25;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 104.72;
+
+    public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
+
+    public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
+
+    public static final boolean SHOOTS_BACKWARDS = false;
+
+    public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
+
+    public static final int TARGETING_CALCULATION_PRECISION = 5;
+  }
+
+  public static class OI {
+    public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
+    public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
+    public static final int JOYSTICK_A_PORT = 0;
+
+    public enum XBoxButtonID {
+      A(1),
+      B(2),
+      X(3),
+      Y(4),
+      LeftBumper(5),
+      RightBumper(6),
+      LeftStick(9),
+      RightStick(10),
+      Back(7),
+      Start(8);
+      public final int value;
+
+      XBoxButtonID(int value) {
+        this.value = value;
+      }
+    }
+
+    public enum AxisID {
+      /** Left X. */
+      LeftX(0),
+      /** Right X. */
+      RightX(4),
+      /** Left Y. */
+      LeftY(1),
+      /** Right Y. */
+      RightY(5),
+      /** Left trigger. */
+      LeftTrigger(2),
+      /** Right trigger. */
+      RightTrigger(3);
+
+      /** Axis value. */
+      public final int value;
+
+      AxisID(int value) {
+        this.value = value;
+      }
+    }
+  }
+
+  public static class Landmarks {
+    public static Pose3d BLUE_HUB =
+        new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
+    public static Pose3d RED_HUB =
+        new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
   }
 }

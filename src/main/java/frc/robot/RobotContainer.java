@@ -9,21 +9,26 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.DriveToPose;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import frc.robot.util.MiscUtils;
 
 public class RobotContainer {
@@ -43,6 +48,9 @@ public class RobotContainer {
               DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+  private BooleanSupplier redside = () -> redAlliance;
+  private static boolean redAlliance;
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -66,21 +74,33 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Note that X is defined as forward according to WPILib convention,
-    // and Y is defined as to the left according to WPILib convention.
-    drivetrain.setDefaultCommand(
-        // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(
+    Trigger leftTrigger = joystick.leftTrigger();
+    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+        leftRightFunction = () -> -joystick.getLeftX(),
+        rotationFunction = () -> -joystick.getRightX(),
+        speedFunction =
             () ->
-                drive
-                    .withVelocityX(
-                        -joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(
-                        -joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(
-                        -joystick.getRightX()
-                            * MaxAngularRate) // Drive counterclockwise with negative X (left)
-            ));
+                leftTrigger.getAsBoolean()
+                    ? 0d
+                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
+
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
+            redside,
+            (BooleanSupplier)
+                (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
+            drivetrain);
+
+    drivetrain.setDefaultCommand(swerveJoystickCommand);
+
+    if (Constants.shooterOnRobot) {
+      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+    }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick
@@ -131,9 +151,19 @@ public class RobotContainer {
           .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
     }
 
-    if (Constants.shooterOnRobot) {
-      joystick.rightTrigger().whileTrue(lebron.ShootAtSpeed());
-    }
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(5, 0))));
+
+    joystick
+        .y()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plusWithRotation(drivetrain.getCurrentState().Pose, new Pose2d(new Translation2d(2, 2), new Rotation2d(90)))));
 
     joystick
         .x()
@@ -151,6 +181,14 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
+
+  public static void setAlliance() {
+    redAlliance =
+        (DriverStation.getAlliance().isEmpty())
+            ? false
+            : (DriverStation.getAlliance().get() == Alliance.Red);
+  }
+
   public Command getAutonomousCommand() {
     return autoShoot();
     //return Commands.print("No autonomous command configured");
