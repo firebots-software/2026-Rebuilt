@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     RobotContainer.setAlliance();
     DogLog.setOptions(
-        new DogLogOptions().withNtPublish(false).withCaptureDs(true).withLogExtras(true));
+        new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
   }
 
   /**
