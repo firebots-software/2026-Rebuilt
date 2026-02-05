@@ -147,7 +147,7 @@ public class DriveToPose extends Command {
                       pathState.pose.getRotation().getRadians()));
 
       // Apply the generated speeds
-      swerve.applyFieldSpeeds(speeds);
+      swerve.applyFieldSpeeds(new ChassisSpeeds(-speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond));
     }
 
     DogLog.log(
