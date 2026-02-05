@@ -390,26 +390,26 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
     // placeholder constants for now; will be updated once robot is delivered
-    public static final double RIGHT_X = Units.inchesToMeters(8.867);
-    public static final double RIGHT_Y = Units.inchesToMeters(-12.4787);
-    public static final double RIGHT_Z = Units.inchesToMeters(6.158);
+    public static final double RIGHT_X = Units.inchesToMeters(6.70);
+    public static final double RIGHT_Y = Units.inchesToMeters(-4.125);
+    public static final double RIGHT_Z = Units.inchesToMeters(40.875);
     public static final double RIGHT_ROLL = Units.degreesToRadians(0.0);
     public static final double RIGHT_PITCH = Units.degreesToRadians(-12.5);
     public static final double RIGHT_YAW = Units.degreesToRadians(40);
 
-    public static final double LEFT_X = Units.inchesToMeters(8.867);
-    public static final double LEFT_Y = Units.inchesToMeters(12.478);
-    public static final double LEFT_Z = Units.inchesToMeters(6.158);
+    public static final double LEFT_X = Units.inchesToMeters(6.70);
+    public static final double LEFT_Y = Units.inchesToMeters(4.125);
+    public static final double LEFT_Z = Units.inchesToMeters(40.875);
     public static final double LEFT_ROLL = Units.degreesToRadians(0.0);
-    public static final double LEFT_PITCH = Units.degreesToRadians(-12.5);
-    public static final double LEFT_YAW = Units.degreesToRadians(-40);
+    public static final double LEFT_PITCH = Units.degreesToRadians(8.7);
+    public static final double LEFT_YAW = Units.degreesToRadians(0.0);
 
     public static final double COLOR_X = Units.inchesToMeters(8.867);
     public static final double COLOR_Y = Units.inchesToMeters(12.478);
     public static final double COLOR_Z = Units.inchesToMeters(6.158);
     public static final double COLOR_ROLL = Units.degreesToRadians(0.0);
-    public static final double COLOR_PITCH = Units.degreesToRadians(-12.5);
-    public static final double COLOR_YAW = Units.degreesToRadians(-40);
+    public static final double COLOR_PITCH = Units.degreesToRadians(8.7);
+    public static final double COLOR_YAW = Units.degreesToRadians(0.0);
 
     // initializing Transform3d for use in future field visualization
     public static Transform3d getCameraTransform(Cameras camera) {
