@@ -10,14 +10,20 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -26,6 +32,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -63,6 +70,8 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
+  public final HopperSubsystem hopper = new HopperSubsystem();
 
   private final AutoFactory autoFactory;
 
@@ -187,6 +196,34 @@ public class RobotContainer {
 
     joystick.x().whileTrue(trajCommand);
 
+    joystick.x().whileTrue(trajCommand);
+
+    joystick
+        .x()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () ->
+                    MiscUtils.plus(
+                        drivetrain.getCurrentState().Pose, new Translation2d(-5, 0)))); // x is neg
+
+    joystick
+        .povDown()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(0, 4))));
+
+    joystick
+        .y()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () ->
+                    MiscUtils.plusWithRotation(
+                        drivetrain.getCurrentState().Pose,
+                        new Pose2d(new Translation2d(2, 2), new Rotation2d(1.5708)))));
+
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
@@ -198,6 +235,15 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.selectedCommand();
+    return autoShoot();
+    // return autoChooser.selectedCommand();
+  }
+
+  public Command autoShoot() {
+    return new SequentialCommandGroup(
+        shooter.ShootAtSpeed(),
+        new WaitUntilCommand(() -> shooter.isAtSpeed()),
+        hopper.RunHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC).withTimeout(6.7),
+        Commands.runOnce(() -> shooter.stop()));
   }
 }

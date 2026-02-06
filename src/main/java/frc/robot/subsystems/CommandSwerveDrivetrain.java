@@ -10,9 +10,11 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -277,8 +279,38 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return currentState;
   }
 
+  public ChassisSpeeds getRobotSpeeds() {
+    return currentState.Speeds;
+  }
+
   public void applyFieldSpeeds(ChassisSpeeds speeds) {
     setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
+  }
+
+  public Pose2d getPose() {
+    return currentState.Pose;
+  }
+
+  public double distanceToPose(Pose2d target) {
+    return getPose().getTranslation().getDistance(target.getTranslation());
+  }
+
+  public Rotation2d travelAngleTo(Pose2d targetPose) {
+    double deltaX = targetPose.getX() - getCurrentState().Pose.getX();
+    double deltaY = targetPose.getY() - getCurrentState().Pose.getY();
+    return new Rotation2d(Math.atan2(deltaY, deltaX));
+  }
+
+  public void resetPose(Pose2d pose) { // new
+    super.resetPose(pose);
+  }
+
+  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
+    double omega =
+        // headingProfiledPIDController.getSetpoint().velocity+
+        headingProfiledPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    return omega;
   }
 
   @Override
@@ -303,12 +335,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
               });
     }
+
     if (this.getCurrentCommand() != null) {
       DogLog.log("CommandSwerveDrivetrain/String command", this.getCurrentCommand().toString());
     }
+
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getX());
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getY());
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getRotation());
+    DogLog.log("CommandSwerveDrivetrain/CurrPoseY", getCurrentState().Pose.getY());
+    DogLog.log("CommandSwerveDrivetrain/CurrPoseRotation", getCurrentState().Pose.getRotation().getRadians());
   }
 
   // private void startSimThread() {
@@ -325,12 +359,4 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     });
   //     m_simNotifier.startPeriodic(kSimLoopPeriod);
   // }
-
-  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
-    double omega =
-        // headingProfiledPIDController.getSetpoint().velocity+
-        headingProfiledPIDController.calculate(
-            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
-    return omega;
-  }
 }
