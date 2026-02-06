@@ -56,11 +56,6 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  private final AutoFactory autoFactory;
-  private final AutoRoutines autoRoutines;
-
-  private final AutoChooser autoChooser = new AutoChooser();
-
   public final ClimberSubsystem climberSubsystem =
       Constants.climberOnRobot ? new ClimberSubsystem() : null;
   public final HopperSubsystem hopperSubsystem =
@@ -68,6 +63,12 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+
+  private final AutoFactory autoFactory;
+
+  private final AutoRoutines autoRoutines;
+
+  private final AutoChooser autoChooser = new AutoChooser();
 
   public RobotContainer() {
     autoFactory = drivetrain.createAutoFactory();
