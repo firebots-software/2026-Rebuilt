@@ -288,8 +288,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getX());
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getY());
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getRotation());
+    DogLog.log("CommandSwerveDrivetrain/CurrPoseY", getCurrentState().Pose.getY());
+    DogLog.log("CommandSwerveDrivetrain/CurrPoseRotation", getCurrentState().Pose.getRotation().getRadians());
   }
 
   // private void startSimThread() {

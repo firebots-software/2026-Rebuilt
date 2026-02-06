@@ -118,10 +118,9 @@ public class DriveToPose extends Command {
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
 
-    // DogLog.log("Init Current Pose", swerve.getCurrentState().Pose);
-    // DogLog.log("Init Target Pose", targetPose);
-    // DogLog.log("Init Path created", path != null);
-    // DogLog.log("Init Path state", pathState != null);
+    DogLog.log("Swerve/Drive To Pose/Init Target Pose X", targetPose.getX());
+    DogLog.log("Swerve/Drive To Pose/Init Target Pose Y", targetPose.getY());
+    DogLog.log("Swerve/Drive To Pose/Init Target Pose Rotation", targetPose.getRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -149,22 +148,6 @@ public class DriveToPose extends Command {
       // Apply the generated speeds
       swerve.applyFieldSpeeds(speeds);
     }
-
-    DogLog.log(
-        "CommandSwerveDrivetrain/DriveToPose/Current Pose X", swerve.getCurrentState().Pose.getX());
-    DogLog.log(
-        "CommandSwerveDrivetrain/DriveToPose/Current Pose Y", swerve.getCurrentState().Pose.getY());
-    DogLog.log(
-        "CommandSwerveDrivetrain/DriveToPose/Current Pose Rotation",
-        swerve.getCurrentState().Pose.getRotation().getRadians());
-    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Target Pose X", targetPose.getX());
-    DogLog.log(
-        "CommandSwerveDrivetrain/DriveToPose/Target Pose Rotation",
-        targetPose.getRotation().getRadians());
-    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Target Pose Y", targetPose.getY());
-    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Curr time", currTime);
-    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Path created", path != null);
-    DogLog.log("CommandSwerveDrivetrain/DriveToPose/Path state", pathState != null);
   }
 
   private boolean atPosition() {
