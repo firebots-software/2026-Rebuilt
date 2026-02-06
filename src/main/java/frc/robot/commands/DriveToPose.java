@@ -147,7 +147,7 @@ public class DriveToPose extends Command {
                       pathState.pose.getRotation().getRadians()));
 
       // Apply the generated speeds
-      swerve.applyFieldSpeeds(new ChassisSpeeds(-speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond));
+      swerve.applyFieldSpeeds(speeds);
     }
 
     DogLog.log(
@@ -172,8 +172,9 @@ public class DriveToPose extends Command {
             <= Constants.Swerve.targetPositionError)
         && (Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
             <= Constants.Swerve.targetPositionError)
-        && (Math.abs(swerve.getCurrentState().Pose.getRotation().getRadians())
-                - targetPose.getRotation().getRadians()
+        && (Math.abs(
+                swerve.getCurrentState().Pose.getRotation().getRadians()
+                    - targetPose.getRotation().getRadians())
             <= Constants.Swerve.targetAngleError);
   }
 

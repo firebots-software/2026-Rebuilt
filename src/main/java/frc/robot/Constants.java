@@ -143,7 +143,7 @@ public final class Constants {
     }
 
     public static enum SwerveDriveToPosePIDValues {
-      SERRANO(3.167, 0, 0, 4.167, 0, 0, 3.567, 0, 0),
+      SERRANO(3.067, 0, 0, 4.167, 0, 0, 3.667, 0, 0),
       PROTO(0, 0, 0, 0, 0, 0, 0, 0, 0),
       JAMES_HARDEN(0, 0, 0, 0, 0, 0, 0, 0, 0),
       COBRA(2, 0, 0, 2, 0, 0, 5, 0, 0);

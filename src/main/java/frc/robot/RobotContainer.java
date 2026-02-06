@@ -158,7 +158,9 @@ public class RobotContainer {
         .whileTrue(
             new DriveToPose(
                 drivetrain,
-                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
+                () ->
+                    MiscUtils.plus(
+                        drivetrain.getCurrentState().Pose, new Translation2d(-2, 0)))); // x is neg
 
     joystick
         .povDown()
