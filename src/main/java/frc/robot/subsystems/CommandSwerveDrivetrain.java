@@ -2,12 +2,17 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import choreo.Choreo.TrajectoryLogger;
+import choreo.auto.AutoFactory;
+import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -39,6 +44,22 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean m_hasAppliedOperatorPerspective = false;
+
+  private final PIDController m_pathXController =
+      new PIDController(
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kPX,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kIX,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kDX);
+  private final PIDController m_pathYController =
+      new PIDController(
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kPY,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kIY,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kDY);
+  private final PIDController m_pathThetaController =
+      new PIDController(
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kPR,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kIR,
+          Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kDR);
 
   private SwerveDriveState currentState;
 
@@ -188,6 +209,38 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         startSimThread();
     }
     */
+  }
+
+  public AutoFactory createAutoFactory() {
+    return createAutoFactory((sample, isStart) -> {});
+  }
+
+  public AutoFactory createAutoFactory(TrajectoryLogger<SwerveSample> trajLogger) {
+    return new AutoFactory(
+        () -> getCurrentState().Pose,
+        this::resetPose,
+        this::followPath,
+        true,
+        this,
+        trajLogger); // getState().pose
+  }
+
+  public void followPath(SwerveSample sample) {
+    m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI); // every run?
+
+    var pose = getState().Pose;
+
+    var targetSpeeds = sample.getChassisSpeeds();
+    targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
+    targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
+    targetSpeeds.omegaRadiansPerSecond +=
+        m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
+
+    setControl(
+        m_pathApplyFieldSpeeds
+            .withSpeeds(targetSpeeds)
+            .withWheelForceFeedforwardsX(sample.moduleForcesX())
+            .withWheelForceFeedforwardsY(sample.moduleForcesY()));
   }
 
   /**
