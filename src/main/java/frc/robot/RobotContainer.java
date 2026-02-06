@@ -75,13 +75,21 @@ public class RobotContainer {
     autoRoutines = new AutoRoutines(autoFactory);
 
     Command redClimb =
-        autoFactory.resetOdometry("RedClimb.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        autoFactory
+            .resetOdometry("RedClimb.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
     Command redDepot =
-        autoFactory.resetOdometry("RedDepot.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        autoFactory
+            .resetOdometry("RedDepot.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
     Command redOutpost =
-        autoFactory.resetOdometry("RedOutpost.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        autoFactory
+            .resetOdometry("RedOutpost.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
     Command moveForward =
-        autoFactory.resetOdometry("MoveForward.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        autoFactory
+            .resetOdometry("MoveForward.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
 
     autoChooser.addCmd("redClimb", () -> redClimb);
     autoChooser.addCmd("redDepot", () -> redDepot);
