@@ -74,10 +74,19 @@ public class RobotContainer {
     autoFactory = drivetrain.createAutoFactory();
     autoRoutines = new AutoRoutines(autoFactory);
 
-    Command trajCommand =
-        autoFactory.resetOdometry("RedOutpost.traj").andThen(autoFactory.trajectoryCmd("RedOutpost.traj"));
+    Command redClimb =
+        autoFactory.resetOdometry("RedClimb.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command redDepot =
+        autoFactory.resetOdometry("RedDepot.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command redOutpost =
+        autoFactory.resetOdometry("RedOutpost.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command moveForward =
+        autoFactory.resetOdometry("MoveForward.traj").andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
 
-    autoChooser.addCmd("sequence", () -> trajCommand);
+    autoChooser.addCmd("redClimb", () -> redClimb);
+    autoChooser.addCmd("redDepot", () -> redDepot);
+    autoChooser.addCmd("redOutpost", () -> redOutpost);
+    autoChooser.addCmd("moveForward", () -> moveForward);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
