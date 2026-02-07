@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -189,6 +190,10 @@ public class RobotContainer {
 
     if (Constants.hopperOnRobot) {
       joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+    }
+
+    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+      joystick.leftBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
