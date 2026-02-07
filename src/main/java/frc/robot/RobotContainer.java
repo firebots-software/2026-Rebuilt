@@ -90,11 +90,16 @@ public class RobotContainer {
         autoFactory
             .resetOdometry("MoveForward.traj")
             .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command niceAndLongPath =
+        autoFactory
+            .resetOdometry("NiceAndLongPath.traj")
+            .andThen(autoFactory.trajectoryCmd("NiceAndLongPath.traj"));
 
     autoChooser.addCmd("redClimb", () -> redClimb);
     autoChooser.addCmd("redDepot", () -> redDepot);
     autoChooser.addCmd("redOutpost", () -> redOutpost);
     autoChooser.addCmd("moveForward", () -> moveForward);
+    autoChooser.addCmd("niceLongPath", () -> niceAndLongPath);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 

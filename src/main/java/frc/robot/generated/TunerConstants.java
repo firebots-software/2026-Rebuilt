@@ -96,7 +96,7 @@ public class TunerConstants {
       Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_LEVEL.DRIVE_GEAR_RATIO;
   private static final double kSteerGearRatio =
       Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_LEVEL.STEER_GEAR_RATIO;
-  private static final Distance kWheelRadius = Inches.of(4);
+  private static final Distance kWheelRadius = Inches.of(2);
 
   private static final boolean kInvertLeftSide = false;
   private static final boolean kInvertRightSide = true;

@@ -69,8 +69,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
       new SwerveRequest.SysIdSwerveRotation();
 
-  private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
-      new SwerveRequest.ApplyFieldSpeeds();
+  private final SwerveRequest.ApplyRobotSpeeds m_pathApplyFieldSpeeds =
+      new SwerveRequest.ApplyRobotSpeeds();
 
   private ProfiledPIDController headingProfiledPIDController =
       new ProfiledPIDController(
@@ -304,11 +304,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
               });
     }
     if (this.getCurrentCommand() != null) {
-      DogLog.log("CommandSwerveDrivetrain/String command", this.getCurrentCommand().toString());
+      DogLog.log("Subsystems/Swerve/Current Command", this.getCurrentCommand().toString());
     }
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getX());
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getY());
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getRotation());
   }
 
   // private void startSimThread() {
