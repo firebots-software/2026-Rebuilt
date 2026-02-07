@@ -41,7 +41,8 @@ public class HopperSubsystem extends SubsystemBase {
   public void runHopper(double speedMetersPerSec) {
     targetSpeed = speedMetersPerSec;
     motor.setControl(
-        new VelocityVoltage(speedMetersPerSec / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
+        new VelocityVoltage(
+            speedMetersPerSec / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
   }
 
   public void stop() {
