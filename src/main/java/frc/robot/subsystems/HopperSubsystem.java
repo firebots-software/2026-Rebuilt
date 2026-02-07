@@ -7,13 +7,14 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
-
 import dev.doglog.DogLog;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,11 +24,15 @@ import frc.robot.util.LoggedTalonFX;
 public class HopperSubsystem extends SubsystemBase {
 
   private final LoggedTalonFX motor;
-  private double targetSpeed = 0;
+  private double targetSurfaceSpeed = 0;
 
   // Simulation objects
   private TalonFXSimState motorSimState;
   private DCMotorSim physicsSim;
+
+  private static final double SIM_DT_SEC = 0.020;
+  private static final double HOPPER_MECHANISM_REDUCTION = 5.0; // motor:mechanism
+  private static final double ESTIMATED_J_KG_M2 = 0.0012;
 
   public HopperSubsystem() {
     CurrentLimitsConfigs clc =
@@ -50,52 +55,39 @@ public class HopperSubsystem extends SubsystemBase {
     motor.getConfigurator().apply(clc);
     motor.getConfigurator().apply(moc);
 
-    // Initialize simulation
     if (RobotBase.isSimulation()) {
       setupSimulation();
     }
   }
 
   private void setupSimulation() {
-    // Get SimState from the underlying TalonFX
-    // If LoggedTalonFX extends TalonFX: motor.getSimState()
-    // If LoggedTalonFX wraps TalonFX: motor.getTalonFX().getSimState() or similar
     motorSimState = motor.getSimState();
-
-    // Set mechanical orientation (usually CCW+ for single motor mechanisms)
     motorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-
-    // Set motor type for accurate physics
     motorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
-    // Create physics model for the hopper mechanism
-    // Assuming hopper is a flywheel-like mechanism or pulley system
-    // Adjust these constants based on your actual mechanism
-    double momentOfInertiaKgM2 = 0.001; // Adjust based on your pulley/mass
-    double gearRatio = 1.0; // Adjust if you have gearing
-
     var gearbox = DCMotor.getKrakenX60Foc(1);
-    
-    physicsSim = new DCMotorSim(
-        LinearSystemId.createDCMotorSystem(gearbox, momentOfInertiaKgM2, gearRatio),
-        gearbox
-    );
+
+    physicsSim =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(
+                gearbox, ESTIMATED_J_KG_M2, HOPPER_MECHANISM_REDUCTION),
+            gearbox);
   }
 
   public void runHopper(double speed) {
-    targetSpeed = speed;
+    targetSurfaceSpeed = speed;
     motor.setControl(
         new VelocityVoltage(speed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
   }
 
   public void stop() {
-    targetSpeed = 0;
+    targetSurfaceSpeed = 0;
     motor.setControl(new VelocityVoltage(0));
   }
 
   public boolean atSpeed() {
     return motor.getVelocity().getValueAsDouble()
-            - targetSpeed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL
+            - targetSurfaceSpeed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL
         <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
   }
 
@@ -113,27 +105,36 @@ public class HopperSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // Update supply voltage (battery simulation)
+    if (motorSimState == null || physicsSim == null) return;
+
+    // 1) Supply voltage to CTRE sim
     motorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    // Get the voltage the motor controller is applying
-    var motorVoltage = motorSimState.getMotorVoltageMeasure();
+    // 2) Read applied motor voltage and step mechanism plant
+    double appliedVolts =
+        motorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+    physicsSim.setInputVoltage(appliedVolts);
+    physicsSim.update(SIM_DT_SEC);
 
-    // Update physics simulation with the applied voltage
-    physicsSim.setInputVoltage(motorVoltage.in(edu.wpi.first.units.Units.Volts));
-    physicsSim.update(0.020); // 20ms update period
+    // 3) Mechanism-side sim -> rotor-side sensor state
+    double mechPosRot = physicsSim.getAngularPositionRotations();
+    double mechVelRps = physicsSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
 
-    // Feed physics results back to CTRE simulation
-    // Note: DCMotorSim returns mechanism position/velocity (after gear ratio)
-    // TalonFX expects rotor position/velocity (before gear ratio)
-    // If gear ratio is 1.0, they're the same
-    double gearRatio = 1.0; // Adjust if different
-    
-    motorSimState.setRawRotorPosition(
-        physicsSim.getAngularPosition().times(gearRatio)
-    );
-    motorSimState.setRotorVelocity(
-        physicsSim.getAngularVelocity().times(gearRatio)
-    );
+    double rotorPosRot = mechPosRot * HOPPER_MECHANISM_REDUCTION;
+    double rotorVelRps = mechVelRps * HOPPER_MECHANISM_REDUCTION;
+
+    motorSimState.setRawRotorPosition(rotorPosRot);
+    motorSimState.setRotorVelocity(rotorVelRps);
+
+    // 4) Battery sag model
+    double loadedV =
+        BatterySim.calculateDefaultBatteryLoadedVoltage(physicsSim.getCurrentDrawAmps());
+    RoboRioSim.setVInVoltage(loadedV);
+
+    DogLog.log("Hopper/Sim/AppliedVolts", appliedVolts);
+    DogLog.log("Hopper/Sim/MechVelRps", mechVelRps);
+    DogLog.log("Hopper/Sim/RotorVelRps", rotorVelRps);
+    DogLog.log("Hopper/Sim/CurrentAmps", physicsSim.getCurrentDrawAmps());
+    DogLog.log("Hopper/Sim/BatteryV", loadedV);
   }
 }
