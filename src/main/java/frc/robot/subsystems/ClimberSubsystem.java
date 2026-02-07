@@ -128,15 +128,15 @@ public class ClimberSubsystem extends SubsystemBase {
 
   // Comands
   public Command SetMuscleUpToAngle(double angle) {
-    return Commands.runOnce(() -> setMuscleUpPosition(angle), this);
+    return Commands.run(() -> setMuscleUpPosition(angle), this).until(() -> isMuscleUpAtPosition());
   }
 
   public Command SetPullUpToPosition(double position) {
-    return Commands.runOnce(() -> setPullUpPosition(position), this);
+    return Commands.run(() -> setPullUpPosition(position), this).until(() -> isPullUpAtPosition());
   }
 
   public Command SetSitUpToAngle(double angle) {
-    return Commands.runOnce(() -> setSitUpPosition(angle), this);
+    return Commands.run(() -> setSitUpPosition(angle), this).until(() -> isSitUpAtPosition());
   }
 
   public Command L1Climb() {
