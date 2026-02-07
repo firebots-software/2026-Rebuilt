@@ -25,6 +25,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
+  public static final class Simulation {
+    public static final double SIM_LOOP_PERIOD_SECONDS =
+        0.020; // time between updating the simulator
+  }
+
   public static final class Intake {
     public static final class Arm {
       public static final MotorConstants ARM_MOTOR = new MotorConstants(34);
@@ -389,6 +394,8 @@ public final class Constants {
     public static final double HOPPER_SUPPLY_LIMIT = 30.0;
 
     public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = .1;
+
+    public static final double ESTIMATED_HOPPER_MOI_KG_M2 = 0.0012;
   }
 
   public static class Vision {
