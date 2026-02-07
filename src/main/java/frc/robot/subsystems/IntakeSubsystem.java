@@ -140,16 +140,16 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
     armMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
-    var kraken = DCMotor.getKrakenX60Foc(1);
+    var krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
 
     intakeMechanismSim =
         new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(kraken, INTAKE_SIM_MOI_KG_M2, INTAKE_MECH_RATIO),
-            kraken);
+            LinearSystemId.createDCMotorSystem(krakenGearboxModel, INTAKE_SIM_MOI_KG_M2, INTAKE_MECH_RATIO),
+            krakenGearboxModel);
 
     armMechanismSim =
         new SingleJointedArmSim(
-            kraken,
+            krakenGearboxModel,
             ARM_MECH_RATIO,
             ARM_SIM_MOI_KG_M2,
             ARM_LENGTH_METERS,
