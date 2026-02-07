@@ -9,7 +9,6 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -21,7 +20,6 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
-  private VisionSubsystem visionRight, visionLeft;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -32,19 +30,10 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    if (Constants.visionOnRobot) {
-      visionRight = VisionSubsystem.getInstance(Constants.Vision.Cameras.RIGHT_CAM, () -> true);
-      visionLeft = VisionSubsystem.getInstance(Constants.Vision.Cameras.LEFT_CAM, () -> true);
-
-    } else {
-      visionRight = null;
-      visionLeft = null;
-    }
   }
 
   @Override
   public void robotInit() {
-    RobotContainer.setAlliance();
     DogLog.setOptions(
         new DogLogOptions().withNtPublish(false).withCaptureDs(true).withLogExtras(true));
   }
@@ -64,10 +53,6 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    if (Constants.visionOnRobot) {
-      visionRight.addFilteredPose();
-      visionLeft.addFilteredPose();
-    }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
