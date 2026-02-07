@@ -29,7 +29,8 @@ public class HopperSubsystem extends SubsystemBase {
   private TalonFXSimState hopperMotorSimState;
   private DCMotorSim hopperMechanismSim;
 
-  private static final double SIM_LOOP_PERIOD_SECONDS = 0.020; // time between updating the simulator
+  private static final double SIM_LOOP_PERIOD_SECONDS =
+      0.020; // time between updating the simulator
   private static final double MOTOR_TO_HOPPER_MECHANISM_RATIO = 5.0; // motor:mechanism
   private static final double ESTIMATED_HOPPER_MOI_KG_M2 = 0.0012;
 
@@ -78,7 +79,9 @@ public class HopperSubsystem extends SubsystemBase {
   public void runHopper(double targetSurfaceSpeedMetersPerSecond) {
     this.targetSurfaceSpeedMetersPerSecond = targetSurfaceSpeedMetersPerSecond;
     hopperMotor.setControl(
-        new VelocityVoltage(targetSurfaceSpeedMetersPerSecond / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
+        new VelocityVoltage(
+            targetSurfaceSpeedMetersPerSecond
+                / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
   }
 
   public void stop() {
@@ -88,8 +91,11 @@ public class HopperSubsystem extends SubsystemBase {
 
   public boolean atSpeed() {
     double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
-    double targetMotorSpeedRotationsPerSecond = targetSurfaceSpeedMetersPerSecond / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL;
-    return measuredMotorSpeedRotationsPerSecond - targetMotorSpeedRotationsPerSecond <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
+    double targetMotorSpeedRotationsPerSecond =
+        targetSurfaceSpeedMetersPerSecond
+            / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL;
+    return measuredMotorSpeedRotationsPerSecond - targetMotorSpeedRotationsPerSecond
+        <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
   }
 
   // Commands
@@ -100,7 +106,9 @@ public class HopperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Hopper/MotorSpeedRotationsPerSecond", hopperMotor.getVelocity().getValueAsDouble());
+    DogLog.log(
+        "Subsystems/Hopper/MotorSpeedRotationsPerSecond",
+        hopperMotor.getVelocity().getValueAsDouble());
     DogLog.log("Subsystems/sHopper/AtSpeed", atSpeed());
   }
 
@@ -119,10 +127,13 @@ public class HopperSubsystem extends SubsystemBase {
 
     // 3) Mechanism-side sim -> rotor-side sensor state
     double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
-    double hopperMechanismVelocityRotationsPerSecond = hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+    double hopperMechanismVelocityRotationsPerSecond =
+        hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
 
-    double motorRotorPositionRotations = hopperMechanismPositionRotations * MOTOR_TO_HOPPER_MECHANISM_RATIO;
-    double motorRotorVelocityRotationsPerSecond = hopperMechanismVelocityRotationsPerSecond * MOTOR_TO_HOPPER_MECHANISM_RATIO;
+    double motorRotorPositionRotations =
+        hopperMechanismPositionRotations * MOTOR_TO_HOPPER_MECHANISM_RATIO;
+    double motorRotorVelocityRotationsPerSecond =
+        hopperMechanismVelocityRotationsPerSecond * MOTOR_TO_HOPPER_MECHANISM_RATIO;
 
     hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
     hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
@@ -133,8 +144,12 @@ public class HopperSubsystem extends SubsystemBase {
     RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
 
     DogLog.log("Subsystems/Hopper/Sim/AppliedMotorVoltageVolts", appliedMotorVoltageVolts);
-    DogLog.log("Subsystems/Hopper/Sim/HopperMechanismVelocityRotationsPerSecond", hopperMechanismVelocityRotationsPerSecond);
-    DogLog.log("Subsystems/Hopper/Sim/MotorRotorVelocityRotationsPerSecond", motorRotorVelocityRotationsPerSecond);
+    DogLog.log(
+        "Subsystems/Hopper/Sim/HopperMechanismVelocityRotationsPerSecond",
+        hopperMechanismVelocityRotationsPerSecond);
+    DogLog.log(
+        "Subsystems/Hopper/Sim/MotorRotorVelocityRotationsPerSecond",
+        motorRotorVelocityRotationsPerSecond);
     DogLog.log("Subsystems/Hopper/Sim/MotorCurrentAmps", hopperMechanismSim.getCurrentDrawAmps());
     DogLog.log("Subsystems/Hopper/Sim/LoadedBatteryVoltageVolts", loadedBatteryVoltageVolts);
   }

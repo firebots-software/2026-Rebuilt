@@ -15,8 +15,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
@@ -26,8 +26,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -58,7 +58,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private static final double ARM_MECH_RATIO = 1.0 / Constants.Intake.Arm.MOTOR_ROTS_TO_ARM_ROTS;
   private static final double ARM_LENGTH_METERS = 0.35;
   private static final double ARM_MIN_ANGLE_RAD = Math.toRadians(0.0);
-  private static final double ARM_MAX_ANGLE_RAD = Math.toRadians(Constants.Intake.Arm.ARM_DEGREES_UPPER_LIMIT);
+  private static final double ARM_MAX_ANGLE_RAD =
+      Math.toRadians(Constants.Intake.Arm.ARM_DEGREES_UPPER_LIMIT);
 
   public IntakeSubsystem() {
     intakeMotor = new LoggedTalonFX(Constants.Intake.INTAKE_MOTOR.port);
@@ -144,7 +145,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeMechanismSim =
         new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(krakenGearboxModel, INTAKE_SIM_MOI_KG_M2, INTAKE_MECH_RATIO),
+            LinearSystemId.createDCMotorSystem(
+                krakenGearboxModel, INTAKE_SIM_MOI_KG_M2, INTAKE_MECH_RATIO),
             krakenGearboxModel);
 
     armMechanismSim =
@@ -192,7 +194,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public double getEncoderPosition() {
     // Motor rotations -> arm degrees
-    return armMotor.getPosition().getValueAsDouble() * Constants.Intake.Arm.MOTOR_ROTS_TO_ARM_DEGREES;
+    return armMotor.getPosition().getValueAsDouble()
+        * Constants.Intake.Arm.MOTOR_ROTS_TO_ARM_DEGREES;
   }
 
   public double getEncoderPositionRaw() {
@@ -204,6 +207,7 @@ public class IntakeSubsystem extends SubsystemBase {
             intakeMotor.getVelocity().getValueAsDouble() - Constants.Intake.INTAKE_TARGET_SPEED)
         <= Constants.Intake.Arm.ARM_TOLERANCE_DEGREES;
   }
+
   // Commands
   public Command runIntake() {
     return Commands.runEnd(() -> this.run(Constants.Intake.INTAKE_TARGET_SPEED), this::stop, this);
