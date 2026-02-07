@@ -40,10 +40,10 @@ public class HopperSubsystem extends SubsystemBase {
     motor.getConfigurator().apply(moc);
   }
 
-  public void runHopper(double speed) {
-    targetSpeed = speed;
+  public void runHopper(double speedMetersPerSec) {
+    targetSpeed = speedMetersPerSec;
     motor.setControl(
-        new VelocityVoltage(speed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
+        new VelocityVoltage(speedMetersPerSec / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL));
   }
 
   public void stop() {
@@ -64,8 +64,8 @@ public class HopperSubsystem extends SubsystemBase {
         () -> this.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC), this::stop, this);
   }
 
-  public Command runHopperCommand(double speed) {
-    return Commands.runEnd(() -> this.runHopper(speed), this::stop, this);
+  public Command runHopperCommand(double speedMetersPerSec) {
+    return Commands.runEnd(() -> this.runHopper(speedMetersPerSec), this::stop, this);
   }
 
   @Override
