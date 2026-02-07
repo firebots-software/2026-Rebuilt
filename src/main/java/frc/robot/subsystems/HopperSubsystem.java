@@ -63,7 +63,8 @@ public class HopperSubsystem extends SubsystemBase {
   private void setupSimulation() {
     motorSimState = motor.getSimState();
     motorSimState.Orientation = ChassisReference.Clockwise_Positive;
-    motorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60); // set the type of motor being simulated
+    motorSimState.setMotorType(
+        TalonFXSimState.MotorType.KrakenX60); // set the type of motor being simulated
 
     var gearbox = DCMotor.getKrakenX60Foc(1);
 
