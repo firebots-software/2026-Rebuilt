@@ -10,7 +10,6 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -342,7 +341,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getX());
     DogLog.log("CommandSwerveDrivetrain/CurrPoseY", getCurrentState().Pose.getY());
-    DogLog.log("CommandSwerveDrivetrain/CurrPoseRotation", getCurrentState().Pose.getRotation().getRadians());
+    DogLog.log(
+        "CommandSwerveDrivetrain/CurrPoseRotation",
+        getCurrentState().Pose.getRotation().getRadians());
   }
 
   // private void startSimThread() {
