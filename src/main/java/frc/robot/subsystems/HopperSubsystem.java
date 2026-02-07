@@ -52,20 +52,25 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public boolean atSpeed() {
-    return motor.getVelocity().getValueAsDouble()
-            - targetSpeed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL
+    return Math.abs(
+            motor.getVelocity().getValueAsDouble()
+                - targetSpeed / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL)
         <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
   }
 
   // Commands
-  public Command RunHopper(double speed) {
+  public Command runHopperCommand() {
     return Commands.runEnd(
         () -> this.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC), this::stop, this);
   }
 
+  public Command runHopperCommand(double speed) {
+    return Commands.runEnd(() -> this.runHopper(speed), this::stop, this);
+  }
+
   @Override
   public void periodic() {
-    DogLog.log("HopperSubsystem/Speed", motor.getVelocity().getValueAsDouble());
+    DogLog.log("HopperSubsystem/SpeedRPS", motor.getVelocity().getValueAsDouble());
     DogLog.log("HopperSubsystem/AtSpeed", atSpeed());
   }
 
