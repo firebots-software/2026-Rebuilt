@@ -5,7 +5,15 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+
 import dev.doglog.DogLog;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,10 +21,13 @@ import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
 public class HopperSubsystem extends SubsystemBase {
-  private static HopperSubsystem instance;
 
   private final LoggedTalonFX motor;
   private double targetSpeed = 0;
+
+  // Simulation objects
+  private TalonFXSimState motorSimState;
+  private DCMotorSim physicsSim;
 
   public HopperSubsystem() {
     CurrentLimitsConfigs clc =
@@ -38,6 +49,37 @@ public class HopperSubsystem extends SubsystemBase {
     motor.getConfigurator().apply(s0c);
     motor.getConfigurator().apply(clc);
     motor.getConfigurator().apply(moc);
+
+    // Initialize simulation
+    if (RobotBase.isSimulation()) {
+      setupSimulation();
+    }
+  }
+
+  private void setupSimulation() {
+    // Get SimState from the underlying TalonFX
+    // If LoggedTalonFX extends TalonFX: motor.getSimState()
+    // If LoggedTalonFX wraps TalonFX: motor.getTalonFX().getSimState() or similar
+    motorSimState = motor.getSimState();
+
+    // Set mechanical orientation (usually CCW+ for single motor mechanisms)
+    motorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+
+    // Set motor type for accurate physics
+    motorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+
+    // Create physics model for the hopper mechanism
+    // Assuming hopper is a flywheel-like mechanism or pulley system
+    // Adjust these constants based on your actual mechanism
+    double momentOfInertiaKgM2 = 0.001; // Adjust based on your pulley/mass
+    double gearRatio = 1.0; // Adjust if you have gearing
+
+    var gearbox = DCMotor.getKrakenX60Foc(1);
+    
+    physicsSim = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(gearbox, momentOfInertiaKgM2, gearRatio),
+        gearbox
+    );
   }
 
   public void runHopper(double speed) {
@@ -71,6 +113,27 @@ public class HopperSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
+    // Update supply voltage (battery simulation)
+    motorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+
+    // Get the voltage the motor controller is applying
+    var motorVoltage = motorSimState.getMotorVoltageMeasure();
+
+    // Update physics simulation with the applied voltage
+    physicsSim.setInputVoltage(motorVoltage.in(edu.wpi.first.units.Units.Volts));
+    physicsSim.update(0.020); // 20ms update period
+
+    // Feed physics results back to CTRE simulation
+    // Note: DCMotorSim returns mechanism position/velocity (after gear ratio)
+    // TalonFX expects rotor position/velocity (before gear ratio)
+    // If gear ratio is 1.0, they're the same
+    double gearRatio = 1.0; // Adjust if different
+    
+    motorSimState.setRawRotorPosition(
+        physicsSim.getAngularPosition().times(gearRatio)
+    );
+    motorSimState.setRotorVelocity(
+        physicsSim.getAngularVelocity().times(gearRatio)
+    );
   }
 }

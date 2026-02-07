@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = false;
+  public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = false;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
@@ -378,7 +378,7 @@ public final class Constants {
     public static final double TARGET_PULLEY_SPEED_M_PER_SEC =
         Units.feetToMeters(TARGET_PULLEY_SPEED_FT_PER_SEC);
 
-    public static final int MOTOR_PORT = -1; // TODO: put actual port
+    public static final int MOTOR_PORT = 9; // TODO: put actual port
 
     public static final double kP = .4; // TODO: get actual vals
     public static final double kI = 0;

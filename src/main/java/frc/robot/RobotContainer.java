@@ -187,6 +187,10 @@ public class RobotContainer {
 
     joystick.x().whileTrue(trajCommand);
 
+    if (Constants.hopperOnRobot) {
+        joystick.x().whileTrue(hopperSubsystem.RunHopper(4.0));
+    }
+
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
