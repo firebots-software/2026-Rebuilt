@@ -108,7 +108,7 @@ public class DriveToPose extends Command {
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    swerve.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0));
+    // swerve.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0));
 
     if (targetPoseSupplier != null) {
       targetPose = targetPoseSupplier.get();
