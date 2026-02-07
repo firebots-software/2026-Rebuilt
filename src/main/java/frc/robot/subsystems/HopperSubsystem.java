@@ -13,8 +13,6 @@ import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
 public class HopperSubsystem extends SubsystemBase {
-  private static HopperSubsystem instance;
-
   private final LoggedTalonFX motor;
   private double targetSpeed = 0;
 
