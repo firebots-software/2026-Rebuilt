@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -15,9 +16,10 @@ import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = false;
+  public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
+  public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -81,7 +83,10 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.PROTO;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+
+    public static final double targetPositionError = 0.05;
+    public static final double targetAngleError = 0.02;
 
     public static enum SwerveLevel {
       L2(6.75, 21.428571428571427),
@@ -131,6 +136,35 @@ public final class Constants {
       }
     }
 
+    public static enum ChoreoPIDValues {
+      SERRANO(0.1d, 0d, 0d, 0.1d, 0d, 0d, 3.867d, 0d, 0d),
+      PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
+      JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
+      COBRA(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d);
+      public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
+
+      ChoreoPIDValues(
+          double kPX,
+          double kIX,
+          double kDX,
+          double kPY,
+          double kIY,
+          double kDY,
+          double kPR,
+          double kIR,
+          double kDR) {
+        this.kPX = kPX;
+        this.kIX = kIX;
+        this.kDX = kDX;
+        this.kPY = kPY;
+        this.kIY = kIY;
+        this.kDY = kDY;
+        this.kPR = kPR;
+        this.kIR = kIR;
+        this.kDR = kDR;
+      }
+    }
+
     public static enum RobotDimensions {
       SERRANO(Inches.of(22.52), Inches.of(22.834)), // length, width
       PROTO(Inches.of(22.52), Inches.of(22.834)), // length, width
@@ -166,6 +200,7 @@ public final class Constants {
           SwerveLevel.L3, // what level the swerve drive is
           SwerveDrivePIDValues.SERRANO,
           SwerveSteerPIDValues.SERRANO,
+          ChoreoPIDValues.SERRANO,
           RobotDimensions.SERRANO,
           "Patrice the Pineapple",
           BumperThickness.SERRANO,
@@ -179,6 +214,7 @@ public final class Constants {
           SwerveLevel.L2, // what level the swerve drive is
           SwerveDrivePIDValues.PROTO,
           SwerveSteerPIDValues.PROTO,
+          ChoreoPIDValues.PROTO,
           RobotDimensions.PROTO,
           "rio",
           BumperThickness.PROTO,
@@ -192,6 +228,7 @@ public final class Constants {
           SwerveLevel.L3,
           SwerveDrivePIDValues.JAMES_HARDEN,
           SwerveSteerPIDValues.JAMES_HARDEN,
+          ChoreoPIDValues.JAMES_HARDEN,
           RobotDimensions.JAMES_HARDEN,
           "JamesHarden",
           BumperThickness.JAMES_HARDEN,
@@ -205,6 +242,7 @@ public final class Constants {
           SwerveLevel.FIVEN_L3,
           SwerveDrivePIDValues.COBRA,
           SwerveSteerPIDValues.COBRA,
+          ChoreoPIDValues.COBRA,
           RobotDimensions.COBRA,
           "Viper",
           BumperThickness.COBRA,
@@ -217,6 +255,7 @@ public final class Constants {
       public final SwerveLevel SWERVE_LEVEL;
       public final SwerveDrivePIDValues SWERVE_DRIVE_PID_VALUES;
       public final SwerveSteerPIDValues SWERVE_STEER_PID_VALUES;
+      public final ChoreoPIDValues CHOREO_PID_VALUES;
       public final RobotDimensions ROBOT_DIMENSIONS;
       public final String CANBUS_NAME;
       public final double COUPLE_RATIO;
@@ -231,6 +270,7 @@ public final class Constants {
           SwerveLevel swerveLevel,
           SwerveDrivePIDValues swerveDrivePIDValues,
           SwerveSteerPIDValues swerveSteerPIDValues,
+          ChoreoPIDValues choreoPIDValues,
           RobotDimensions robotDimensions,
           String canbus_name,
           BumperThickness thickness,
@@ -243,12 +283,87 @@ public final class Constants {
         SWERVE_LEVEL = swerveLevel;
         SWERVE_DRIVE_PID_VALUES = swerveDrivePIDValues;
         SWERVE_STEER_PID_VALUES = swerveSteerPIDValues;
+        CHOREO_PID_VALUES = choreoPIDValues;
         ROBOT_DIMENSIONS = robotDimensions;
         CANBUS_NAME = canbus_name;
         BUMPER_THICKNESS = thickness;
         COUPLE_RATIO = coupled_ratio;
         INVERTED_MODULES = invertedModules;
       }
+    }
+
+    // TODO: CHANGE FOR NEW ROBOT
+    // these outline the speed calculations
+    public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.868;
+    // 5.944; // before: 4.8768;// 18ft/s = 5.486, 19m/s = 5.791ft/s, 19.5m/s = 5.944 ft/s,
+    public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 10.917;
+    public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
+    public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
+    public static final double TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND = 8;
+    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
+        (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
+    public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
+    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
+        26.971;
+  }
+
+  public static class Climber {
+    public static final double mmcV = 80; // TODO: acquire good ones
+    public static final double mmcA = 80;
+
+    public static final double KP = .4;
+    public static final double KI = 0;
+    public static final double KD = 0;
+
+    public static final double DEFAULT_SUPPLY_CURRENT = 30.0;
+    public static final double DEFAULT_STATOR_CURRENT = 30.0;
+
+    public static class MuscleUp {
+      public static final double MUSCLE_UP_TOLERANCE = 0.1;
+
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 250d;
+      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+
+      public static final double MUSCLE_UP_FORWARD = 0; // TODO: get vals
+      public static final double MUSCLE_UP_BACK = 0; // TODO: get vals
+
+      public static final int MOTOR_PORT = -1; // TODO: get vals
+
+      public static final int ENCODER_PORT = -1; // TODO: get vals
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+    }
+
+    public static class SitUp {
+      public static final double SIT_UP_TOLERANCE = .1;
+
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 100d;
+      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+
+      public static final double CURRENT_SUPPLY_LIMIT = 60;
+      public static final double CURRENT_STATOR_LIMIT = 100;
+
+      public static final double SIT_UP_ANGLE = 0; // TODO: get vals
+      public static final double SIT_BACK_ANGLE = 0; // TODO: get vals
+
+      public static final int MOTOR_PORT = -1; // TODO: get vals
+
+      public static final int ENCODER_PORT = -1; // TODO: get vals
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+    }
+
+    public static class PullUp {
+      public static final double PULL_UP_TOLERANCE = .1;
+
+      public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 17d;
+      public static final double PULLEY_BELT_LENGTH_M = 0; // TODO: get actual value
+      public static final double MOTOR_ROTS_PER_METERS_OF_BELT_TRAVERSAL =
+          MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
+
+      public static final double REACH_POS = 0; // TODO: get vals
+      public static final double PULL_DOWN_POS = 0; // TODO: get vals
+
+      public static final int MOTOR_PORT_L = -1; // TODO: get vals
+      public static final int MOTOR_PORT_R = -1; // TODO: get vals
     }
   }
 
@@ -263,11 +378,12 @@ public final class Constants {
     public static final double TARGET_PULLEY_SPEED_M_PER_SEC =
         Units.feetToMeters(TARGET_PULLEY_SPEED_FT_PER_SEC);
 
-    public static final int MOTOR_PORT = -1; // TODO: put actual port
+    public static final int MOTOR_PORT = 9; // TODO: put actual port
 
-    public static final double kP = .4; // TODO: get actual vals
+    public static final double kP = .07; // TODO: get actual vals
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double kV = 0.12;
 
     public static final double HOPPER_STATOR_LIMIT = 30.0;
     public static final double HOPPER_SUPPLY_LIMIT = 30.0;
@@ -358,5 +474,68 @@ public final class Constants {
     public static final double SHOOTER_WHEEL_GEAR_RATIO = 1.25;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 104.72;
+
+    public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
+
+    public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
+
+    public static final boolean SHOOTS_BACKWARDS = false;
+
+    public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
+
+    public static final int TARGETING_CALCULATION_PRECISION = 5;
+  }
+
+  public static class OI {
+    public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
+    public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;
+    public static final int JOYSTICK_A_PORT = 0;
+
+    public enum XBoxButtonID {
+      A(1),
+      B(2),
+      X(3),
+      Y(4),
+      LeftBumper(5),
+      RightBumper(6),
+      LeftStick(9),
+      RightStick(10),
+      Back(7),
+      Start(8);
+      public final int value;
+
+      XBoxButtonID(int value) {
+        this.value = value;
+      }
+    }
+
+    public enum AxisID {
+      /** Left X. */
+      LeftX(0),
+      /** Right X. */
+      RightX(4),
+      /** Left Y. */
+      LeftY(1),
+      /** Right Y. */
+      RightY(5),
+      /** Left trigger. */
+      LeftTrigger(2),
+      /** Right trigger. */
+      RightTrigger(3);
+
+      /** Axis value. */
+      public final int value;
+
+      AxisID(int value) {
+        this.value = value;
+      }
+    }
+  }
+
+  public static class Landmarks {
+    public static Pose3d BLUE_HUB =
+        new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
+    public static Pose3d RED_HUB =
+        new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
   }
 }
