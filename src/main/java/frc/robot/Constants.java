@@ -16,7 +16,7 @@ import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = false;
+  public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
@@ -83,7 +83,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
 
     public static final double targetPositionError = 0.05;
     public static final double targetAngleError = 0.02;
@@ -378,11 +378,12 @@ public final class Constants {
     public static final double TARGET_PULLEY_SPEED_M_PER_SEC =
         Units.feetToMeters(TARGET_PULLEY_SPEED_FT_PER_SEC);
 
-    public static final int MOTOR_PORT = -1; // TODO: put actual port
+    public static final int MOTOR_PORT = 9; // TODO: put actual port
 
-    public static final double kP = .4; // TODO: get actual vals
+    public static final double kP = .07; // TODO: get actual vals
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double kV = 0.12;
 
     public static final double HOPPER_STATOR_LIMIT = 30.0;
     public static final double HOPPER_SUPPLY_LIMIT = 30.0;

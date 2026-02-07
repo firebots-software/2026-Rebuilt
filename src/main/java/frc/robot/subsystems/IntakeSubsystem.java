@@ -15,8 +15,19 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,12 +37,34 @@ import frc.robot.util.LoggedTalonFX;
 public class IntakeSubsystem extends SubsystemBase {
   private LoggedTalonFX armMotor, intakeMotor;
   private CANcoder cancoder;
-  private double targetAngle;
+  private double targetAngleDeg;
+
+  // Simulation objects
+  private TalonFXSimState intakeMotorSimState;
+  private TalonFXSimState armMotorSimState;
+  private CANcoderSimState armCancoderSimState;
+  private DCMotorSim intakeMechanismSim;
+  private SingleJointedArmSim armMechanismSim;
+
+  // 20 ms main loop
+  private static final double SIM_DT_SEC = 0.020;
+
+  // Intake roller sim assumptions
+  private static final double INTAKE_SIM_MOI_KG_M2 = 0.0025;
+  private static final double INTAKE_MECH_RATIO = 1.0 / Constants.Intake.MOTOR_ROTS_TO_INTAKE_ROTS;
+
+  // Arm sim assumptions (77.8:1 from constants)
+  private static final double ARM_SIM_MOI_KG_M2 = 0.02;
+  private static final double ARM_MECH_RATIO = 1.0 / Constants.Intake.Arm.MOTOR_ROTS_TO_ARM_ROTS;
+  private static final double ARM_LENGTH_METERS = 0.35;
+  private static final double ARM_MIN_ANGLE_RAD = Math.toRadians(0.0);
+  private static final double ARM_MAX_ANGLE_RAD =
+      Math.toRadians(Constants.Intake.Arm.ARM_DEGREES_UPPER_LIMIT);
 
   public IntakeSubsystem() {
     intakeMotor = new LoggedTalonFX(Constants.Intake.INTAKE_MOTOR.port);
     armMotor = new LoggedTalonFX(Constants.Intake.Arm.ARM_MOTOR.port);
-    targetAngle = Constants.Intake.Arm.ARM_POS_INITIAL;
+    targetAngleDeg = Constants.Intake.Arm.ARM_POS_INITIAL;
 
     Slot0Configs intakeSlot0Configs =
         new Slot0Configs()
@@ -90,6 +123,42 @@ public class IntakeSubsystem extends SubsystemBase {
         .withSensorToMechanismRatio(Constants.Intake.Arm.ENCODER_ROTS_TO_ARM_ROTS)
         .withRotorToSensorRatio(Constants.Intake.Arm.ARM_DEGREES_TO_MOTOR_ROTS);
     armMotorConfig.apply(fxConfig);
+
+    if (RobotBase.isSimulation()) {
+      setupSimulation();
+    }
+  }
+
+  private void setupSimulation() {
+    intakeMotorSimState = intakeMotor.getSimState();
+    armMotorSimState = armMotor.getSimState();
+    armCancoderSimState = cancoder.getSimState();
+
+    // Match your real-motor sign conventions
+    intakeMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+    armMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+
+    intakeMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+    armMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+
+    var krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
+
+    intakeMechanismSim =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(
+                krakenGearboxModel, INTAKE_SIM_MOI_KG_M2, INTAKE_MECH_RATIO),
+            krakenGearboxModel);
+
+    armMechanismSim =
+        new SingleJointedArmSim(
+            krakenGearboxModel,
+            ARM_MECH_RATIO,
+            ARM_SIM_MOI_KG_M2,
+            ARM_LENGTH_METERS,
+            ARM_MIN_ANGLE_RAD,
+            ARM_MAX_ANGLE_RAD,
+            true,
+            ARM_MIN_ANGLE_RAD);
   }
 
   public void run(double speed) {
@@ -102,12 +171,14 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.setControl(new VelocityVoltage(0));
   }
 
-  public void setArmDegrees(double angle) {
-    targetAngle = angle * Constants.Intake.Arm.MOTOR_ROTS_TO_ARM_DEGREES;
-    // PositionTorqueCurrentFOC might not be the right control request
+  public void setArmDegrees(double angleDeg) {
+    targetAngleDeg = MathUtil.clamp(angleDeg, 0.0, Constants.Intake.Arm.ARM_DEGREES_UPPER_LIMIT);
+
+    // Convert arm-degrees target to motor rotations for the request
+    double targetMotorRotations = targetAngleDeg * Constants.Intake.Arm.ARM_DEGREES_TO_MOTOR_ROTS;
+
     armMotor.setControl(
-        new PositionTorqueCurrentFOC(
-                MathUtil.clamp(targetAngle, 0, Constants.Intake.Arm.ARM_DEGREES_UPPER_LIMIT))
+        new PositionTorqueCurrentFOC(targetMotorRotations)
             .withFeedForward(Constants.Intake.Arm.ARM_FEEDFORWARD));
   }
 
@@ -122,7 +193,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getEncoderPosition() {
-    // uses the fusedcancoder (more accurate)
     return armMotor.getPosition().getValueAsDouble() / Constants.Intake.ENCODER_ROTS_TO_INTAKE_ROTS;
   }
 
@@ -171,6 +241,74 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake-Arm/Position (raw)", getEncoderPositionRaw());
     DogLog.log(
         "Subsystems/Intake-Arm/Motor Velocity (rots/s)", armMotor.getVelocity().getValueAsDouble());
-    DogLog.log("Subsystems/Intake-Arm/Target Angle", targetAngle);
+    DogLog.log("Subsystems/Intake-Arm/TargetAngleDeg", targetAngleDeg);
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    if (intakeMotorSimState == null
+        || armMotorSimState == null
+        || armCancoderSimState == null
+        || intakeMechanismSim == null
+        || armMechanismSim == null) {
+      return;
+    }
+
+    // 1) Push current RoboRIO battery voltage into both Talon sims
+    double batteryV = RobotController.getBatteryVoltage();
+    intakeMotorSimState.setSupplyVoltage(batteryV);
+    armMotorSimState.setSupplyVoltage(batteryV);
+
+    // 2) Read controller output voltages and step both mechanism plants
+    double intakeAppliedVolts =
+        intakeMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+    double armAppliedVolts =
+        armMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+
+    intakeMechanismSim.setInputVoltage(intakeAppliedVolts);
+    armMechanismSim.setInputVoltage(armAppliedVolts);
+
+    intakeMechanismSim.update(SIM_DT_SEC);
+    armMechanismSim.update(SIM_DT_SEC);
+
+    // 3) Mechanism-side state -> rotor-side state for Talon internal sensors
+    double intakeMechPosRot = intakeMechanismSim.getAngularPositionRotations();
+    double intakeMechVelRps = intakeMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+
+    double armMechAngleRad = armMechanismSim.getAngleRads();
+    double armMechVelRps = armMechanismSim.getVelocityRadPerSec() / (2.0 * Math.PI);
+    double armMechPosRot = armMechAngleRad / (2.0 * Math.PI);
+
+    double intakeRotorPosRot = intakeMechPosRot * INTAKE_MECH_RATIO;
+    double intakeRotorVelRps = intakeMechVelRps * INTAKE_MECH_RATIO;
+
+    double armRotorPosRot = armMechPosRot * ARM_MECH_RATIO;
+    double armRotorVelRps = armMechVelRps * ARM_MECH_RATIO;
+
+    intakeMotorSimState.setRawRotorPosition(intakeRotorPosRot);
+    intakeMotorSimState.setRotorVelocity(intakeRotorVelRps);
+
+    armMotorSimState.setRawRotorPosition(armRotorPosRot);
+    armMotorSimState.setRotorVelocity(armRotorVelRps);
+
+    // 4) Keep CANcoder sim in sync with arm mechanism position/velocity
+    armCancoderSimState.setRawPosition(armMechPosRot);
+    armCancoderSimState.setVelocity(armMechVelRps);
+
+    // 5) Battery sag from total simulated current draw
+    double totalCurrentAmps =
+        intakeMechanismSim.getCurrentDrawAmps() + armMechanismSim.getCurrentDrawAmps();
+    double loadedBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
+    RoboRioSim.setVInVoltage(loadedBatteryV);
+
+    DogLog.log("Subsystems/Intake-Sim/IntakeAppliedVolts", intakeAppliedVolts);
+    DogLog.log("Subsystems/Intake-Sim/ArmAppliedVolts", armAppliedVolts);
+    DogLog.log("Subsystems/Intake-Sim/IntakeMechVelRps", intakeMechVelRps);
+    DogLog.log("Subsystems/Intake-Sim/ArmMechVelRps", armMechVelRps);
+    DogLog.log("Subsystems/Intake-Sim/IntakeRotorVelRps", intakeRotorVelRps);
+    DogLog.log("Subsystems/Intake-Sim/ArmRotorVelRps", armRotorVelRps);
+    DogLog.log("Subsystems/Intake-Sim/TotalCurrentAmps", totalCurrentAmps);
+    DogLog.log("Subsystems/Intake-Sim/LoadedBatteryVolts", loadedBatteryV);
+    DogLog.log("Subsystems/Intake-Sim/ArmMechAngleDeg", Math.toDegrees(armMechAngleRad));
   }
 }
