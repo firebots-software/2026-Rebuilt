@@ -193,9 +193,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getEncoderPosition() {
-    // Motor rotations -> arm degrees
-    return armMotor.getPosition().getValueAsDouble()
-        * Constants.Intake.Arm.MOTOR_ROTS_TO_ARM_DEGREES;
+    return armMotor.getPosition().getValueAsDouble() / Constants.Intake.ENCODER_ROTS_TO_INTAKE_ROTS;
   }
 
   public double getEncoderPositionRaw() {

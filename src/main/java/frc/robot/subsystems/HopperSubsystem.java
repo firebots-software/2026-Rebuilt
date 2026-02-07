@@ -31,7 +31,6 @@ public class HopperSubsystem extends SubsystemBase {
 
   private static final double SIM_LOOP_PERIOD_SECONDS =
       0.020; // time between updating the simulator
-  private static final double MOTOR_TO_HOPPER_MECHANISM_RATIO = 5.0; // motor:mechanism
   private static final double ESTIMATED_HOPPER_MOI_KG_M2 = 0.0012;
 
   public HopperSubsystem() {
@@ -72,7 +71,7 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMechanismSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-                krakenGearboxModel, ESTIMATED_HOPPER_MOI_KG_M2, MOTOR_TO_HOPPER_MECHANISM_RATIO),
+                krakenGearboxModel, ESTIMATED_HOPPER_MOI_KG_M2, 1.0/Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS),
             krakenGearboxModel);
   }
 
@@ -131,9 +130,9 @@ public class HopperSubsystem extends SubsystemBase {
         hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
 
     double motorRotorPositionRotations =
-        hopperMechanismPositionRotations * MOTOR_TO_HOPPER_MECHANISM_RATIO;
+        hopperMechanismPositionRotations * 1.0/Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS;
     double motorRotorVelocityRotationsPerSecond =
-        hopperMechanismVelocityRotationsPerSecond * MOTOR_TO_HOPPER_MECHANISM_RATIO;
+        hopperMechanismVelocityRotationsPerSecond * 1.0/Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS;
 
     hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
     hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
