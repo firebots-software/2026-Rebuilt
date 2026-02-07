@@ -380,7 +380,7 @@ public final class Constants {
 
     public static final int MOTOR_PORT = 9; // TODO: put actual port
 
-    public static final double kP = .1; // TODO: get actual vals
+    public static final double kP = .07; // TODO: get actual vals
     public static final double kI = 0;
     public static final double kD = 0;
     public static final double kV = 0.12;
