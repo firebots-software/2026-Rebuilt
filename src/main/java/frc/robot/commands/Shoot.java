@@ -26,6 +26,7 @@ public class Shoot extends Command {
   private final BooleanSupplier redside;
 
   public static double targetAngle = 0;
+  public static boolean running;
 
   /**
    * Creates a new ExampleCommand.
@@ -97,6 +98,8 @@ public class Shoot extends Command {
     Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(gunOffset));
     Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/distanceToTargetMeters", relativePos.magnitude());
+
+    running = true;
   }
 
   // Called once the command ends or is interrupted.
@@ -105,6 +108,7 @@ public class Shoot extends Command {
     shooter.stop();
     hopper.stop();
     targetAngle = 0;
+    running = false;
   }
 
   // Returns true when the command should end.

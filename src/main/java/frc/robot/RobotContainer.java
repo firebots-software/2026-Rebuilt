@@ -120,8 +120,7 @@ public class RobotContainer {
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
             redside,
-            (BooleanSupplier)
-                (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
+            (BooleanSupplier) (() -> Shoot.running),
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
