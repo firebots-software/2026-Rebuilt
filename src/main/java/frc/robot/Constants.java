@@ -57,6 +57,8 @@ public final class Constants {
       public static final double ARM_POS_RETRACTED = 90.0;
       public static final double ARM_POS_EXTENDED = 15.0;
       public static final double ARM_POS_IDLE = 45.0; // subject to change
+
+      private static final double INTAKE_SIM_MOI_KG_M2 = 0.0025;
     }
 
     public static final MotorConstants INTAKE_MOTOR = new MotorConstants(33);
@@ -396,6 +398,9 @@ public final class Constants {
     // motor rotations per meter of belt travel
     public static final double MOTOR_ROTATIONS_PER_HOPPER_BELT_METER =
         1.0 / HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
+
+    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
+        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
 
     // --- Operating targets ---
     public static final double HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND = 6.0;

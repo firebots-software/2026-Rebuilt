@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -88,7 +87,12 @@ public class HopperSubsystem extends SubsystemBase {
 
   public double getFloorSpeedMPS() {
     double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
-    return measuredMotorSpeedRotationsPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER;
+    return measuredMotorSpeedRotationsPerSecond * Constants.Hopper.HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
+  }
+
+  public double getAgitatorSpeedRPS() {
+    double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
+    return measuredMotorSpeedRotationsPerSecond * Constants.Hopper.AGITATOR_ROTATIONS_PER_MOTOR_ROTATION;
   }
 
   public boolean atSpeed() {
@@ -132,7 +136,7 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
     // 3) Mechanism-side sim -> rotor-side sensor state
-    // FlywheelSim tracks the pulley/belt mechanism (after gear reduction)
+    // DCMotorSim tracks the pulley/belt mechanism (after gear reduction)
     double hopperMechanismVelocityRotationsPerSecond =
         hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
     double hopperMechanismPositionRotations =

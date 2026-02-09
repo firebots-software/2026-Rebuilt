@@ -46,11 +46,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private DCMotorSim intakeMechanismSim;
   private SingleJointedArmSim armMechanismSim;
 
-  // 20 ms main loop
-  private static final double SIM_DT_SEC = 0.020;
-
   // Intake roller sim assumptions
-  private static final double INTAKE_SIM_MOI_KG_M2 = 0.0025;
   private static final double INTAKE_MECH_RATIO = 1.0 / Constants.Intake.MOTOR_ROTS_TO_INTAKE_ROTS;
 
   // Arm sim assumptions (77.8:1 from constants)
