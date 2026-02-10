@@ -162,14 +162,10 @@ public class ShooterSubsystem extends SubsystemBase {
     
     // Command each motor independently
     warmUpMotor1.setControl(velocityRequest.withVelocity(speeds.warmUp1MotorRPS));
-    warmUpMotor2.setControl(velocityRequest.withVelocity(speeds.warmUp2MotorRPS));
-    warmUpMotor3.setControl(velocityRequest.withVelocity(speeds.warmUp3MotorRPS));
   }
 
   public void stop() {
     warmUpMotor1.setControl(velocityRequest.withVelocity(0));
-    warmUpMotor2.setControl(velocityRequest.withVelocity(0));
-    warmUpMotor3.setControl(velocityRequest.withVelocity(0));
     targetShooterSurfaceSpeed = 0;
   }
 
