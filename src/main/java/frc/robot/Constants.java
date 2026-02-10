@@ -158,7 +158,7 @@ public final class Constants {
     public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROTS;
     
     // Control Constants (Kraken x60, velocity closed-loop)
-    public static final double KV = 0.12; // V*s/rps - from MRD
+    public static final double KV = 0.14; // V*s/rps - from MRD
     public static final double KP = 0.5; // TODO: MRD shows <insert>
     public static final double KI = 0.0; // TODO: MRD shows <insert>
     public static final double KD = 0.0; // TODO: MRD shows <insert>
@@ -621,33 +621,96 @@ public final class Constants {
       }
     }
   }
+public static final class Shooter {
+  // =========================
+  // CAN IDs (provided)
+  // =========================
+  public static final int WARM_UP_MOTOR_1_PORT = 35;
+  public static final int WARM_UP_MOTOR_2_PORT = 34;
+  public static final int WARM_UP_MOTOR_3_PORT = 32;
 
+  // =========================
+  // Closed-loop gains (provided; tune on robot)
+  // Phoenix 6 Slot0 velocity loop style
+  // =========================
+  public static final double KP = 0.5;
+  public static final double KI = 0.0;
+  public static final double KD = 0.0;
+  public static final double KV = 0.12;
+  public static final double KA = 0.0;
+  public static final double STATOR_CURRENT_LIMIT = 30.0;
+  public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+
+  public static final double MOTOR_ROTS_PER_SHOOTER_ROT = 1.25;
+  public static final double SHOOTER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_SHOOTER_ROT;
+
+  public static final double SHOOTER_WHEEL_DIAMETER_IN = 3.0;
+  public static final double SHOOTER_WHEEL_DIAMETER_M = SHOOTER_WHEEL_DIAMETER_IN * 0.0254;
+  public static final double SHOOTER_WHEEL_CIRCUMFERENCE_M = Math.PI * SHOOTER_WHEEL_DIAMETER_M;
+
+  public static final double SHOOTER_MPS_PER_MOTOR_RPS =
+      SHOOTER_WHEEL_CIRCUMFERENCE_M * SHOOTER_ROTS_PER_MOTOR_ROT;
+
+  public static final double MOTOR_RPS_PER_SHOOTER_MPS =
+      MOTOR_ROTS_PER_SHOOTER_ROT / SHOOTER_WHEEL_CIRCUMFERENCE_M;
+
+  public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75.0;
+  public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_RADIANS =
+      Math.toRadians(SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES);
+
+  // =========================
+  // Recommended operational constants (fill from characterization)
+  // =========================
+  public static final double IDLE_MOTOR_RPS = 0.0;
+  public static final double WARMUP_MOTOR_RPS = 0.0;      // TODO tune
+  public static final double SHOOTING_MOTOR_RPS = 0.0;    // TODO tune
+  public static final double SPEED_TOLERANCE_MOTOR_RPS = 2.0;
+
+public static final double WARMUP_MOTOR_RPS = 3400.0 / 60.0;      // 56.67
+public static final double SHOOTING_MOTOR_RPS = 5000.0 / 60.0;    // 83.33
+
+public static final double SHOOTER_WHEEL_TARGET_RPS_FAST = 4000.0 / 60.0; // 66.67
+public static final double SHOOTER_WHEEL_TARGET_RPS_SLOW = 2720.0 / 60.0; // 45.33
+
+public static final double SHOOTER_WHEEL_TARGET_RPM_FAST = 4000.0;
+public static final double SHOOTER_WHEEL_TARGET_RPM_SLOW = 2720.0;
+
+public static final class Simulation {
+  public static final double SIM_MOI_KG_M2 = 0.001; // TODO estimate/measure
+}
+  public static class Simulation {
+    public static final double SIM_MOI_KG_M2 = 0.001;       // TODO estimate/measure
+  }
+}
   public static final class Shooter {
-    public static final MotorConstants warmUpMotor1 = new MotorConstants(35); // TODO
-    public static final MotorConstants warmUpMotor2 = new MotorConstants(34); // TODO
-    public static final MotorConstants warmUpMotor3 = new MotorConstants(32); // TODO
+    public static final int WARM_UP_MOTOR_1_PORT = 35;
+    public static final int WARM_UP_MOTOR_2_PORT = 34;
+    public static final int WARM_UP_MOTOR_3_PORT = 32;
 
-    public static final double SHOOTER_KP = 0.0; // TODO
+    public static final double SHOOTER_KP = 0.5; // TODO
     public static final double SHOOTER_KI = 0.0; // TODO
     public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.0; // TODO
+    public static final double SHOOTER_KV = 0.12; // TODO
     public static final double SHOOTER_KA = 0.0; // TODO
+
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-    public static final double SHOOTER_WHEEL_GEAR_RATIO = 1.25;
-    public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
-    public static final double SHOOT_FOR_AUTO = 104.72;
-
-    public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
+    public static final double MOTOR_ROTS_PER_SHOOTER_ROTS = 1.25;
+    public static final double SHOOTER_ROTS_PER_MOTOR_ROTS = 1.0 / 1.25;
+    public static final double SHOOTER_WHEEL_DIAMETER_IN = 3.0;
+    // public static final double SHOOT_FOR_AUTO = 104.72;
 
     public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
-    public static final boolean SHOOTS_BACKWARDS = false;
+    public static final class Aiming {
+      public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
+      public static final boolean SHOOTS_BACKWARDS = false;
 
-    public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
+      public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
-    public static final int TARGETING_CALCULATION_PRECISION = 5;
+      public static final int TARGETING_CALCULATION_PRECISION = 5;
+    }
   }
 
   public static class OI {
