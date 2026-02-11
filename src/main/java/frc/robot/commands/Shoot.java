@@ -72,7 +72,7 @@ public class Shoot extends Command {
     }
 
     DogLog.log(
-        "Shoot/timeOfFlightSeconds",
+        "Subsystems/ShooterSubsystem/Shoot/timeOfFlightSeconds",
         2
             * shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
             * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
@@ -160,8 +160,8 @@ public class Shoot extends Command {
     Vector3 relativeVel =
         Vector3.mult(
             new Vector3(
-                drivetrain.getState().Speeds.vxMetersPerSecond,
-                drivetrain.getState().Speeds.vyMetersPerSecond,
+                drivetrain.getFieldSpeed().vxMetersPerSecond,
+                drivetrain.getFieldSpeed().vyMetersPerSecond,
                 0),
             -1);
 
@@ -207,8 +207,8 @@ public class Shoot extends Command {
     Vector3 relativeVel =
         Vector3.mult(
             new Vector3(
-                drivetrain.getState().Speeds.vxMetersPerSecond,
-                drivetrain.getState().Speeds.vyMetersPerSecond,
+                drivetrain.getFieldSpeed().vxMetersPerSecond,
+                drivetrain.getFieldSpeed().vyMetersPerSecond,
                 0),
             -1);
 
