@@ -16,13 +16,18 @@ import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = false;
+  public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
+
+  public static final class Simulation {
+    public static final double SIM_LOOP_PERIOD_SECONDS =
+        0.020; // time between updating the simulator
   }
 
   public static final class Intake {
@@ -378,16 +383,19 @@ public final class Constants {
     public static final double TARGET_PULLEY_SPEED_M_PER_SEC =
         Units.feetToMeters(TARGET_PULLEY_SPEED_FT_PER_SEC);
 
-    public static final int MOTOR_PORT = -1; // TODO: put actual port
+    public static final int MOTOR_PORT = 9; // TODO: put actual port
 
-    public static final double kP = .4; // TODO: get actual vals
+    public static final double kP = .07; // TODO: get actual vals
     public static final double kI = 0;
     public static final double kD = 0;
+    public static final double kV = 0.12;
 
     public static final double HOPPER_STATOR_LIMIT = 30.0;
     public static final double HOPPER_SUPPLY_LIMIT = 30.0;
 
     public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = .1;
+
+    public static final double ESTIMATED_HOPPER_MOI_KG_M2 = 0.0012;
   }
 
   public static class Vision {
