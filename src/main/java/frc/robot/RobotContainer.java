@@ -8,6 +8,9 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -66,13 +70,14 @@ public class RobotContainer {
 
   private final AutoFactory autoFactory;
 
-  private final AutoRoutines autoRoutines;
+  public final AutoRoutine autoRoutine; //new
 
   private final AutoChooser autoChooser = new AutoChooser();
 
   public RobotContainer() {
     autoFactory = drivetrain.createAutoFactory();
-    autoRoutines = new AutoRoutines(autoFactory);
+
+    autoRoutine = autoFactory.newRoutine("MoveForwardStop.traj");
 
     Command redClimb =
         autoFactory
@@ -90,10 +95,18 @@ public class RobotContainer {
         autoFactory
             .resetOdometry("MoveForward.traj")
             .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    // Command moveForwardStop =
+    //     autoFactory
+    //         .resetOdometry("MoveForwardStop.traj")
+    //         .andThen(autoFactory.trajectoryCmd("MoveForwardStop.traj"));
     Command niceAndLongPath =
         autoFactory
             .resetOdometry("NiceAndLongPath.traj")
             .andThen(autoFactory.trajectoryCmd("NiceAndLongPath.traj"));
+
+    AutoTrajectory moveForwardStop = autoRoutine.trajectory("MoveForwardStop.traj");
+
+    moveForwardStop.atTime("waitPlease").onTrue(new InstantCommand(drivetrain.applyRequest(() -> brake)));
 
     autoChooser.addCmd("redClimb", () -> redClimb);
     autoChooser.addCmd("redDepot", () -> redDepot);
