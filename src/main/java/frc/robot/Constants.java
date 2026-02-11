@@ -16,13 +16,18 @@ import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = true;
-  public static final boolean visionOnRobot = false;
+  public static final boolean intakeOnRobot = false;
+  public static final boolean visionOnRobot = true;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+  }
+
+  public static final class Simulation {
+    public static final double SIM_LOOP_PERIOD_SECONDS =
+        0.020; // time between updating the simulator
   }
 
   public static final class Intake {
@@ -58,8 +63,10 @@ public final class Constants {
 
     public static final double MOTOR_ROTS_TO_INTAKE_ROTS = 1d / 2.6667;
     public static final double ENCODER_ROTS_TO_INTAKE_ROTS = 2.666;
-    // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the wheel in feet
-    // wheel circumference can be used to convert from intake rotations/sec -> feet/sec
+    // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the
+    // wheel in feet
+    // wheel circumference can be used to convert from intake rotations/sec ->
+    // feet/sec
     public static final double INTAKE_ROTS_PER_SEC_TO_FEET_PER_SEC = (3 / 12) * Math.PI;
 
     public static final double INTAKE_KV = 0.14;
@@ -83,7 +90,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.JAMES_HARDEN;
 
     public static final double targetPositionError = 0.05;
     public static final double targetAngleError = 0.02;
@@ -389,6 +396,8 @@ public final class Constants {
     public static final double HOPPER_SUPPLY_LIMIT = 30.0;
 
     public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = .1;
+
+    public static final double ESTIMATED_HOPPER_MOI_KG_M2 = 0.0012;
   }
 
   public static class Vision {
@@ -396,7 +405,8 @@ public final class Constants {
     // initializes cameras for use in VisionSubsystem
     public static enum Cameras {
       RIGHT_CAM("rightCam"),
-      LEFT_CAM("leftCam");
+      LEFT_CAM("leftCam"),
+      COLOR_CAM("colorCam");
 
       private String loggingName;
 
@@ -427,19 +437,26 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
     // placeholder constants for now; will be updated once robot is delivered
-    public static final double RIGHT_X = Units.inchesToMeters(8.867);
-    public static final double RIGHT_Y = Units.inchesToMeters(-12.4787);
-    public static final double RIGHT_Z = Units.inchesToMeters(6.158);
-    public static final double RIGHT_ROLL = Units.degreesToRadians(0.0);
-    public static final double RIGHT_PITCH = Units.degreesToRadians(-12.5);
-    public static final double RIGHT_YAW = Units.degreesToRadians(40);
+    public static final double RIGHT_X = Units.inchesToMeters(6.70);
+    public static final double RIGHT_Y = Units.inchesToMeters(-4.125);
+    public static final double RIGHT_Z = Units.inchesToMeters(40.875);
+    public static final double RIGHT_ROLL = Units.degreesToRadians(180); // 180
+    public static final double RIGHT_PITCH = Units.degreesToRadians(171.5); // 171.5
+    public static final double RIGHT_YAW = Units.degreesToRadians(0.0);
 
-    public static final double LEFT_X = Units.inchesToMeters(8.867);
-    public static final double LEFT_Y = Units.inchesToMeters(12.478);
-    public static final double LEFT_Z = Units.inchesToMeters(6.158);
-    public static final double LEFT_ROLL = Units.degreesToRadians(0.0);
-    public static final double LEFT_PITCH = Units.degreesToRadians(-12.5);
-    public static final double LEFT_YAW = Units.degreesToRadians(-40);
+    public static final double LEFT_X = Units.inchesToMeters(6.70);
+    public static final double LEFT_Y = Units.inchesToMeters(4.125);
+    public static final double LEFT_Z = Units.inchesToMeters(40.875);
+    public static final double LEFT_ROLL = Units.degreesToRadians(180);
+    public static final double LEFT_PITCH = Units.degreesToRadians(171.5);
+    public static final double LEFT_YAW = Units.degreesToRadians(0.0);
+
+    public static final double COLOR_X = Units.inchesToMeters(8.867);
+    public static final double COLOR_Y = Units.inchesToMeters(12.478);
+    public static final double COLOR_Z = Units.inchesToMeters(6.158);
+    public static final double COLOR_ROLL = Units.degreesToRadians(0.0);
+    public static final double COLOR_PITCH = Units.degreesToRadians(8.7);
+    public static final double COLOR_YAW = Units.degreesToRadians(0.0);
 
     // initializing Transform3d for use in future field visualization
     public static Transform3d getCameraTransform(Cameras camera) {
@@ -452,8 +469,35 @@ public final class Constants {
           return new Transform3d(
               new Translation3d(LEFT_X, LEFT_Y, LEFT_Z),
               new Rotation3d(LEFT_ROLL, LEFT_PITCH, LEFT_YAW));
+        case COLOR_CAM:
+          return new Transform3d(
+              new Translation3d(LEFT_X, LEFT_Y, LEFT_Z),
+              new Rotation3d(LEFT_ROLL, LEFT_PITCH, LEFT_YAW));
         default:
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
+      }
+    }
+  }
+
+  public static class FuelGaugeDetection {
+    public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
+    public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
+    public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
+
+    public static enum FuelGauge { // LAST: 20, 50, 70, 100
+      EMPTY(2.0),
+      LOW(9.0),
+      MEDIUM(12.0),
+      FULL(100.0);
+
+      private double threshold;
+
+      FuelGauge(double threshold) {
+        this.threshold = threshold;
+      }
+
+      public double getThreshold() {
+        return threshold;
       }
     }
   }
