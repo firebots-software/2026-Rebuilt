@@ -10,12 +10,12 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
-import edu.wpi.first.wpilibj.Servo;
 
 public class ClimberSubsystem extends SubsystemBase {
 
@@ -51,8 +51,6 @@ public class ClimberSubsystem extends SubsystemBase {
     pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Opposed));
 
     brake = new Servo(Constants.Climber.BRAKE_PORT);
-
-
 
     muscleUpMotor.getConfigurator().apply(s0c);
     sitUpMotor.getConfigurator().apply(s0c);
@@ -153,12 +151,10 @@ public class ClimberSubsystem extends SubsystemBase {
     stopMuscleUp();
   }
 
-
   // Comands
   public Command brakeCommand() {
     return Commands.runOnce(() -> this.brakeClimb(), this);
   }
-
 
   public Command SetMuscleUpToAngle(double angle) {
     return Commands.runOnce(() -> setMuscleUpPosition(angle), this);
@@ -190,14 +186,13 @@ public class ClimberSubsystem extends SubsystemBase {
               SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
               SetPullUpToPosition(Constants.Climber.PullUp.PULL_DOWN_POS),
               SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD),
-              SetSitUpToAngle(Constants.Climber.SitUp.SIT_BACK_ANGLE)
-          );
+              SetSitUpToAngle(Constants.Climber.SitUp.SIT_BACK_ANGLE));
     }
 
     commands[x] = brakeCommand();
 
     return Commands.sequence(commands);
-}
+  }
 
   // public Command L3Climb(int x) {
   //   // for (int i = 0; i < 3; i++) from old command
@@ -213,7 +208,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   //   Command[] list = new Command[x];
   //   for (int i = 0; i < x; i++){
-  //     list[x] = singleCycle; 
+  //     list[x] = singleCycle;
   //   }
 
   //   return Commands.sequence(Commands.repeat());
