@@ -71,14 +71,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     CurrentLimitsConfigs rollersCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimitEnable(true)
             .withStatorCurrentLimit(Constants.Intake.Rollers.STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Intake.Rollers.SUPPLY_CURRENT_LIMIT);
 
     CurrentLimitsConfigs armCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimitEnable(true)
             .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT);
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
@@ -157,7 +154,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setArmDegrees(double angleDeg) {
-    targetAngleDeg = MathUtil.clamp(angleDeg, Constants.Intake.Arm.ARM_POS_EXTENDED, Constants.Intake.Arm.ARM_POS_RETRACTED);
+    targetAngleDeg = MathUtil.clamp(angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_MAX);
 
     double targetMotorRotations = targetAngleDeg * Constants.Intake.Arm.ARM_DEGREES_PER_MOTOR_ROTS;
 

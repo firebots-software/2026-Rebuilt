@@ -114,6 +114,8 @@ public final class Constants {
     public static final double ARM_DEGREES_UPPER_LIMIT = 95.0;
       public static final double ARM_POS_RETRACTED = 90.0;
       public static final double ARM_POS_EXTENDED = 15.0;
+      public static final double ARM_POS_MAX = 90.0;
+      public static final double ARM_POS_MIN = 15.0;
       public static final double SIM_ARM_POS_MIN = 10.0; // for the simulator
       public static final double SIM_ARM_POS_MAX = 95.0;
       public static final double ARM_POS_IDLE = 45.0; // subject to change
