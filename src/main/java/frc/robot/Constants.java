@@ -16,9 +16,9 @@ import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = false;
+  public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
-  public static final boolean shooterOnRobot = true;
+  public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
@@ -36,7 +36,7 @@ public final class Constants {
     public static final class Arm {
       public static final double ARM_LENGTH_METERS = 0.35;
 
-      public static final int CAN_ID = -1; // TODO: VERIFY
+      public static final int CAN_ID = 1; // TODO: VERIFY
       public static final int ENCODER_PORT = 0; // TODO: VERIFY
 
       public static final double MOTOR_ROTS_PER_ARM_ROTS = (700.0 / 9.0);
@@ -56,9 +56,10 @@ public final class Constants {
       // Control Constants (Position closed-loop and torque control)
       // Note: MRD specifies <insert> for most values - these need characterization/tuning
       public static final double KV = 0.12; // V*s/rot - TODO: Verify on new robot
-      public static final double KP = 0.0; // V/rot - TODO: Verify on new robot
+      public static final double KP = 1; // V/rot - TODO: Verify on new robot
       public static final double KI = 0.0;
-      public static final double KD = 0.0; // V*s/rot - TODO: Verify on new robot
+      public static final double KD = 0.8; // V*s/rot - TODO: Verify on new robot
+      public static final double KG = 1.0; // TODO: verify
 
       // Current Limits
       public static final double STATOR_CURRENT_LIMIT = 40.0; // Amps - TODO: Verify with team
@@ -80,7 +81,7 @@ public final class Constants {
     /** Constants for the intake roller wheels */
     public static final class Rollers {
       // Hardware Configuration
-      public static final int CAN_ID = -1; // TODO: Get CAN ID from MRD table (currently blank)
+      public static final int CAN_ID = 2; // TODO: Get CAN ID from MRD table (currently blank)
 
       // Gear Ratios & Conversions
       /**
@@ -116,14 +117,14 @@ public final class Constants {
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROTS;
 
       // Control Constants (Kraken x60, velocity closed-loop)
-      public static final double KV = 0.14; // V*s/rps - from MRD
-      public static final double KP = 0.5; // TODO: MRD shows <insert>
-      public static final double KI = 0.0; // TODO: MRD shows <insert>
-      public static final double KD = 0.0; // TODO: MRD shows <insert>
+      public static final double KV = 0.14; // from MRDs
+      public static final double KP = 1.5; // TODO: MRD shows <insert>
+      public static final double KI = 0; // TODO: MRD shows <insert>
+      public static final double KD = 0; // TODO: MRD shows <insert>
 
       // Current Limits
-      public static final double STATOR_CURRENT_LIMIT = 40.0; // Amps - TODO: Verify with team
-      public static final double SUPPLY_CURRENT_LIMIT = 30.0; // Amps - TODO: Verify with team
+      public static final double STATOR_CURRENT_LIMIT = 80.0; // Amps - TODO: Verify with team
+      public static final double SUPPLY_CURRENT_LIMIT = 80.0; // Amps - TODO: Verify with team
 
       // Ball Detection (monitors roller current to estimate ball intake)
       /** Current threshold indicating balls are being intaken */

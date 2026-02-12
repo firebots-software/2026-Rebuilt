@@ -186,7 +186,7 @@ public class RobotContainer {
             .resetOdometry("MoveForward.traj")
             .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
 
-    joystick.x().whileTrue(trajCommand);
+    joystick.rightBumper().whileTrue(trajCommand);
 
     if (Constants.hopperOnRobot) {
       joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
