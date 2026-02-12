@@ -258,9 +258,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  // to be completed; method aims to combine final pose estimate with odometry for
-  // accurate
-  // estimation
   private void processPoseEstimate(
       Pose2d measuredPose,
       double averageDistance,
@@ -273,12 +270,12 @@ public class VisionSubsystem extends SubsystemBase {
     // Use vision timestamp if within threshold of FPGA timestamp
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
-    double chosenTimestamp =
+    double finalTimestamp =
         (timestampDiff > timestampDiffThreshold)
             ? fpgaTimestamp + timestampFPGACorrection
             : timestamp;
-
-    swerve.addVisionMeasurement(measuredPose, chosenTimestamp, noiseVector);
+  
+    swerve.addVisionMeasurement(measuredPose, finalTimestamp, noiseVector);
   }
 
   // prev. year had isTagOnActiveSide but not relevant this year

@@ -308,6 +308,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (this.getCurrentCommand() != null) {
       DogLog.log("CommandSwerveDrivetrain/String command", this.getCurrentCommand().toString());
     }
+    DogLog.log("Subsystems/Swerve/Pose", getCurrentState().Pose);
+
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getX());
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getY());
     DogLog.log("CommandSwerveDrivetrain/CurrPoseX", getCurrentState().Pose.getRotation());
