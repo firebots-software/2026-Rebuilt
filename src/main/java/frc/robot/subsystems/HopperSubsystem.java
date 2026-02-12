@@ -96,7 +96,6 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   // Commands
-  public Command runHopperCommand() {
   public Command RunHopper() {
     return Commands.runEnd(
         () -> this.runHopper(targetSurfaceSpeedMetersPerSecond), this::stop, this);
