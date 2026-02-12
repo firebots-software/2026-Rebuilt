@@ -170,9 +170,9 @@ public class ShooterSubsystem extends SubsystemBase {
     roller2Sim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
     roller3Sim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-    double warmUp1MotorRotPerSec = roller1Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
-    double warmUp2MotorRotPerSec = roller2Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
-    double warmUp3MotorRotPerSec = roller3Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+    double warmUp1MotorRotPerSec = roller1Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI) * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_1_ROTS;
+    double warmUp2MotorRotPerSec = roller2Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI) * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_2_ROTS;
+    double warmUp3MotorRotPerSec = roller3Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI) * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_3_ROTS;
 
     warmUpMotor1SimState.setRotorVelocity(warmUp1MotorRotPerSec);
     warmUpMotor2SimState.setRotorVelocity(warmUp2MotorRotPerSec);
