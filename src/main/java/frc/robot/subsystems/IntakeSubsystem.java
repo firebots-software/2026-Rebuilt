@@ -265,7 +265,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // 5) Battery sag from total simulated current draw
     double totalCurrentAmps = rollersMechanismSim.getCurrentDrawAmps() + armMechanismSim.getCurrentDrawAmps();
     double loadedBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
-    RoboRioSim.setVInVoltage(12.0);
+    RoboRioSim.setVInVoltage(loadedBatteryV);
 
     DogLog.log("Subsystems/Intake/Sim/IntakeAppliedVolts", rollersAppliedVolts);
     DogLog.log("Subsystems/Intake/Sim/ArmAppliedVolts", armAppliedVolts);
