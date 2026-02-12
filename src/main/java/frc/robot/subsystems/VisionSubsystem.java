@@ -274,7 +274,7 @@ public class VisionSubsystem extends SubsystemBase {
         (timestampDiff > timestampDiffThreshold)
             ? fpgaTimestamp + timestampFPGACorrection
             : timestamp;
-  
+
     swerve.addVisionMeasurement(measuredPose, finalTimestamp, noiseVector);
   }
 

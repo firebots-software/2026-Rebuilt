@@ -463,12 +463,12 @@ public final class Constants {
     // initializing Transform3d for use in future field visualization
     public static Transform3d getCameraTransform(Cameras camera) {
       switch (camera) {
-        case RIGHT_CAM:
+        case RIGHT_CAM: // TODO: SID: rename FRONT_RIGHT_CAM
           return new Transform3d(
               new Translation3d(FRONT_RIGHT_X, FRONT_RIGHT_Y, FRONT_RIGHT_Z),
               new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW));
 
-        case LEFT_CAM:
+        case LEFT_CAM: // TODO: SID: rename FRONT_LEFT_CAM
           return new Transform3d(
               new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
               new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW));
