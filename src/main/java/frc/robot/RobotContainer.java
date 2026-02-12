@@ -161,7 +161,7 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // right bumper -> run intake
     if (Constants.intakeOnRobot) {
-      joystick.rightBumper().whileTrue(intakeSubsystem.runIntake());
+      joystick.x().whileTrue(intakeSubsystem.runIntake());
 
       // left trigger + x -> arm to initial pos (0)
       joystick
@@ -195,6 +195,14 @@ public class RobotContainer {
             .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
 
     joystick.x().whileTrue(trajCommand);
+
+    if (Constants.hopperOnRobot) {
+      joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+    }
+
+    if (Constants.hopperOnRobot) {
+      joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+    }
 
     joystick
         .povUp()
