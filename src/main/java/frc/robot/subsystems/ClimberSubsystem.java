@@ -172,7 +172,6 @@ public class ClimberSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> setSitUpPosition(angle), this).until(() -> isSitUpAtPosition());
   }
 
-
   public Command L1Climb() {
     return Commands.sequence(
         SetPullUpToPosition(Constants.Climber.PullUp.L1_REACH_POS),
