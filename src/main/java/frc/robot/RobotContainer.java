@@ -189,7 +189,10 @@ public class RobotContainer {
     joystick.x().whileTrue(trajCommand);
 
     if (Constants.hopperOnRobot) {
-        debugJoystick.rightTrigger().whileTrue(hopperSubsystem.runHopperCommand(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC));
+      debugJoystick
+          .rightTrigger()
+          .whileTrue(
+              hopperSubsystem.runHopperCommand(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC));
     }
 
     if (Constants.shooterOnRobot) {
@@ -197,9 +200,16 @@ public class RobotContainer {
     }
 
     if (Constants.climberOnRobot) {
-        debugJoystick.povUp().onTrue(climberSubsystem.SetPullUpToPosition(Constants.Climber.PullUp.REACH_POS));
-        debugJoystick.povLeft().onTrue(climberSubsystem.SetSitUpToAngle(Constants.Climber.SitUp.SIT_UP_ANGLE));
-        debugJoystick.povDown().onTrue(climberSubsystem.SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD));
+      debugJoystick
+          .povUp()
+          .onTrue(climberSubsystem.SetPullUpToPosition(Constants.Climber.PullUp.REACH_POS));
+      debugJoystick
+          .povLeft()
+          .onTrue(climberSubsystem.SetSitUpToAngle(Constants.Climber.SitUp.SIT_UP_ANGLE));
+      debugJoystick
+          .povDown()
+          .onTrue(
+              climberSubsystem.SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
