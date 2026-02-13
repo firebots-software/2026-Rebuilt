@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.signals.MagnetHealthValue;
 import com.ctre.phoenix6.swerve.utility.LinearPath;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
@@ -92,7 +93,12 @@ public class DriveToPose extends Command {
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
 
-    Translation2d[] swerveModulePositions = new Translation2d[Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0)]; //array
+    Translation2d[] swerveModulePositions = new Translation2d[4];
+
+    swerveModulePositions[0] = new Translation2d(Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0).magnitude(), Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0).magnitude());
+    swerveModulePositions[1] = new Translation2d(Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0).magnitude(), Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0).magnitude());
+    swerveModulePositions[2] = new Translation2d(Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0).magnitude(), Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0).magnitude());
+    swerveModulePositions[3] = new Translation2d(Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0).magnitude(), Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0).magnitude());
 
     wheelForceCalculator = new WheelForceCalculator(swerveModulePositions, 58.967, 3.67); //constants
 
@@ -164,7 +170,7 @@ public class DriveToPose extends Command {
                       pathState.pose.getRotation().getRadians()));
 
       feedforwards = null;
-      if (dt > 0.0001) {
+      if (dt > 0.001 && dt < 0.02) {
       feedforwards =
           wheelForceCalculator.calculate(
               dt,

@@ -188,7 +188,7 @@ public final class Constants {
       SERRANO(2, 2, 2, 2),
       PROTO(0.5, 0.5, 0.2, 0.2),
       JAMES_HARDEN(0.5, 0.5, 0.2, 0.2),
-      COBRA(5.67, 8.67, 1.9, 1.9);
+      COBRA(0.5, 0.5, 1.9, 1.9); //5.67, 8.67
       public final double maxVelocityLinear,
           maxAccelerationLinear,
           maxVelocityAngular,
