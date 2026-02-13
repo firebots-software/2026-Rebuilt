@@ -118,7 +118,7 @@ public final class Constants {
 
       // Control Constants (Kraken x60, velocity closed-loop)
       public static final double KV = 0.14; // from MRDs
-      public static final double KP = 1.5; // TODO: MRD shows <insert>
+      public static final double KP = 0.0; // TODO: MRD shows <insert>
       public static final double KI = 0; // TODO: MRD shows <insert>
       public static final double KD = 0; // TODO: MRD shows <insert>
 
@@ -135,7 +135,7 @@ public final class Constants {
       public static final double BALL_DETECTION_DEBOUNCE_SEC = 0.1; // TODO: Tune
 
       public static final double SIM_MOI_KG_M2 =
-          0.01; // TODO: BETTER ESTIMATION CAN BE MADE USING DESIGN
+          0.0003 ; // TODO: BETTER ESTIMATION CAN BE MADE USING DESIGN
 
       public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: OBSERVE BEHAVIOR
     }

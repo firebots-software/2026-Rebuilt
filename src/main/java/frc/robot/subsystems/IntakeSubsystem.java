@@ -150,7 +150,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void run(double speedRollersRotationsPerSecond) {
     rollersMotor.setControl(
         new VelocityVoltage(
-            speedRollersRotationsPerSecond));
+            speedRollersRotationsPerSecond * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS));
   }
 
   public void stop() {
@@ -161,7 +161,7 @@ public class IntakeSubsystem extends SubsystemBase {
     targetAngleDeg = MathUtil.clamp(
         angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_MAX);
 
-    double targetMotorRotations = targetAngleDeg * Constants.Intake.Arm.ARM_DEGREES_PER_MOTOR_ROTS;
+    double targetMotorRotations = targetAngleDeg / Constants.Intake.Arm.ARM_DEGREES_PER_MOTOR_ROTS;
 
     armMotor.setControl(new PositionVoltage(targetMotorRotations));
   }
@@ -185,32 +185,38 @@ public class IntakeSubsystem extends SubsystemBase {
   // Commands
   public Command runIntake() {
     return Commands.startEnd(
-        () -> this.run(Constants.Intake.Rollers.TARGET_MOTOR_RPS), this::stop, this);
+        () -> this.run(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stop, this);
   }
 
   public Command armToDegrees(double degrees) {
-    return Commands.runOnce(() -> this.setArmDegrees(degrees), this);
+    return Commands.runOnce(() -> {
+        targetAngleDeg = degrees;
+        this.setArmDegrees(degrees);
+    }, this);
   }
 
   @Override
   public void periodic() {
     // keep arm at current pos
     setArmDegrees(targetAngleDeg);
-
+    DogLog.log("Subsystems/Intake/Rollers/targetMotorRPS", Constants.Intake.Rollers.TARGET_MOTOR_RPS);
+    DogLog.log("Subsystems/Intake/Rollers/currentMotorRPS", rollersMotor.getVelocity().getValueAsDouble());
+    DogLog.log("Subsystems/Intake/Rollers/motorVolts", rollersMotor.getMotorVoltage().getValueAsDouble());
+    DogLog.log("Subsystems/Intake/Rollers/setpoint", rollersMotor.getClosedLoopReference().getValueAsDouble());
     // rollers
-    DogLog.log("Subsystems/Intake/Rollers/At target speed", atTargetSpeed());
-    DogLog.log("Subsystems/Intake/Rollers/Target Speed (rps)", Constants.Intake.Rollers.TARGET_MOTOR_RPS);
-    DogLog.log(
-        "Subsystems/Intake/Rollers/Motor Velocity (rots/s)",
-        rollersMotor.getVelocity().getValueAsDouble());
-    DogLog.log(
-        "Subsystems/Intake/Rollers/Motor Position (rots)",
-        rollersMotor.getPosition().getValueAsDouble());
-    // arm
-    DogLog.log("Subsystems/Intake/Arm/CANcoder Position (raw)", getCancoderPositionRaw());
-    DogLog.log(
-        "Subsystems/Intake/Arm/AbsolutePosition (degrees)", getArmAbsolutePosition().getDegrees());
-    DogLog.log("Subsystems/Intake/Arm/TargetAngleDeg", targetAngleDeg);
+    // DogLog.log("Subsystems/Intake/Rollers/At target speed", atTargetSpeed());
+    // DogLog.log("Subsystems/Intake/Rollers/Target Speed (rps)", Constants.Intake.Rollers.TARGET_MOTOR_RPS);
+    // DogLog.log(
+    //     "Subsystems/Intake/Rollers/Motor Velocity (rots/s)",
+    //     rollersMotor.getVelocity().getValueAsDouble());
+    // DogLog.log(
+    //     "Subsystems/Intake/Rollers/Motor Position (rots)",
+    //     rollersMotor.getPosition().getValueAsDouble());
+    // // arm
+    // DogLog.log("Subsystems/Intake/Arm/CANcoder Position (raw)", getCancoderPositionRaw());
+    // DogLog.log(
+    //     "Subsystems/Intake/Arm/AbsolutePosition (degrees)", getArmAbsolutePosition().getDegrees());
+    // DogLog.log("Subsystems/Intake/Arm/TargetAngleDeg", targetAngleDeg);
   }
 
   @Override
