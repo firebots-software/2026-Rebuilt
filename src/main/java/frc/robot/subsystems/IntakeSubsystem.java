@@ -1,193 +1,280 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
-public class ShooterSubsystem extends SubsystemBase {
-  private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
-  private TalonFXSimState warmUpMotor1SimState, warmUpMotor2SimState, warmUpMotor3SimState;
-  private DCMotorSim roller1Sim, roller2Sim, roller3Sim;
+public class IntakeSubsystem extends SubsystemBase {
+  private LoggedTalonFX armMotor, rollersMotor;
+  private CANcoder cancoder;
+  private double targetAngleDeg;
 
-  private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
+  // Simulation objects
+  private TalonFXSimState rollersMotorSimState;
+  private TalonFXSimState armMotorSimState;
+  private CANcoderSimState armCancoderSimState;
+  private DCMotorSim rollersMechanismSim;
+  private SingleJointedArmSim armMechanismSim;
 
-  private double targetSpeed = 0;
+  public IntakeSubsystem() {
+    rollersMotor = new LoggedTalonFX(Constants.Intake.Rollers.CAN_ID);
+    armMotor = new LoggedTalonFX(Constants.Intake.Arm.CAN_ID);
+    targetAngleDeg = Constants.Intake.Arm.ARM_POS_RETRACTED;
 
-  public ShooterSubsystem() {
+    Slot0Configs rollersSlot0Configs = new Slot0Configs()
+        .withKV(Constants.Intake.Rollers.KV)
+        .withKP(Constants.Intake.Rollers.KP)
+        .withKI(Constants.Intake.Rollers.KI)
+        .withKD(Constants.Intake.Rollers.KD);
 
-    warmUpMotor1 = new LoggedTalonFX(Constants.Shooter.WARMUP_MOTOR_1_ID);
-    warmUpMotor2 = new LoggedTalonFX(Constants.Shooter.WARMUP_MOTOR_2_ID);
-    warmUpMotor3 = new LoggedTalonFX(Constants.Shooter.WARMUP_MOTOR_3_ID);
+    Slot0Configs armSlot0Configs = new Slot0Configs()
+        .withKV(Constants.Intake.Arm.KV)
+        .withKP(Constants.Intake.Arm.KP)
+        .withKI(Constants.Intake.Arm.KI)
+        .withKD(Constants.Intake.Arm.KD)
+        .withKG(Constants.Intake.Arm.KG);
 
-    Follower follower =
-        new Follower(Constants.Shooter.WARMUP_MOTOR_1_ID, MotorAlignmentValue.Aligned);
+    CurrentLimitsConfigs rollersCurrentLimitsConfigs = new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(Constants.Intake.Rollers.STATOR_CURRENT_LIMIT)
+        .withSupplyCurrentLimit(Constants.Intake.Rollers.SUPPLY_CURRENT_LIMIT);
 
-    warmUpMotor2.setControl(follower);
-    warmUpMotor3.setControl(follower);
-    shooter = warmUpMotor1;
+    CurrentLimitsConfigs armCurrentLimitsConfigs = new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT);
 
-    Slot0Configs s0c =
-        new Slot0Configs()
-            .withKP(Constants.Shooter.KP)
-            .withKI(Constants.Shooter.KI)
-            .withKD(Constants.Shooter.KD)
-            .withKV(Constants.Shooter.KV)
-            .withKA(Constants.Shooter.KA);
+    TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
+    TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();
 
-    CurrentLimitsConfigs clc =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
-            .withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
+    armMotorConfig.apply(armSlot0Configs);
+    armMotorConfig.apply(armCurrentLimitsConfigs);
+    armMotorConfig.apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake)
+        .withInverted(InvertedValue.CounterClockwise_Positive));
+    rollersMotorConfig.apply(rollersSlot0Configs);
+    rollersMotorConfig.apply(rollersCurrentLimitsConfigs);
+    rollersMotorConfig.apply(
+        new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
 
-    TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
-    TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
-    TalonFXConfigurator m3config = warmUpMotor3.getConfigurator();
+    // creates a FusedCANcoder, which combines data from the CANcoder and the arm
+    // motor's encoder
+    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT);
+    CANcoderConfiguration ccConfig = new CANcoderConfiguration();
+    MagnetSensorConfigs magnetSensorConfigs = new MagnetSensorConfigs()
+        .withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
+        .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+        .withMagnetOffset(Rotations.of(Constants.Intake.Arm.ENCODER_OFFSET));
 
-    m1config.apply(s0c);
-    m2config.apply(s0c);
-    m3config.apply(s0c);
-    m1config.apply(clc);
-    m2config.apply(clc);
-    m3config.apply(clc);
+    cancoder.getConfigurator().apply(ccConfig);
+    cancoder.getConfigurator().apply(magnetSensorConfigs);
 
-    warmUpMotor1SimState = warmUpMotor1.getSimState();
-    warmUpMotor2SimState = warmUpMotor2.getSimState();
-    warmUpMotor3SimState = warmUpMotor3.getSimState();
+    // add the CANcoder as a feedback source for the motor's built-in encoder
+    FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
+        .withFeedbackRemoteSensorID(cancoder.getDeviceID())
+        .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+        .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROTS)
+        .withRotorToSensorRatio(
+            Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROTS / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROTS);
 
-    var krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
-    roller1Sim =
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                krakenGearboxModel,
-                Constants.Shooter.WARMUP_1_MOI_KG_M2,
-                Constants.Shooter.MOTOR_ROTS_PER_WARMUP_1_ROTS),
-            krakenGearboxModel);
+    armMotorConfig.apply(feedbackConfigs);
 
-    roller2Sim =
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                krakenGearboxModel,
-                Constants.Shooter.WARMUP_2_MOI_KG_M2,
-                Constants.Shooter.MOTOR_ROTS_PER_WARMUP_2_ROTS),
-            krakenGearboxModel);
-
-    roller3Sim =
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                krakenGearboxModel,
-                Constants.Shooter.WARMUP_3_MOI_KG_M2,
-                Constants.Shooter.MOTOR_ROTS_PER_WARMUP_3_ROTS),
-            krakenGearboxModel);
-
-    warmUpMotor1SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-    warmUpMotor2SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-    warmUpMotor3SimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    if (RobotBase.isSimulation()) {
+      setupSimulation();
+    }
   }
 
-  public double calculateFtToRPS(double speed) {
-    return speed
-        / (Constants.Shooter.SHOOTER_WHEEL_DIAMETER_IN * Math.PI / 12)
-        * Constants.Shooter.MOTOR_ROTS_PER_SHOOTER_ROTS;
-    // from surface speed in ft/sec to rps
+  private void setupSimulation() {
+    rollersMotorSimState = rollersMotor.getSimState();
+    armMotorSimState = armMotor.getSimState();
+    armCancoderSimState = cancoder.getSimState();
+
+    // Match your real-motor sign conventions
+    rollersMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+    armMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+
+    rollersMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+    armMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
+
+    var kraken60GearboxModel = DCMotor.getKrakenX60Foc(1);
+    var kraken44GearboxModel = DCMotor.getKrakenX44Foc(1);
+
+    rollersMechanismSim = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(
+            kraken60GearboxModel,
+            Constants.Intake.Rollers.SIM_MOI_KG_M2,
+            Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS),
+        kraken60GearboxModel);
+
+    armMechanismSim = new SingleJointedArmSim(
+        kraken44GearboxModel,
+        Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROTS,
+        Constants.Intake.Arm.SIM_MOI_KG_M2,
+        Constants.Intake.Arm.ARM_LENGTH_METERS,
+        Units.degreesToRadians(Constants.Intake.Arm.SIM_ARM_POS_MIN),
+        Units.degreesToRadians(Constants.Intake.Arm.SIM_ARM_POS_MAX),
+        true,
+        Units.degreesToRadians(Constants.Intake.Arm.ARM_POS_RETRACTED));
   }
 
-  public double calculateRPSToFt(double motorRPS) {
-    // Convert motor RPS to shooter wheel RPS
-    double shooterWheelRPS = motorRPS / Constants.Shooter.MOTOR_ROTS_PER_SHOOTER_ROTS;
-    // Convert shooter wheel RPS to surface speed
-    return shooterWheelRPS * (Constants.Shooter.SHOOTER_WHEEL_DIAMETER_IN * Math.PI / 12);
-  }
-
-  // speed based on shooter wheel which is the one flinging the ball with a max of 52.36 and a min
-  // of 35.60 ft/sec
-  // input the speed you want the ball to go at (ft/sec); it will be divided by 2 because that's
-  // what Jeff said that relationship is
-  // so now max is 104.72 and min is 71.2
-  public void setSpeed(double speed) {
-    targetSpeed = speed / 2;
-    shooter.setControl(velocityRequest.withVelocity(calculateFtToRPS(targetSpeed)));
+  public void run(double speedRollersRotationsPerSecond) {
+    rollersMotor.setControl(
+        new VelocityVoltage(
+            speedRollersRotationsPerSecond));
   }
 
   public void stop() {
-    setSpeed(0);
+    rollersMotor.setControl(new VelocityVoltage(0));
   }
 
-  public boolean isAtSpeed() {
-    return Math.abs(calculateFtToRPS(targetSpeed) - shooter.getVelocity().getValueAsDouble())
-        <= Constants.Shooter.SHOOTER_SPEED_TOLERANCE_RPS;
+  public void setArmDegrees(double angleDeg) {
+    targetAngleDeg = MathUtil.clamp(
+        angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_MAX);
+
+    double targetMotorRotations = targetAngleDeg * Constants.Intake.Arm.ARM_DEGREES_PER_MOTOR_ROTS;
+
+    armMotor.setControl(new PositionVoltage(targetMotorRotations));
   }
 
-  public double getCurrentSpeed() {
-    return calculateRPSToFt(shooter.getVelocity().getValueAsDouble());
+  public Rotation2d getArmAbsolutePosition() {
+    return new Rotation2d(
+        (Units.rotationsToRadians(
+            getCancoderPositionRaw() * Constants.Intake.Arm.ARM_ROTS_PER_CANCODER_ROTS)));
   }
 
-  // Comands
-  public Command shootAtSpeedCommand() {
-    return Commands.runEnd(() -> this.setSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stop, this);
+  public double getCancoderPositionRaw() {
+    return cancoder.getAbsolutePosition().getValueAsDouble();
+  }
+
+  public boolean atTargetSpeed() {
+    return Math.abs(
+        rollersMotor.getVelocity().getValueAsDouble()
+            - Constants.Intake.Rollers.TARGET_MOTOR_RPS) <= Constants.Intake.Rollers.TOLERANCE_MOTOR_ROTS_PER_SEC;
+  }
+
+  // Commands
+  public Command runIntake() {
+    return Commands.runEnd(
+        () -> this.run(Constants.Intake.Rollers.TARGET_MOTOR_RPS), this::stop, this).until(() -> atTargetSpeed());
+  }
+
+  public Command armToDegrees(double degrees) {
+    return Commands.runOnce(() -> this.setArmDegrees(degrees), this);
   }
 
   @Override
   public void periodic() {
-    DogLog.log("Doglog/shooter/targetSpeed", targetSpeed);
-    DogLog.log("Doglog/shooter/isAtSpeed", isAtSpeed());
-    DogLog.log("Doglog.shooter/currentSpeed", getCurrentSpeed());
+    // keep arm at current pos
+    setArmDegrees(targetAngleDeg);
+
+    // rollers
+    DogLog.log("Subsystems/Intake/Rollers/At target speed", atTargetSpeed());
+    DogLog.log("Subsystems/Intake/Rollers/Target Speed (rps)", Constants.Intake.Rollers.TARGET_MOTOR_RPS);
+    DogLog.log(
+        "Subsystems/Intake/Rollers/Motor Velocity (rots/s)",
+        rollersMotor.getVelocity().getValueAsDouble());
+    DogLog.log(
+        "Subsystems/Intake/Rollers/Motor Position (rots)",
+        rollersMotor.getPosition().getValueAsDouble());
+    // arm
+    DogLog.log("Subsystems/Intake/Arm/CANcoder Position (raw)", getCancoderPositionRaw());
+    DogLog.log(
+        "Subsystems/Intake/Arm/AbsolutePosition (degrees)", getArmAbsolutePosition().getDegrees());
+    DogLog.log("Subsystems/Intake/Arm/TargetAngleDeg", targetAngleDeg);
   }
 
   @Override
   public void simulationPeriodic() {
-    double batteryVoltage = RobotController.getBatteryVoltage();
-    warmUpMotor1SimState.setSupplyVoltage(batteryVoltage);
-    warmUpMotor2SimState.setSupplyVoltage(batteryVoltage);
-    warmUpMotor3SimState.setSupplyVoltage(batteryVoltage);
+    if (rollersMotorSimState == null
+        || armMotorSimState == null
+        || armCancoderSimState == null
+        || rollersMechanismSim == null
+        || armMechanismSim == null) {
+      return;
+    }
 
-    double warmUp1Voltage = warmUpMotor1SimState.getMotorVoltage();
-    double warmUp2Voltage = warmUpMotor2SimState.getMotorVoltage();
-    double warmUp3Voltage = warmUpMotor3SimState.getMotorVoltage();
+    // 1) Push current RoboRIO battery voltage into both Talon sims
+    double batteryV = RobotController.getBatteryVoltage();
+    rollersMotorSimState.setSupplyVoltage(batteryV);
+    armMotorSimState.setSupplyVoltage(batteryV);
 
-    roller1Sim.setInputVoltage(warmUp1Voltage);
-    roller2Sim.setInputVoltage(warmUp2Voltage);
-    roller3Sim.setInputVoltage(warmUp3Voltage);
+    // 2) Read controller output voltages and step both mechanism plants
+    double rollersAppliedVolts = rollersMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+    double armAppliedVolts = armMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
 
-    roller1Sim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
-    roller2Sim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
-    roller3Sim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
+    rollersMechanismSim.setInputVoltage(rollersAppliedVolts);
+    armMechanismSim.setInputVoltage(armAppliedVolts);
 
-    double warmUp1MotorRotPerSec = roller1Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI) * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_1_ROTS;
-    double warmUp2MotorRotPerSec = roller2Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI) * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_2_ROTS;
-    double warmUp3MotorRotPerSec = roller3Sim.getAngularVelocityRadPerSec() / (2.0 * Math.PI) * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_3_ROTS;
+    rollersMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
+    armMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-    warmUpMotor1SimState.setRotorVelocity(warmUp1MotorRotPerSec);
-    warmUpMotor2SimState.setRotorVelocity(warmUp2MotorRotPerSec);
-    warmUpMotor3SimState.setRotorVelocity(warmUp3MotorRotPerSec);
+    // 3) Mechanism-side state -> rotor-side state for Talon internal sensors
+    double rollersMechPosRot = rollersMechanismSim.getAngularPositionRotations();
+    double rollersMechVelRps = rollersMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
 
-    double warmUpMotor1RotorPositionRotations =
-        roller1Sim.getAngularPositionRotations() * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_1_ROTS;
-    double warmUpMotor2RotorPositionRotations =
-        roller2Sim.getAngularPositionRotations() * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_2_ROTS;
+    double armMechAngleRad = armMechanismSim.getAngleRads();
+    double armMechVelRps = armMechanismSim.getVelocityRadPerSec() / (2.0 * Math.PI);
+    double armMechPosRot = armMechAngleRad / (2.0 * Math.PI);
 
-    double warmUpMotor3RotorPositionRotations =
-        roller3Sim.getAngularPositionRotations() * Constants.Shooter.MOTOR_ROTS_PER_WARMUP_3_ROTS;
+    double rollersRotorPosRot = rollersMechPosRot * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS;
+    double rollersRotorVelRps = rollersMechVelRps * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS;
 
-    warmUpMotor1SimState.setRawRotorPosition(warmUpMotor1RotorPositionRotations);
-    warmUpMotor2SimState.setRawRotorPosition(warmUpMotor2RotorPositionRotations);
-    warmUpMotor3SimState.setRawRotorPosition(warmUpMotor3RotorPositionRotations);
+    double armRotorPosRot = armMechPosRot * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROTS;
+    double armRotorVelRps = armMechVelRps * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROTS;
+
+    rollersMotorSimState.setRawRotorPosition(rollersRotorPosRot);
+    rollersMotorSimState.setRotorVelocity(rollersRotorVelRps);
+
+    armMotorSimState.setRawRotorPosition(armRotorPosRot);
+    armMotorSimState.setRotorVelocity(armRotorVelRps);
+
+    // 4) Keep CANcoder sim in sync with arm mechanism position/velocity
+    armCancoderSimState.setRawPosition(armMechPosRot * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROTS);
+    armCancoderSimState.setVelocity(armMechVelRps * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROTS);
+
+    // 5) Battery sag from total simulated current draw
+    double totalCurrentAmps = rollersMechanismSim.getCurrentDrawAmps() + armMechanismSim.getCurrentDrawAmps();
+    double loadedBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
+    RoboRioSim.setVInVoltage(loadedBatteryV);
+
+    DogLog.log("Subsystems/Intake/Sim/IntakeAppliedVolts", rollersAppliedVolts);
+    DogLog.log("Subsystems/Intake/Sim/ArmAppliedVolts", armAppliedVolts);
+    DogLog.log("Subsystems/Intake/Sim/IntakeMechVelRps", rollersMechVelRps);
+    DogLog.log("Subsystems/Intake/Sim/ArmMechVelRps", armMechVelRps);
+    DogLog.log("Subsystems/Intake/Sim/IntakeRotorVelRps", rollersRotorVelRps);
+    DogLog.log("Subsystems/Intake/Sim/ArmRotorVelRps", armRotorVelRps);
+    DogLog.log("Subsystems/Intake/Sim/TotalCurrentAmps", totalCurrentAmps);
+    DogLog.log("Subsystems/Intake/Sim/LoadedBatteryVolts", loadedBatteryV);
+    DogLog.log("Subsystems/Intake/Sim/ArmMechAngleDeg", Math.toDegrees(armMechAngleRad));
   }
 }
