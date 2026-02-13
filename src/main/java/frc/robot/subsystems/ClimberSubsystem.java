@@ -156,52 +156,52 @@ public class ClimberSubsystem extends SubsystemBase {
     return Commands.runOnce(() -> this.brakeClimb(), this);
   }
 
-  public Command SetMuscleUpToAngle(double angle) {
+  public Command MuscleUpCommand(double angle) {
     return Commands.runOnce(() -> setMuscleUpPosition(angle), this)
         .until(() -> isMuscleUpAtPosition());
   }
 
-  public Command SetPullUpToPosition(double position) {
+  public Command PullUpCommand(double position) {
     return Commands.runOnce(() -> setPullUpPosition(position), this)
         .until(() -> isPullUpAtPosition());
   }
 
-  public Command SetSitUpToAngle(double angle) {
+  public Command SitUpCommand(double angle) {
     return Commands.runOnce(() -> setSitUpPosition(angle), this).until(() -> isSitUpAtPosition());
   }
 
   // for auton: separate command group
   public Command L1Climb() {
     return Commands.sequence(
-        SetPullUpToPosition(Constants.Climber.PullUp.L1_REACH_POS),
-        SetSitUpToAngle(Constants.Climber.SitUp.SIT_UP_ANGLE),
-        SetPullUpToPosition(Constants.Climber.PullUp.PULL_DOWN_POS),
+        PullUpCommand(Constants.Climber.PullUp.L1_REACH_POS),
+        SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE),
+        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
         brakeCommand());
   }
 
   public Command L2Climb() {
     return Commands.sequence(
         L1Climb(),
-        SetMuscleUpToAngle(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD),
-        SetSitUpToAngle(Constants.Climber.SitUp.SIT_BACK_ANGLE),
-        SetPullUpToPosition(Constants.Climber.PullUp.L2_REACH_POS),
-        SetSitUpToAngle(Constants.Climber.SitUp.SIT_UP_ANGLE),
-        SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
-        SetPullUpToPosition(Constants.Climber.PullUp.PULL_DOWN_POS),
-        SetMuscleUpToAngle(Constants.Climber.MuscleUp.L2_MUSCLE_UP_FORWARD),
-        SetSitUpToAngle(Constants.Climber.SitUp.SIT_BACK_ANGLE),
+        MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD),
+        SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE),
+        PullUpCommand(Constants.Climber.PullUp.L2_REACH_POS),
+        SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE),
+        MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
+        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
+        MuscleUpCommand(Constants.Climber.MuscleUp.L2_MUSCLE_UP_FORWARD),
+        SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE),
         brakeCommand());
   }
 
   public Command L3Climb() {
     return Commands.sequence(
         L2Climb(),
-        SetPullUpToPosition(Constants.Climber.PullUp.L3_REACH_POS),
-        SetSitUpToAngle(Constants.Climber.SitUp.SIT_UP_ANGLE),
-        SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
-        SetPullUpToPosition(Constants.Climber.PullUp.PULL_DOWN_POS),
-        SetMuscleUpToAngle(Constants.Climber.MuscleUp.L3_MUSCLE_UP_FORWARD),
-        SetSitUpToAngle(Constants.Climber.SitUp.SIT_BACK_ANGLE),
+        PullUpCommand(Constants.Climber.PullUp.L3_REACH_POS),
+        SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE),
+        MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
+        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
+        MuscleUpCommand(Constants.Climber.MuscleUp.L3_MUSCLE_UP_FORWARD),
+        SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE),
         brakeCommand());
   }
 
