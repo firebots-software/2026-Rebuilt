@@ -8,6 +8,8 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import dev.doglog.DogLog;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -188,14 +191,6 @@ public class RobotContainer {
           .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
     }
 
-    // Auto sequence: choreo forward
-    Command trajCommand =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
-
-    joystick.x().whileTrue(trajCommand);
-
     if (Constants.hopperOnRobot) {
       joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
     }
@@ -208,28 +203,49 @@ public class RobotContainer {
         .povUp()
         .whileTrue(
             new DriveToPose(
-                drivetrain,
-                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
+                    drivetrain,
+                    () ->
+                        MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))).andThen(new InstantCommand(() -> DogLog.log("first dtp done", true)))
+                .andThen(
+                    new DriveToPose(
+                        drivetrain,
+                        () ->
+                            MiscUtils.plus(
+                                drivetrain.getCurrentState().Pose, new Translation2d(0, -2)))));
 
     joystick
         .povDown()
         .whileTrue(
             new DriveToPose(
-                drivetrain,
-                () ->
-                    MiscUtils.plus(
-                        drivetrain.getCurrentState().Pose,
-                        new Translation2d(0, 2)))); // pos is left
+                    drivetrain,
+                    () ->
+                        MiscUtils.plusWithRotation(
+                            drivetrain.getCurrentState().Pose,
+                            new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708))))
+                .andThen(
+                    new DriveToPose(
+                        drivetrain,
+                        () ->
+                            MiscUtils.plusWithRotation(
+                                drivetrain.getCurrentState().Pose,
+                                new Pose2d(new Translation2d(0, -2), new Rotation2d(1.5708))))));
 
     joystick
-        .y()
+        .povRight()
         .whileTrue(
             new DriveToPose(
                 drivetrain,
                 () ->
                     MiscUtils.plusWithRotation(
                         drivetrain.getCurrentState().Pose,
-                        new Pose2d(new Translation2d(1, 1), new Rotation2d(1.5708)))));
+                        new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708)))));
+
+    joystick
+        .povLeft()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

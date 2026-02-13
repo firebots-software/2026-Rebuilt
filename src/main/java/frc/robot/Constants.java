@@ -96,7 +96,7 @@ public final class Constants {
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
 
-    public static final double targetPositionError = 0.005;
+    public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
 
     public static enum SwerveLevel {
@@ -151,7 +151,9 @@ public final class Constants {
       SERRANO(3.067, 0, 0, 4.167, 0, 0, 3.667, 0, 0),
       PROTO(0, 0, 0, 0, 0, 0, 0, 0, 0),
       JAMES_HARDEN(0, 0, 0, 0, 0, 0, 0, 0, 0),
-      COBRA(3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0);
+      COBRA(
+          3.467, 0, 0, 3.567, 0, 0, 2.867, 0,
+          0); // 0.1, 0, 0, 0.1, 0, 0, 0.1, 0, 0; 3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0
       public final double kPX;
       public final double kIX;
       public final double kDX;
@@ -188,7 +190,7 @@ public final class Constants {
       SERRANO(2, 2, 2, 2),
       PROTO(0.5, 0.5, 0.2, 0.2),
       JAMES_HARDEN(0.5, 0.5, 0.2, 0.2),
-      COBRA(0.5, 0.5, 1.9, 1.9); //5.67, 8.67
+      COBRA(0.5, 0.5, 0.5, 0.5); // 5.67, 8.67, 1.9, 1.9
       public final double maxVelocityLinear,
           maxAccelerationLinear,
           maxVelocityAngular,
