@@ -184,8 +184,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // Commands
   public Command runIntake() {
-    return Commands.runEnd(
-        () -> this.run(Constants.Intake.Rollers.TARGET_MOTOR_RPS), this::stop, this).until(() -> atTargetSpeed());
+    return Commands.startEnd(
+        () -> this.run(Constants.Intake.Rollers.TARGET_MOTOR_RPS), this::stop, this);
   }
 
   public Command armToDegrees(double degrees) {
