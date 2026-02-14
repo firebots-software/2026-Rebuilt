@@ -8,8 +8,11 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -17,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -70,15 +74,16 @@ public class RobotContainer {
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
 
-  private final AutoFactory autoFactory;
+  private final AutoFactory autoFactory; // no marker
 
-  private final AutoRoutines autoRoutines;
+  public final AutoRoutine autoRoutine; // with markers
 
   private final AutoChooser autoChooser = new AutoChooser();
 
   public RobotContainer() {
+
+    // paths without marker
     autoFactory = drivetrain.createAutoFactory();
-    autoRoutines = new AutoRoutines(autoFactory);
 
     Command redClimb =
         autoFactory
@@ -87,20 +92,40 @@ public class RobotContainer {
     Command redDepot =
         autoFactory
             .resetOdometry("RedDepot.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+            .andThen(autoFactory.trajectoryCmd("RedDepot.traj"));
     Command redOutpost =
         autoFactory
             .resetOdometry("RedOutpost.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+            .andThen(autoFactory.trajectoryCmd("RedOutpost.traj"));
     Command moveForward =
         autoFactory
             .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
+    Command niceAndLongPath =
+        autoFactory
+            .resetOdometry("NiceAndLongPath.traj")
+            .andThen(autoFactory.trajectoryCmd("NiceAndLongPath.traj"));
+
+    // paths with marker
+    autoRoutine = autoFactory.newRoutine("MoveForwardStop.traj");
+    AutoTrajectory moveForwardStopTraj = autoRoutine.trajectory("MoveForwardStop.traj");
+
+    autoRoutine
+        .active()
+        .onTrue(moveForwardStopTraj.resetOdometry().andThen(moveForwardStopTraj.cmd()));
+    moveForwardStopTraj
+        .atTime("waitPlease")
+        .onTrue(new InstantCommand(() -> DogLog.log("reached marker", true)));
+
+    Command moveForwardStop = autoRoutine.cmd();
 
     autoChooser.addCmd("redClimb", () -> redClimb);
     autoChooser.addCmd("redDepot", () -> redDepot);
     autoChooser.addCmd("redOutpost", () -> redOutpost);
     autoChooser.addCmd("moveForward", () -> moveForward);
+    autoChooser.addCmd("niceLongPath", () -> niceAndLongPath);
+
+    autoChooser.addCmd("moveForwardStop", () -> moveForwardStop);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
