@@ -111,8 +111,7 @@ public class HopperSubsystem extends SubsystemBase {
   public Command runHopperCommand() {
     return Commands.startEnd(
         () -> {
-          targetSurfaceSpeedMetersPerSecond = Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND;
-          this.runHopper(targetSurfaceSpeedMetersPerSecond);
+          this.runHopper(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND);
         }
           , this::stop, this);
   }
@@ -121,8 +120,7 @@ public class HopperSubsystem extends SubsystemBase {
   public Command runHopperCommand(double speedMetersPerSec) {
     return Commands.startEnd(
         () -> {
-          targetSurfaceSpeedMetersPerSecond = speedMetersPerSec;
-          this.runHopper(targetSurfaceSpeedMetersPerSecond);
+          this.runHopper(speedMetersPerSec);
         }
           , this::stop, this);
   }
