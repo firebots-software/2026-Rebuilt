@@ -135,14 +135,16 @@ public class RobotContainer {
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
-    if (Constants.shooterOnRobot) { lebron.setDefaultCommand(Commands.run(lebron::stop, lebron)); }
+    if (Constants.shooterOnRobot) {
+      lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
+    }
 
     if (Constants.intakeOnRobot) {
-    intakeSubsystem.setDefaultCommand(
-        new ConditionalCommand(
-            intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
-            intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
-            hopperSubsystem::isHopperSufficientlyEmpty));
+      intakeSubsystem.setDefaultCommand(
+          new ConditionalCommand(
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
+              hopperSubsystem::isHopperSufficientlyEmpty));
     }
 
     if (Constants.climberOnRobot) {
