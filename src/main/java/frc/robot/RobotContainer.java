@@ -23,15 +23,19 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
+import frc.robot.Constants.Vision;
 import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -76,7 +80,15 @@ public class RobotContainer {
 
   private final AutoChooser autoChooser = new AutoChooser();
 
+  public final VisionSubsystem visionRight = Constants.visionOnRobot ? VisionSubsystem.getInstance(Constants.Vision.Cameras.RIGHT_CAM) : null;
+  public final VisionSubsystem visionLeft = Constants.visionOnRobot ? VisionSubsystem.getInstance(Constants.Vision.Cameras.LEFT_CAM) : null;
+  public final FuelGaugeDetection visionFuelGauge = Constants.visionOnRobot ? FuelGaugeDetection.getInstance(Constants.Vision.Cameras.COLOR_CAM) : null;
+  
+
   public RobotContainer() {
+
+
+
     autoFactory = drivetrain.createAutoFactory();
     autoRoutines = new AutoRoutines(autoFactory);
 
@@ -135,12 +147,14 @@ public class RobotContainer {
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
+
     lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
+
     intakeSubsystem.setDefaultCommand(
         new ConditionalCommand(
             intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
             intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
-            hopperSubsystem::isHopperSufficientlyEmpty));
+            () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge))); //
 
     if (Constants.climberOnRobot) {
       joystick.povUp().onTrue(new L3Climb(climberSubsystem, drivetrain));
@@ -218,6 +232,13 @@ public class RobotContainer {
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
+  }
+
+  public void visionPeriodic() {
+    if (Constants.visionOnRobot) {
+        visionRight.addFilteredPose(drivetrain);
+        visionLeft.addFilteredPose(drivetrain);
+    }
   }
 
   public static void setAlliance() {

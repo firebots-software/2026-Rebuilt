@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
     }
   }
 
+
   @Override
   public void robotInit() {
     RobotContainer.setAlliance();
@@ -75,10 +76,7 @@ public class Robot extends TimedRobot {
 
     CommandScheduler.getInstance().run();
 
-    if (Constants.visionOnRobot) {
-      visionRight.addFilteredPose(visionSwerve);
-      visionLeft.addFilteredPose(visionSwerve);
-    }
+    m_robotContainer.visionPeriodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
