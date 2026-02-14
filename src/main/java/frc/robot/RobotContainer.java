@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -32,181 +33,167 @@ import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
 
-  private double MaxSpeed =
-      TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-  private double MaxAngularRate =
-      RotationsPerSecond.of(0.75)
-          .in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.75)
+            .in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-  /* Setting up bindings for necessary control of the swerve drive platform */
-  private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed * 0.1)
+            .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(
+                    DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-  private BooleanSupplier redside = () -> redAlliance;
-  private static boolean redAlliance;
+    private BooleanSupplier redside = () -> redAlliance;
+    private static boolean redAlliance;
 
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+    private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController joystick = new CommandXboxController(0);
 
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  public final ClimberSubsystem climberSubsystem =
-      Constants.climberOnRobot ? new ClimberSubsystem() : null;
-  public final HopperSubsystem hopperSubsystem =
-      Constants.hopperOnRobot ? new HopperSubsystem() : null;
-  public final IntakeSubsystem intakeSubsystem =
-      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
-  public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+    public final ClimberSubsystem climberSubsystem = Constants.climberOnRobot ? new ClimberSubsystem() : null;
+    public final HopperSubsystem hopperSubsystem = Constants.hopperOnRobot ? new HopperSubsystem() : null;
+    public final IntakeSubsystem intakeSubsystem = Constants.intakeOnRobot
+            ? new IntakeSubsystem().withHopperEmptySupplier(hopperSubsystem::isHopperSufficientlyEmpty)
+            : null;
+    public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
 
-  private final AutoFactory autoFactory;
+    private final AutoFactory autoFactory;
 
-  private final AutoRoutines autoRoutines;
+    private final AutoRoutines autoRoutines;
 
-  private final AutoChooser autoChooser = new AutoChooser();
+    private final AutoChooser autoChooser = new AutoChooser();
 
-  public RobotContainer() {
-    autoFactory = drivetrain.createAutoFactory();
-    autoRoutines = new AutoRoutines(autoFactory);
+    public RobotContainer() {
+        autoFactory = drivetrain.createAutoFactory();
+        autoRoutines = new AutoRoutines(autoFactory);
 
-    Command redClimb =
-        autoFactory
-            .resetOdometry("RedClimb.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redDepot =
-        autoFactory
-            .resetOdometry("RedDepot.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redOutpost =
-        autoFactory
-            .resetOdometry("RedOutpost.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command moveForward =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        Command redClimb = autoFactory
+                .resetOdometry("RedClimb.traj")
+                .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        Command redDepot = autoFactory
+                .resetOdometry("RedDepot.traj")
+                .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        Command redOutpost = autoFactory
+                .resetOdometry("RedOutpost.traj")
+                .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+        Command moveForward = autoFactory
+                .resetOdometry("MoveForward.traj")
+                .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
 
-    autoChooser.addCmd("redClimb", () -> redClimb);
-    autoChooser.addCmd("redDepot", () -> redDepot);
-    autoChooser.addCmd("redOutpost", () -> redOutpost);
-    autoChooser.addCmd("moveForward", () -> moveForward);
+        autoChooser.addCmd("redClimb", () -> redClimb);
+        autoChooser.addCmd("redDepot", () -> redDepot);
+        autoChooser.addCmd("redOutpost", () -> redOutpost);
+        autoChooser.addCmd("moveForward", () -> moveForward);
 
-    SmartDashboard.putData("Auto Chooser", autoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
 
-    configureBindings();
-  }
-
-  private void configureBindings() {
-    Trigger leftTrigger = joystick.leftTrigger();
-    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
-        leftRightFunction = () -> -joystick.getLeftX(),
-        rotationFunction = () -> -joystick.getRightX(),
-        speedFunction =
-            () ->
-                leftTrigger.getAsBoolean()
-                    ? 0d
-                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
-
-    SwerveJoystickCommand swerveJoystickCommand =
-        new SwerveJoystickCommand(
-            frontBackFunction,
-            leftRightFunction,
-            rotationFunction,
-            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
-            redside,
-            (BooleanSupplier)
-                (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
-            drivetrain);
-
-    drivetrain.setDefaultCommand(swerveJoystickCommand);
-
-    if (Constants.shooterOnRobot) {
-      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+        configureBindings();
     }
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick
-        .b()
-        .whileTrue(
-            drivetrain.applyRequest(
-                () ->
-                    point.withModuleDirection(
-                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+    private void configureBindings() {
+        Trigger leftTrigger = joystick.leftTrigger();
+        DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+                leftRightFunction = () -> -joystick.getLeftX(),
+                rotationFunction = () -> -joystick.getRightX(),
+                speedFunction = () -> leftTrigger.getAsBoolean()
+                        ? 0d
+                        : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
-    joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
+                frontBackFunction,
+                leftRightFunction,
+                rotationFunction,
+                speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+                (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
+                redside,
+                (BooleanSupplier) (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
+                drivetrain);
 
-    // reset the field-centric heading on left bumper press
-    joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        drivetrain.setDefaultCommand(swerveJoystickCommand);
+        lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
 
-    // INTAKE COMMANDS
-    // right bumper -> run intake
-    if (Constants.intakeOnRobot) {
-      joystick.x().whileTrue(intakeSubsystem.runIntake());
+        if (Constants.shooterOnRobot) {
+            joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+        }
 
-      // left trigger + x -> arm to initial pos (0)
-      joystick
-          .leftTrigger()
-          .and(joystick.x())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_INITIAL));
+        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick
+                .b()
+                .whileTrue(
+                        drivetrain.applyRequest(
+                                () -> point.withModuleDirection(
+                                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
-      // left trigger + a -> arm to extended pos (15)
-      joystick
-          .leftTrigger()
-          .and(joystick.a())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-      // left trigger + b -> arm to idle pos (45)
-      joystick
-          .leftTrigger()
-          .and(joystick.b())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+        // reset the field-centric heading on left bumper press
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-      // left trigger + y -> arm to retracted pos (90)
-      joystick
-          .leftTrigger()
-          .and(joystick.y())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+        // INTAKE COMMANDS
+        // right bumper -> run intake
+        if (Constants.intakeOnRobot) {
+            joystick.x().whileTrue(intakeSubsystem.runIntake());
+
+            // left trigger + x -> arm to initial pos (0)
+            joystick
+                    .leftTrigger()
+                    .and(joystick.x())
+                    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_INITIAL));
+
+            // left trigger + a -> arm to extended pos (15)
+            joystick
+                    .leftTrigger()
+                    .and(joystick.a())
+                    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+
+            // left trigger + b -> arm to idle pos (45)
+            joystick
+                    .leftTrigger()
+                    .and(joystick.b())
+                    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+
+            // left trigger + y -> arm to retracted pos (90)
+            joystick
+                    .leftTrigger()
+                    .and(joystick.y())
+                    .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+        }
+
+        // Auto sequence: choreo forward
+        Command trajCommand = autoFactory
+                .resetOdometry("MoveForward.traj")
+                .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
+
+        joystick.x().whileTrue(trajCommand);
+
+        if (Constants.hopperOnRobot) {
+            joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+        }
+
+        if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+            joystick.leftBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
+        }
+
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    // Auto sequence: choreo forward
-    Command trajCommand =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
-
-    joystick.x().whileTrue(trajCommand);
-
-    if (Constants.hopperOnRobot) {
-      joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+    public static void setAlliance() {
+        redAlliance = (DriverStation.getAlliance().isEmpty())
+                ? false
+                : (DriverStation.getAlliance().get() == Alliance.Red);
     }
 
-    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick.leftBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
+    public Command getAutonomousCommand() {
+        return autoChooser.selectedCommand();
     }
-
-    drivetrain.registerTelemetry(logger::telemeterize);
-  }
-
-  public static void setAlliance() {
-    redAlliance =
-        (DriverStation.getAlliance().isEmpty())
-            ? false
-            : (DriverStation.getAlliance().get() == Alliance.Red);
-  }
-
-  public Command getAutonomousCommand() {
-    return autoChooser.selectedCommand();
-  }
 }

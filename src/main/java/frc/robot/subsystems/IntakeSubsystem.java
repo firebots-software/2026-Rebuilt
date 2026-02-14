@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -45,6 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANcoderSimState armCancoderSimState;
   private DCMotorSim intakeMechanismSim;
   private SingleJointedArmSim armMechanismSim;
+  private BooleanSupplier hopperEmptySupplier;
 
   // 20 ms main loop
   private static final double SIM_DT_SEC = 0.020;
@@ -58,38 +61,33 @@ public class IntakeSubsystem extends SubsystemBase {
   private static final double ARM_MECH_RATIO = 1.0 / Constants.Intake.Arm.MOTOR_ROTS_TO_ARM_ROTS;
   private static final double ARM_LENGTH_METERS = 0.35;
   private static final double ARM_MIN_ANGLE_RAD = Math.toRadians(0.0);
-  private static final double ARM_MAX_ANGLE_RAD =
-      Math.toRadians(Constants.Intake.Arm.ARM_DEGREES_UPPER_LIMIT);
+  private static final double ARM_MAX_ANGLE_RAD = Math.toRadians(Constants.Intake.Arm.ARM_DEGREES_UPPER_LIMIT);
 
   public IntakeSubsystem() {
     intakeMotor = new LoggedTalonFX(Constants.Intake.INTAKE_MOTOR.port);
     armMotor = new LoggedTalonFX(Constants.Intake.Arm.ARM_MOTOR.port);
     targetAngleDeg = Constants.Intake.Arm.ARM_POS_INITIAL;
 
-    Slot0Configs intakeSlot0Configs =
-        new Slot0Configs()
-            .withKV(Constants.Intake.INTAKE_KV)
-            .withKP(Constants.Intake.INTAKE_KP)
-            .withKI(Constants.Intake.INTAKE_KI)
-            .withKD(Constants.Intake.INTAKE_KD);
+    Slot0Configs intakeSlot0Configs = new Slot0Configs()
+        .withKV(Constants.Intake.INTAKE_KV)
+        .withKP(Constants.Intake.INTAKE_KP)
+        .withKI(Constants.Intake.INTAKE_KI)
+        .withKD(Constants.Intake.INTAKE_KD);
 
-    Slot0Configs armSlot0Configs =
-        new Slot0Configs()
-            .withKV(Constants.Intake.Arm.ARM_KV)
-            .withKP(Constants.Intake.Arm.ARM_KP)
-            .withKI(Constants.Intake.Arm.ARM_KI)
-            .withKD(Constants.Intake.Arm.ARM_KD);
+    Slot0Configs armSlot0Configs = new Slot0Configs()
+        .withKV(Constants.Intake.Arm.ARM_KV)
+        .withKP(Constants.Intake.Arm.ARM_KP)
+        .withKI(Constants.Intake.Arm.ARM_KI)
+        .withKD(Constants.Intake.Arm.ARM_KD);
 
-    CurrentLimitsConfigs intakeCurrentLimitsConfigs =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimitEnable(true)
-            .withStatorCurrentLimit(Constants.Intake.INTAKE_STATOR_CURRENT_LIMIT)
-            .withSupplyCurrentLimit(Constants.Intake.INTAKE_SUPPLY_CURRENT_LIMIT);
+    CurrentLimitsConfigs intakeCurrentLimitsConfigs = new CurrentLimitsConfigs()
+        .withStatorCurrentLimitEnable(true)
+        .withStatorCurrentLimit(Constants.Intake.INTAKE_STATOR_CURRENT_LIMIT)
+        .withSupplyCurrentLimit(Constants.Intake.INTAKE_SUPPLY_CURRENT_LIMIT);
 
-    CurrentLimitsConfigs armCurrentLimitsConfigs =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimitEnable(true)
-            .withStatorCurrentLimit(Constants.Intake.Arm.ARM_STATOR_CURRENT_LIMIT);
+    CurrentLimitsConfigs armCurrentLimitsConfigs = new CurrentLimitsConfigs()
+        .withStatorCurrentLimitEnable(true)
+        .withStatorCurrentLimit(Constants.Intake.Arm.ARM_STATOR_CURRENT_LIMIT);
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
     TalonFXConfigurator intakeMotorConfig = intakeMotor.getConfigurator();
@@ -107,8 +105,7 @@ public class IntakeSubsystem extends SubsystemBase {
     cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT);
     CANcoderConfiguration ccConfig = new CANcoderConfiguration();
     // zero the magnet
-    ccConfig
-        .MagnetSensor
+    ccConfig.MagnetSensor
         .withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
         .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
         .withMagnetOffset(Rotations.of(Constants.Intake.Arm.ENCODER_OFFSET));
@@ -116,8 +113,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // add the CANcoder as a feedback source for the motor's built-in encoder
     TalonFXConfiguration fxConfig = new TalonFXConfiguration();
-    fxConfig
-        .Feedback
+    fxConfig.Feedback
         .withFeedbackRemoteSensorID(cancoder.getDeviceID())
         .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
         .withSensorToMechanismRatio(Constants.Intake.Arm.ENCODER_ROTS_TO_ARM_ROTS)
@@ -143,22 +139,25 @@ public class IntakeSubsystem extends SubsystemBase {
 
     var krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
 
-    intakeMechanismSim =
-        new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(
-                krakenGearboxModel, INTAKE_SIM_MOI_KG_M2, INTAKE_MECH_RATIO),
-            krakenGearboxModel);
+    intakeMechanismSim = new DCMotorSim(
+        LinearSystemId.createDCMotorSystem(
+            krakenGearboxModel, INTAKE_SIM_MOI_KG_M2, INTAKE_MECH_RATIO),
+        krakenGearboxModel);
 
-    armMechanismSim =
-        new SingleJointedArmSim(
-            krakenGearboxModel,
-            ARM_MECH_RATIO,
-            ARM_SIM_MOI_KG_M2,
-            ARM_LENGTH_METERS,
-            ARM_MIN_ANGLE_RAD,
-            ARM_MAX_ANGLE_RAD,
-            true,
-            ARM_MIN_ANGLE_RAD);
+    armMechanismSim = new SingleJointedArmSim(
+        krakenGearboxModel,
+        ARM_MECH_RATIO,
+        ARM_SIM_MOI_KG_M2,
+        ARM_LENGTH_METERS,
+        ARM_MIN_ANGLE_RAD,
+        ARM_MAX_ANGLE_RAD,
+        true,
+        ARM_MIN_ANGLE_RAD);
+  }
+
+  public IntakeSubsystem withHopperEmptySupplier(BooleanSupplier hopperEmptySupplier) {
+    this.hopperEmptySupplier = hopperEmptySupplier;
+    return this;
   }
 
   public void run(double speed) {
@@ -202,8 +201,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean atSpeed() {
     return Math.abs(
-            intakeMotor.getVelocity().getValueAsDouble() - Constants.Intake.INTAKE_TARGET_SPEED)
-        <= Constants.Intake.Arm.ARM_TOLERANCE_DEGREES;
+        intakeMotor.getVelocity().getValueAsDouble()
+            - Constants.Intake.INTAKE_TARGET_SPEED) <= Constants.Intake.Arm.ARM_TOLERANCE_DEGREES;
   }
 
   // Commands
@@ -217,6 +216,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (hopperEmptySupplier != null)
+      if (hopperEmptySupplier.getAsBoolean())
+        setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED);
+
     // rollers
     DogLog.log("Subsystems/Intake/Rollers/Target Speed", Constants.Intake.INTAKE_TARGET_SPEED);
     DogLog.log("Subsystems/Intake/Rollers/At target speed", atSpeed());
@@ -260,10 +263,8 @@ public class IntakeSubsystem extends SubsystemBase {
     armMotorSimState.setSupplyVoltage(batteryV);
 
     // 2) Read controller output voltages and step both mechanism plants
-    double intakeAppliedVolts =
-        intakeMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
-    double armAppliedVolts =
-        armMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+    double intakeAppliedVolts = intakeMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+    double armAppliedVolts = armMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
 
     intakeMechanismSim.setInputVoltage(intakeAppliedVolts);
     armMechanismSim.setInputVoltage(armAppliedVolts);
@@ -296,8 +297,7 @@ public class IntakeSubsystem extends SubsystemBase {
     armCancoderSimState.setVelocity(armMechVelRps);
 
     // 5) Battery sag from total simulated current draw
-    double totalCurrentAmps =
-        intakeMechanismSim.getCurrentDrawAmps() + armMechanismSim.getCurrentDrawAmps();
+    double totalCurrentAmps = intakeMechanismSim.getCurrentDrawAmps() + armMechanismSim.getCurrentDrawAmps();
     double loadedBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
     RoboRioSim.setVInVoltage(loadedBatteryV);
 

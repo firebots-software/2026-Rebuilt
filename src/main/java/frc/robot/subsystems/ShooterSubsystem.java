@@ -31,25 +31,22 @@ public class ShooterSubsystem extends SubsystemBase {
     warmUpMotor2 = new LoggedTalonFX(Constants.Shooter.warmUpMotor2.port);
     warmUpMotor3 = new LoggedTalonFX(Constants.Shooter.warmUpMotor3.port);
 
-    Follower follower =
-        new Follower(Constants.Shooter.warmUpMotor1.port, MotorAlignmentValue.Aligned);
+    Follower follower = new Follower(Constants.Shooter.warmUpMotor1.port, MotorAlignmentValue.Aligned);
     warmUpMotor1.setControl(follower);
     warmUpMotor2.setControl(follower);
     warmUpMotor3.setControl(follower);
     shooter = warmUpMotor1;
 
-    Slot0Configs s0c =
-        new Slot0Configs()
-            .withKP(Constants.Shooter.SHOOTER_KP)
-            .withKI(Constants.Shooter.SHOOTER_KI)
-            .withKD(Constants.Shooter.SHOOTER_KD)
-            .withKV(Constants.Shooter.SHOOTER_KV)
-            .withKA(Constants.Shooter.SHOOTER_KA);
+    Slot0Configs s0c = new Slot0Configs()
+        .withKP(Constants.Shooter.SHOOTER_KP)
+        .withKI(Constants.Shooter.SHOOTER_KI)
+        .withKD(Constants.Shooter.SHOOTER_KD)
+        .withKV(Constants.Shooter.SHOOTER_KV)
+        .withKA(Constants.Shooter.SHOOTER_KA);
 
-    CurrentLimitsConfigs clc =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
-            .withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
+    CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
+        .withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
 
     TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
     TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
@@ -76,9 +73,11 @@ public class ShooterSubsystem extends SubsystemBase {
         / Constants.Shooter.SHOOTER_WHEEL_GEAR_RATIO;
   }
 
-  // speed based on shooter wheel which is the one flinging the ball with a max of 52.36 and a min
+  // speed based on shooter wheel which is the one flinging the ball with a max of
+  // 52.36 and a min
   // of 35.60 ft/sec
-  // input the speed you want the ball to go at (ft/sec); it will be divided by 2 because that's
+  // input the speed you want the ball to go at (ft/sec); it will be divided by 2
+  // because that's
   // what Jeff said that relationship is
   // so now max is 104.72 and min is 71.2
   public void setSpeed(double speed) {
@@ -91,8 +90,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    return Math.abs(calculateFtToRPS(targetSpeed) - shooter.getVelocity().getValueAsDouble())
-        <= tolerance;
+    return Math.abs(calculateFtToRPS(targetSpeed) - shooter.getVelocity().getValueAsDouble()) <= tolerance;
   }
 
   public double getCurrentSpeed() {
@@ -100,10 +98,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   // Comands
-  public Command ShootAtSpeed() {
-    return Commands.deadline(
-        Commands.runEnd(() -> this.setSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stop, this),
-        Commands.waitUntil(() -> this.isAtSpeed()));
+  public Command shootAtSpeed() {
+    return Commands.runEnd(() -> this.setSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stop, this);
   }
 
   @Override
