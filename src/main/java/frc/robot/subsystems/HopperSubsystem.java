@@ -29,6 +29,8 @@ public class HopperSubsystem extends SubsystemBase {
   private TalonFXSimState hopperMotorSimState;
   private DCMotorSim hopperMechanismSim;
 
+  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
+
   public HopperSubsystem() {
     CurrentLimitsConfigs currentLimitConfigs =
         new CurrentLimitsConfigs()
@@ -75,14 +77,14 @@ public class HopperSubsystem extends SubsystemBase {
   public void runHopper(double targetSurfaceSpeedMetersPerSecond) {
     this.targetSurfaceSpeedMetersPerSecond = targetSurfaceSpeedMetersPerSecond;
     hopperMotor.setControl(
-        new VelocityVoltage(
+        m_velocityRequest.withVelocity(
             targetSurfaceSpeedMetersPerSecond
                 * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
   }
 
   public void stop() {
     targetSurfaceSpeedMetersPerSecond = 0.0;
-    hopperMotor.setControl(new VelocityVoltage(targetSurfaceSpeedMetersPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
+    hopperMotor.setControl(m_velocityRequest.withVelocity(targetSurfaceSpeedMetersPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
   }
 
   public double getFloorSpeedMPS() {
