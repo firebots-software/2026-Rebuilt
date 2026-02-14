@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
-import java.util.function.BooleanSupplier;
 
 public class IntakeSubsystem extends SubsystemBase {
   private LoggedTalonFX armMotor, intakeMotor;

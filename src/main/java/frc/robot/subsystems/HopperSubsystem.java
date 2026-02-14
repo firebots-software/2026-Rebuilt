@@ -30,19 +30,22 @@ public class HopperSubsystem extends SubsystemBase {
   private DCMotorSim hopperMechanismSim;
 
   public HopperSubsystem() {
-    CurrentLimitsConfigs currentLimitConfigs = new CurrentLimitsConfigs()
-        .withStatorCurrentLimit(Constants.Hopper.HOPPER_STATOR_LIMIT)
-        .withSupplyCurrentLimit(Constants.Hopper.HOPPER_SUPPLY_LIMIT);
+    CurrentLimitsConfigs currentLimitConfigs =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Hopper.HOPPER_STATOR_LIMIT)
+            .withSupplyCurrentLimit(Constants.Hopper.HOPPER_SUPPLY_LIMIT);
 
-    Slot0Configs velocityPidConfigs = new Slot0Configs()
-        .withKP(Constants.Hopper.kP)
-        .withKI(Constants.Hopper.kI)
-        .withKD(Constants.Hopper.kD)
-        .withKV(Constants.Hopper.kV);
+    Slot0Configs velocityPidConfigs =
+        new Slot0Configs()
+            .withKP(Constants.Hopper.kP)
+            .withKI(Constants.Hopper.kI)
+            .withKD(Constants.Hopper.kD)
+            .withKV(Constants.Hopper.kV);
 
     hopperMotor = new LoggedTalonFX(Constants.Hopper.MOTOR_PORT);
 
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive);
+    MotorOutputConfigs motorOutputConfigs =
+        new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive);
 
     hopperMotor.getConfigurator().apply(velocityPidConfigs);
     hopperMotor.getConfigurator().apply(currentLimitConfigs);
@@ -61,12 +64,13 @@ public class HopperSubsystem extends SubsystemBase {
 
     var krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
 
-    hopperMechanismSim = new DCMotorSim(
-        LinearSystemId.createDCMotorSystem(
-            krakenGearboxModel,
-            Constants.Hopper.ESTIMATED_HOPPER_MOI_KG_M2,
-            1.0 / Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS),
-        krakenGearboxModel);
+    hopperMechanismSim =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(
+                krakenGearboxModel,
+                Constants.Hopper.ESTIMATED_HOPPER_MOI_KG_M2,
+                1.0 / Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS),
+            krakenGearboxModel);
   }
 
   public void runHopper(double targetSurfaceSpeedMetersPerSecond) {
@@ -84,10 +88,11 @@ public class HopperSubsystem extends SubsystemBase {
 
   public boolean atSpeed() {
     double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
-    double targetMotorSpeedRotationsPerSecond = targetSurfaceSpeedMetersPerSecond
-        / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL;
-    return Math.abs(measuredMotorSpeedRotationsPerSecond
-        - targetMotorSpeedRotationsPerSecond) <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
+    double targetMotorSpeedRotationsPerSecond =
+        targetSurfaceSpeedMetersPerSecond
+            / Constants.Hopper.MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL;
+    return Math.abs(measuredMotorSpeedRotationsPerSecond - targetMotorSpeedRotationsPerSecond)
+        <= Constants.Hopper.TOLERANCE_MOTOR_ROTS_PER_SEC;
   }
 
   // placeholder boolean function for seeing how many balls are in hopper
@@ -109,40 +114,45 @@ public class HopperSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log("Subsystems/Hopper/Target Speed", targetSurfaceSpeedMetersPerSecond);
     DogLog.log("Subsystems/Hopper/At target speed", atSpeed());
-    DogLog.log("Subsystems/Hopper/Motor Velocity (rots per sec)", hopperMotor.getVelocity().getValueAsDouble());
-    DogLog.log("Subsystems/Hopper/Motor Current (stator)", hopperMotor.getStatorCurrent().getValueAsDouble());
+    DogLog.log(
+        "Subsystems/Hopper/Motor Velocity (rots per sec)",
+        hopperMotor.getVelocity().getValueAsDouble());
+    DogLog.log(
+        "Subsystems/Hopper/Motor Current (stator)",
+        hopperMotor.getStatorCurrent().getValueAsDouble());
   }
 
   @Override
   public void simulationPeriodic() {
-    if (hopperMotorSimState == null || hopperMechanismSim == null)
-      return;
+    if (hopperMotorSimState == null || hopperMechanismSim == null) return;
 
     // 1) Supply voltage to CTRE sim
     hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
     // 2) Read applied motor voltage and step mechanism plant
-    double appliedMotorVoltageVolts = hopperMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+    double appliedMotorVoltageVolts =
+        hopperMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
     hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
     hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
     // 3) Mechanism-side sim -> rotor-side sensor state
     double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
-    double hopperMechanismVelocityRotationsPerSecond = hopperMechanismSim.getAngularVelocityRadPerSec()
-        / (2.0 * Math.PI);
+    double hopperMechanismVelocityRotationsPerSecond =
+        hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
 
-    double motorRotorPositionRotations = hopperMechanismPositionRotations * 1.0
-        / Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS;
-    double motorRotorVelocityRotationsPerSecond = hopperMechanismVelocityRotationsPerSecond
-        * 1.0
-        / Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS;
+    double motorRotorPositionRotations =
+        hopperMechanismPositionRotations * 1.0 / Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS;
+    double motorRotorVelocityRotationsPerSecond =
+        hopperMechanismVelocityRotationsPerSecond
+            * 1.0
+            / Constants.Hopper.MOTOR_ROTS_TO_PULLEY_ROTS;
 
     hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
     hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
 
     // 4) Battery sag model
-    double loadedBatteryVoltageVolts = BatterySim
-        .calculateDefaultBatteryLoadedVoltage(hopperMechanismSim.getCurrentDrawAmps());
+    double loadedBatteryVoltageVolts =
+        BatterySim.calculateDefaultBatteryLoadedVoltage(hopperMechanismSim.getCurrentDrawAmps());
     RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
 
     DogLog.log("Subsystems/Hopper/Sim/AppliedMotorVoltageVolts", appliedMotorVoltageVolts);
