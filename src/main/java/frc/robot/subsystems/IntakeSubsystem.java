@@ -46,7 +46,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private CANcoderSimState armCancoderSimState;
   private DCMotorSim intakeMechanismSim;
   private SingleJointedArmSim armMechanismSim;
-  private BooleanSupplier hopperEmptySupplier;
 
   // 20 ms main loop
   private static final double SIM_DT_SEC = 0.020;
@@ -163,11 +162,6 @@ public class IntakeSubsystem extends SubsystemBase {
             ARM_MIN_ANGLE_RAD);
   }
 
-  public IntakeSubsystem withHopperEmptySupplier(BooleanSupplier hopperEmptySupplier) {
-    this.hopperEmptySupplier = hopperEmptySupplier;
-    return this;
-  }
-
   public void run(double speed) {
     intakeMotor.setControl(
         new VelocityVoltage(speed * Constants.Intake.MOTOR_ROTS_TO_INTAKE_ROTS)
@@ -224,9 +218,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (hopperEmptySupplier != null)
-      if (hopperEmptySupplier.getAsBoolean()) setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED);
-
     // rollers
     DogLog.log("Subsystems/Intake/Rollers/Target Speed", Constants.Intake.INTAKE_TARGET_SPEED);
     DogLog.log("Subsystems/Intake/Rollers/At target speed", atSpeed());
