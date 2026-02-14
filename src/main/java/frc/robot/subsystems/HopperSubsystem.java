@@ -167,5 +167,13 @@ public class HopperSubsystem extends SubsystemBase {
     double loadedBatteryVoltageVolts =
         BatterySim.calculateDefaultBatteryLoadedVoltage(hopperMechanismSim.getCurrentDrawAmps());
     RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
+
+
+    double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
+
+    // Calculate what the battery voltage should be with this load
+    double targetBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
+
+    RoboRioSim.setVInVoltage(targetBatteryV);
   }
 }
