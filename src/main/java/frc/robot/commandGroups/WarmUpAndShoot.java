@@ -9,6 +9,7 @@ public class WarmUpAndShoot extends SequentialCommandGroup {
   public WarmUpAndShoot(ShooterSubsystem shooterSubsystem, HopperSubsystem hopperSubsystem) {
     addCommands(
         shooterSubsystem.shootAtSpeed(),
-        hopperSubsystem.runHopperCommand(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND));
+        hopperSubsystem.runHopperCommand(
+            Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND));
   }
 }

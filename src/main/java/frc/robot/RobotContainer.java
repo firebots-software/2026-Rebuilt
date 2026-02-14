@@ -194,11 +194,11 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // right bumper -> run intake
     if (Constants.intakeOnRobot) {
-    intakeSubsystem.setDefaultCommand(
-        new ConditionalCommand(
-            intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
-            intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
-            hopperSubsystem::isHopperSufficientlyEmpty));
+      intakeSubsystem.setDefaultCommand(
+          new ConditionalCommand(
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
+              hopperSubsystem::isHopperSufficientlyEmpty));
 
       joystick.x().whileTrue(intakeSubsystem.runIntake());
 
@@ -238,7 +238,6 @@ public class RobotContainer {
     if (Constants.hopperOnRobot) {
       joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
     }
-
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }

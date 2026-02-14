@@ -145,7 +145,7 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Hopper/CurrentMotorSpeed(RPS)", hopperMotor.getVelocity().getValueAsDouble());
     DogLog.log("Subsystems/Hopper/AppliedVolts", hopperMotor.getMotorVoltage().getValueAsDouble());
-        hopperMotor.getVelocity().getValueAsDouble();
+    hopperMotor.getVelocity().getValueAsDouble();
     DogLog.log(
         "Subsystems/Hopper/Motor Current (stator)",
         hopperMotor.getStatorCurrent().getValueAsDouble());
