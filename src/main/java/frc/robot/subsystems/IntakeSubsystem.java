@@ -194,9 +194,7 @@ public class IntakeSubsystem extends SubsystemBase {
         () -> {
           this.runRollers(targetRollersRPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS);
         },
-        () -> {
-          this.stopRollers();
-        },
+        this::stopRollers,
         this);
   }
 
@@ -206,9 +204,7 @@ public class IntakeSubsystem extends SubsystemBase {
         () -> {
           this.runRollers(targetRollers_RPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS);
         },
-        () -> {
-          this.stopRollers();
-        },
+          this::stopRollers,
         this);
   }
 
