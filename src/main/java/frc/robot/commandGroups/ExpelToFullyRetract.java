@@ -5,14 +5,16 @@ import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.FuelGaugeDetection;
 
 public class ExpelToFullyRetract extends SequentialCommandGroup {
   public ExpelToFullyRetract(
       ShooterSubsystem shooterSubsystem,
       IntakeSubsystem intakeSubsystem,
-      HopperSubsystem hopperSubsystem) {
+      HopperSubsystem hopperSubsystem,
+      FuelGaugeDetection  fuelGaugeDetection) {
     addCommands(
-        shooterSubsystem.shootAtSpeed().until(hopperSubsystem::isHopperSufficientlyEmpty),
+        shooterSubsystem.shootAtSpeed().until(() -> hopperSubsystem.isHopperSufficientlyEmpty(fuelGaugeDetection)),
         intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
   }
 }

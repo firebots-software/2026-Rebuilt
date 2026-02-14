@@ -25,6 +25,14 @@ public class FuelGaugeDetection extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
 
+  private double latestRawArea;
+  private double latestSmoothedArea;
+  private double latestMultipleBallsArea;
+
+  private FuelGauge latestRawGauge;
+  private FuelGauge latestSmoothedGauge;
+  private FuelGauge latestMultipleBallsGauge;
+
   public FuelGaugeDetection(Constants.Vision.Cameras cameraID) {
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
@@ -60,11 +68,15 @@ public class FuelGaugeDetection extends SubsystemBase {
           double smoothedMultipleBalls =
               updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
 
+          latestRawArea = rawArea;
+          latestSmoothedArea = smoothedRawArea;
+          latestMultipleBallsArea = smoothedMultipleBalls;
+          
           DogLog.log("Subsystems/FuelGauge/RawArea", rawArea);
           DogLog.log("Subsystems/FuelGauge/SmoothedRawArea", smoothedRawArea);
           DogLog.log("Subsystems/FuelGauge/MultipleBallsArea", smoothedMultipleBalls);
 
-          logThresholdState(smoothedRawArea, rawArea, smoothedMultipleBalls);
+          fuelGaugeState(smoothedRawArea, rawArea, smoothedMultipleBalls);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BlobPresent", false));
   }
@@ -89,18 +101,17 @@ public class FuelGaugeDetection extends SubsystemBase {
     return smoothedArea;
   }
 
-  public void logThresholdState(double smoothedArea, double rawArea, double smoothedMultipleBalls) {
-    FuelGauge smoothGauge, rawGauge, multipleBallsGauge;
+  public void fuelGaugeState(double smoothedArea, double rawArea, double smoothedMultipleBalls) {
 
-    smoothGauge = setFuelGauge(smoothedArea);
+    latestSmoothedGauge = setFuelGauge(smoothedArea);
 
-    rawGauge = setFuelGauge(rawArea);
+    latestRawGauge = setFuelGauge(rawArea);
 
-    multipleBallsGauge = setFuelGauge(smoothedMultipleBalls);
+    latestMultipleBallsGauge = setFuelGauge(smoothedMultipleBalls);
 
-    DogLog.log("Subsystems/FuelGauge/SmoothedGaugeLevel", smoothGauge.toString());
-    DogLog.log("Subsystems/FuelGauge/RawGaugeLevel", rawGauge.toString());
-    DogLog.log("Subsystems/FuelGauge/MultipleBallsGaugeLevel", multipleBallsGauge.toString());
+    DogLog.log("Subsystems/FuelGauge/SmoothedGaugeLevel", latestSmoothedGauge.toString());
+    DogLog.log("Subsystems/FuelGauge/RawGaugeLevel", latestRawGauge.toString());
+    DogLog.log("Subsystems/FuelGauge/MultipleBallsGaugeLevel", latestMultipleBallsGauge.toString());
   }
 
   private FuelGauge setFuelGauge(double area) {
@@ -126,6 +137,9 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     return targets.stream().max((a, b) -> Double.compare(a.getArea(), b.getArea()));
   }
+
+  public double getMultipleBallsArea() { return latestMultipleBallsArea; }
+  public FuelGauge getMultipleBallsGauge() { return latestMultipleBallsGauge; }
 
   public double getLargestBallsAvg(int numBalls) {
     double sum = 0.0;
