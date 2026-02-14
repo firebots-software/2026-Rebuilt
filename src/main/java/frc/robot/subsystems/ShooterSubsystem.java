@@ -76,9 +76,11 @@ public class ShooterSubsystem extends SubsystemBase {
         / Constants.Shooter.SHOOTER_WHEEL_GEAR_RATIO;
   }
 
-  // speed based on shooter wheel which is the one flinging the ball with a max of 52.36 and a min
+  // speed based on shooter wheel which is the one flinging the ball with a max of
+  // 52.36 and a min
   // of 35.60 ft/sec
-  // input the speed you want the ball to go at (ft/sec); it will be divided by 2 because that's
+  // input the speed you want the ball to go at (ft/sec); it will be divided by 2
+  // because that's
   // what Jeff said that relationship is
   // so now max is 104.72 and min is 71.2
   public void setSpeed(double speed) {
@@ -100,7 +102,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   // Comands
-  public Command ShootAtSpeed() {
+  public Command shootAtSpeed() {
     return Commands.runEnd(() -> this.setSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stop, this);
   }
 

@@ -218,27 +218,27 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // rollers
-    DogLog.log("Subsystems/Intake-Rollers/Target Speed", Constants.Intake.INTAKE_TARGET_SPEED);
-    DogLog.log("Subsystems/Intake-Rollers/At target speed", atSpeed());
+    DogLog.log("Subsystems/Intake/Rollers/Target Speed", Constants.Intake.INTAKE_TARGET_SPEED);
+    DogLog.log("Subsystems/Intake/Rollers/At target speed", atSpeed());
     DogLog.log(
-        "Subsystems/Intake-Rollers/Motor Velocity (rots/s)",
+        "Subsystems/Intake/Rollers/Motor Velocity (rots per sec)",
         intakeMotor.getVelocity().getValueAsDouble());
     DogLog.log(
-        "Subsystems/Intake-Rollers/Motor Velocity (ft/s)",
+        "Subsystems/Intake/Rollers/Motor Velocity (ft per sec)",
         intakeMotor.getVelocity().getValueAsDouble()
             * Constants.Intake.INTAKE_ROTS_PER_SEC_TO_FEET_PER_SEC);
     DogLog.log(
-        "Subsystems/Intake-Rollers/Motor Position (rots)",
+        "Subsystems/Intake/Rollers/Motor Position (rots)",
         intakeMotor.getPosition().getValueAsDouble());
     DogLog.log(
-        "Subsystems/Intake-Rollers/Motor Current (stator)",
+        "Subsystems/Intake/Rollers/Motor Current (stator)",
         intakeMotor.getStatorCurrent().getValueAsDouble());
 
     // arm
-    DogLog.log("Subsystems/Intake-Arm/CANcoder Position (degrees)", getCancoderPosition());
-    DogLog.log("Subsystems/Intake-Arm/CANcoder Position (raw)", getCancoderPositionRaw());
-    DogLog.log("Subsystems/Intake-Arm/Position (degrees)", getEncoderPosition());
-    DogLog.log("Subsystems/Intake-Arm/Position (raw)", getEncoderPositionRaw());
+    DogLog.log("Subsystems/Intake/Arm/CANcoder Position (degrees)", getCancoderPosition());
+    DogLog.log("Subsystems/Intake/Arm/CANcoder Position (raw)", getCancoderPositionRaw());
+    DogLog.log("Subsystems/Intake/Arm/Position (degrees)", getEncoderPosition());
+    DogLog.log("Subsystems/Intake/Arm/Position (raw)", getEncoderPositionRaw());
     DogLog.log(
         "Subsystems/Intake-Arm/Motor Velocity (rots/s)", armMotor.getVelocity().getValueAsDouble());
     DogLog.log("Subsystems/Intake-Arm/TargetAngleDeg", targetAngleDeg);
