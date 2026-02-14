@@ -62,11 +62,11 @@ public final class Constants {
 
       // Control Constants (Position closed-loop and torque control)
       // Note: MRD specifies <insert> for most values - these need characterization/tuning
-      public static final double KV = 0.50; // V*s/rot - TODO: Verify on new robot
-      public static final double KP = 100; // V/rot - TODO: Verify on new robot
+      public static final double KV = 0.01; // V*s/rot - TODO: Verify on new robot
+      public static final double KP = 80.0; // V/rot - TODO: Verify on new robot
       public static final double KI = 0.0;
-      public static final double KD = 0.8; // V*s/rot - TODO: Verify on new robot
-      public static final double KG = 1.0; // TODO: verify
+      public static final double KD = 0.0; // V*s/rot - TODO: Verify on new robot
+      public static final double KG = 0.15; // TODO: verify
 
       // Current Limits
       public static final double STATOR_CURRENT_LIMIT = 40.0; // Amps - TODO: Verify with team
