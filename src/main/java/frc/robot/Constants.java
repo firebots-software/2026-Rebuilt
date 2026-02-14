@@ -503,6 +503,7 @@ public final class Constants {
   }
 
   public static class FuelGaugeDetection {
+    public static final int BALLS_TO_AVG = 3;
     public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;

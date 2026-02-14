@@ -55,7 +55,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
           double smoothedRawArea = updateLatestList(latestRawMeasurements, rawArea);
 
-          double avgMultipleBalls = getLargestBallsAvg(3);
+          double avgMultipleBalls = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
 
           double smoothedMultipleBalls =
               updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
