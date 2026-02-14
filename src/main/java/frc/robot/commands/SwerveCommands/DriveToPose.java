@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -185,9 +184,9 @@ public class DriveToPose extends Command {
             pathState.speeds.vyMetersPerSecond + yController.calculate(pose.getY(), path.getY()),
             pathState.speeds.omegaRadiansPerSecond
                 + (!doingTargeting.getAsBoolean()
-                ? (headingController.calculate(
-                    pose.getRotation().getRadians(), path.getRotation().getRadians()))
-                : swerve.calculateRequiredRotationalRate(new Rotation2d(Shoot.targetAngle))));
+                    ? (headingController.calculate(
+                        pose.getRotation().getRadians(), path.getRotation().getRadians()))
+                    : swerve.calculateRequiredRotationalRate(new Rotation2d(Shoot.targetAngle))));
 
     //   feedforwards = null;
     if (dt > 0.0001) {
@@ -207,10 +206,9 @@ public class DriveToPose extends Command {
         && (Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
             <= Constants.Swerve.targetPositionError)
         && (Math.abs(
-                swerve.getCurrentState().Pose.getRotation().getRadians()
-                    - targetPose.getRotation().getRadians())
-            <= Constants.Swerve.targetAngleError
-            
+                    swerve.getCurrentState().Pose.getRotation().getRadians()
+                        - targetPose.getRotation().getRadians())
+                <= Constants.Swerve.targetAngleError
             || doingTargeting.getAsBoolean());
   }
 

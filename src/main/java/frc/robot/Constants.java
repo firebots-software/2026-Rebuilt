@@ -389,7 +389,6 @@ public final class Constants {
         26.971;
   }
 
-
   public static class Climber {
     public static final double mmcV = 80; // TODO: acquire good ones
     public static final double mmcA = 80;
@@ -604,6 +603,9 @@ public final class Constants {
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .2;
 
     public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double MIN_DIST_FT = 4d;
+    public static final double MAX_DIST_FT = 8d;
   }
 
   public static class OI {

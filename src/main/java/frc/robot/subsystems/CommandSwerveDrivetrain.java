@@ -11,7 +11,6 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
@@ -28,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.commands.Shoot;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
 
@@ -237,9 +235,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
     targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
     targetSpeeds.omegaRadiansPerSecond +=
-        (Shoot.running
-            ? calculateRequiredRotationalRate(new Rotation2d(Shoot.targetAngle))
-            : m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading));
+        m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
 
     setControl(
         m_pathApplyFieldSpeeds
@@ -354,7 +350,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     m_simNotifier.startPeriodic(kSimLoopPeriod);
   // }
   public ChassisSpeeds getFieldSpeeds() {
-    return ChassisSpeeds.fromRobotRelativeSpeeds(currentState.Speeds, currentState.Pose.getRotation());
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+        currentState.Speeds, currentState.Pose.getRotation());
   }
 
   public double calculateRequiredRotationalRate(Rotation2d targetRotation) {

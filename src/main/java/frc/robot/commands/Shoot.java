@@ -27,6 +27,7 @@ public class Shoot extends Command {
 
   public static double targetAngle = 0;
   public static boolean running;
+  public static double distMeters = 0;
 
   /**
    * Creates a new ExampleCommand.
@@ -98,6 +99,7 @@ public class Shoot extends Command {
     Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(gunOffset));
     Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/distanceToTargetMeters", relativePos.magnitude());
+    distMeters = relativePos.magnitude();
 
     running = true;
   }
@@ -108,6 +110,7 @@ public class Shoot extends Command {
     shooter.stop();
     hopper.stop();
     targetAngle = 0;
+    distMeters = -1;
     running = false;
   }
 
