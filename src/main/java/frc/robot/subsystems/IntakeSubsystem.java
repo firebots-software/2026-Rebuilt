@@ -192,7 +192,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command runRollersCommand() {
     return Commands.startEnd(
         () -> {
-          this.runRollers(targetRollersRPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS);
+          this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
         },
         this::stopRollers,
         this);
@@ -202,7 +202,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command runRollersCommand(double targetRollers_RPS) {
     return Commands.startEnd(
         () -> {
-          this.runRollers(targetRollers_RPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS);
+          this.runRollers(targetRollers_RPS);
         },
           this::stopRollers,
         this);
