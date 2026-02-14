@@ -132,15 +132,17 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void stopSitUp() {
+    sitUpTargetDeg = getSitUpPosInRotationsFromEncoder();
     sitUpMotor.setPosition(sitUpTargetDeg);
   }
 
   public void stopPullUp() {
-    pullUpMotorL.setPosition(pullUpTargetPosition);
+    pullUpTargetPosition = pullUpMotorR.getPosition().getValueAsDouble();
     pullUpMotorR.setPosition(pullUpTargetPosition);
   }
 
   public void stopMuscleUp() {
+    muscleUpTargetDeg = getMuscleUpPosInRotationsFromEncoder();
     muscleUpMotor.setPosition(muscleUpTargetDeg);
   }
 
