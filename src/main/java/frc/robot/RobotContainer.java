@@ -221,10 +221,6 @@ public class RobotContainer {
       joystick.leftBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
     }
 
-    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick.leftBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
-    }
-
     joystick
         .povUp()
         .whileTrue(
