@@ -40,12 +40,6 @@ public class FuelGaugeDetection extends SubsystemBase {
     cameraTitle = cameraID.getLoggingName();
   }
 
-  public static FuelGaugeDetection getInstance(Constants.Vision.Cameras cameraID) {
-    int index = cameraID.ordinal();
-    if (cameraList[index] == null) cameraList[index] = new FuelGaugeDetection(cameraID);
-    return cameraList[index];
-  }
-
   public void periodic() {
 
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();

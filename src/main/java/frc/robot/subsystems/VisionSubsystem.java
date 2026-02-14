@@ -69,6 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   // constructor for VisionSubsystem
   public VisionSubsystem(Constants.Vision.Cameras cameraID) {
+
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = Constants.Vision.getCameraTransform(cameraID);
