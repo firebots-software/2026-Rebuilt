@@ -286,7 +286,7 @@ public class RobotContainer {
 
   public Command autoShoot() {
     return new SequentialCommandGroup(
-        shooter.ShootAtSpeed(),
+        shooter.shootAtSpeed(),
         new WaitUntilCommand(() -> shooter.isAtSpeed()),
         hopper.RunHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC).withTimeout(6.7),
         Commands.runOnce(() -> shooter.stop()));
