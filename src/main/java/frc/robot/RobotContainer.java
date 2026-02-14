@@ -127,7 +127,7 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
     if (Constants.shooterOnRobot) {
-      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+      joystick.x().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -185,7 +185,7 @@ public class RobotContainer {
             .resetOdometry("MoveForward.traj")
             .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
 
-    joystick.x().whileTrue(trajCommand);
+    // joystick.x().whileTrue(trajCommand);
 
     if (Constants.hopperOnRobot) {
       joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
