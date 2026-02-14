@@ -189,24 +189,33 @@ public class IntakeSubsystem extends SubsystemBase {
             - targetRollersRPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROTS) <= Constants.Intake.Rollers.TOLERANCE_MOTOR_ROTS_PER_SEC;
   }
 
-  public Command runRollersCommand() {
-    return Commands.startEnd(
-        () -> {
-          this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
-        },
-        this::stopRollers,
-        this);
-  }
+  // public Command runRollersCommand() {
+  //   return Commands.startEnd(
+  //       () -> {
+  //         this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+  //       },
+  //       this::stopRollers,
+  //       this);
+  // }
 
 
-  public Command runRollersCommand(double targetRollers_RPS) {
-    return Commands.startEnd(
-        () -> {
-          this.runRollers(targetRollers_RPS);
-        },
+  // public Command runRollersCommand(double targetRollers_RPS) {
+  //   return Commands.startEnd(
+  //       () -> {
+  //         this.runRollers(targetRollers_RPS);
+  //       },
+  //         this::stopRollers,
+  //       this);
+  // }
+
+    public Command runRollersCommand() {
+      return Commands.startEnd(
+          () -> runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS),
           this::stopRollers,
-        this);
-  }
+          this)
+        .beforeStarting(() -> DogLog.log("Intake/RollersCmd", "START"))
+        .finallyDo(interrupted -> DogLog.log("Intake/RollersCmd/END", interrupted ? "INTERRUPTED" : "NORMAL"));
+    }
 
   public Command armToDegrees(double degrees) {
     return Commands.runOnce(() -> {
