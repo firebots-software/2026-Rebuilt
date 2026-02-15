@@ -100,8 +100,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   // Comands
-  public Command ShootAtSpeed() {
-    return Commands.runEnd(() -> this.setSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stop, this);
+  public Command ShootAtSpeed(double speed) {
+    return Commands.runEnd(() -> this.setSpeed(speed), this::stop, this);
   }
 
   @Override

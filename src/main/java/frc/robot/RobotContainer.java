@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.Shoot;
+import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -119,14 +119,12 @@ public class RobotContainer {
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
-            redside,
-            (BooleanSupplier) (() -> Shoot.running),
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
     if (Constants.shooterOnRobot) {
-      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+      joystick.leftTrigger().whileTrue(new ArcAroundAndShoot(drivetrain, lebron, intakeSubsystem, hopperSubsystem, speedFunction, redside));
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));

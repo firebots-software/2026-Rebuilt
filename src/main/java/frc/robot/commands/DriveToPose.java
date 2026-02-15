@@ -1,20 +1,16 @@
-package frc.robot.commands.SwerveCommands;
+package frc.robot.commands;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.LinearPath;
-import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.commands.Shoot;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /** This Command drives the robot in a linear path to a specific pose. */
@@ -28,8 +24,6 @@ public class DriveToPose extends Command {
   // Initialize the Target Pose and the Target Pose Supplier to a null value
   private Pose2d targetPose = null;
   private Supplier<Pose2d> targetPoseSupplier = null;
-
-  private BooleanSupplier doingTargeting = () -> false;
 
   private final PIDController xController =
       new PIDController(
@@ -49,11 +43,11 @@ public class DriveToPose extends Command {
 
   double startTime;
 
-  private final WheelForceCalculator wheelForceCalculator;
-  private WheelForceCalculator.Feedforwards feedforwards;
+  //   private final WheelForceCalculator wheelForceCalculator;
+  //   private WheelForceCalculator.Feedforwards feedforwards;
 
-  private double previousTime;
-  private ChassisSpeeds prev = new ChassisSpeeds();
+  //   private double previousTime;
+  //   private ChassisSpeeds prev = new ChassisSpeeds();
 
   /**
    * @param swerve Swerve Subsystem.
@@ -113,8 +107,8 @@ public class DriveToPose extends Command {
             Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0).magnitude(),
             Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0).magnitude());
 
-    wheelForceCalculator =
-        new WheelForceCalculator(swerveModulePositions, 58.967, 3.67); // constants
+    // wheelForceCalculator =
+    //     new WheelForceCalculator(swerveModulePositions, 58.967, 3.67); // constants
 
     path =
         new LinearPath(
@@ -136,11 +130,6 @@ public class DriveToPose extends Command {
     addRequirements(swerve);
   }
 
-  public DriveToPose withTargeting(BooleanSupplier targeting) {
-    doingTargeting = targeting;
-    return this;
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -148,8 +137,8 @@ public class DriveToPose extends Command {
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    previousTime = Utils.getCurrentTimeSeconds();
-    prev = new ChassisSpeeds();
+    // previousTime = Utils.getCurrentTimeSeconds();
+    // prev = new ChassisSpeeds();
 
     if (targetPoseSupplier != null) {
       targetPose = targetPoseSupplier.get();
@@ -168,8 +157,8 @@ public class DriveToPose extends Command {
   @Override
   public void execute() {
     double currTime = Utils.getCurrentTimeSeconds();
-    double dt = currTime - previousTime;
-    previousTime = currTime;
+    // double dt = currTime - previousTime;
+    // previousTime = currTime;
 
     if (pathState == null) return;
 
@@ -183,21 +172,19 @@ public class DriveToPose extends Command {
             pathState.speeds.vxMetersPerSecond + xController.calculate(pose.getX(), path.getX()),
             pathState.speeds.vyMetersPerSecond + yController.calculate(pose.getY(), path.getY()),
             pathState.speeds.omegaRadiansPerSecond
-                + (!doingTargeting.getAsBoolean()
-                    ? (headingController.calculate(
-                        pose.getRotation().getRadians(), path.getRotation().getRadians()))
-                    : swerve.calculateRequiredRotationalRate(new Rotation2d(Shoot.targetAngle))));
+                + headingController.calculate(
+                    pose.getRotation().getRadians(), path.getRotation().getRadians()));
 
     //   feedforwards = null;
-    if (dt > 0.0001) {
-      feedforwards = wheelForceCalculator.calculate(dt, prev, targetSpeeds);
-    }
+    // if (dt > 0.0001) {
+    //   feedforwards = wheelForceCalculator.calculate(dt, prev, targetSpeeds);
+    // }
 
-    prev = targetSpeeds;
+    // prev = targetSpeeds;
 
     // Apply the generated speeds
-    swerve.applyFieldSpeeds(targetSpeeds, feedforwards);
-    //   swerve.applyOneFieldSpeeds(targetSpeeds);
+    // swerve.applyFieldSpeeds(targetSpeeds, feedforwards);
+    swerve.applyFieldSpeeds(targetSpeeds);
   }
 
   private boolean atPosition() {
@@ -206,10 +193,9 @@ public class DriveToPose extends Command {
         && (Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
             <= Constants.Swerve.targetPositionError)
         && (Math.abs(
-                    swerve.getCurrentState().Pose.getRotation().getRadians()
-                        - targetPose.getRotation().getRadians())
-                <= Constants.Swerve.targetAngleError
-            || doingTargeting.getAsBoolean());
+                swerve.getCurrentState().Pose.getRotation().getRadians()
+                    - targetPose.getRotation().getRadians())
+            <= Constants.Swerve.targetAngleError);
   }
 
   // Called once the command ends or is interrupted.

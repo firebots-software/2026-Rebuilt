@@ -1,124 +1,69 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-package frc.robot.commands;
+package frc.robot.commandGroups;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
+import frc.robot.Constants.Landmarks;
 import frc.robot.MathUtils.MiscMath;
 import frc.robot.MathUtils.Vector3;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommandInArc;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
-public class Shoot extends Command {
-  @SuppressWarnings("PMD.UnusedPrivateField")
-  private final ShooterSubsystem shooter;
+public class ArcAroundAndShoot extends ParallelCommandGroup {
 
-  private final HopperSubsystem hopper;
   private final CommandSwerveDrivetrain drivetrain;
-  private final BooleanSupplier redside;
+  private final Pose3d targetNoOffset;
 
-  public static double targetAngle = 0;
-  public static boolean running;
-  public static double distMeters = 0;
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public Shoot(
+  public ArcAroundAndShoot(
       CommandSwerveDrivetrain drivetrain,
       ShooterSubsystem shooter,
+      IntakeSubsystem intake,
       HopperSubsystem hopper,
+      DoubleSupplier tangentialVelocitySupplier,
+      Pose3d target,
       BooleanSupplier redside) {
     this.drivetrain = drivetrain;
-    this.shooter = shooter;
-    this.hopper = hopper;
-    this.redside = redside;
+    this.targetNoOffset = target;
+
+    addCommands(
+        new SwerveJoystickCommandInArc(
+            target,
+            tangentialVelocitySupplier,
+            (DoubleSupplier) (() -> 1f),
+            (BooleanSupplier) (() -> true),
+            (DoubleSupplier) (() -> targetAngle(target)),
+            drivetrain,
+            redside),
+            
+        new Shoot(shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION), () -> pointingAtTarget(), shooter, intake, hopper)
+        
+    );
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    Pose3d target =
-        redside.getAsBoolean() ? Constants.Landmarks.RED_HUB : Constants.Landmarks.BLUE_HUB;
-    shooter.setSpeed(
-        Units.metersToFeet(
-            shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
-    if (shooter.isAtSpeed() && pointingAtTarget()) {
-      hopper.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC);
-    } else {
-      hopper.stop();
+  public ArcAroundAndShoot(
+      CommandSwerveDrivetrain drivetrain,
+      ShooterSubsystem shooter,
+      IntakeSubsystem intake,
+      HopperSubsystem hopper,
+      DoubleSupplier tangentialVelocitySupplier,
+      BooleanSupplier redside) {
+        this(
+            drivetrain,
+            shooter,
+            intake,
+            hopper,
+            tangentialVelocitySupplier,
+            redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB,
+            redside
+        );
     }
-    targetAngle = targetAngle(target);
-
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/isPointing", pointingAtTarget());
-
-    for (int i = 1; i <= Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
-      DogLog.log(
-          "Subsystems/ShooterSubsystem/Shoot/shootSpeedMetersPerSec/" + i + "prec",
-          shootingSpeed(target, i));
-    }
-
-    DogLog.log(
-        "Subsystems/ShooterSubsystem/Shoot/timeOfFlightSeconds",
-        2
-            * shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-            * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
-            / 9.81);
-
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/target", target);
-    for (int i = 1; i <= Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
-      DogLog.log(
-          "Subsystems/ShooterSubsystem/Shoot/positionTargeting/" + i + "prec",
-          new Pose3d(
-              positionToTarget(target, i).x,
-              positionToTarget(target, i).y,
-              positionToTarget(target, i).z,
-              new Rotation3d()));
-    }
-
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/targetAngleRadians", targetAngle);
-
-    Pose3d gunOffset =
-        MiscMath.RotatedPosAroundVertical(
-            Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
-            drivetrain.getState().Pose.getRotation().getRadians());
-    Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(gunOffset));
-    Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/distanceToTargetMeters", relativePos.magnitude());
-    distMeters = relativePos.magnitude();
-
-    running = true;
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    shooter.stop();
-    hopper.stop();
-    targetAngle = 0;
-    distMeters = -1;
-    running = false;
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
 
   public double targetAngle(Pose3d targetNoOffset) {
     Vector3 target =
@@ -130,7 +75,7 @@ public class Shoot extends Command {
   }
 
   private boolean pointingAtTarget() {
-    double desiredRobotHullAngle = targetAngle;
+    double desiredRobotHullAngle = targetAngle(targetNoOffset);
 
     double robotHullAngle =
         (drivetrain.getState().Pose.getRotation().getRadians() + (2 * Math.PI)) % (2 * Math.PI);
@@ -144,8 +89,8 @@ public class Shoot extends Command {
     return hullAimed;
   }
 
-  public static boolean pointingAtTarget(CommandSwerveDrivetrain drivetrain) {
-    double desiredRobotHullAngle = targetAngle;
+  public boolean pointingAtTarget(CommandSwerveDrivetrain drivetrain) {
+    double desiredRobotHullAngle = targetAngle(targetNoOffset);
 
     double robotHullAngle =
         (drivetrain.getState().Pose.getRotation().getRadians() + (2 * Math.PI)) % (2 * Math.PI);
