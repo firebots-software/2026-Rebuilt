@@ -76,8 +76,8 @@ public class SwerveJoystickCommandInArc extends Command {
         (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.getAsDouble()))
             + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
 
-    double xSpeed = tangentialSpeed * Math.sin(thetaFromCentre);
-    double ySpeed = tangentialSpeed * Math.cos(thetaFromCentre);
+    double xSpeed = tangentialSpeed * Math.cos(thetaFromCentre + Math.PI / 2f);
+    double ySpeed = tangentialSpeed * Math.sin(thetaFromCentre + Math.PI / 2f);
 
     // 2. Normalize inputs
     double length = xSpeed * xSpeed + ySpeed * ySpeed; // actually length squared
