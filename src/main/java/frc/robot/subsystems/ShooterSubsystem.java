@@ -26,17 +26,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private static double tolerance = 5; // rps
 
   public ShooterSubsystem() {
+    warmUpMotor1 = new LoggedTalonFX(Constants.Shooter.warmUpMotor1);
+    warmUpMotor2 = new LoggedTalonFX(Constants.Shooter.warmUpMotor2);
+    warmUpMotor3 = new LoggedTalonFX(Constants.Shooter.warmUpMotor3);
 
-    warmUpMotor1 = new LoggedTalonFX(Constants.Shooter.warmUpMotor1.port);
-    warmUpMotor2 = new LoggedTalonFX(Constants.Shooter.warmUpMotor2.port);
-    warmUpMotor3 = new LoggedTalonFX(Constants.Shooter.warmUpMotor3.port);
-
-    Follower follower =
-        new Follower(Constants.Shooter.warmUpMotor1.port, MotorAlignmentValue.Aligned);
-    warmUpMotor1.setControl(follower);
+    Follower follower = new Follower(Constants.Shooter.warmUpMotor1, MotorAlignmentValue.Aligned);
     warmUpMotor2.setControl(follower);
     warmUpMotor3.setControl(follower);
-    shooter = warmUpMotor1;
+    shooter = warmUpMotor3;
 
     Slot0Configs s0c =
         new Slot0Configs()
