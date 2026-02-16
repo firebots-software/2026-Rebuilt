@@ -449,7 +449,7 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_Y = 0.5;
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
-    // placeholder constants for now; will be updated once robot is delivered
+    // TODO: SID: update all vals
     public static final double FRONT_RIGHT_X = Units.inchesToMeters(6.70);
     public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-4.125);
     public static final double FRONT_RIGHT_Z = Units.inchesToMeters(40.875);
@@ -463,6 +463,20 @@ public final class Constants {
     public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(180);
     public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(171.5);
     public static final double FRONT_LEFT_YAW = Units.degreesToRadians(0.0);
+
+    public static final double REAR_RIGHT_X = Units.inchesToMeters(6.70);
+    public static final double REAR_RIGHT_Y = Units.inchesToMeters(-4.125);
+    public static final double REAR_RIGHT_Z = Units.inchesToMeters(40.875);
+    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(180); // 180
+    public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(171.5); // 171.5
+    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(0.0);
+
+    public static final double REAR_LEFT_X = Units.inchesToMeters(6.70);
+    public static final double REAR_LEFT_Y = Units.inchesToMeters(4.125);
+    public static final double REAR_LEFT_Z = Units.inchesToMeters(40.875);
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(180);
+    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5);
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(0.0);
 
     public static final double COLOR_X = Units.inchesToMeters(8.867);
     public static final double COLOR_Y = Units.inchesToMeters(12.478);
@@ -486,18 +500,18 @@ public final class Constants {
 
         case REAR_RIGHT_CAM:
           return new Transform3d(
-              new Translation3d(FRONT_RIGHT_X, FRONT_RIGHT_Y, FRONT_RIGHT_Z),
-              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW));
+              new Translation3d(REAR_RIGHT_X, REAR_RIGHT_Y, REAR_RIGHT_Z),
+              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW));
 
         case REAR_LEFT_CAM:
           return new Transform3d(
-              new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
-              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW));
+              new Translation3d(REAR_LEFT_X, REAR_LEFT_Y, REAR_LEFT_Z),
+              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW));
 
         case COLOR_CAM:
           return new Transform3d(
-              new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
-              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW));
+              new Translation3d(COLOR_X, COLOR_Y, COLOR_Z),
+              new Rotation3d(COLOR_ROLL, COLOR_PITCH, COLOR_YAW));
         default:
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
