@@ -82,6 +82,10 @@ public class RobotContainer {
       Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.RIGHT_CAM) : null;
   public final VisionSubsystem visionLeft =
       Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.LEFT_CAM) : null;
+  // public final VisionSubsystem visionRearRight =
+  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
+  // public final VisionSubsystem visionRearLeft =
+  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
   public final FuelGaugeDetection visionFuelGauge =
       Constants.visionOnRobot ? new FuelGaugeDetection(Constants.Vision.Cameras.COLOR_CAM) : null;
 
@@ -236,9 +240,13 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot || visionRight == null || visionLeft == null) return;
+    if (!Constants.visionOnRobot
+        || visionRight == null
+        || visionLeft == null /*|| visionRearRight == null || visionRearLeft == null */) return;
     visionRight.addFilteredPose(drivetrain);
     visionLeft.addFilteredPose(drivetrain);
+    // visionRearRight.addFilteredPose(drivetrain);
+    // visionRearLeft.addFilteredPose(drivetrain);
   }
 
   public static void setAlliance() {
