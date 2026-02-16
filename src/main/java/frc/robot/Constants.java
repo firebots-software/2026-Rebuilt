@@ -15,8 +15,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = true;
+  public static final boolean hopperOnRobot = true;
+  public static final boolean intakeOnRobot = false;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
@@ -395,19 +395,26 @@ public final class Constants {
     public static final double DEFAULT_SUPPLY_CURRENT = 30.0;
     public static final double DEFAULT_STATOR_CURRENT = 30.0;
 
+    public static final int BRAKE_PORT = 7; // TODO
+    public static final double BRAKE_ANGLE = 30.0;
+
     public static class MuscleUp {
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 250d;
       public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
 
-      public static final double MUSCLE_UP_FORWARD = 0; // TODO: get vals
+      // As I understand it, resting postion would probably always be consistent
+      public static final double L1_MUSCLE_UP_FORWARD = 0; // TODO: get vals
+      public static final double L2_MUSCLE_UP_FORWARD = 0; // TODO: get vals
+      public static final double L3_MUSCLE_UP_FORWARD = 0; // TODO: get vals
       public static final double MUSCLE_UP_BACK = 0; // TODO: get vals
 
       public static final int MOTOR_PORT = -1; // TODO: get vals
 
       public static final int ENCODER_PORT = -1; // TODO: get vals
       public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+      public static final int ENCODER_OFFSET = 0; // TODO: get vals
     }
 
     public static class SitUp {
@@ -426,6 +433,7 @@ public final class Constants {
 
       public static final int ENCODER_PORT = -1; // TODO: get vals
       public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+      public static final int ENCODER_OFFSET = 0; // TODO: get vals
     }
 
     public static class PullUp {
@@ -436,7 +444,10 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_METERS_OF_BELT_TRAVERSAL =
           MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
 
-      public static final double REACH_POS = 0; // TODO: get vals
+      // As I understand it, resting postion would probably always be consistent
+      public static final double L1_REACH_POS = 0; // TODO: get vals
+      public static final double L2_REACH_POS = 0; // TODO: get vals
+      public static final double L3_REACH_POS = 0; // TODO: get vals
       public static final double PULL_DOWN_POS = 0; // TODO: get vals
 
       public static final int MOTOR_PORT_L = -1; // TODO: get vals
@@ -445,29 +456,56 @@ public final class Constants {
   }
 
   public static class Hopper {
-    public static final double MOTOR_ROTS_TO_PULLEY_ROTS = .2d; // MRD
-    private static final double PULLEY_LENGTH_MM = 220d * 5d; // 220 teeth, 5mm per
-    private static final double PULLEY_LENGTH_M = PULLEY_LENGTH_MM / 1000d;
-    public static final double MOTOR_ROTS_TO_METERS_OF_PULLEY_TRAVERSAL =
-        MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_LENGTH_M;
+    // --- Mechanical transmission ---
+    // Motor turns needed for one hopper pulley turn (5:1 reduction)
+    public static final double MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION = 5.0;
+    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
+        (20.0 / 24.0) * (60.0 / 12.0);
 
-    public static final double TARGET_PULLEY_SPEED_FT_PER_SEC = 6d;
-    public static final double TARGET_PULLEY_SPEED_M_PER_SEC =
-        Units.feetToMeters(TARGET_PULLEY_SPEED_FT_PER_SEC);
+    // Timing belt geometry
+    public static final double HOPPER_BELT_TOOTH_PITCH_METERS =
+        0.005; // length of belt movement per tooth moved on it
+    public static final double HOPPER_BELT_TOOTH_COUNT =
+        220.0; // number of teeth on the actual belt for full revolution
+    public static final double HOPPER_BELT_LOOP_LENGTH_METERS =
+        HOPPER_BELT_TOOTH_COUNT * HOPPER_BELT_TOOTH_PITCH_METERS; // total length of the belt
 
-    public static final int MOTOR_PORT = 9; // TODO: put actual port
+    // Linear travel conversion
+    // meters of belt travel per motor rotation
+    public static final double HOPPER_BELT_METERS_PER_MOTOR_ROTATION =
+        HOPPER_BELT_LOOP_LENGTH_METERS / MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
 
-    public static final double kP = .07; // TODO: get actual vals
-    public static final double kI = 0;
-    public static final double kD = 0;
-    public static final double kV = 0.12;
+    // inverse conversion (sometimes convenient in control code)
+    // motor rotations per meter of belt travel
+    public static final double MOTOR_ROTATIONS_PER_HOPPER_BELT_METER =
+        1.0 / HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
 
-    public static final double HOPPER_STATOR_LIMIT = 30.0;
-    public static final double HOPPER_SUPPLY_LIMIT = 30.0;
+    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
+        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
 
-    public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = .1;
+    // --- Operating targets ---
+    public static final double HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND = 6.0;
+    public static final double HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND =
+        Units.feetToMeters(HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND);
 
-    public static final double ESTIMATED_HOPPER_MOI_KG_M2 = 0.0012;
+    // --- Hardware IDs ---
+    public static final int MOTOR_PORT = 9;
+
+    // --- Closed-loop velocity gains (Phoenix Slot0) ---
+    public static final double kP = 0.01;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kV = 0.124;
+
+    // --- Current limits ---
+    public static final double HOPPER_STATOR_LIMIT_AMPS = 30.0;
+    public static final double HOPPER_SUPPLY_LIMIT_AMPS = 30.0;
+
+    // --- Control tolerance ---
+    public static final double HOPPER_VELOCITY_TOLERANCE_ROTATIONS_PER_SECOND = 0.1;
+
+    // --- Simulation ---
+    public static final double HOPPER_SIM_MECHANISM_MOI_KG_M2 = 0.0008;
   }
 
   public static class Vision {
