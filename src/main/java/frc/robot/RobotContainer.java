@@ -170,6 +170,7 @@ public class RobotContainer {
     if (Constants.shooterOnRobot) {
       lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
       joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+      joystick.x().whileTrue(lebron.shootAtSpeedCommand());
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));

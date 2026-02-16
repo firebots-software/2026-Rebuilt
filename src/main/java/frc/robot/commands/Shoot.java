@@ -52,7 +52,7 @@ public class Shoot extends Command {
   public void execute() {
     Pose3d target =
         redside.getAsBoolean() ? Constants.Landmarks.RED_HUB : Constants.Landmarks.BLUE_HUB;
-    shooter.setSpeed(
+    shooter.setBallSpeed(
         Units.metersToFeet(
             shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
     if (shooter.isAtSpeed() && pointingAtTarget()) {

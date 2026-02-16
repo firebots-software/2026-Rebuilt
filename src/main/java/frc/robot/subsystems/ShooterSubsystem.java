@@ -129,13 +129,13 @@ public class ShooterSubsystem extends SubsystemBase {
   // input the speed you want the ball to go at (ft/sec); it will be divided by 2 because that's
   // what Jeff said that relationship is
   // so now max is 104.72 and min is 71.2
-  public void setSpeed(double speed) {
+  public void setBallSpeed(double speed) {
     targetSpeed = speed / 2;
     warmUpMotor3.setControl(velocityRequest.withVelocity(calculateFtToRPS(targetSpeed)));
   }
 
   public void stop() {
-    setSpeed(0);
+    setBallSpeed(0);
   }
 
   public boolean isAtSpeed() {
@@ -149,7 +149,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Commands
   public Command shootAtSpeedCommand() {
-    return Commands.runEnd(() -> this.setSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stop, this);
+    return Commands.runEnd(() -> this.setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stop, this);
+  }
+
+  public Command shootAtSpeedCommand(double ballSpeed) {
+    return Commands.runEnd(() -> this.setBallSpeed(ballSpeed), this::stop, this);
   }
 
   @Override
