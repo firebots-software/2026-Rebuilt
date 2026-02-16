@@ -240,9 +240,9 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot
-        || visionRight == null
-        || visionLeft == null /*|| visionRearRight == null || visionRearLeft == null */) return;
+    if (!Constants.visionOnRobot || visionRight == null || visionLeft == null
+    /*|| visionRearRight == null
+    || visionRearLeft == null */ ) return;
     visionRight.addFilteredPose(drivetrain);
     visionLeft.addFilteredPose(drivetrain);
     // visionRearRight.addFilteredPose(drivetrain);
