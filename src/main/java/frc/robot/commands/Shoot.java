@@ -56,7 +56,7 @@ public class Shoot extends Command {
         Units.metersToFeet(
             shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
     if (shooter.isAtSpeed() && pointingAtTarget()) {
-      hopper.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC);
+      hopper.runHopper(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND);
     } else {
       hopper.stop();
     }
