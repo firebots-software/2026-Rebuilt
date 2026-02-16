@@ -576,9 +576,9 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final int warmUpMotor1 = 35; // TODO
-    public static final int warmUpMotor2 = 34; // TODO
-    public static final int warmUpMotor3 = 32; // TODO
+    public static final int WARMUP_1_ID = 35; // TODO
+    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_3_ID = 32; // TODO
 
     public static final double SHOOTER_KP = 0.0; // TODO
     public static final double SHOOTER_KI = 0.0; // TODO
@@ -601,6 +601,8 @@ public final class Constants {
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
     public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
   }
 
   public static class OI {
