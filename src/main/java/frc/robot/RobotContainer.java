@@ -156,12 +156,10 @@ public class RobotContainer {
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
-    lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
-    intakeSubsystem.setDefaultCommand(
-        new ConditionalCommand(
-            intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
-            intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
-            hopperSubsystem::isHopperSufficientlyEmpty));
+
+    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+      joystick.rightBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
+    }
 
     if (Constants.climberOnRobot) {
       joystick.povUp().onTrue(new L3Climb(climberSubsystem, drivetrain));
@@ -170,6 +168,7 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
+      lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
       joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
     }
 
@@ -195,6 +194,12 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // right bumper -> run intake
     if (Constants.intakeOnRobot) {
+      intakeSubsystem.setDefaultCommand(
+          new ConditionalCommand(
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
+              hopperSubsystem::isHopperSufficientlyEmpty));
+
       joystick.x().whileTrue(intakeSubsystem.runIntake());
 
       // left trigger + x -> arm to initial pos (0)
@@ -232,10 +237,6 @@ public class RobotContainer {
 
     if (Constants.hopperOnRobot) {
       joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
-    }
-
-    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick.leftBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
