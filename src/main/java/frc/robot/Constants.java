@@ -5,14 +5,12 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.proto.Pose2dProto;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.units.measure.Angle;
@@ -772,9 +770,9 @@ public final class Constants {
     public static Pose3d RED_HUB =
         new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
 
-    public static Pose2d RED_CLIMB = 
+    public static Pose2d RED_CLIMB =
         new Pose2d(14.936079978942871, 4.346440315246582, new Rotation2d());
-    public static Pose2d BLUE_CLIMB = 
+    public static Pose2d BLUE_CLIMB =
         new Pose2d(1.6244101524353027, 3.761740207672119, new Rotation2d(Math.PI));
   }
 }
