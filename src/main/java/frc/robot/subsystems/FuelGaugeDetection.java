@@ -45,6 +45,11 @@ public class FuelGaugeDetection extends SubsystemBase {
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
     for (var result : results) latestVisionResult = result;
 
+    if (latestVisionResult == null) {
+          DogLog.log("Subsystems/FuelGauge/BallPresent", false);
+          return;
+      }
+
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
         b -> {
@@ -74,7 +79,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
           fuelGaugeState(rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
         },
-        () -> DogLog.log("Subsystems/FuelGauge/BlobPresent", false));
+        () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
   }
 
   private double updateLatestList(ArrayList<Double> list, double area) {
@@ -174,6 +179,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     double sum = 0.0;
     if (latestVisionResult == null) return 0.0;
     List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
+    if (targets.isEmpty()) return 0.0;
 
     numBalls = Math.min(numBalls, targets.size());
 

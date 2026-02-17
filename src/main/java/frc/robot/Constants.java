@@ -89,14 +89,6 @@ public final class Constants {
       // Hardware Configuration
       public static final int CAN_ID = 11; // TODO: Get CAN ID from MRD table (currently blank)
 
-      public static final double MOTOR_ROTS_TO_INTAKE_ROTS = 1d / 2.6667;
-      public static final double ENCODER_ROTS_TO_INTAKE_ROTS = 2.666;
-      // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the
-      // wheel in feet
-      // wheel circumference can be used to convert from intake rotations/sec ->
-      // feet/sec
-      public static final double INTAKE_ROTS_PER_SEC_TO_FEET_PER_SEC = (3 / 12) * Math.PI;
-
       // Gear Ratios & Conversions
       /**
        * End-to-end reduction: 2.6667:1 Breakdown: Motor → 12t:32t pulley (9mm, 70t belt) → top
@@ -554,7 +546,7 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_Y = 0.5;
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
-    // placeholder constants for now; will be updated once robot is delivered
+    // TODO: SID: update all vals
     public static final double FRONT_RIGHT_X = Units.inchesToMeters(6.70);
     public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-4.125);
     public static final double FRONT_RIGHT_Z = Units.inchesToMeters(40.875);
@@ -655,19 +647,19 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final int warmUpMotor1 = 35; // TODO
-    public static final int warmUpMotor2 = 34; // TODO
-    public static final int warmUpMotor3 = 32; // TODO
+    public static final int WARMUP_1_ID = 35; // TODO
+    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_3_ID = 32; // TODO
 
-    public static final double SHOOTER_KP = 0.0; // TODO
+    public static final double SHOOTER_KP = 0.5; // TODO
     public static final double SHOOTER_KI = 0.0; // TODO
     public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.0; // TODO
+    public static final double SHOOTER_KV = 0.12; // TODO
     public static final double SHOOTER_KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-    public static final double SHOOTER_WHEEL_GEAR_RATIO = 1.25;
+    public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 104.72;
 
@@ -680,6 +672,8 @@ public final class Constants {
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
     public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
   }
 
   public static class OI {

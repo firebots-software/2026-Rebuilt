@@ -172,21 +172,9 @@ public class RobotContainer {
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
-    if (Constants.shooterOnRobot) {
-      lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
-    }
-
-    if (Constants.intakeOnRobot) {
-      intakeSubsystem.setDefaultCommand(
-          new ConditionalCommand(
-              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
-              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
-              () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
-    }
 
     if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
       joystick.rightBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
-      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
     }
 
     if (Constants.climberOnRobot) {
@@ -196,7 +184,9 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
-      lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
+      lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+      joystick.x().whileTrue(lebron.shootAtSpeedCommand());
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
