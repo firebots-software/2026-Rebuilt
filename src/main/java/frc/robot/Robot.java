@@ -9,7 +9,9 @@ import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.commands.ZeroPullUp;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -22,6 +24,7 @@ public class Robot extends TimedRobot {
   private final RobotContainer m_robotContainer;
 
   private VisionSubsystem visionRight, visionLeft;
+  private final ClimberSubsystem climberSubsystem;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,6 +43,8 @@ public class Robot extends TimedRobot {
       visionRight = null;
       visionLeft = null;
     }
+
+    climberSubsystem = Constants.climberOnRobot ? new ClimberSubsystem() : null;
   }
 
   @Override
@@ -102,6 +107,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // // stow climber
+    // new ZeroPullUp(climberSubsystem);
+    // climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE);
+    // climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK);
   }
 
   /** This function is called periodically during operator control. */
