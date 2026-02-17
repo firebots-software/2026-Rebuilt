@@ -206,6 +206,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void reduceCurrentLimits() {
     pullUpMotorR.updateCurrentLimits(30, 10);
+    pullUpMotorL.updateCurrentLimits(30, 10);
   }
 
   public void movePullUpDown() {
@@ -224,6 +225,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void resetCurrentLimits() {
     pullUpMotorR.updateCurrentLimits(
+        Constants.Climber.DEFAULT_SUPPLY_CURRENT, Constants.Climber.DEFAULT_STATOR_CURRENT);
+    pullUpMotorL.updateCurrentLimits(
         Constants.Climber.DEFAULT_SUPPLY_CURRENT, Constants.Climber.DEFAULT_STATOR_CURRENT);
   }
 
