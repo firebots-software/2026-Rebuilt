@@ -89,13 +89,14 @@ public final class Constants {
       // Hardware Configuration
       public static final int CAN_ID = 11; // TODO: Get CAN ID from MRD table (currently blank)
 
-    public static final double MOTOR_ROTS_TO_INTAKE_ROTS = 1d / 2.6667;
-    public static final double ENCODER_ROTS_TO_INTAKE_ROTS = 2.666;
-    // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the
-    // wheel in feet
-    // wheel circumference can be used to convert from intake rotations/sec ->
-    // feet/sec
-    public static final double INTAKE_ROTS_PER_SEC_TO_FEET_PER_SEC = (3 / 12) * Math.PI;
+      public static final double MOTOR_ROTS_TO_INTAKE_ROTS = 1d / 2.6667;
+      public static final double ENCODER_ROTS_TO_INTAKE_ROTS = 2.666;
+      // ( 3" diameter roller wheels / 12" ) * pi to calculate circumference of the
+      // wheel in feet
+      // wheel circumference can be used to convert from intake rotations/sec ->
+      // feet/sec
+      public static final double INTAKE_ROTS_PER_SEC_TO_FEET_PER_SEC = (3 / 12) * Math.PI;
+
       // Gear Ratios & Conversions
       /**
        * End-to-end reduction: 2.6667:1 Breakdown: Motor → 12t:32t pulley (9mm, 70t belt) → top

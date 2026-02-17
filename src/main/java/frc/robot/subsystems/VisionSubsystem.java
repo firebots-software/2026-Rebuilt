@@ -32,13 +32,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   private String cameraTitle;
 
-  // list of all april tags, not sorted by red/blue alliance due to neccessity of
-  // accessing both
-  private static final List<Integer> TAG_IDS =
-      List.of(
-          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-          26, 27, 28, 29, 30, 31, 32);
-
   // NOTE FOR SID/SAKETH: come back to ln 57-70 in 2025 repo
 
   // VISION:
@@ -203,7 +196,10 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/tagCount", tagCount);
 
     // TODO: Replace with real swerve speed
-    double currentSpeed = 0.0;
+    double currentSpeed =
+        Math.hypot(
+            swerve.getCurrentState().Speeds.vxMetersPerSecond,
+            swerve.getCurrentState().Speeds.vyMetersPerSecond);
 
     // Compute noise model
     double nX =
