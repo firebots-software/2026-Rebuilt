@@ -77,7 +77,6 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // VISION:
     visionEst = Optional.empty();
     latestVisionResult = null;
 
@@ -126,11 +125,7 @@ public class VisionSubsystem extends SubsystemBase {
             .orElse(Double.NaN);
     DogLog.log("Subsystems/Vision/averageTagDistance", averageDistance);
 
-    // 2025-reefscape has a validTags list on lines 160-166, replacing it with a
-    // list of all tags
-    // for 26
 
-    // VISION: to end
     // creates a list of all detected tags and logs for debugging
     List<PhotonTrackedTarget> tags =
         latestVisionResult.getTargets().stream().collect(Collectors.toList());
