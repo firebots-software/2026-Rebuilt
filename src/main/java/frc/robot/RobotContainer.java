@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
@@ -196,7 +195,9 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // left trigger -> run intake
     if (Constants.intakeOnRobot) {
-      debugJoystick.leftTrigger().whileTrue(intakeSubsystem.runRollersCommand(Constants.Intake.Rollers.TARGET_ROLLER_RPS));
+      debugJoystick
+          .leftTrigger()
+          .whileTrue(intakeSubsystem.runRollersCommand(Constants.Intake.Rollers.TARGET_ROLLER_RPS));
 
       // left trigger + x -> arm to initial pos (0)
       debugJoystick
@@ -234,7 +235,8 @@ public class RobotContainer {
       debugJoystick
           .rightTrigger()
           .whileTrue(
-              hopperSubsystem.runHopperCommand(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND));
+              hopperSubsystem.runHopperCommand(
+                  Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND));
     }
 
     if (Constants.shooterOnRobot) {
@@ -243,16 +245,42 @@ public class RobotContainer {
 
     // debug these
     if (Constants.climberOnRobot) {
+      // L1 commands
       debugJoystick
-          .povUp()
+          .povDown()
+          .and(debugJoystick.a())
           .onTrue(climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L1_REACH_POS));
       debugJoystick
-          .povLeft()
+          .povDown()
+          .and(debugJoystick.b())
+          .onTrue(
+              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD));
+      // L2 Commands
+      debugJoystick
+          .povRight()
+          .and(debugJoystick.a())
+          .onTrue(climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L2_REACH_POS));
+      debugJoystick
+          .povRight()
+          .and(debugJoystick.b())
+          .onTrue(
+              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L2_MUSCLE_UP_FORWARD));
+      // L3 Commands
+      debugJoystick
+          .povUp()
+          .and(debugJoystick.a())
+          .onTrue(climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L3_REACH_POS));
+      debugJoystick
+          .povUp()
+          .and(debugJoystick.b())
+          .onTrue(
+              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L3_MUSCLE_UP_FORWARD));
+      debugJoystick
+          .povUp()
           .onTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE));
       debugJoystick
           .povDown()
-          .onTrue(
-              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD));
+          .onTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
