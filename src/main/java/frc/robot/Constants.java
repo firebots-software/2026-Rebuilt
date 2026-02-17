@@ -17,10 +17,10 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = true;
+  public static final boolean hopperOnRobot = false;
   public static final boolean intakeOnRobot = false;
   public static final boolean visionOnRobot = false;
-  public static final boolean shooterOnRobot = false;
+  public static final boolean shooterOnRobot = true;
   public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
@@ -688,19 +688,19 @@ public final class Constants {
   }
 
   public static final class Shooter {
-    public static final int warmUpMotor1 = 35; // TODO
-    public static final int warmUpMotor2 = 34; // TODO
-    public static final int warmUpMotor3 = 32; // TODO
+    public static final int WARMUP_1_ID = 35; // TODO
+    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_3_ID = 32; // TODO
 
-    public static final double SHOOTER_KP = 0.0; // TODO
+    public static final double SHOOTER_KP = 0.5; // TODO
     public static final double SHOOTER_KI = 0.0; // TODO
     public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.0; // TODO
+    public static final double SHOOTER_KV = 0.12; // TODO
     public static final double SHOOTER_KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-    public static final double SHOOTER_WHEEL_GEAR_RATIO = 1.25;
+    public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 104.72;
 
@@ -716,6 +716,7 @@ public final class Constants {
 
     public static final double MIN_DIST_FT = 4d;
     public static final double MAX_DIST_FT = 8d;
+    public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
   }
 
   public static class OI {
