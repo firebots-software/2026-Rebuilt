@@ -30,10 +30,8 @@ public class FuelGaugeDetection extends SubsystemBase {
   private FuelGauge latestMultipleBallsGauge;
   private FuelGauge latestSmoothedMultipleBallsGauge;
 
-  public FuelGaugeDetection(Constants.Vision.Cameras cameraID) { 
+  public FuelGaugeDetection(Constants.Vision.Cameras cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
-
-    
   }
 
   public void periodic() {
@@ -68,10 +66,10 @@ public class FuelGaugeDetection extends SubsystemBase {
           latestMultipleBallsArea = avgMultipleBalls;
           latestSmoothedMultipleBallsArea = smoothedMultipleBalls;
 
-          DogLog.log("Subsystems/FuelGauge/RawArea", rawArea);
-          DogLog.log("Subsystems/FuelGauge/SmoothedRawArea", smoothedRawArea);
-          DogLog.log("Subsystems/FuelGauge/MultipleBallsArea", avgMultipleBalls);
-          DogLog.log("Subsystems/FuelGauge/SmoothedMultipleBallsArea", smoothedMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/Area/RawArea", rawArea);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedRawArea);
+          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", avgMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBalls);
 
           fuelGaugeState(rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
         },
@@ -109,11 +107,12 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     latestSmoothedMultipleBallsGauge = setFuelGauge(smoothedMultipleBalls);
 
-    DogLog.log("Subsystems/FuelGauge/RawGaugeLevel", latestRawGauge.toString());
-    DogLog.log("Subsystems/FuelGauge/SmoothedGaugeLevel", latestSmoothedGauge.toString());
-    DogLog.log("Subsystems/FuelGauge/MultipleBallsGaugeLevel", latestMultipleBallsGauge.toString());
+    DogLog.log("Subsystems/FuelGauge/Gauge/RawGauge", latestRawGauge.toString());
+    DogLog.log("Subsystems/FuelGauge/Gauge/SmoothedGauge", latestSmoothedGauge.toString());
     DogLog.log(
-        "Subsystems/FuelGauge/SmoothedMultipleBallsGaugeLevel",
+        "Subsystems/FuelGauge/Gauge/MultipleBallsGauge", latestMultipleBallsGauge.toString());
+    DogLog.log(
+        "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
   }
 
