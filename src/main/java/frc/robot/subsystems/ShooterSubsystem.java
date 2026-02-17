@@ -61,7 +61,7 @@ public class ShooterSubsystem extends SubsystemBase {
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
-            .withNeutralMode(NeutralModeValue.Coast); 
+            .withNeutralMode(NeutralModeValue.Coast);
 
     // Apply full TalonFXConfiguration to ensure factory defaults
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -78,8 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m3config.apply(config);
 
     // Set motors 1 and 2 to follow motor 3 (the leader)
-    Follower follower =
-        new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
+    Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
     warmUpMotor1.setControl(follower);
     warmUpMotor2.setControl(follower);
 
@@ -102,14 +101,16 @@ public class ShooterSubsystem extends SubsystemBase {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
                 singleKrakenGearbox,
-                Constants.Shooter.SHOOTER_SIM_MOI_KG_M2,  // MOI of entire coupled system
+                Constants.Shooter.SHOOTER_SIM_MOI_KG_M2, // MOI of entire coupled system
                 Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS), // Motor 3 → Shooter wheel (1.25)
             singleKrakenGearbox);
   }
+
   // from linear speed in ft/sec to motor rps
   public double calculateFtPSToRPS(double speedFtPS) {
-      return (speedFtPS * 12) / (Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI) 
-            * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
+    return (speedFtPS * 12)
+        / (Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI)
+        * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
   }
 
   // from motor rps to linear speed in ft/sec
@@ -134,17 +135,19 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - (shooter.getVelocity().getValueAsDouble()*2))
+    return Math.abs(
+            calculateFtPSToRPS(targetBallSpeed) - (shooter.getVelocity().getValueAsDouble() * 2))
         <= TOLERANCE_RPS;
   }
 
   public double getCurrentBallSpeed() {
-    return calculateRPSToFtPS(shooter.getVelocity().getValueAsDouble())*2;
+    return calculateRPSToFtPS(shooter.getVelocity().getValueAsDouble()) * 2;
   }
 
   // Commands
   public Command shootAtSpeedCommand() {
-    return Commands.runEnd(() -> this.setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter, this);
+    return Commands.runEnd(
+        () -> this.setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter, this);
   }
 
   public Command shootAtSpeedCommand(double ballSpeed) {
@@ -156,7 +159,8 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/TargetSpeed", targetBallSpeed);
     DogLog.log("Subsystems/Shooter/IsAtSpeed", isAtSpeed());
     DogLog.log("Subsystems/Shooter/CurrentSpeed", getCurrentBallSpeed());
-    DogLog.log("Subsystems/Shooter/Motor3VelocityRPS", warmUpMotor3.getVelocity().getValueAsDouble());
+    DogLog.log(
+        "Subsystems/Shooter/Motor3VelocityRPS", warmUpMotor3.getVelocity().getValueAsDouble());
     DogLog.log("Subsystems/Shooter/Motor3Volts", warmUpMotor3.getMotorVoltage().getValueAsDouble());
   }
 
@@ -174,7 +178,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // Since motor1 and motor2 follow motor3, we only read motor3's voltage
     double appliedMotorVoltageVolts =
         shooterSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
-    
+
     shooterMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
     shooterMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
@@ -196,7 +200,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // 4) Battery sag model
     // Sum the supply current from all three motors
     double loadedBatteryVoltageVolts =
-        BatterySim.calculateDefaultBatteryLoadedVoltage(shooterSimState.getSupplyCurrent()*3);
+        BatterySim.calculateDefaultBatteryLoadedVoltage(shooterSimState.getSupplyCurrent() * 3);
     RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
   }
 }

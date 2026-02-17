@@ -48,7 +48,8 @@ public class LockOnCommand extends ParallelCommandGroup {
                         ? .5d
                         : 0d)),
         shooter.shootAtSpeedCommand(
-            Units.metersToFeet(Targeting.shootingSpeed(
-                target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION))));
+            Units.metersToFeet(
+                Targeting.shootingSpeed(
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION))));
   }
 }

@@ -50,8 +50,9 @@ public class ShootWithWarning extends ParallelCommandGroup {
                         ? .5d
                         : 0d)),
         new Shoot(
-            Units.metersToFeet(Targeting.shootingSpeed(
-                target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+            Units.metersToFeet(
+                Targeting.shootingSpeed(
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
             () -> Targeting.pointingAtTarget(target, drivetrain),
             shooter,
             intake,
