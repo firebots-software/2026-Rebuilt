@@ -6,6 +6,7 @@ import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -13,6 +14,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -306,6 +308,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (this.getCurrentCommand() != null) {
       DogLog.log("Subsystems/Swerve/Current Command", this.getCurrentCommand().toString());
     }
+    DogLog.log("Subsystems/Swerve/Pose", getCurrentState().Pose);
+
+    DogLog.log("Subsystems/Swerve/CurrPoseX", getCurrentState().Pose.getX());
+    DogLog.log("Subsystems/Swerve/CurrPoseX", getCurrentState().Pose.getY());
+    DogLog.log("Subsystems/Swerve/CurrPoseX", getCurrentState().Pose.getRotation());
+  }
+
+  @Override
+  public void addVisionMeasurement(Pose2d visionRobotPose, double timestampSeconds) {
+    super.addVisionMeasurement(visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds));
+  }
+
+  @Override
+  public void addVisionMeasurement(
+      Pose2d visionRobotPose, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
+    super.addVisionMeasurement(
+        visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
   }
 
   // private void startSimThread() {

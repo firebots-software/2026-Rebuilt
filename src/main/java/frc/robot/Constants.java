@@ -15,7 +15,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = true;
+  public static final boolean hopperOnRobot = false;
   public static final boolean intakeOnRobot = false;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
@@ -160,7 +160,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.JAMES_HARDEN;
 
     public static final double targetPositionError = 0.05;
     public static final double targetAngleError = 0.02;
@@ -512,8 +512,11 @@ public final class Constants {
 
     // initializes cameras for use in VisionSubsystem
     public static enum Cameras {
-      RIGHT_CAM("rightCam"),
-      LEFT_CAM("leftCam");
+      RIGHT_CAM("frontRightCam"),
+      LEFT_CAM("frontLeftCam"),
+      REAR_RIGHT_CAM("rearRightCam"),
+      REAR_LEFT_CAM("rearLeftCam"),
+      COLOR_CAM("colorCam");
 
       private String loggingName;
 
@@ -543,52 +546,113 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_Y = 0.5;
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
-    // placeholder constants for now; will be updated once robot is delivered
-    public static final double RIGHT_X = Units.inchesToMeters(8.867);
-    public static final double RIGHT_Y = Units.inchesToMeters(-12.4787);
-    public static final double RIGHT_Z = Units.inchesToMeters(6.158);
-    public static final double RIGHT_ROLL = Units.degreesToRadians(0.0);
-    public static final double RIGHT_PITCH = Units.degreesToRadians(-12.5);
-    public static final double RIGHT_YAW = Units.degreesToRadians(40);
+    // TODO: SID: update all vals
+    public static final double FRONT_RIGHT_X = Units.inchesToMeters(6.70);
+    public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-4.125);
+    public static final double FRONT_RIGHT_Z = Units.inchesToMeters(40.875);
+    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(180); // 180
+    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(171.5); // 171.5
+    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(0.0);
 
-    public static final double LEFT_X = Units.inchesToMeters(8.867);
-    public static final double LEFT_Y = Units.inchesToMeters(12.478);
-    public static final double LEFT_Z = Units.inchesToMeters(6.158);
-    public static final double LEFT_ROLL = Units.degreesToRadians(0.0);
-    public static final double LEFT_PITCH = Units.degreesToRadians(-12.5);
-    public static final double LEFT_YAW = Units.degreesToRadians(-40);
+    public static final double FRONT_LEFT_X = Units.inchesToMeters(6.70);
+    public static final double FRONT_LEFT_Y = Units.inchesToMeters(4.125);
+    public static final double FRONT_LEFT_Z = Units.inchesToMeters(40.875);
+    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(180);
+    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(171.5);
+    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(0.0);
+
+    public static final double REAR_RIGHT_X = Units.inchesToMeters(6.70);
+    public static final double REAR_RIGHT_Y = Units.inchesToMeters(-4.125);
+    public static final double REAR_RIGHT_Z = Units.inchesToMeters(40.875);
+    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(180); // 180
+    public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(171.5); // 171.5
+    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(0.0);
+
+    public static final double REAR_LEFT_X = Units.inchesToMeters(6.70);
+    public static final double REAR_LEFT_Y = Units.inchesToMeters(4.125);
+    public static final double REAR_LEFT_Z = Units.inchesToMeters(40.875);
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(180);
+    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5);
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(0.0);
+
+    public static final double COLOR_X = Units.inchesToMeters(8.867);
+    public static final double COLOR_Y = Units.inchesToMeters(12.478);
+    public static final double COLOR_Z = Units.inchesToMeters(6.158);
+    public static final double COLOR_ROLL = Units.degreesToRadians(0.0);
+    public static final double COLOR_PITCH = Units.degreesToRadians(8.7);
+    public static final double COLOR_YAW = Units.degreesToRadians(0.0);
 
     // initializing Transform3d for use in future field visualization
     public static Transform3d getCameraTransform(Cameras camera) {
       switch (camera) {
-        case RIGHT_CAM:
+        case RIGHT_CAM: // TODO: SID: rename FRONT_RIGHT_CAM
           return new Transform3d(
-              new Translation3d(RIGHT_X, RIGHT_Y, RIGHT_Z),
-              new Rotation3d(RIGHT_ROLL, RIGHT_PITCH, RIGHT_YAW));
-        case LEFT_CAM:
+              new Translation3d(FRONT_RIGHT_X, FRONT_RIGHT_Y, FRONT_RIGHT_Z),
+              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW));
+
+        case LEFT_CAM: // TODO: SID: rename FRONT_LEFT_CAM
           return new Transform3d(
-              new Translation3d(LEFT_X, LEFT_Y, LEFT_Z),
-              new Rotation3d(LEFT_ROLL, LEFT_PITCH, LEFT_YAW));
+              new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
+              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW));
+
+        case REAR_RIGHT_CAM:
+          return new Transform3d(
+              new Translation3d(REAR_RIGHT_X, REAR_RIGHT_Y, REAR_RIGHT_Z),
+              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW));
+
+        case REAR_LEFT_CAM:
+          return new Transform3d(
+              new Translation3d(REAR_LEFT_X, REAR_LEFT_Y, REAR_LEFT_Z),
+              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW));
+
+        case COLOR_CAM:
+          return new Transform3d(
+              new Translation3d(COLOR_X, COLOR_Y, COLOR_Z),
+              new Rotation3d(COLOR_ROLL, COLOR_PITCH, COLOR_YAW));
         default:
           throw new IllegalArgumentException("Unknown camera ID: " + camera);
       }
     }
   }
 
-  public static final class Shooter {
-    public static final int warmUpMotor1 = 35; // TODO
-    public static final int warmUpMotor2 = 34; // TODO
-    public static final int warmUpMotor3 = 32; // TODO
+  public static class FuelGaugeDetection {
+    public static final int BALLS_TO_AVG = 3;
+    public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
+    public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
+    public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
 
-    public static final double SHOOTER_KP = 0.0; // TODO
+    public static enum FuelGauge { // LAST: 20, 50, 70, 100
+      EMPTY(2.0),
+      LOW(9.0),
+      MEDIUM(12.0),
+      FULL(100.0);
+
+      private double threshold;
+
+      FuelGauge(double threshold) {
+        this.threshold = threshold;
+      }
+
+      public double getThreshold() {
+        return threshold;
+      }
+    }
+  }
+
+  public static final class Shooter {
+    public static final int WARMUP_1_ID = 35; // TODO
+    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_3_ID = 32; // TODO
+
+    public static final double SHOOTER_KP = 0.5; // TODO
     public static final double SHOOTER_KI = 0.0; // TODO
     public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.0; // TODO
+    public static final double SHOOTER_KV = 0.12; // TODO
     public static final double SHOOTER_KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-    public static final double SHOOTER_WHEEL_GEAR_RATIO = 1.25;
+    public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 104.72;
 
@@ -601,6 +665,8 @@ public final class Constants {
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
     public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
   }
 
   public static class OI {

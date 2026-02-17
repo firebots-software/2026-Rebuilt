@@ -12,7 +12,7 @@ public class ExpelToFullyRetract extends SequentialCommandGroup {
       IntakeSubsystem intakeSubsystem,
       HopperSubsystem hopperSubsystem) {
     addCommands(
-        shooterSubsystem.shootAtSpeed().until(hopperSubsystem::isHopperSufficientlyEmpty),
+        shooterSubsystem.shootAtSpeedCommand().until(hopperSubsystem::isHopperSufficientlyEmpty),
         intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
   }
 }
