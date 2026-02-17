@@ -245,14 +245,14 @@ public class RobotContainer {
     if (Constants.climberOnRobot) {
       debugJoystick
           .povUp()
-          .onTrue(climberSubsystem.SetPullUpToPosition(Constants.Climber.PullUp.REACH_POS));
+          .onTrue(climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L1_REACH_POS));
       debugJoystick
           .povLeft()
-          .onTrue(climberSubsystem.SetSitUpToAngle(Constants.Climber.SitUp.SIT_UP_ANGLE));
+          .onTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE));
       debugJoystick
           .povDown()
           .onTrue(
-              climberSubsystem.SetMuscleUpToAngle(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD));
+              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
