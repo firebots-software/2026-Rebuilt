@@ -232,8 +232,6 @@ public class VisionSubsystem extends SubsystemBase {
         noiseVector,
         swerve);
 
-    DogLog.log("Subsystems/Vision/VisionPoseEstimate", measuredPose);
-
     if (measuredPose == null) {
       DogLog.log("Subsystems/Vision/measuredPoseAvailable", false);
     } else {
