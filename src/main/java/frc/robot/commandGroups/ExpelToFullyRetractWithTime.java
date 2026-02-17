@@ -13,7 +13,7 @@ public class ExpelToFullyRetractWithTime extends SequentialCommandGroup {
       HopperSubsystem hopperSubsystem,
       double timeSeconds) {
     addCommands(
-        shooterSubsystem.shootAtSpeed().withTimeout(timeSeconds),
+        shooterSubsystem.shootAtSpeedCommand().withTimeout(timeSeconds),
         intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
   }
 }
