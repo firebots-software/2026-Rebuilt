@@ -125,8 +125,8 @@ public class ShooterSubsystem extends SubsystemBase {
   // what Jeff said that relationship is
   // so now max is 104.72 and min is 71.2
   public void setBallSpeed(double ballSpeed) {
-    targetBallSpeed = ballSpeed / 2;
-    shooter.setControl(velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed)));
+    targetBallSpeed = ballSpeed;
+    shooter.setControl(velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0)));
   }
 
   public void stopShooter() {
@@ -134,7 +134,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - warmUpMotor3.getVelocity().getValueAsDouble())
+    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - (shooter.getVelocity().getValueAsDouble()*2))
         <= TOLERANCE_RPS;
   }
 
