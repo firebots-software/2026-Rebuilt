@@ -115,9 +115,9 @@ public class HopperSubsystem extends SubsystemBase {
   // placeholder boolean function for seeing how many balls are in hopper
   public boolean isHopperSufficientlyEmpty(FuelGaugeDetection fuelGaugeDetection) {
     return (fuelGaugeDetection != null
-        ? fuelGaugeDetection
-            .getGauge(GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS)
-            .equals(FuelGauge.EMPTY)
+        ? Constants.FuelGaugeDetection.GaugeLessThanEqualTo(
+            fuelGaugeDetection.getGauge(GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS),
+            FuelGauge.LOW)
         : false);
   }
 

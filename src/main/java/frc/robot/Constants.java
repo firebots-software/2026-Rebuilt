@@ -644,6 +644,13 @@ public final class Constants {
         return threshold;
       }
     }
+
+    public static boolean GaugeLessThanEqualTo(FuelGauge gauge, FuelGauge target) {
+      return gauge.ordinal() <= target.ordinal();
+
+      // Use this alternative when changing the enum for safety.
+      // return gauge.getThreshold() <= target.getThreshold();
+    }
   }
 
   public static final class Shooter {
