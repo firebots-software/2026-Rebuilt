@@ -26,17 +26,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private static double tolerance = 5; // rps
 
   public ShooterSubsystem() {
+    warmUpMotor1 = new LoggedTalonFX(Constants.Shooter.warmUpMotor1);
+    warmUpMotor2 = new LoggedTalonFX(Constants.Shooter.warmUpMotor2);
+    warmUpMotor3 = new LoggedTalonFX(Constants.Shooter.warmUpMotor3);
 
-    warmUpMotor1 = new LoggedTalonFX(Constants.Shooter.warmUpMotor1.port);
-    warmUpMotor2 = new LoggedTalonFX(Constants.Shooter.warmUpMotor2.port);
-    warmUpMotor3 = new LoggedTalonFX(Constants.Shooter.warmUpMotor3.port);
-
-    Follower follower =
-        new Follower(Constants.Shooter.warmUpMotor1.port, MotorAlignmentValue.Aligned);
-    warmUpMotor1.setControl(follower);
+    Follower follower = new Follower(Constants.Shooter.warmUpMotor1, MotorAlignmentValue.Aligned);
     warmUpMotor2.setControl(follower);
     warmUpMotor3.setControl(follower);
-    shooter = warmUpMotor1;
+    shooter = warmUpMotor3;
 
     Slot0Configs s0c =
         new Slot0Configs()
@@ -76,9 +73,11 @@ public class ShooterSubsystem extends SubsystemBase {
         / Constants.Shooter.SHOOTER_WHEEL_GEAR_RATIO;
   }
 
-  // speed based on shooter wheel which is the one flinging the ball with a max of 52.36 and a min
+  // speed based on shooter wheel which is the one flinging the ball with a max of
+  // 52.36 and a min
   // of 35.60 ft/sec
-  // input the speed you want the ball to go at (ft/sec); it will be divided by 2 because that's
+  // input the speed you want the ball to go at (ft/sec); it will be divided by 2
+  // because that's
   // what Jeff said that relationship is
   // so now max is 104.72 and min is 71.2
   public void setSpeed(double speed) {

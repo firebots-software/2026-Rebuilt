@@ -8,17 +8,27 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commandGroups.ArcAroundAndShoot;
+import frc.robot.commandGroups.ClimbCommands.L1Climb;
+import frc.robot.commandGroups.ClimbCommands.L2Climb;
+import frc.robot.commandGroups.ClimbCommands.L3Climb;
+import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -64,15 +74,16 @@ public class RobotContainer {
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
 
-  private final AutoFactory autoFactory;
+  private final AutoFactory autoFactory; // no marker
 
-  private final AutoRoutines autoRoutines;
+  public final AutoRoutine autoRoutine; // with markers
 
   private final AutoChooser autoChooser = new AutoChooser();
 
   public RobotContainer() {
+
+    // paths without marker
     autoFactory = drivetrain.createAutoFactory();
-    autoRoutines = new AutoRoutines(autoFactory);
 
     Command redClimb =
         autoFactory
@@ -81,20 +92,40 @@ public class RobotContainer {
     Command redDepot =
         autoFactory
             .resetOdometry("RedDepot.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+            .andThen(autoFactory.trajectoryCmd("RedDepot.traj"));
     Command redOutpost =
         autoFactory
             .resetOdometry("RedOutpost.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+            .andThen(autoFactory.trajectoryCmd("RedOutpost.traj"));
     Command moveForward =
         autoFactory
             .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
+    Command niceAndLongPath =
+        autoFactory
+            .resetOdometry("NiceAndLongPath.traj")
+            .andThen(autoFactory.trajectoryCmd("NiceAndLongPath.traj"));
+
+    // paths with marker
+    autoRoutine = autoFactory.newRoutine("MoveForwardStop.traj");
+    AutoTrajectory moveForwardStopTraj = autoRoutine.trajectory("MoveForwardStop.traj");
+
+    autoRoutine
+        .active()
+        .onTrue(moveForwardStopTraj.resetOdometry().andThen(moveForwardStopTraj.cmd()));
+    moveForwardStopTraj
+        .atTime("waitPlease")
+        .onTrue(new InstantCommand(() -> DogLog.log("reached marker", true)));
+
+    Command moveForwardStop = autoRoutine.cmd();
 
     autoChooser.addCmd("redClimb", () -> redClimb);
     autoChooser.addCmd("redDepot", () -> redDepot);
     autoChooser.addCmd("redOutpost", () -> redOutpost);
     autoChooser.addCmd("moveForward", () -> moveForward);
+    autoChooser.addCmd("niceLongPath", () -> niceAndLongPath);
+
+    autoChooser.addCmd("moveForwardStop", () -> moveForwardStop);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -123,6 +154,16 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
+    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+      joystick.rightBumper().onTrue(new WarmUpAndShoot(10f, () -> true, lebron, hopperSubsystem));
+    }
+
+    if (Constants.climberOnRobot) {
+      joystick.povUp().onTrue(new L3Climb(climberSubsystem, drivetrain, redside));
+      joystick.povRight().onTrue(new L2Climb(climberSubsystem, drivetrain, redside));
+      joystick.povDown().onTrue(new L1Climb(climberSubsystem, drivetrain, redside));
+    }
+
     if (Constants.shooterOnRobot) {
       joystick
           .leftTrigger()
@@ -142,10 +183,10 @@ public class RobotContainer {
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
-    joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -153,31 +194,37 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // right bumper -> run intake
     if (Constants.intakeOnRobot) {
-      joystick.x().whileTrue(intakeSubsystem.runIntake());
+      joystick.x().whileTrue(intakeSubsystem.armToDegrees(35.0));
+      joystick.y().whileTrue(intakeSubsystem.armToDegrees(0.0));
+      intakeSubsystem.setDefaultCommand(
+          new ConditionalCommand(
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
+              intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
+              hopperSubsystem::isHopperSufficientlyEmpty));
 
       // left trigger + x -> arm to initial pos (0)
-      joystick
-          .leftTrigger()
-          .and(joystick.x())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_INITIAL));
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.x())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
       // left trigger + a -> arm to extended pos (15)
-      joystick
-          .leftTrigger()
-          .and(joystick.a())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.a())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
 
-      // left trigger + b -> arm to idle pos (45)
-      joystick
-          .leftTrigger()
-          .and(joystick.b())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+      //   // left trigger + b -> arm to idle pos (45)
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.b())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
 
-      // left trigger + y -> arm to retracted pos (90)
-      joystick
-          .leftTrigger()
-          .and(joystick.y())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+      //   // left trigger + y -> arm to retracted pos (90)
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.y())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
     }
 
     // Auto sequence: choreo forward
@@ -186,10 +233,10 @@ public class RobotContainer {
             .resetOdometry("MoveForward.traj")
             .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
 
-    joystick.x().whileTrue(trajCommand);
+    // joystick.x().whileTrue(trajCommand);
 
     if (Constants.hopperOnRobot) {
-      joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+      //   joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
