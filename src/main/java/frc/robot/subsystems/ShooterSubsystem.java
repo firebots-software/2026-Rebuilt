@@ -47,11 +47,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Slot0Configs s0c =
         new Slot0Configs()
-            .withKP(Constants.Shooter.KP)
-            .withKI(Constants.Shooter.KI)
-            .withKD(Constants.Shooter.KD)
-            .withKV(Constants.Shooter.KV)
-            .withKA(Constants.Shooter.KA);
+            .withKP(Constants.Shooter.SHOOTER_KP)
+            .withKI(Constants.Shooter.SHOOTER_KI)
+            .withKD(Constants.Shooter.SHOOTER_KD)
+            .withKV(Constants.Shooter.SHOOTER_KV)
+            .withKA(Constants.Shooter.SHOOTER_KA);
 
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
