@@ -23,10 +23,10 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
+import frc.robot.commandGroups.Intake;
 import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -84,7 +84,8 @@ public class RobotContainer {
     // paths without marker
     autoFactory = drivetrain.createAutoFactory();
 
-    Command Drake = autoFactory.resetOdometry("Drake1.traj").andThen(autoFactory.trajectoryCmd("Drake1.traj"));
+    Command Drake =
+        autoFactory.resetOdometry("Drake1.traj").andThen(autoFactory.trajectoryCmd("Drake1.traj")).andThen(() -> new Intake(intakeSubsystem));
 
     // Fake paths
     // Command redClimb =
@@ -109,7 +110,7 @@ public class RobotContainer {
     //         .andThen(autoFactory.trajectoryCmd("NiceAndLongPath.traj"));
 
     // paths with marker
-    //Drake (outpost intake, shoot, climb)
+    // Drake (outpost intake, shoot, climb)
     autoRoutine = autoFactory.newRoutine("MoveForwardStop.traj");
     AutoTrajectory moveForwardStopTraj = autoRoutine.trajectory("MoveForwardStop.traj");
 
@@ -122,10 +123,6 @@ public class RobotContainer {
 
     Command moveForwardStop = autoRoutine.cmd();
 
-
-
-
-    
     autoChooser.addCmd("moveForwardStop", () -> moveForwardStop);
 
     // autoChooser.addCmd("redClimb", () -> redClimb);
@@ -133,7 +130,6 @@ public class RobotContainer {
     // autoChooser.addCmd("redOutpost", () -> redOutpost);
     // autoChooser.addCmd("moveForward", () -> moveForward);
     // autoChooser.addCmd("niceLongPath", () -> niceAndLongPath);
-
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
