@@ -302,16 +302,16 @@ public class VisionSubsystem extends SubsystemBase {
     // baseNoise + distanceExponentialCoefficient *
     // Math.pow(distanceExponentialBase, distance);
 
-    // double distanceFactor =
-    //     (distance < (17.548 + 0.67))
-    //         ? Math.min(
-    //             baseNoise
-    //                 + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance),
-    //             1.167)
-    //         : (baseNoise
-    //             + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance));
+    double distanceFactor =
+        (distance < (17.548 + 0.67))
+            ? Math.min(
+                baseNoise
+                    + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance),
+                1.167)
+            : (baseNoise
+                + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance));
 
-    double distanceFactor = baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
+    // double distanceFactor = baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
 
     // Speed term (quadratic)
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;

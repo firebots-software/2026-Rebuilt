@@ -181,10 +181,11 @@ public class RobotContainer {
           new ConditionalCommand(
               intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
               intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
-              () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
+              () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));}
 
       if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
         joystick.rightBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
+        joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
       }
 
       if (Constants.climberOnRobot) {
@@ -195,8 +196,8 @@ public class RobotContainer {
 
       if (Constants.shooterOnRobot) {
         lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
-        joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
       }
+    
 
       joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
       joystick
@@ -266,7 +267,7 @@ public class RobotContainer {
       }
 
       drivetrain.registerTelemetry(logger::telemeterize);
-    }
+    
   }
 
   public void visionPeriodic() {
