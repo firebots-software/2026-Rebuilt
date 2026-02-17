@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -111,6 +112,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rollersConfig.Slot0 = rollersSlot0Configs;
     rollersConfig.CurrentLimits = rollersCurrentLimitsConfigs;
     rollersConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    rollersConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     TalonFXConfiguration armConfig = new TalonFXConfiguration();
     armConfig.Slot0 = armSlot0Configs;

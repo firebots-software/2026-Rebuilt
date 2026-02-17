@@ -18,6 +18,8 @@ public class LoggedTalonFX extends TalonFX {
   /** Name of motor instance. */
   private String name;
 
+  private final TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
+
   private String temperature,
       closedLoopError,
       closedLoopReference,
@@ -102,7 +104,9 @@ public class LoggedTalonFX extends TalonFX {
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(40);
     // WITH A HIGH POWER MECHANISM, MAKE SURE TO INCREASE THE CURRENT LIMITS
-    this.getConfigurator().apply(clc);
+
+    motorConfiguration.CurrentLimits = clc;
+    this.getConfigurator().apply(motorConfiguration);
   }
 
   public void updateCurrentLimits(double statorCurrentLimit, double supplyCurrentLimit) {
@@ -112,8 +116,9 @@ public class LoggedTalonFX extends TalonFX {
             .withStatorCurrentLimit(statorCurrentLimit)
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(supplyCurrentLimit);
-
-    this.getConfigurator().apply(clc);
+    
+    motorConfiguration.CurrentLimits = clc;
+    this.getConfigurator().apply(motorConfiguration);
   }
 
   // For some reason Robot.java doesn't recognize the static method here

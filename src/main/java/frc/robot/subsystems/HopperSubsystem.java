@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
@@ -49,7 +50,7 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotor = new LoggedTalonFX(Constants.Hopper.MOTOR_PORT);
 
     MotorOutputConfigs motorOutputConfigs =
-        new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive);
+        new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive).withNeutralMode(NeutralModeValue.Brake);
 
     hopperMotor.getConfigurator().apply(s0c);
     hopperMotor.getConfigurator().apply(currentLimitConfigs);
