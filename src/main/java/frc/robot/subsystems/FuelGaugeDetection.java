@@ -17,9 +17,6 @@ public class FuelGaugeDetection extends SubsystemBase {
   private static ArrayList<Double> latestRawMeasurements = new ArrayList<>();
   private static ArrayList<Double> latestMultipleMeasurements = new ArrayList<>();
 
-  private final Constants.Vision.Cameras cameraID;
-  private String cameraTitle;
-
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
 
@@ -33,11 +30,10 @@ public class FuelGaugeDetection extends SubsystemBase {
   private FuelGauge latestMultipleBallsGauge;
   private FuelGauge latestSmoothedMultipleBallsGauge;
 
-  public FuelGaugeDetection(Constants.Vision.Cameras cameraID) {
-    this.cameraID = cameraID;
+  public FuelGaugeDetection(Constants.Vision.Cameras cameraID) { 
     photonCamera = new PhotonCamera(cameraID.toString());
 
-    cameraTitle = cameraID.getLoggingName();
+    
   }
 
   public void periodic() {
