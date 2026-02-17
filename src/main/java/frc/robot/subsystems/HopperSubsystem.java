@@ -135,10 +135,6 @@ public class HopperSubsystem extends SubsystemBase {
         this);
   }
 
-  public Command RunHopper(double speed) {
-    return Commands.runEnd(() -> this.runHopper(speed), this::stop, this);
-  }
-
   @Override
   public void periodic() {
     DogLog.log("Subsystems/Hopper/Target Speed", targetSurfaceSpeedMetersPerSecond);

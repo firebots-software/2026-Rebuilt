@@ -43,12 +43,6 @@ public class DriveToPose extends Command {
 
   double startTime;
 
-  //   private final WheelForceCalculator wheelForceCalculator;
-  //   private WheelForceCalculator.Feedforwards feedforwards;
-
-  //   private double previousTime;
-  //   private ChassisSpeeds prev = new ChassisSpeeds();
-
   /**
    * @param swerve Swerve Subsystem.
    * @param targetPose Target Pose (static).
@@ -107,9 +101,6 @@ public class DriveToPose extends Command {
             Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0).magnitude(),
             Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0).magnitude());
 
-    // wheelForceCalculator =
-    //     new WheelForceCalculator(swerveModulePositions, 58.967, 3.67); // constants
-
     path =
         new LinearPath(
             new TrapezoidProfile.Constraints(
@@ -149,16 +140,13 @@ public class DriveToPose extends Command {
 
     DogLog.log("Swerve/Drive To Pose/Init Target Pose X", targetPose.getX());
     DogLog.log("Swerve/Drive To Pose/Init Target Pose Y", targetPose.getY());
-    DogLog.log(
-        "Swerve/Drive To Pose/Init Target Pose Rotation", targetPose.getRotation().getRadians());
+    DogLog.log("Swerve/Drive To Pose/Init Target Pose Rotation", targetPose.getRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currTime = Utils.getCurrentTimeSeconds();
-    // double dt = currTime - previousTime;
-    // previousTime = currTime;
 
     if (pathState == null) return;
 
@@ -175,15 +163,6 @@ public class DriveToPose extends Command {
                 + headingController.calculate(
                     pose.getRotation().getRadians(), path.getRotation().getRadians()));
 
-    //   feedforwards = null;
-    // if (dt > 0.0001 && dt < 0.02) {
-    //   feedforwards = wheelForceCalculator.calculate(dt, prev, targetSpeeds);
-    // }
-
-    // prev = targetSpeeds;
-
-    // Apply the generated speeds
-    // swerve.applyFieldSpeeds(targetSpeeds, feedforwards);
     swerve.applyOneFieldSpeeds(targetSpeeds);
   }
 
@@ -205,10 +184,6 @@ public class DriveToPose extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    // if (path.isFinished(Utils.getCurrentTimeSeconds() - startTime)) {
-    //   return true;
-    // }
-    // return false;
     return atPosition();
   }
 }
