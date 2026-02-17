@@ -75,7 +75,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private ProfiledPIDController headingProfiledPIDController =
       new ProfiledPIDController(
           3.7, // 4 was good
-          0.4, //
+          0, //
           0,
           new TrapezoidProfile.Constraints(
               Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND - 1.5, // -1 was good
@@ -322,6 +322,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     });
   //     m_simNotifier.startPeriodic(kSimLoopPeriod);
   // }
+
+  public ChassisSpeeds getFieldSpeeds() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+        currentState.Speeds, currentState.Pose.getRotation());
+  }
 
   public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
     double omega =

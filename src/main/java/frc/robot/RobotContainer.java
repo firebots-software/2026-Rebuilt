@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
+import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -150,15 +151,12 @@ public class RobotContainer {
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
-            redside,
-            (BooleanSupplier)
-                (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
     if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick.rightBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
+      joystick.rightBumper().onTrue(new WarmUpAndShoot(10d, () -> true, lebron, hopperSubsystem));
     }
 
     if (Constants.climberOnRobot) {
@@ -169,7 +167,7 @@ public class RobotContainer {
 
     if (Constants.shooterOnRobot) {
       lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
-      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+      joystick.rightTrigger().whileTrue(new ArcAroundAndShoot(drivetrain, lebron, intakeSubsystem, hopperSubsystem, leftRightFunction, redside));
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
