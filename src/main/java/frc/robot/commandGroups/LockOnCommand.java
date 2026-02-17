@@ -13,25 +13,23 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.Targeting;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-public class ShootWithWarning extends ParallelCommandGroup {
-  public ShootWithWarning(
+public class LockOnCommand extends ParallelCommandGroup {
+  public LockOnCommand(
       CommandSwerveDrivetrain drivetrain,
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       HopperSubsystem hopper,
-      DoubleSupplier tangentialVel,
-      Pose3d target,
-      BooleanSupplier redside,
-      Joystick joystick,
       DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction) {
+      DoubleSupplier leftRightFunction,
+      Pose3d target,
+      Joystick joystick) {
 
     double distMeters =
         Vector3.subtract(new Vector3(drivetrain.getCurrentState().Pose), new Vector3(target))
             .magnitude();
+
     addCommands(
         new SwerveJoystickCommandWithPointing(
             frontBackFunction,
@@ -48,12 +46,8 @@ public class ShootWithWarning extends ParallelCommandGroup {
                             || distMeters < Constants.Shooter.MIN_DIST_FT)
                         ? .5d
                         : 0d)),
-        new Shoot(
+        shooter.ShootAtSpeed(
             Targeting.shootingSpeed(
-                target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION),
-            () -> Targeting.pointingAtTarget(target, drivetrain),
-            shooter,
-            intake,
-            hopper));
+                target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
   }
 }
