@@ -15,6 +15,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -23,6 +24,8 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -40,6 +43,8 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+
+import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 /**
@@ -81,61 +86,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds = new SwerveRequest.ApplyFieldSpeeds();
 
+  private final Field2d field = new Field2d();
 
 
-
-  // // encoders
-  // private Encoder m_leftEncoder = new Encoder(0, 1);
-  // private Encoder m_rightEncoder = new Encoder(2, 3);
-
-  // m_leftEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
-  // m_rightEncoder.setDistancePerPulse(2 * Math.PI * kWheelRadius / kEncoderResolution);
-
-
-  // // These are our EncoderSim objects, which we will only use in
-  // // simulation. However, you do not need to comment out these
-  // // declarations when you are deploying code to the roboRIO.
-  // private EncoderSim m_leftEncoderSim = new EncoderSim(m_leftEncoder);
-  // private EncoderSim m_rightEncoderSim = new EncoderSim(m_rightEncoder);
-
-
-  // // Create our gyro object like we would on a real robot.
-  // private AnalogGyro m_gyro = new AnalogGyro(1);
-  // // Create the simulated gyro object, used for setting the gyro
-  // // angle. Like EncoderSim, this does not need to be commented out
-  // // when deploying code to the roboRIO.
-  // private AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
-
-  // private PWMSparkMax m_leftMotor = new PWMSparkMax(0);
-  // private PWMSparkMax m_rightMotor = new PWMSparkMax(1);
-
-  // // Create our feedforward gain constants (from the identification
-  // // tool)
-  // final double KvLinear = 1.98;
-  // final double KaLinear = 0.2;
-  // final double KvAngular = 1.5;
-  // final double KaAngular = 0.3;
-  // // Create the simulation model of our drivetrain.
-  // DifferentialDrivetrainSim m_driveSim = new DifferentialDrivetrainSim(
-  // // Create a linear system from our identification gains.
-  //   LinearSystemId.identifyDrivetrainSystem(KvLinear, KaLinear, KvAngular, KaAngular),
-  //   DCMotor.getNEO(2),       // 2 NEO motors on each side of the drivetrain.
-  //   7.29,                    // 7.29:1 gearing reduction.
-  //   0.7112,                  // The track width is 0.7112 meters.
-  //   Units.inchesToMeters(3), // The robot uses 3" radius wheels.
-  //   // The standard deviations for measurement noise:
-  //   // x and y:          0.001 m
-  //   // heading:          0.001 rad
-  //   // l and r velocity: 0.1   m/s
-  //   // l and r position: 0.005 m
-  //   VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
-
-  // private Field2d m_field = new Field2d();
-
-
-
-
-
+  private final StructPublisher<Pose2d> posePublisher =
+      NetworkTableInstance.getDefault()
+          .getStructTopic("RobotPose", Pose2d.struct)
+          .publish();
 
 
   private ProfiledPIDController headingProfiledPIDController = new ProfiledPIDController(
@@ -225,6 +182,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (Utils.isSimulation()) {
       startSimThread();
     }
+
+    SmartDashboard.putData(field);
   }
 
   /**
@@ -252,6 +211,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (Utils.isSimulation()) {
       startSimThread();
     }
+
+    SmartDashboard.putData(field);
   }
 
   /**
@@ -294,6 +255,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (Utils.isSimulation()) {
       startSimThread();
     }
+
+    SmartDashboard.putData(field);
   }
 
   public AutoFactory createAutoFactory() {
@@ -409,6 +372,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (this.getCurrentCommand() != null) {
       DogLog.log("Subsystems/Swerve/Current Command", this.getCurrentCommand().toString());
     }
+
+    // setControl(
+    //   m_pathApplyFieldSpeeds.withSpeeds(
+    //       new ChassisSpeeds(1.0, 0.0, 0.0)
+    //   )
+    // );
+
+    posePublisher.set(currentState.Pose);
   }
 
   private void startSimThread() {
@@ -425,35 +396,4 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     });
     m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
-
-  // @Override
-  // public void simulationPeriodic() {
-  //   // Set the inputs to the system. Note that we need to convert
-  //   // the [-1, 1] PWM signal to voltage by multiplying it by the
-  //   // robot controller voltage.
-  //   m_driveSim.setInputs(m_leftMotor.get() * RobotController.getInputVoltage(),
-  //                       m_rightMotor.get() * RobotController.getInputVoltage());
-  //   // Advance the model by 20 ms. Note that if you are running this
-  //   // subsystem in a separate thread or have changed the nominal timestep
-  //   // of TimedRobot, this value needs to match it.
-  //   m_driveSim.update(0.02);
-  //   // Update all of our sensors.
-  //   m_leftEncoderSim.setDistance(m_driveSim.getLeftPositionMeters());
-  //   m_leftEncoderSim.setRate(m_driveSim.getLeftVelocityMetersPerSecond());
-  //   m_rightEncoderSim.setDistance(m_driveSim.getRightPositionMeters());
-  //   m_rightEncoderSim.setRate(m_driveSim.getRightVelocityMetersPerSecond());
-  //   m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
-
-  //   SmartDashboard.putData("Field", m_field);
-
-
-
-  //   // This will get the simulated sensor readings that we set
-  //   // in the previous article while in simulation, but will use
-  //   // real values on the robot itself.
-  //   m_odometry.update(m_gyro.getRotation2d(),
-  //                     m_leftEncoder.getDistance(),
-  //                     m_rightEncoder.getDistance());
-  //   m_field.setRobotPose(m_odometry.getPoseMeters());
-  // }
 }
