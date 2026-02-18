@@ -392,8 +392,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
   }
 
-  // private void startSimThread() {
-  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
+  private void startSimThread() {
+      m_lastSimTime = Utils.getCurrentTimeSeconds();
 
     /* Run simulation at a faster rate so PID gains behave more reasonably */
     m_simNotifier = new Notifier(() -> {
