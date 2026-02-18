@@ -28,6 +28,7 @@ import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
 import frc.robot.commandGroups.WarmUpAndShoot;
+import frc.robot.commands.Intake;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -203,28 +204,28 @@ public class RobotContainer {
               hopperSubsystem::isHopperSufficientlyEmpty));
 
       // left trigger + x -> arm to initial pos (0)
-      //   joystick
-      //       .leftTrigger()
-      //       .and(joystick.x())
-      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+    //   joystick
+    //       .leftTrigger()
+    //       .and(joystick.x())
+    //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
       // left trigger + a -> arm to extended pos (15)
-      //   joystick
-      //       .leftTrigger()
-      //       .and(joystick.a())
-      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+    //   joystick
+    //       .leftTrigger()
+    //       .and(joystick.a())
+    //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
 
-      //   // left trigger + b -> arm to idle pos (45)
-      //   joystick
-      //       .leftTrigger()
-      //       .and(joystick.b())
-      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+    //   // left trigger + b -> arm to idle pos (45)
+    //   joystick
+    //       .leftTrigger()
+    //       .and(joystick.b())
+    //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
 
-      //   // left trigger + y -> arm to retracted pos (90)
-      //   joystick
-      //       .leftTrigger()
-      //       .and(joystick.y())
-      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+    //   // left trigger + y -> arm to retracted pos (90)
+    //   joystick
+    //       .leftTrigger()
+    //       .and(joystick.y())
+    //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
     }
 
     // Auto sequence: choreo forward

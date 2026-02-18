@@ -228,9 +228,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command armToDegrees(double degrees) {
-    return Commands.runOnce(
+    return Commands.run(
         () -> {
-          targetAngleDeg = degrees;
           this.setArmDegrees(degrees);
         },
         this);
@@ -247,6 +246,7 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Intake/Rollers/setpoint",
         rollersMotor.getClosedLoopReference().getValueAsDouble());
+    DogLog.log("Subsystems/Intake/Arm/targetAngleDegs", targetAngleDeg);
 
     DogLog.log(
         "Subsystems/Intake/Arm/absoluteEncoderDegrees", getArmAbsolutePosition().getDegrees());
