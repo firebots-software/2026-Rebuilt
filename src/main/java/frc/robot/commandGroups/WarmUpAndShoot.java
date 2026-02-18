@@ -8,7 +8,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class WarmUpAndShoot extends SequentialCommandGroup {
   public WarmUpAndShoot(ShooterSubsystem shooterSubsystem, HopperSubsystem hopperSubsystem) {
     addCommands(
-        shooterSubsystem.shootAtSpeed(),
+        shooterSubsystem.shootAtSpeedCommand(),
         hopperSubsystem.runHopperCommand(
             Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND));
   }

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -28,8 +29,9 @@ public class ClimberSubsystem extends SubsystemBase {
   private final LoggedTalonFX muscleUpMotor, sitUpMotor, pullUpMotorR, pullUpMotorL;
   private double sitUpTargetDeg, muscleUpTargetDeg, pullUpTargetPosition;
   private final CANcoder muscleUpEncoder, sitUpEncoder;
-
   private final Servo brake;
+
+  private final VelocityVoltage veclocityRequest = new VelocityVoltage(0);
 
   public ClimberSubsystem() {
     CurrentLimitsConfigs regClc =
@@ -198,6 +200,38 @@ public class ClimberSubsystem extends SubsystemBase {
     stopSitUp();
     stopPullUp();
     stopMuscleUp();
+  }
+
+  // Zeroing climb functions (only pull up because it doesn't have an encoder):
+
+  public void reduceCurrentLimits() {
+    pullUpMotorR.updateCurrentLimits(30, 10);
+    pullUpMotorL.updateCurrentLimits(30, 10);
+  }
+
+  public void movePullUpDown() {
+    pullUpMotorR.setControl(veclocityRequest.withVelocity(-5));
+  }
+
+  public boolean checkCurrent() {
+    double supplyCurrent = Math.abs(pullUpMotorR.getSupplyCurrent().getValue().magnitude());
+    double statorCurrent = Math.abs(pullUpMotorR.getStatorCurrent().getValue().magnitude());
+
+    if (supplyCurrent > 1.0 && statorCurrent > 20.0) {
+      return true;
+    }
+    return false;
+  }
+
+  public void resetCurrentLimits() {
+    pullUpMotorR.updateCurrentLimits(
+        Constants.Climber.DEFAULT_SUPPLY_CURRENT, Constants.Climber.DEFAULT_STATOR_CURRENT);
+    pullUpMotorL.updateCurrentLimits(
+        Constants.Climber.DEFAULT_SUPPLY_CURRENT, Constants.Climber.DEFAULT_STATOR_CURRENT);
+  }
+
+  public void resetPullUpPositionToZero() {
+    pullUpMotorR.setPosition(0);
   }
 
   // Comands
