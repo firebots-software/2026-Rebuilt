@@ -273,6 +273,8 @@ public class RobotContainer {
     /*|| visionRearRight == null
     || visionRearLeft == null */ ) return;
 
+    setPreferredCamera();
+
     if (preferredCamera == null) preferredCamera = Constants.Vision.FALLBACK_CAMERA;
 
     DogLog.log("Subsystems/Vision/PreferredCamera", preferredCamera.getLoggingName());
@@ -293,6 +295,31 @@ public class RobotContainer {
     }
 
     DogLog.log("Subsystems/Vision/VisionPoseEstimate", drivetrain.getState().Pose);
+  }
+
+  private void setPreferredCamera() {
+    double frontRightDist = visionFrontRight.getMinDistance();
+    double frontLeftDist = visionFrontLeft.getMinDistance();
+    // double rearRightDist = visionRearRight.getMinDistance();
+    // double rearLeftDist = visionRearLeft.getMinDistance();
+
+    if (frontRightDist
+        < frontLeftDist /* && frontRightDist < rearRightDist && frontLeftDist < rearLeftDist*/) {
+      preferredCamera = visionFrontRight.getCamera();
+    } else if (frontLeftDist
+        < frontRightDist /* && frontLeftDist < rearRightDist && frontLeftDist < rearLeftDist */) {
+      preferredCamera = visionFrontLeft.getCamera();
+    }
+    //  else if (rearRightDist < frontRightDist && rearRightDist < frontLeftDist && rearRightDist <
+    // rearLeftDist) {
+    //     preferredCamera = visionRearRight.getCamera();
+    // } else if (rearLeftDist < frontRightDist && rearLeftDist < frontLeftDist && rearLeftDist <
+    // rearRightDist) {
+    //     preferredCamera = visionRearLeft.getCamera();
+    // }
+    else {
+      preferredCamera = Constants.Vision.FALLBACK_CAMERA;
+    }
   }
 
   public static void setAlliance() {

@@ -13,6 +13,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Vision.VisionCamera;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -93,7 +94,11 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/CameraConnected", true);
   }
 
-  public double minDistance() {
+  public VisionCamera getCamera() {
+    return cameraID;
+  }
+
+  public double getMinDistance() {
     return (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
         ? Double.MAX_VALUE
         : latestVisionResult.getTargets().stream()
