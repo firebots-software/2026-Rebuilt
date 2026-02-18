@@ -4,6 +4,7 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
@@ -16,12 +17,13 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class AutoRoutines {
-  private final AutoFactory factory;
+  private final AutoFactory autoFactory;
   private final IntakeSubsystem intakeSubsystem;
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
   private final ClimberSubsystem climberSubsystem;
+  private final AutoRoutine routine;
 
   public AutoRoutines(
       AutoFactory factory,
@@ -30,15 +32,17 @@ public class AutoRoutines {
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
       ClimberSubsystem climber) {
-    this.factory = factory;
+    this.autoFactory = factory;
     this.intakeSubsystem = intake;
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
     this.climberSubsystem = climber;
+
+    routine = autoFactory.newRoutine("CristianoRonaldo.chor");
   }
 
-  private AutoTrajectory maneuver(AutoRoutine routine, String name) {
+  private AutoTrajectory maneuver(String name) {
     AutoTrajectory traj;
 
     switch (name) {
@@ -64,7 +68,7 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory intake(AutoRoutine routine, String name) {
+  private AutoTrajectory intake(String name) {
     AutoTrajectory traj;
 
     switch (name) {
@@ -105,13 +109,15 @@ public class AutoRoutines {
         break;
     }
 
-    traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-    traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+    if (traj != null) {
+      traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+      traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+    }
 
     return traj;
   }
 
-  private AutoTrajectory shootPositioning(AutoRoutine routine, String name) {
+  private AutoTrajectory shootPositioning(String name) {
     AutoTrajectory traj;
 
     switch (name) {
@@ -130,7 +136,7 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory climbPositioning(AutoRoutine routine, String name) {
+  private AutoTrajectory climbPositioning(String name) {
     AutoTrajectory traj;
 
     switch (name) {
@@ -150,26 +156,23 @@ public class AutoRoutines {
   }
 
   public Command Pedri(String maneuverType, String intakeType, String shootType, String climbType) {
-    AutoRoutine routine = factory.newRoutine("DrakeFlexible");
+    AutoTrajectory maneuver = maneuver(maneuverType);
+    AutoTrajectory intake = intake(intakeType);
+    AutoTrajectory shootPositioning = shootPositioning(shootType);
+    AutoTrajectory climbPositioning = climbPositioning(climbType);
 
-    AutoTrajectory maneuver = maneuver(routine, maneuverType);
-    AutoTrajectory intake = intake(routine, intakeType);
-    AutoTrajectory shootPositioning = shootPositioning(routine, shootType);
-    AutoTrajectory climbPositioning = climbPositioning(routine, climbType);
-
-    // add dtp length
+    // add proper dtp
     routine
         .active()
         .onTrue(
-            maneuver
-                .resetOdometry()
-                .andThen(maneuver.cmd())
+            (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+                .andThen(maneuver != null ? maneuver.cmd() : Commands.none())
                 .andThen(new DriveToPose(swerveSubsystem))
-                .andThen(intake.cmd())
+                .andThen(intake != null ? intake.cmd() : Commands.none())
                 .andThen(new DriveToPose(swerveSubsystem))
-                .andThen(shootPositioning.cmd())
+                .andThen(shootPositioning != null ? shootPositioning.cmd() : Commands.none())
                 .andThen(new Shoot(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
-                .andThen(climbPositioning.cmd())
+                .andThen(climbPositioning != null ? climbPositioning.cmd() : Commands.none())
                 .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
     return routine.cmd();
