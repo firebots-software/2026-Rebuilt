@@ -3,6 +3,8 @@ package frc.robot.util;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class MiscUtils {
   public static Pose2d plus(Pose2d a, Translation2d b) {
@@ -15,5 +17,11 @@ public class MiscUtils {
         a.getX() + b.getX(),
         a.getY() + b.getY(),
         new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
+  }
+
+  public static Alliance getSecondAlliance() {
+    String allianceChar = DriverStation.getGameSpecificMessage();
+    if (allianceChar.length() == 0) return null;
+    return allianceChar == "R" ? Alliance.Red : Alliance.Blue;
   }
 }

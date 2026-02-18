@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
@@ -33,9 +32,11 @@ import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -79,6 +80,17 @@ public class RobotContainer {
   public final AutoRoutine autoRoutine; // with markers
 
   private final AutoChooser autoChooser = new AutoChooser();
+
+  public final VisionSubsystem visionRight =
+      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.RIGHT_CAM) : null;
+  public final VisionSubsystem visionLeft =
+      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.LEFT_CAM) : null;
+  // public final VisionSubsystem visionRearRight =
+  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
+  // public final VisionSubsystem visionRearLeft =
+  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
+  public final FuelGaugeDetection visionFuelGauge =
+      Constants.visionOnRobot ? new FuelGaugeDetection(Constants.Vision.Cameras.COLOR_CAM) : null;
 
   public RobotContainer() {
 
@@ -132,6 +144,10 @@ public class RobotContainer {
     configureBindings();
   }
 
+  public CommandSwerveDrivetrain getDrivetrain() {
+    return drivetrain;
+  }
+
   private void configureBindings() {
     Trigger leftTrigger = joystick.leftTrigger();
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
@@ -168,8 +184,9 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
-      lebron.setDefaultCommand(Commands.run(lebron::stop, lebron));
+      lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
       joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
+      joystick.x().whileTrue(lebron.shootAtSpeedCommand());
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -183,10 +200,10 @@ public class RobotContainer {
 
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
-    joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -194,37 +211,37 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // right bumper -> run intake
     if (Constants.intakeOnRobot) {
+      joystick.x().whileTrue(intakeSubsystem.armToDegrees(35.0));
+      joystick.y().whileTrue(intakeSubsystem.armToDegrees(0.0));
       intakeSubsystem.setDefaultCommand(
           new ConditionalCommand(
               intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
               intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
-              hopperSubsystem::isHopperSufficientlyEmpty));
-
-      joystick.x().whileTrue(intakeSubsystem.runIntake());
+              () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
 
       // left trigger + x -> arm to initial pos (0)
-      joystick
-          .leftTrigger()
-          .and(joystick.x())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_INITIAL));
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.x())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
       // left trigger + a -> arm to extended pos (15)
-      joystick
-          .leftTrigger()
-          .and(joystick.a())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.a())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
 
-      // left trigger + b -> arm to idle pos (45)
-      joystick
-          .leftTrigger()
-          .and(joystick.b())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+      //   // left trigger + b -> arm to idle pos (45)
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.b())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
 
-      // left trigger + y -> arm to retracted pos (90)
-      joystick
-          .leftTrigger()
-          .and(joystick.y())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+      //   // left trigger + y -> arm to retracted pos (90)
+      //   joystick
+      //       .leftTrigger()
+      //       .and(joystick.y())
+      //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
     }
 
     // Auto sequence: choreo forward
@@ -233,13 +250,23 @@ public class RobotContainer {
             .resetOdometry("MoveForward.traj")
             .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
 
-    joystick.x().whileTrue(trajCommand);
+    // joystick.x().whileTrue(trajCommand);
 
     if (Constants.hopperOnRobot) {
-      joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+      //   joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
+  }
+
+  public void visionPeriodic() {
+    if (!Constants.visionOnRobot || visionRight == null || visionLeft == null
+    /*|| visionRearRight == null
+    || visionRearLeft == null */ ) return;
+    visionRight.addFilteredPose(drivetrain);
+    visionLeft.addFilteredPose(drivetrain);
+    // visionRearRight.addFilteredPose(drivetrain);
+    // visionRearLeft.addFilteredPose(drivetrain);
   }
 
   public static void setAlliance() {
