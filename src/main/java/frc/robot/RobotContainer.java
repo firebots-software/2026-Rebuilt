@@ -10,23 +10,14 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commandGroups.ClimbCommands.L1Climb;
-import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
-import frc.robot.commands.DriveToPose;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -35,7 +26,6 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.util.MiscUtils;
 import frc.robot.subsystems.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -199,7 +189,8 @@ public class RobotContainer {
     //         new DriveToPose(
     //                 drivetrain,
     //                 () ->
-    //                     MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0)))
+    //                     MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2,
+    // 0)))
     //             .andThen(new InstantCommand(() -> DogLog.log("first dtp done", true)))
     //             .andThen(
     //                 new DriveToPose(
@@ -240,7 +231,8 @@ public class RobotContainer {
     //     .whileTrue(
     //         new DriveToPose(
     //             drivetrain,
-    //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
+    //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2,
+    // 0))));
 
     // TODO: left trigger -> run LockOnCommand (not yet defined)
     // joystick.leftTrigger().whileTrue(new LockOnCommand(....));
