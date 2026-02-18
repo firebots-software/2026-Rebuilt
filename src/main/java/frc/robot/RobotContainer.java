@@ -59,6 +59,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController debugJoystick = new CommandXboxController(1);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -84,9 +85,11 @@ public class RobotContainer {
   public final VisionSubsystem visionLeft =
       Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.LEFT_CAM) : null;
   // public final VisionSubsystem visionRearRight =
-  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
+  // Constants.visionOnRobot ? new
+  // VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
   // public final VisionSubsystem visionRearLeft =
-  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
+  // Constants.visionOnRobot ? new
+  // VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
   public final FuelGaugeDetection visionFuelGauge =
       Constants.visionOnRobot ? new FuelGaugeDetection(Constants.Vision.Cameras.COLOR_CAM) : null;
 
@@ -173,6 +176,47 @@ public class RobotContainer {
       lebron.setDefaultCommand(lebron.run(lebron::stopShooter));
     }
 
+    joystick
+        .b()
+        .whileTrue(
+            drivetrain.applyRequest(
+                () ->
+                    point.withModuleDirection(
+                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+
+    // Run SysId routines when holding back/start and X/Y.
+    // Note that each routine should be run exactly once in a single log.
+    // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+    // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+    // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+    // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+    // INTAKE COMMANDS (DEBUG)
+    // left trigger -> run intake
+    if (Constants.intakeOnRobot) {
+      debugJoystick
+          .leftTrigger()
+          .whileTrue(intakeSubsystem.runRollersCommand(Constants.Intake.Rollers.TARGET_ROLLER_RPS));
+
+      // left trigger + x -> arm to retracted pos (90)
+      debugJoystick
+          .leftTrigger()
+          .and(debugJoystick.x())
+          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+
+      // left trigger + a -> arm to extended pos (15)
+      debugJoystick
+          .leftTrigger()
+          .and(debugJoystick.a())
+          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+
+      // left trigger + b -> arm to idle pos (45)
+      debugJoystick
+          .leftTrigger()
+          .and(debugJoystick.b())
+          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+    }
+
     if (Constants.climberOnRobot) {
       // y -> initiate climb
       // TODO: verify that command is correct
@@ -243,19 +287,26 @@ public class RobotContainer {
     // TODO: right trigger -> shoot + arc lock (arc lock not yet defined)
     // verify command is correct and that sequential is correct type of commandgroup
     // joystick.rightTrigger().whileTrue(new SequentialCommandGroup(
-    //    new Shoot(drivetrain, lebron, hopperSubsystem, redside),
-    //    new ArcLock(.....)
+    // new Shoot(drivetrain, lebron, hopperSubsystem, redside),
+    // new ArcLock(.....)
     // ));
 
     // Auto sequence: choreo forward
+    Command trajCommand =
+        autoFactory
+            .resetOdometry("MoveForward.traj")
+            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
+
+    // joystick.x().whileTrue(trajCommand);
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot || visionRight == null || visionLeft == null
-    /*|| visionRearRight == null
-    || visionRearLeft == null */ ) return;
+    if (!Constants.visionOnRobot || visionRight == null || visionLeft == null /*
+         * || visionRearRight == null
+         * || visionRearLeft == null
+         */) return;
     visionRight.addFilteredPose(drivetrain);
     visionLeft.addFilteredPose(drivetrain);
     // visionRearRight.addFilteredPose(drivetrain);
