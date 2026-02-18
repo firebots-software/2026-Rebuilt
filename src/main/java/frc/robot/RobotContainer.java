@@ -198,6 +198,7 @@ public class RobotContainer {
     // INTAKE COMMANDS
     // right bumper -> run intake
     if (Constants.intakeOnRobot) {
+      joystick.rightBumper().whileTrue(intakeSubsystem.extendArmAndRunRollers());
       joystick.x().whileTrue(intakeSubsystem.armToDegrees(35.0));
       joystick.y().whileTrue(intakeSubsystem.armToDegrees(0.0));
       intakeSubsystem.setDefaultCommand(
