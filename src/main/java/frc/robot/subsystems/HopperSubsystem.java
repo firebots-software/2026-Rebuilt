@@ -48,7 +48,9 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotor = new LoggedTalonFX(Constants.Hopper.MOTOR_PORT);
 
     MotorOutputConfigs motorOutputConfigs =
-        new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive).withNeutralMode(NeutralModeValue.Brake);
+        new MotorOutputConfigs()
+            .withInverted(InvertedValue.Clockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Brake);
 
     hopperMotor.getConfigurator().apply(s0c);
     hopperMotor.getConfigurator().apply(currentLimitConfigs);

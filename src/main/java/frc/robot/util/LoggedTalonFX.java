@@ -116,7 +116,7 @@ public class LoggedTalonFX extends TalonFX {
             .withStatorCurrentLimit(statorCurrentLimit)
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(supplyCurrentLimit);
-    
+
     motorConfiguration.CurrentLimits = clc;
     this.getConfigurator().apply(motorConfiguration);
   }

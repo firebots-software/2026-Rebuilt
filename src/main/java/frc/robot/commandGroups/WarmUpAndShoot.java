@@ -5,10 +5,11 @@ import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class WarmUpAndShoot extends SequentialCommandGroup {
   public WarmUpAndShoot(
-      double speed,
+      DoubleSupplier speed,
       BooleanSupplier readyToShoot,
       ShooterSubsystem shooterSubsystem,
       HopperSubsystem hopperSubsystem) {

@@ -158,7 +158,9 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
     if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick.rightBumper().onTrue(new WarmUpAndShoot(10d, () -> true, lebron, hopperSubsystem));
+      joystick
+          .rightBumper()
+          .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
     }
 
     if (Constants.climberOnRobot) {
@@ -178,7 +180,8 @@ public class RobotContainer {
                   intakeSubsystem,
                   hopperSubsystem,
                   leftRightFunction,
-                  redside));
+                  redside,
+                  joystick));
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
