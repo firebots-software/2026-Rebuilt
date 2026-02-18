@@ -564,16 +564,16 @@ public final class Constants {
     public static final double REAR_RIGHT_X = Units.inchesToMeters(6.70);
     public static final double REAR_RIGHT_Y = Units.inchesToMeters(-4.125);
     public static final double REAR_RIGHT_Z = Units.inchesToMeters(40.875);
-    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(180); // 180
+    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0); // 180
     public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(171.5); // 171.5
-    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(0.0);
+    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(180.0);
 
     public static final double REAR_LEFT_X = Units.inchesToMeters(6.70);
     public static final double REAR_LEFT_Y = Units.inchesToMeters(4.125);
     public static final double REAR_LEFT_Z = Units.inchesToMeters(40.875);
-    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(180);
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(0.0);
     public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5);
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(0.0);
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(180.0);
 
     public static final double COLOR_X = Units.inchesToMeters(8.867);
     public static final double COLOR_Y = Units.inchesToMeters(12.478);
@@ -620,6 +620,13 @@ public final class Constants {
     public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
+
+    public static enum GaugeCalculationType {
+      RAW(),
+      SMOOTHED(),
+      MULTIPLE_BALLS(),
+      SMOOTHED_MULTIPLE_BALLS();
+    }
 
     public static enum FuelGauge { // LAST: 20, 50, 70, 100
       EMPTY(2.0),

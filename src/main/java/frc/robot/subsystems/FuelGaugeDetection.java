@@ -4,6 +4,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
+import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,29 +14,24 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class FuelGaugeDetection extends SubsystemBase {
 
-  private static FuelGaugeDetection[] cameraList =
-      new FuelGaugeDetection[Constants.Vision.Cameras.values().length];
-
   private static ArrayList<Double> latestRawMeasurements = new ArrayList<>();
   private static ArrayList<Double> latestMultipleMeasurements = new ArrayList<>();
-
-  private final Constants.Vision.Cameras cameraID;
-  private String cameraTitle;
 
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
 
+  private double latestRawArea;
+  private double latestSmoothedArea;
+  private double latestMultipleBallsArea;
+  private double latestSmoothedMultipleBallsArea;
+
+  private FuelGauge latestRawGauge;
+  private FuelGauge latestSmoothedGauge;
+  private FuelGauge latestMultipleBallsGauge;
+  private FuelGauge latestSmoothedMultipleBallsGauge;
+
   public FuelGaugeDetection(Constants.Vision.Cameras cameraID) {
-    this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
-
-    cameraTitle = cameraID.getLoggingName();
-  }
-
-  public static FuelGaugeDetection getInstance(Constants.Vision.Cameras cameraID) {
-    int index = cameraID.ordinal();
-    if (cameraList[index] == null) cameraList[index] = new FuelGaugeDetection(cameraID);
-    return cameraList[index];
   }
 
   public void periodic() {
@@ -65,11 +61,18 @@ public class FuelGaugeDetection extends SubsystemBase {
           double smoothedMultipleBalls =
               updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
 
-          DogLog.log("Subsystems/FuelGauge/RawArea", rawArea);
-          DogLog.log("Subsystems/FuelGauge/SmoothedRawArea", smoothedRawArea);
-          DogLog.log("Subsystems/FuelGauge/MultipleBallsArea", smoothedMultipleBalls);
+          latestRawArea = rawArea;
+          latestSmoothedArea = smoothedRawArea;
+          latestMultipleBallsArea = avgMultipleBalls;
+          latestSmoothedMultipleBallsArea = smoothedMultipleBalls;
 
-          logThresholdState(smoothedRawArea, rawArea, smoothedMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/Area/RawArea", rawArea);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedRawArea);
+          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", avgMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBalls);
+
+          fuelGaugeStateSetAndLog(
+              rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
   }
@@ -94,18 +97,24 @@ public class FuelGaugeDetection extends SubsystemBase {
     return smoothedArea;
   }
 
-  public void logThresholdState(double smoothedArea, double rawArea, double smoothedMultipleBalls) {
-    FuelGauge smoothGauge, rawGauge, multipleBallsGauge;
+  private void fuelGaugeStateSetAndLog(
+      double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
 
-    smoothGauge = setFuelGauge(smoothedArea);
+    latestRawGauge = setFuelGauge(rawArea);
 
-    rawGauge = setFuelGauge(rawArea);
+    latestSmoothedGauge = setFuelGauge(smoothedArea);
 
-    multipleBallsGauge = setFuelGauge(smoothedMultipleBalls);
+    latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);
 
-    DogLog.log("Subsystems/FuelGauge/SmoothedGaugeLevel", smoothGauge.toString());
-    DogLog.log("Subsystems/FuelGauge/RawGaugeLevel", rawGauge.toString());
-    DogLog.log("Subsystems/FuelGauge/MultipleBallsGaugeLevel", multipleBallsGauge.toString());
+    latestSmoothedMultipleBallsGauge = setFuelGauge(smoothedMultipleBalls);
+
+    DogLog.log("Subsystems/FuelGauge/Gauge/RawGauge", latestRawGauge.toString());
+    DogLog.log("Subsystems/FuelGauge/Gauge/SmoothedGauge", latestSmoothedGauge.toString());
+    DogLog.log(
+        "Subsystems/FuelGauge/Gauge/MultipleBallsGauge", latestMultipleBallsGauge.toString());
+    DogLog.log(
+        "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
+        latestSmoothedMultipleBallsGauge.toString());
   }
 
   private FuelGauge setFuelGauge(double area) {
@@ -124,7 +133,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     return gauge;
   }
 
-  public Optional<PhotonTrackedTarget> getLargestBall() {
+  private Optional<PhotonTrackedTarget> getLargestBall() {
     if (latestVisionResult == null) return Optional.empty();
     List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
     if (targets.isEmpty()) return Optional.empty();
@@ -132,7 +141,41 @@ public class FuelGaugeDetection extends SubsystemBase {
     return targets.stream().max((a, b) -> Double.compare(a.getArea(), b.getArea()));
   }
 
-  public double getLargestBallsAvg(int numBalls) {
+  public double getArea(GaugeCalculationType type) {
+    switch (type) {
+      case RAW:
+        return latestRawArea;
+      case SMOOTHED:
+        return latestSmoothedArea;
+      case MULTIPLE_BALLS:
+        return latestMultipleBallsArea;
+      case SMOOTHED_MULTIPLE_BALLS:
+        return latestSmoothedMultipleBallsArea;
+      default:
+        return latestRawArea;
+    }
+  }
+
+  public FuelGauge getGauge(GaugeCalculationType type) {
+    switch (type) {
+      case RAW:
+        return latestRawGauge;
+      case SMOOTHED:
+        return latestSmoothedGauge;
+      case MULTIPLE_BALLS:
+        return latestMultipleBallsGauge;
+      case SMOOTHED_MULTIPLE_BALLS:
+        return latestSmoothedMultipleBallsGauge;
+      default:
+        return latestRawGauge;
+    }
+  }
+
+  public boolean GaugeLessThanEqualTo(GaugeCalculationType type, FuelGauge target) {
+    return getGauge(type).getThreshold() <= target.getThreshold();
+  }
+
+  private double getLargestBallsAvg(int numBalls) {
     double sum = 0.0;
     if (latestVisionResult == null) return 0.0;
     List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
