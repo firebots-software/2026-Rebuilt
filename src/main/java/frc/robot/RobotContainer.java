@@ -81,7 +81,6 @@ public class RobotContainer {
   private final AutoChooser autoChooser = new AutoChooser();
 
   public RobotContainer() {
-
     // paths without marker
     autoFactory = drivetrain.createAutoFactory();
 
@@ -192,14 +191,14 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // INTAKE COMMANDS
+    // INTAKE COMMANDS (DEBUG)
     // left trigger -> run intake
     if (Constants.intakeOnRobot) {
       debugJoystick
           .leftTrigger()
           .whileTrue(intakeSubsystem.runRollersCommand(Constants.Intake.Rollers.TARGET_ROLLER_RPS));
 
-      // left trigger + x -> arm to initial pos (0)
+      // left trigger + x -> arm to retracted pos (90)
       debugJoystick
           .leftTrigger()
           .and(joystick.x())
@@ -216,6 +215,7 @@ public class RobotContainer {
           .leftTrigger()
           .and(joystick.b())
           .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+          
       intakeSubsystem.setDefaultCommand(
           new ConditionalCommand(
               intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
