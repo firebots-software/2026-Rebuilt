@@ -5,7 +5,6 @@ import com.ctre.phoenix6.swerve.utility.LinearPath;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -82,25 +81,6 @@ public class DriveToPose extends Command {
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
 
-    Translation2d[] swerveModulePositions = new Translation2d[4];
-
-    swerveModulePositions[0] =
-        new Translation2d(
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0).magnitude(),
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0).magnitude());
-    swerveModulePositions[1] =
-        new Translation2d(
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(2.0).magnitude(),
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0).magnitude());
-    swerveModulePositions[2] =
-        new Translation2d(
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0).magnitude(),
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(2.0).magnitude());
-    swerveModulePositions[3] =
-        new Translation2d(
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.length.div(-2.0).magnitude(),
-            Constants.Swerve.WHICH_SWERVE_ROBOT.ROBOT_DIMENSIONS.width.div(-2.0).magnitude());
-
     path =
         new LinearPath(
             new TrapezoidProfile.Constraints(
@@ -128,9 +108,6 @@ public class DriveToPose extends Command {
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    // previousTime = Utils.getCurrentTimeSeconds();
-    // prev = new ChassisSpeeds();
-
     if (targetPoseSupplier != null) {
       targetPose = targetPoseSupplier.get();
     }
@@ -147,24 +124,28 @@ public class DriveToPose extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currTime = Utils.getCurrentTimeSeconds();
+    double currTime = Utils.getCurrentTimeSeconds() - startTime;
 
     if (pathState == null) return;
 
-    pathState = path.calculate(currTime - startTime, pathState, targetPose);
-    Pose2d pose = swerve.getCurrentState().Pose;
-    Pose2d path = pathState.pose;
+    pathState = path.calculate(currTime, pathState, targetPose);
 
     // Generate the next speeds for the robot
-    ChassisSpeeds targetSpeeds =
+      // Generate the next speeds for the robot
+    ChassisSpeeds speeds =
         new ChassisSpeeds(
-            pathState.speeds.vxMetersPerSecond + xController.calculate(pose.getX(), path.getX()),
-            pathState.speeds.vyMetersPerSecond + yController.calculate(pose.getY(), path.getY()),
+            pathState.speeds.vxMetersPerSecond
+                + xController.calculate(
+                    swerve.getCurrentState().Pose.getX(), pathState.pose.getX()),
+            pathState.speeds.vyMetersPerSecond
+                + yController.calculate(
+                    swerve.getCurrentState().Pose.getY(), pathState.pose.getY()),
             pathState.speeds.omegaRadiansPerSecond
                 + headingController.calculate(
-                    pose.getRotation().getRadians(), path.getRotation().getRadians()));
+                    swerve.getCurrentState().Pose.getRotation().getRadians(),
+                    pathState.pose.getRotation().getRadians()));
 
-    swerve.applyOneFieldSpeeds(targetSpeeds);
+    swerve.applyOneFieldSpeeds(speeds);
   }
 
   private boolean atPosition() {

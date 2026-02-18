@@ -162,7 +162,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.JAMES_HARDEN;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
@@ -219,9 +219,7 @@ public final class Constants {
       SERRANO(3.067, 0, 0, 4.167, 0, 0, 3.667, 0, 0),
       PROTO(0, 0, 0, 0, 0, 0, 0, 0, 0),
       JAMES_HARDEN(0, 0, 0, 0, 0, 0, 0, 0, 0),
-      COBRA(
-          3.467, 0, 0, 3.567, 0, 0, 2.867, 0,
-          0); // 0.1, 0, 0, 0.1, 0, 0, 0.1, 0, 0; 3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0);
       public final double kPX;
       public final double kIX;
       public final double kDX;

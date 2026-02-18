@@ -10,14 +10,20 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -27,6 +33,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -177,62 +184,59 @@ public class RobotContainer {
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
-    // // joystick.x().whileTrue(trajCommand);
 
     // if (Constants.hopperOnRobot) {
     //   // joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
     // }
 
-    // joystick
-    //     .povUp()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //                 drivetrain,
-    //                 () ->
-    //                     MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2,
-    // 0)))
-    //             .andThen(new InstantCommand(() -> DogLog.log("first dtp done", true)))
-    //             .andThen(
-    //                 new DriveToPose(
-    //                     drivetrain,
-    //                     () ->
-    //                         MiscUtils.plus(
-    //                             drivetrain.getCurrentState().Pose, new Translation2d(0, -2)))));
+    joystick
+        .povUp()
+        .whileTrue(
+            new DriveToPose(
+                    drivetrain,
+                    () ->
+                        MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0)))
+                .andThen(new InstantCommand(() -> DogLog.log("first dtp done", true)))
+                .andThen(
+                    new DriveToPose(
+                        drivetrain,
+                        () ->
+                            MiscUtils.plus(
+                                drivetrain.getCurrentState().Pose, new Translation2d(0, -2)))));
 
-    // joystick
-    //     .povDown()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //                 drivetrain,
-    //                 () ->
-    //                     MiscUtils.plusWithRotation(
-    //                         drivetrain.getCurrentState().Pose,
-    //                         new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708))))
-    //             .andThen(
-    //                 new DriveToPose(
-    //                     drivetrain,
-    //                     () ->
-    //                         MiscUtils.plusWithRotation(
-    //                             drivetrain.getCurrentState().Pose,
-    //                             new Pose2d(new Translation2d(0, -2), new Rotation2d(1.5708))))));
+    joystick
+        .povDown()
+        .whileTrue(
+            new DriveToPose(
+                    drivetrain,
+                    () ->
+                        MiscUtils.plusWithRotation(
+                            drivetrain.getCurrentState().Pose,
+                            new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708))))
+                .andThen(
+                    new DriveToPose(
+                        drivetrain,
+                        () ->
+                            MiscUtils.plusWithRotation(
+                                drivetrain.getCurrentState().Pose,
+                                new Pose2d(new Translation2d(0, -2), new Rotation2d(1.5708))))));
 
-    // joystick
-    //     .povRight()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //             drivetrain,
-    //             () ->
-    //                 MiscUtils.plusWithRotation(
-    //                     drivetrain.getCurrentState().Pose,
-    //                     new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708)))));
+    joystick
+        .povRight()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () ->
+                    MiscUtils.plusWithRotation(
+                        drivetrain.getCurrentState().Pose,
+                        new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708)))));
 
-    // joystick
-    //     .povLeft()
-    //     .whileTrue(
-    //         new DriveToPose(
-    //             drivetrain,
-    //             () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2,
-    // 0))));
+    joystick
+        .povLeft()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
 
     // TODO: left trigger -> run LockOnCommand (not yet defined)
     // joystick.leftTrigger().whileTrue(new LockOnCommand(....));
@@ -245,12 +249,6 @@ public class RobotContainer {
     // ));
 
     // Auto sequence: choreo forward
-    Command trajCommand =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
-
-    // joystick.x().whileTrue(trajCommand);
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
