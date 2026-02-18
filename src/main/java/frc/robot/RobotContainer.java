@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
-import frc.robot.commands.Intake;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -167,7 +166,7 @@ public class RobotContainer {
     lebron.setDefaultCommand(lebron.run(lebron::stopShooter));
 
     // left bumper -> run intake
-    joystick.leftBumper().whileTrue(new Intake(intakeSubsystem));
+    joystick.leftBumper().whileTrue(intakeSubsystem.extendArmAndRunRollers());
 
     // TODO: left trigger -> run LockOnCommand (not yet defined)
     // joystick.leftTrigger().whileTrue(new LockOnCommand(....));

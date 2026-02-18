@@ -212,30 +212,25 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command runRollersCommand() {
-    return Commands.startEnd(
-        () -> {
-          this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
-        },
-        this::stopRollers,
-        this);
+    return startEnd(
+        () -> this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
   }
 
   public Command runRollersCommand(double targetRollers_RPS) {
-    return Commands.startEnd(
-        () -> {
-          this.runRollers(targetRollers_RPS);
-        },
-        this::stopRollers,
-        this);
+    return startEnd(() -> this.runRollers(targetRollers_RPS), this::stopRollers);
   }
 
   public Command armToDegrees(double degrees) {
-    return Commands.runOnce(
+    return runOnce(() -> this.setArmDegrees(degrees));
+  }
+
+  public Command extendArmAndRunRollers() {
+    return runEnd(
         () -> {
-          targetAngleDeg = degrees;
-          this.setArmDegrees(degrees);
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
+          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
         },
-        this);
+        this::stopRollers);
   }
 
   @Override
