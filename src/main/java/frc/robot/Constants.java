@@ -510,6 +510,9 @@ public final class Constants {
 
   public static class Vision {
 
+    // TODO: be able to set this at the start of the match
+    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
+
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
     public static final double DISTANCE_EXPONENTIAL_BASE_X = 2.97294;
@@ -558,7 +561,6 @@ public final class Constants {
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
-      
       FRONT_RIGHT_CAM(
           "frontRightCam",
           new Transform3d(

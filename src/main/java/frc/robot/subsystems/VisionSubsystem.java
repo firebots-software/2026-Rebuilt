@@ -93,6 +93,15 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/CameraConnected", true);
   }
 
+  public double minDistance() {
+    return (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+        ? Double.MAX_VALUE
+        : latestVisionResult.getTargets().stream()
+            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+            .min()
+            .orElse(Double.NaN);
+  }
+
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
     DogLog.log("Subsystems/Vision/addFilteredPoseworking", true);
 

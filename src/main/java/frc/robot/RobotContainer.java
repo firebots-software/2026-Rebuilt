@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
@@ -80,6 +81,8 @@ public class RobotContainer {
   public final AutoRoutine autoRoutine; // with markers
 
   private final AutoChooser autoChooser = new AutoChooser();
+
+  private VisionCamera preferredCamera;
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
@@ -269,10 +272,25 @@ public class RobotContainer {
     if (!Constants.visionOnRobot || visionFrontRight == null || visionFrontLeft == null
     /*|| visionRearRight == null
     || visionRearLeft == null */ ) return;
-    visionFrontRight.addFilteredPose(drivetrain);
-    visionFrontLeft.addFilteredPose(drivetrain);
-    // visionRearRight.addFilteredPose(drivetrain);
-    // visionRearLeft.addFilteredPose(drivetrain);
+
+    if (preferredCamera == null) preferredCamera = Constants.Vision.FALLBACK_CAMERA;
+
+    DogLog.log("Subsystems/Vision/PreferredCamera", preferredCamera.getLoggingName());
+
+    switch (preferredCamera) {
+      case FRONT_RIGHT_CAM:
+        visionFrontRight.addFilteredPose(drivetrain);
+        break;
+      case FRONT_LEFT_CAM:
+        visionFrontLeft.addFilteredPose(drivetrain);
+        break;
+      case REAR_RIGHT_CAM:
+        // visionRearRight.addFilteredPose(drivetrain);
+        break;
+      case REAR_LEFT_CAM:
+        // visionRearLeft.addFilteredPose(drivetrain);
+        break;
+    }
 
     DogLog.log("Subsystems/Vision/VisionPoseEstimate", drivetrain.getState().Pose);
   }
