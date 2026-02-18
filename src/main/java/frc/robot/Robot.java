@@ -10,9 +10,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.FuelGaugeDetection;
-import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.LoggedTalonFX;
 
 /**
@@ -25,12 +22,8 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
-  private VisionSubsystem visionRight, visionLeft;
-  private FuelGaugeDetection visionColor;
-
-  // TODO: verify this implementation of swerve
-  private CommandSwerveDrivetrain visionSwerve;
-
+  /* TODO: Climber: Might be cleaner to code the behaviour from teleopInit() in robotcontainer (like
+  with visionPeriodic) to prevent creating a new instance of it here. */
   private final ClimberSubsystem climberSubsystem;
 
   /**
@@ -41,21 +34,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-
-    if (Constants.visionOnRobot) {
-      visionRight = VisionSubsystem.getInstance(Constants.Vision.Cameras.RIGHT_CAM);
-      visionLeft = VisionSubsystem.getInstance(Constants.Vision.Cameras.LEFT_CAM);
-      // visionRearRight = VisionSubsystem.getInstance(Constants.Vision.Cameras.REAR_RIGHT_CAM);
-      // visionRearLeft = VisionSubsystem.getInstance(Constants.Vision.Cameras.REAR_LEFT_CAM);
-      visionColor = FuelGaugeDetection.getInstance(Constants.Vision.Cameras.COLOR_CAM);
-      visionSwerve = m_robotContainer.getDrivetrain();
-
-    } else {
-      visionRight = null;
-      visionLeft = null;
-      visionColor = null;
-      visionSwerve = null;
-    }
 
     climberSubsystem = Constants.climberOnRobot ? new ClimberSubsystem() : null;
   }
@@ -83,12 +61,7 @@ public class Robot extends TimedRobot {
 
     CommandScheduler.getInstance().run();
 
-    if (Constants.visionOnRobot) {
-      visionRight.addFilteredPose(visionSwerve);
-      visionLeft.addFilteredPose(visionSwerve);
-      // visionRearRight.addFilteredPose(visionSwerve);
-      // visionRearLeft.addFilteredPose(visionSwerve);
-    }
+    m_robotContainer.visionPeriodic();
     LoggedTalonFX.periodic_static();
   }
 

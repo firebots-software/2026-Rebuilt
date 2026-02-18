@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,20 +25,9 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  // static member that contains array of all VisionSubsytem cameras
-  private static VisionSubsystem[] cameraList =
-      new VisionSubsystem[Constants.Vision.Cameras.values().length];
-
   private final Constants.Vision.Cameras cameraID;
 
   private String cameraTitle;
-
-  // list of all april tags, not sorted by red/blue alliance due to neccessity of
-  // accessing both
-  private static final List<Integer> TAG_IDS =
-      List.of(
-          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-          26, 27, 28, 29, 30, 31, 32);
 
   // NOTE FOR SID/SAKETH: come back to ln 57-70 in 2025 repo
 
@@ -69,6 +59,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   // constructor for VisionSubsystem
   public VisionSubsystem(Constants.Vision.Cameras cameraID) {
+
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = Constants.Vision.getCameraTransform(cameraID);
@@ -82,12 +73,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     cameraTitle = cameraID.getLoggingName();
     latestVisionResult = null;
-  }
-
-  public static VisionSubsystem getInstance(Constants.Vision.Cameras cameraID) {
-    int index = cameraID.ordinal();
-    if (cameraList[index] == null) cameraList[index] = new VisionSubsystem(cameraID);
-    return cameraList[index];
   }
 
   @Override
@@ -201,8 +186,12 @@ public class VisionSubsystem extends SubsystemBase {
     int tagCount = tags.size();
     DogLog.log("Subsystems/Vision/tagCount", tagCount);
 
-    // TODO: Replace with real swerve speed
-    double currentSpeed = 0.0;
+    ChassisSpeeds robotSpeeds = swerve.getState().Speeds;
+
+    var field =
+        ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
+
+    double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
 
     // Compute noise model
     double nX =
@@ -301,22 +290,8 @@ public class VisionSubsystem extends SubsystemBase {
     int effectiveTags = Math.min(tagCount, 4);
     double tagFactor = 1d / Math.sqrt(effectiveTags);
 
-    // distance term (d^2)
-    // Changed from last year: Purely distrust based on distance (as opposed to
-    // capping distrust for
-    // closer tags)
-    // double distanceFactor =
-    // baseNoise + distanceExponentialCoefficient *
-    // Math.pow(distanceExponentialBase, distance);
-
     double distanceFactor =
-        (distance < (17.548 + 0.67))
-            ? Math.min(
-                baseNoise
-                    + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance),
-                1.167)
-            : (baseNoise
-                + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance));
+        baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
 
     // Speed term (quadratic)
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
