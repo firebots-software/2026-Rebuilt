@@ -45,35 +45,58 @@ public class AutoRoutines {
     routine = autoFactory.newRoutine("CristianoRonaldo.chor");
   }
 
-  private AutoTrajectory maneuver(String name) {
+  public static enum maneuverType {
+    RLML("RedLeftManeuverL"), 
+    RLMR("RedLeftManeuverR"),
+    RRML("RedRightManeuverL"),
+    RRMR("RedRightManeuverR"),
+    BLML("BlueLeftManeuverL"),
+    BLMR("BlueLeftManeuverR"),
+    BRML("BlueRightManeuverL"),
+    BRMR("BlueRightManeuverR");
+
+
+    private final String value;
+
+    maneuverType(String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
+  }
+
+
+  private AutoTrajectory maneuver(maneuverType type) {
     AutoTrajectory traj;
 
-    switch (name) {
-      case "RedLeftManeuverL":
+    switch (type) {
+      case RLML:
         traj = routine.trajectory("RedLeftManeuverL.traj");
         break;
-      case "RedLeftManeuverR":
+      case RLMR:
         traj = routine.trajectory("RedLeftManeuverR.traj");
         break;
 
-      case "RedRightManeuverL":
+      case RRML:
         traj = routine.trajectory("RedRightManeuverL.traj");
         break;
-      case "RedRightManeuverR":
+      case RRMR:
         traj = routine.trajectory("RedRightManeuverR.traj");
         break;
 
-      case "BlueLeftManeuverL":
+      case BLML:
         traj = routine.trajectory("BlueLeftManeuverL.traj");
         break;
-      case "BlueLeftManeuverR":
+      case BLMR:
         traj = routine.trajectory("BlueLeftManeuverR.traj");
         break;
 
-      case "BlueRightManeuverL":
+      case BRML:
         traj = routine.trajectory("BlueRightManeuverL.traj");
         break;
-      case "BlueRightManeuverR":
+      case BRMR:
         traj = routine.trajectory("BlueRightManeuverR.traj");
         break;
 
@@ -220,8 +243,8 @@ public class AutoRoutines {
     return traj;
   }
 
-  public Command Pedri(String maneuverType, String intakeType, String shootType, String climbType) {
-    AutoTrajectory maneuver = maneuver(maneuverType);
+  public Command Pedri(maneuverType type, String intakeType, String shootType, String climbType) {
+    AutoTrajectory maneuver = maneuver(type);
     AutoTrajectory intake = intake(intakeType);
     AutoTrajectory shootPositioning = shoot(shootType);
     AutoTrajectory climbPositioning = climb(climbType);
