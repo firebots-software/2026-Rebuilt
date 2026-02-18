@@ -52,11 +52,11 @@ public class Shoot extends Command {
   public void execute() {
     Pose3d target =
         redside.getAsBoolean() ? Constants.Landmarks.RED_HUB : Constants.Landmarks.BLUE_HUB;
-    shooter.setSpeed(
+    shooter.setBallSpeed(
         Units.metersToFeet(
             shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
     if (shooter.isAtSpeed() && pointingAtTarget()) {
-      hopper.runHopper(Constants.Hopper.TARGET_PULLEY_SPEED_M_PER_SEC);
+      hopper.runHopper(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND);
     } else {
       hopper.stop();
     }
@@ -102,7 +102,7 @@ public class Shoot extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.stop();
+    shooter.stopShooter();
     hopper.stop();
     targetAngle = 0;
   }
