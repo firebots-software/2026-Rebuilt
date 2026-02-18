@@ -7,6 +7,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
@@ -246,9 +247,17 @@ public class AutoRoutines {
     AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
     AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
 
-    moveLeft.atTime("Log").onTrue(new InstantCommand( ()-> DogLog.log("Reach target", true)));
+    moveLeft.atTime("Log").onTrue(new InstantCommand(() -> DogLog.log("Reach target", true)));
 
-    routine.active().onTrue(moveLeft.resetOdometry().andThen(moveLeft.cmd()).andThen(moveRight.cmd()));
+    routine
+        .active()
+        .onTrue(
+            moveLeft
+                .resetOdometry()
+                .andThen(
+                    new ParallelCommandGroup(
+                        new InstantCommand(() -> DogLog.log("start time", true)), moveLeft.cmd()))
+                .andThen(moveRight.cmd()));
 
     return routine.cmd();
   }
