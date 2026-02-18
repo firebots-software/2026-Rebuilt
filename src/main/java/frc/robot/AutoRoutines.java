@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.lang.ProcessBuilder.Redirect.Type;
+
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -9,6 +11,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
+import frc.robot.Constants.Swerve.Auto.Maneuver;
+import frc.robot.Constants.Swerve.Auto.Intake;
+import frc.robot.Constants.Swerve.Auto.ShootPaths;
+import frc.robot.Constants.Swerve.Auto.Climb;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.Shoot;
@@ -45,58 +51,35 @@ public class AutoRoutines {
     routine = autoFactory.newRoutine("CristianoRonaldo.chor");
   }
 
-  public static enum maneuverType {
-    RLML("RedLeftManeuverL"), 
-    RLMR("RedLeftManeuverR"),
-    RRML("RedRightManeuverL"),
-    RRMR("RedRightManeuverR"),
-    BLML("BlueLeftManeuverL"),
-    BLMR("BlueLeftManeuverR"),
-    BRML("BlueRightManeuverL"),
-    BRMR("BlueRightManeuverR");
-
-
-    private final String value;
-
-    maneuverType(String value) {
-      this.value = value;
-    }
-
-    public String getValue() {
-      return value;
-    }
-  }
-
-
-  private AutoTrajectory maneuver(maneuverType type) {
+  private AutoTrajectory maneuver(Maneuver type) {
     AutoTrajectory traj;
 
     switch (type) {
-      case RLML:
+      case RedLeftManeuverL:
         traj = routine.trajectory("RedLeftManeuverL.traj");
         break;
-      case RLMR:
+      case RedLeftManeuverR:
         traj = routine.trajectory("RedLeftManeuverR.traj");
         break;
 
-      case RRML:
+      case RedRightManeuverL:
         traj = routine.trajectory("RedRightManeuverL.traj");
         break;
-      case RRMR:
+      case RedRightManeuverR:
         traj = routine.trajectory("RedRightManeuverR.traj");
         break;
 
-      case BLML:
+      case BlueLeftManeuverL:
         traj = routine.trajectory("BlueLeftManeuverL.traj");
         break;
-      case BLMR:
+      case BlueLeftManeuverR:
         traj = routine.trajectory("BlueLeftManeuverR.traj");
         break;
 
-      case BRML:
+      case BlueRightManeuverL:
         traj = routine.trajectory("BlueRightManeuverL.traj");
         break;
-      case BRMR:
+      case BlueRightManeuverR:
         traj = routine.trajectory("BlueRightManeuverR.traj");
         break;
 
@@ -108,71 +91,71 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory intake(String name) {
+  private AutoTrajectory intake(Intake type) {
     AutoTrajectory traj;
 
-    switch (name) {
-      case "RedLeftIntakeL":
+    switch (type) {
+      case RedLeftIntakeL:
         traj = routine.trajectory("RedLeftIntakeL.traj");
         break;
-      case "RedLeftIntakeM":
+      case RedLeftIntakeM:
         traj = routine.trajectory("RedLeftIntakeM.traj");
         break;
-      case "RedLeftIntakeR":
+      case RedLeftIntakeR:
         traj = routine.trajectory("RedLeftIntakeR.traj");
         break;
-      case "RedLeftIntakeML":
+      case RedLeftIntakeML:
         traj = routine.trajectory("RedLeftIntakeML.traj");
         break;
-      case "RedLeftIntakeMR":
+      case RedLeftIntakeMR:
         traj = routine.trajectory("RedLeftIntakeMR.traj");
         break;
 
-      case "RedRightIntakeL":
+      case RedRightIntakeL:
         traj = routine.trajectory("RedRightIntakeL.traj");
         break;
-      case "RedRightIntakeM":
+      case RedRightIntakeM:
         traj = routine.trajectory("RedRightIntakeM.traj");
         break;
-      case "RedRightIntakeR":
+      case RedRightIntakeR:
         traj = routine.trajectory("RedRightIntakeR.traj");
         break;
-      case "RedRightIntakeML":
+      case RedRightIntakeML:
         traj = routine.trajectory("RedRightIntakeML.traj");
         break;
-      case "RedRightIntakeMR":
+      case RedRightIntakeMR:
         traj = routine.trajectory("RedRightIntakeMR.traj");
         break;
 
-      case "BlueLeftIntakeL":
+      case BlueLeftIntakeL:
         traj = routine.trajectory("BlueLeftIntakeL.traj");
         break;
-      case "BlueLeftIntakeM":
+      case BlueLeftIntakeM:
         traj = routine.trajectory("BlueLeftIntakeM.traj");
         break;
-      case "BlueLeftIntakeR":
+      case BlueLeftIntakeR:
         traj = routine.trajectory("BlueLeftIntakeR.traj");
         break;
-      case "BlueLeftIntakeML":
+      case BlueLeftIntakeML:
         traj = routine.trajectory("BlueLeftIntakeML.traj");
         break;
-      case "BlueLeftIntakeMR":
+      case BlueLeftIntakeMR:
         traj = routine.trajectory("BlueLeftIntakeMR.traj");
         break;
 
-      case "BlueRightIntakeL":
+      case BlueRightIntakeL:
         traj = routine.trajectory("BlueRightIntakeL.traj");
         break;
-      case "BlueRightIntakeM":
+      case BlueRightIntakeM:
         traj = routine.trajectory("BlueRightIntakeM.traj");
         break;
-      case "BlueRightIntakeR":
+      case BlueRightIntakeR:
         traj = routine.trajectory("BlueRightIntakeR.traj");
         break;
-      case "BlueRightIntakeML":
+      case BlueRightIntakeML:
         traj = routine.trajectory("BlueRightIntakeML.traj");
         break;
-      case "BlueRightIntakeMR":
+      case BlueRightIntakeMR:
         traj = routine.trajectory("BlueRightIntakeMR.traj");
         break;
 
@@ -189,23 +172,23 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory shoot(String name) {
+  private AutoTrajectory shoot(ShootPaths type) {
     AutoTrajectory traj;
 
-    switch (name) {
-      case "RedLeftShoot":
+    switch (type) {
+      case RedLeftShoot:
         traj = routine.trajectory("RedLeftShoot.traj");
         break;
 
-      case "RedRightShoot":
+      case RedRightShoot:
         traj = routine.trajectory("RedRightShoot.traj");
         break;
 
-      case "BlueLeftShoot":
+      case BlueLeftShoot:
         traj = routine.trajectory("BlueLeftShoot.traj");
         break;
 
-      case "BlueRightShoot":
+      case BlueRightShoot:
         traj = routine.trajectory("BlueRightShoot.traj");
         break;
 
@@ -216,23 +199,23 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory climb(String name) {
+  private AutoTrajectory climb(Climb type) {
     AutoTrajectory traj;
 
-    switch (name) {
-      case "RedLeftClimb":
+    switch (type) {
+      case RedLeftClimb:
         traj = routine.trajectory("RedLeftClimb.traj");
         break;
 
-      case "RedRightClimb":
+      case RedRightClimb:
         traj = routine.trajectory("RedRightClimb.traj");
         break;
 
-      case "BlueLeftClimb":
+      case BlueLeftClimb:
         traj = routine.trajectory("BlueLeftClimb.traj");
         break;
 
-      case "BlueRightClimb":
+      case BlueRightClimb:
         traj = routine.trajectory("BlueRightClimb.traj");
         break;
 
@@ -243,7 +226,7 @@ public class AutoRoutines {
     return traj;
   }
 
-  public Command Pedri(maneuverType type, String intakeType, String shootType, String climbType) {
+  public Command Pedri(Maneuver type, Intake intakeType, ShootPaths shootType, Climb climbType) {
     AutoTrajectory maneuver = maneuver(type);
     AutoTrajectory intake = intake(intakeType);
     AutoTrajectory shootPositioning = shoot(shootType);
