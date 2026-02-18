@@ -103,7 +103,6 @@ public class RobotContainer {
         () ->
             autoRoutines.Pedri(
                 null, "LeftIntakeL", "LeftShootPositioning", "LeftClimbPositioning"));
-
     autoChooser.addCmd("Trial Path", () -> autoRoutines.trialPath());
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -210,14 +209,6 @@ public class RobotContainer {
       //       .and(joystick.y())
       //       .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
     }
-
-    // Auto sequence: choreo forward
-    Command trajCommand =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
-
-    // joystick.x().whileTrue(trajCommand);
 
     if (Constants.hopperOnRobot) {
       //   joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
