@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.lang.ProcessBuilder.Redirect.Type;
-
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
@@ -10,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commandGroups.ClimbCommands.L1Climb;
-import frc.robot.Constants.Swerve.Auto.Maneuver;
+import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Intake;
-import frc.robot.Constants.Swerve.Auto.ShootPaths;
-import frc.robot.Constants.Swerve.Auto.Climb;
+import frc.robot.Constants.Swerve.Auto.Maneuver;
+import frc.robot.Constants.Swerve.Auto.ShootPos;
+import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.Shoot;
@@ -32,7 +30,6 @@ public class AutoRoutines {
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
   private final ClimberSubsystem climberSubsystem;
-  private final AutoRoutine routine;
 
   public AutoRoutines(
       AutoFactory factory,
@@ -47,11 +44,11 @@ public class AutoRoutines {
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
     this.climberSubsystem = climber;
-
-    routine = autoFactory.newRoutine("CristianoRonaldo.chor");
   }
 
-  private AutoTrajectory maneuver(Maneuver type) {
+  private AutoTrajectory maneuver(AutoRoutine routine, Maneuver type) {
+    if (type == null) return null;
+    
     AutoTrajectory traj;
 
     switch (type) {
@@ -91,7 +88,9 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory intake(Intake type) {
+  private AutoTrajectory intake(AutoRoutine routine, Intake type) {
+    if (type == null) return null;
+    
     AutoTrajectory traj;
 
     switch (type) {
@@ -164,15 +163,15 @@ public class AutoRoutines {
         break;
     }
 
-    if (traj != null) {
-      traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-      traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
-    }
+    traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
 
     return traj;
   }
 
-  private AutoTrajectory shoot(ShootPaths type) {
+  private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
+    if (type == null) return null;
+    
     AutoTrajectory traj;
 
     switch (type) {
@@ -199,7 +198,9 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory climb(Climb type) {
+  private AutoTrajectory climb(AutoRoutine routine, ClimbPos type) {
+    if (type == null) return null;
+    
     AutoTrajectory traj;
 
     switch (type) {
@@ -226,30 +227,34 @@ public class AutoRoutines {
     return traj;
   }
 
-  public Command Pedri(Maneuver type, Intake intakeType, ShootPaths shootType, Climb climbType) {
-    AutoTrajectory maneuver = maneuver(type);
-    AutoTrajectory intake = intake(intakeType);
-    AutoTrajectory shootPositioning = shoot(shootType);
-    AutoTrajectory climbPositioning = climb(climbType);
+  public Command Pedri(
+      Maneuver maneuverType, Intake intakeType, ShootPos shootType, ClimbPos climbType) {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    
+    AutoTrajectory maneuver = maneuver(routine, maneuverType);
+    AutoTrajectory intake = intake(routine, intakeType);
+    AutoTrajectory shootPositioning = shoot(routine, shootType);
+    AutoTrajectory climbPositioning = climb(routine, climbType);
 
     // add proper dtp
     routine
         .active()
         .onTrue(
             (maneuver != null ? maneuver.resetOdometry() : Commands.none())
-                .andThen(maneuver != null ? maneuver.cmd() : Commands.none())
+                .andThen(getPathCommandSafely(maneuver))
                 .andThen(new DriveToPose(swerveSubsystem))
-                .andThen(intake != null ? intake.cmd() : Commands.none())
+                .andThen(getPathCommandSafely(intake))
                 .andThen(new DriveToPose(swerveSubsystem))
-                .andThen(shootPositioning != null ? shootPositioning.cmd() : Commands.none())
+                .andThen(getPathCommandSafely(shootPositioning))
                 .andThen(new Shoot(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
-                .andThen(climbPositioning != null ? climbPositioning.cmd() : Commands.none())
+                .andThen(getPathCommandSafely(climbPositioning))
                 .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
     return routine.cmd();
   }
 
   public Command trialPath() {
+    AutoRoutine routine= autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
     AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
 
@@ -266,5 +271,9 @@ public class AutoRoutines {
                 .andThen(moveRight.cmd()));
 
     return routine.cmd();
+  }
+
+  public Command getPathCommandSafely(AutoTrajectory traj) {
+    return traj != null ? traj.cmd() : Commands.none();
   }
 }

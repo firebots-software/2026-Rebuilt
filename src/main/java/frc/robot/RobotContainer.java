@@ -71,10 +71,6 @@ public class RobotContainer {
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
 
-  //   private final AutoFactory autoFactory; // no marker
-
-  //   public final AutoRoutine autoRoutine; // with markers
-
   private final AutoFactory autoFactory;
   private final AutoRoutines autoRoutines;
 
@@ -102,7 +98,10 @@ public class RobotContainer {
         "Pedri - Left Side",
         () ->
             autoRoutines.Pedri(
-                null, "LeftIntakeL", "LeftShootPositioning", "LeftClimbPositioning"));
+                null,
+                Constants.Swerve.Auto.Intake.RedLeftIntakeL,
+                Constants.Swerve.Auto.ShootPos.RedLeftShoot,
+                Constants.Swerve.Auto.ClimbPos.RedLeftClimb));
     autoChooser.addCmd("Trial Path", () -> autoRoutines.trialPath());
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -233,6 +232,8 @@ public class RobotContainer {
             ? false
             : (DriverStation.getAlliance().get() == Alliance.Red);
   }
+
+  public 
 
   public Command getAutonomousCommand() {
     return autoChooser.selectedCommand();

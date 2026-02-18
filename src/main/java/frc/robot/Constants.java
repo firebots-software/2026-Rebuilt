@@ -26,7 +26,8 @@ public final class Constants {
   }
 
   public static final class Simulation {
-    public static final double SIM_LOOP_PERIOD_SECONDS = 0.020; // time between updating the simulator
+    public static final double SIM_LOOP_PERIOD_SECONDS =
+        0.020; // time between updating the simulator
   }
 
   public static final class Intake {
@@ -92,8 +93,7 @@ public final class Constants {
 
       // Gear Ratios & Conversions
       /**
-       * End-to-end reduction: 2.6667:1 Breakdown: Motor → 12t:32t pulley (9mm, 70t
-       * belt) → top
+       * End-to-end reduction: 2.6667:1 Breakdown: Motor → 12t:32t pulley (9mm, 70t belt) → top
        * rollers → 17t:17t pulley (9mm, 65t belt) → bottom rollers
        */
       public static final double MOTOR_ROTS_PER_ROLLERS_ROTS = 8.0 / 3.0;
@@ -109,13 +109,14 @@ public final class Constants {
       /** Designed top speed: ~25 ft/s surface speed */
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
 
-      public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC = Units
-          .feetToMeters(DESIGNED_SURFACE_SPEED_FT_PER_SEC);
-      public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC = DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
+      public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
+          Units.feetToMeters(DESIGNED_SURFACE_SPEED_FT_PER_SEC);
+      public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC =
+          DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
 
       /** Target roller RPM to achieve designed surface speed */
-      public static final double TARGET_ROLLER_RPM = (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0)
-          / ROLLER_CIRCUMFERENCE_INCHES;
+      public static final double TARGET_ROLLER_RPM =
+          (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
 
       /** Target roller RPS (rotations per second) */
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
@@ -135,25 +136,25 @@ public final class Constants {
 
       // Ball Detection (monitors roller current to estimate ball intake)
       /** Current threshold indicating balls are being intaken */
-      public static final double BALL_DETECTION_CURRENT_THRESHOLD_AMPS = 15.0; // TODO: Tune empirically
+      public static final double BALL_DETECTION_CURRENT_THRESHOLD_AMPS =
+          15.0; // TODO: Tune empirically
 
       /** Debounce time for ball detection to filter noise */
       public static final double BALL_DETECTION_DEBOUNCE_SEC = 0.1; // TODO: Tune
 
-      public static final double SIM_MOI_KG_M2 = 0.0003; // TODO: BETTER ESTIMATION CAN BE MADE USING DESIGN
+      public static final double SIM_MOI_KG_M2 =
+          0.0003; // TODO: BETTER ESTIMATION CAN BE MADE USING DESIGN
 
       public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: OBSERVE BEHAVIOR
     }
 
     /**
-     * Constants for power retract behavior during shooting. WARNING: Per MRD, only
-     * use after balls
+     * Constants for power retract behavior during shooting. WARNING: Per MRD, only use after balls
      * have been partially emptied to avoid expelling balls from hopper.
      */
     public static final class PowerRetract {
       /**
-       * Torque current for power retract mode (TorqueCurrentFOC). Applies constant
-       * force to help
+       * Torque current for power retract mode (TorqueCurrentFOC). Applies constant force to help
        * push balls from hopper into shooter to increase BPS.
        */
       public static final double TORQUE_CURRENT_AMPS = 20.0; // TODO: Tune empirically
@@ -170,7 +171,6 @@ public final class Constants {
       L2(6.75, 21.428571428571427),
       L3(6.12, 21.428571428571427),
       FIVEN_L3(5.2734375, 26.09090909091);
-
       public final double DRIVE_GEAR_RATIO, STEER_GEAR_RATIO;
 
       SwerveLevel(double drive, double steer) {
@@ -186,7 +186,6 @@ public final class Constants {
       // //0.12301
       JAMES_HARDEN(0.36, 0d, 0d, 0.2425, 0.11560693641, 0), // 0.041539 //0.12301
       COBRA(0.1, 0d, 0d, 0d, 0.124, 0d); // 0.041539 //0.12301
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveDrivePIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -204,7 +203,6 @@ public final class Constants {
       PROTO(20d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(38.982d, 2.4768d, 0d, 0.23791d, 0d, 0.1151d),
       COBRA(100d, 0d, 0.5, 0.1, 2.49, 0d);
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveSteerPIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -222,7 +220,6 @@ public final class Constants {
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       COBRA(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d);
-
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -252,7 +249,6 @@ public final class Constants {
       PROTO(Inches.of(22.52), Inches.of(22.834)), // length, width
       JAMES_HARDEN(Inches.of(26.75), Inches.of(22.75)), // length, width
       COBRA(Inches.of(29.0), Inches.of(26.0)); // length, width
-
       public final Distance length, width;
 
       RobotDimensions(Distance length, Distance width) {
@@ -331,7 +327,6 @@ public final class Constants {
           BumperThickness.COBRA,
           3.5714285714285716,
           false);
-
       public final Angle FRONT_LEFT_ENCODER_OFFSET,
           FRONT_RIGHT_ENCODER_OFFSET,
           BACK_LEFT_ENCODER_OFFSET,
@@ -385,32 +380,60 @@ public final class Constants {
     public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
     public static final double TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND = 8;
-    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE = (TELE_DRIVE_FAST_MODE_SPEED_PERCENT
-        - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
+    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
+        (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
     public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
-    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND = 26.971;
+    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
+        26.971;
 
     public static class Auto {
       public static enum Maneuver {
-        RedLeftManeuverL, RedLeftManeuverR, RedRightManeuverL, RedRightManeuverR, BlueLeftManeuverL, BlueLeftManeuverR,
-        BlueRightManeuverL, BlueRightManeuverR
+        RedLeftManeuverL,
+        RedLeftManeuverR,
+        RedRightManeuverL,
+        RedRightManeuverR,
+        BlueLeftManeuverL,
+        BlueLeftManeuverR,
+        BlueRightManeuverL,
+        BlueRightManeuverR
       }
 
       public static enum Intake {
-        RedLeftIntakeL, RedLeftIntakeM, RedLeftIntakeR, RedLeftIntakeML, RedLeftIntakeMR, RedRightIntakeL,
-        RedRightIntakeM, RedRightIntakeR, RedRightIntakeML, RedRightIntakeMR, BlueLeftIntakeL, BlueLeftIntakeM,
-        BlueLeftIntakeR, BlueLeftIntakeML, BlueLeftIntakeMR, BlueRightIntakeL, BlueRightIntakeM, BlueRightIntakeR,
-        BlueRightIntakeML, BlueRightIntakeMR
+        RedLeftIntakeL,
+        RedLeftIntakeM,
+        RedLeftIntakeR,
+        RedLeftIntakeML,
+        RedLeftIntakeMR,
+        RedRightIntakeL,
+        RedRightIntakeM,
+        RedRightIntakeR,
+        RedRightIntakeML,
+        RedRightIntakeMR,
+        BlueLeftIntakeL,
+        BlueLeftIntakeM,
+        BlueLeftIntakeR,
+        BlueLeftIntakeML,
+        BlueLeftIntakeMR,
+        BlueRightIntakeL,
+        BlueRightIntakeM,
+        BlueRightIntakeR,
+        BlueRightIntakeML,
+        BlueRightIntakeMR
       }
 
-      public static enum ShootPaths {
-        RedLeftShoot, RedRightShoot, BlueLeftShoot, BlueRightShoot
+      public static enum ShootPos {
+        RedLeftShoot,
+        RedRightShoot,
+        BlueLeftShoot,
+        BlueRightShoot
       }
 
-      public static enum Climb {
-        RedLeftClimb, RedRightClimb, BlueLeftClimb, BlueRightClimb
+      public static enum ClimbPos {
+        RedLeftClimb,
+        RedRightClimb,
+        BlueLeftClimb,
+        BlueRightClimb
       }
-
     }
   }
 
@@ -471,8 +494,8 @@ public final class Constants {
 
       public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 17d;
       public static final double PULLEY_BELT_LENGTH_M = 0; // TODO: get actual value
-      public static final double MOTOR_ROTS_PER_METERS_OF_BELT_TRAVERSAL = MOTOR_ROTS_TO_PULLEY_ROTS
-          * PULLEY_BELT_LENGTH_M;
+      public static final double MOTOR_ROTS_PER_METERS_OF_BELT_TRAVERSAL =
+          MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
 
       // As I understand it, resting postion would probably always be consistent
       public static final double L1_REACH_POS = 0; // TODO: get vals
@@ -489,30 +512,35 @@ public final class Constants {
     // --- Mechanical transmission ---
     // Motor turns needed for one hopper pulley turn (5:1 reduction)
     public static final double MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION = 5.0;
-    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION = (20.0 / 24.0) * (60.0 / 12.0);
+    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
+        (20.0 / 24.0) * (60.0 / 12.0);
 
     // Timing belt geometry
-    public static final double HOPPER_BELT_TOOTH_PITCH_METERS = 0.005; // length of belt movement per tooth moved on it
-    public static final double HOPPER_BELT_TOOTH_COUNT = 220.0; // number of teeth on the actual belt for full
-                                                                // revolution
-    public static final double HOPPER_BELT_LOOP_LENGTH_METERS = HOPPER_BELT_TOOTH_COUNT
-        * HOPPER_BELT_TOOTH_PITCH_METERS; // total length of the belt
+    public static final double HOPPER_BELT_TOOTH_PITCH_METERS =
+        0.005; // length of belt movement per tooth moved on it
+    public static final double HOPPER_BELT_TOOTH_COUNT =
+        220.0; // number of teeth on the actual belt for full
+    // revolution
+    public static final double HOPPER_BELT_LOOP_LENGTH_METERS =
+        HOPPER_BELT_TOOTH_COUNT * HOPPER_BELT_TOOTH_PITCH_METERS; // total length of the belt
 
     // Linear travel conversion
     // meters of belt travel per motor rotation
-    public static final double HOPPER_BELT_METERS_PER_MOTOR_ROTATION = HOPPER_BELT_LOOP_LENGTH_METERS
-        / MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
+    public static final double HOPPER_BELT_METERS_PER_MOTOR_ROTATION =
+        HOPPER_BELT_LOOP_LENGTH_METERS / MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
 
     // inverse conversion (sometimes convenient in control code)
     // motor rotations per meter of belt travel
-    public static final double MOTOR_ROTATIONS_PER_HOPPER_BELT_METER = 1.0 / HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
+    public static final double MOTOR_ROTATIONS_PER_HOPPER_BELT_METER =
+        1.0 / HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
 
-    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION = 1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
+    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
+        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
 
     // --- Operating targets ---
     public static final double HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND = 6.0;
-    public static final double HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND = Units
-        .feetToMeters(HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND);
+    public static final double HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND =
+        Units.feetToMeters(HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND);
 
     // --- Hardware IDs ---
     public static final int MOTOR_PORT = 9;
@@ -563,7 +591,8 @@ public final class Constants {
 
     public static final double DISTANCE_COEFFICIENT_THETA = 0.9;
 
-    public static final double ANGLE_COEFFICIENT_X = 0.5; // noise growth per radian of viewing angle
+    public static final double ANGLE_COEFFICIENT_X =
+        0.5; // noise growth per radian of viewing angle
     public static final double ANGLE_COEFFICIENT_Y = 0.5;
     public static final double ANGLE_COEFFICIENT_THETA = 0.5;
 
@@ -749,7 +778,9 @@ public final class Constants {
   }
 
   public static class Landmarks {
-    public static Pose3d BLUE_HUB = new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
-    public static Pose3d RED_HUB = new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
+    public static Pose3d BLUE_HUB =
+        new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
+    public static Pose3d RED_HUB =
+        new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
   }
 }
