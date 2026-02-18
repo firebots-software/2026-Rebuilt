@@ -24,14 +24,13 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
-  private final VelocityVoltage velocityRequest = new VelocityVoltage(0);
+  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private double targetBallSpeed = 0; // this needs to be consistent
   private static final double TOLERANCE_RPS = 2.0; // tolerance in rotations per second
 
@@ -82,16 +81,12 @@ public class ShooterSubsystem extends SubsystemBase {
     warmUpMotor1.setControl(follower);
     warmUpMotor2.setControl(follower);
 
-    if (RobotBase.isSimulation()) {
-      setupSimulation();
-    }
+    if (RobotBase.isSimulation()) setupSimulation();
   }
 
   private void setupSimulation() {
     shooterSimState = warmUpMotor3.getSimState();
-
     shooterSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-
     shooterSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
     // Use a SINGLE motor model since only Motor 3 is actively controlled
@@ -127,7 +122,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // so now max is 104.72 and min is 71.2
   public void setBallSpeed(double ballSpeed) {
     targetBallSpeed = ballSpeed;
-    shooter.setControl(velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0)));
+    shooter.setControl(m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0)));
   }
 
   public void stopShooter() {
@@ -146,22 +141,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Commands
   public Command shootAtSpeedCommand() {
-    return Commands.runEnd(
-        () -> this.setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter, this);
+    return runEnd(() -> setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter);
   }
 
   public Command shootAtSpeedCommand(double ballSpeed) {
-    return Commands.runEnd(() -> this.setBallSpeed(ballSpeed), this::stopShooter, this);
+    return runEnd(() -> setBallSpeed(ballSpeed), this::stopShooter);
   }
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Shooter/TargetSpeed", targetBallSpeed);
-    DogLog.log("Subsystems/Shooter/IsAtSpeed", isAtSpeed());
-    DogLog.log("Subsystems/Shooter/CurrentSpeed", getCurrentBallSpeed());
+    DogLog.log("Subsystems/Shooter/targetSpeed", targetBallSpeed);
+    DogLog.log("Subsystems/Shooter/isAtSpeed", isAtSpeed());
+    DogLog.log("Subsystems/Shooter/currentSpeed", getCurrentBallSpeed());
     DogLog.log(
-        "Subsystems/Shooter/Motor3VelocityRPS", warmUpMotor3.getVelocity().getValueAsDouble());
-    DogLog.log("Subsystems/Shooter/Motor3Volts", warmUpMotor3.getMotorVoltage().getValueAsDouble());
+        "Subsystems/Shooter/motor3VelocityRPS", warmUpMotor3.getVelocity().getValueAsDouble());
+    DogLog.log("Subsystems/Shooter/motor3Volts", warmUpMotor3.getMotorVoltage().getValueAsDouble());
   }
 
   @Override
