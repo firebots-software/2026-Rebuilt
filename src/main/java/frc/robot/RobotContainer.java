@@ -13,12 +13,10 @@ import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,15 +24,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ClimbCommands.L2Climb;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
-import frc.robot.commandGroups.WarmUpAndShoot;
-import frc.robot.commands.Shoot;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -79,6 +77,17 @@ public class RobotContainer {
   public final AutoRoutine autoRoutine; // with markers
 
   private final AutoChooser autoChooser = new AutoChooser();
+
+  public final VisionSubsystem visionRight =
+      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.RIGHT_CAM) : null;
+  public final VisionSubsystem visionLeft =
+      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.LEFT_CAM) : null;
+  // public final VisionSubsystem visionRearRight =
+  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
+  // public final VisionSubsystem visionRearLeft =
+  // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
+  public final FuelGaugeDetection visionFuelGauge =
+      Constants.visionOnRobot ? new FuelGaugeDetection(Constants.Vision.Cameras.COLOR_CAM) : null;
 
   public RobotContainer() {
     // paths without marker
@@ -131,7 +140,12 @@ public class RobotContainer {
     configureBindings();
   }
 
+  public CommandSwerveDrivetrain getDrivetrain() {
+    return drivetrain;
+  }
+
   private void configureBindings() {
+    // Swerve bindings - left joystick for translation, right joystick for rotation
     Trigger leftTrigger = joystick.leftTrigger();
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
@@ -147,29 +161,34 @@ public class RobotContainer {
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
-            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            (BooleanSupplier) (() -> joystick.leftTrigger().getAsBoolean()),
+            speedFunction,
+            joystick.leftTrigger()::getAsBoolean,
             redside,
-            (BooleanSupplier)
-                (() -> joystick.rightTrigger().getAsBoolean()), // must be same as shoot cmd binding
+            joystick.rightTrigger()::getAsBoolean, // must be same as shoot cmd binding
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
-    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick.rightBumper().onTrue(new WarmUpAndShoot(lebron, hopperSubsystem));
-    }
+    // x -> zero swerve
+    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
-    if (Constants.climberOnRobot) {
-      joystick.povUp().onTrue(new L3Climb(climberSubsystem, drivetrain));
-      joystick.povRight().onTrue(new L2Climb(climberSubsystem, drivetrain));
-      joystick.povDown().onTrue(new L1Climb(climberSubsystem, drivetrain));
+    if (Constants.intakeOnRobot) {
+      // left bumper -> run intake
+      joystick.leftBumper().whileTrue(intakeSubsystem.extendArmAndRunRollers());
+
+      // intake default command - retract arm if hopper is empty, idle if not
+      if (Constants.hopperOnRobot && Constants.visionOnRobot) {
+        intakeSubsystem.setDefaultCommand(
+            new ConditionalCommand(
+                intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
+                intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
+                () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
+      }
     }
 
     if (Constants.shooterOnRobot) {
-      lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
-      joystick.rightTrigger().whileTrue(new Shoot(drivetrain, lebron, hopperSubsystem, redside));
-      joystick.x().whileTrue(lebron.shootAtSpeedCommand());
+      // shooter default command - stop shooter
+      lebron.setDefaultCommand(lebron.run(lebron::stopShooter));
     }
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -221,7 +240,25 @@ public class RobotContainer {
               intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
               intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
               hopperSubsystem::isHopperSufficientlyEmpty));
+      
+    if (Constants.climberOnRobot) {
+      // y -> initiate climb
+      // TODO: verify that command is correct
+      joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain));
+
+      // a -> zero climber
+      joystick.x().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
     }
+
+    // TODO: left trigger -> run LockOnCommand (not yet defined)
+    // joystick.leftTrigger().whileTrue(new LockOnCommand(....));
+
+    // TODO: right trigger -> shoot + arc lock (arc lock not yet defined)
+    // verify command is correct and that sequential is correct type of commandgroup
+    // joystick.rightTrigger().whileTrue(new SequentialCommandGroup(
+    //    new Shoot(drivetrain, lebron, hopperSubsystem, redside),
+    //    new ArcLock(.....)
+    // ));
 
     // Auto sequence: choreo forward
     Command trajCommand =
@@ -284,6 +321,16 @@ public class RobotContainer {
     }
 
     drivetrain.registerTelemetry(logger::telemeterize);
+  }
+
+  public void visionPeriodic() {
+    if (!Constants.visionOnRobot || visionRight == null || visionLeft == null
+    /*|| visionRearRight == null
+    || visionRearLeft == null */ ) return;
+    visionRight.addFilteredPose(drivetrain);
+    visionLeft.addFilteredPose(drivetrain);
+    // visionRearRight.addFilteredPose(drivetrain);
+    // visionRearLeft.addFilteredPose(drivetrain);
   }
 
   public static void setAlliance() {
