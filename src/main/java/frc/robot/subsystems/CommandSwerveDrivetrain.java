@@ -20,8 +20,14 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Notifier;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -34,9 +40,9 @@ import java.util.function.Supplier;
  * be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-  // private static final double kSimLoopPeriod = 0.005; // 5 ms
-  // private Notifier m_simNotifier = null;
-  // private double m_lastSimTime;
+  private static final double kSimLoopPeriod = Constants.Simulation.SIM_LOOP_PERIOD_SECONDS; // 5 ms
+  private Notifier m_simNotifier = null;
+  private double m_lastSimTime;
 
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -74,6 +80,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
 
+  private final Field2d field = new Field2d();
+
+  private final StructPublisher<Pose2d> posePublisher =
+      NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
+
   private ProfiledPIDController headingProfiledPIDController =
       new ProfiledPIDController(
           3.7, // 4 was good
@@ -84,7 +95,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
               Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND
                   - 16)); // -13 was good
 
-  /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
+  /*
+   * SysId routine for characterizing translation. This is used to find PID gains
+   * for the drive motors.
+   */
   private final SysIdRoutine m_sysIdRoutineTranslation =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -96,7 +110,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           new SysIdRoutine.Mechanism(
               output -> setControl(m_translationCharacterization.withVolts(output)), null, this));
 
-  /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
+  /*
+   * SysId routine for characterizing steer. This is used to find PID gains for
+   * the steer motors.
+   */
   private final SysIdRoutine m_sysIdRoutineSteer =
       new SysIdRoutine(
           new SysIdRoutine.Config(
@@ -110,8 +127,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   /*
    * SysId routine for characterizing rotation.
-   * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
-   * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to SysId.
+   * This is used to find PID gains for the FieldCentricFacingAngle
+   * HeadingController.
+   * See the documentation of SwerveRequest.SysIdSwerveRotation for info on
+   * importing the log to SysId.
    */
   private final SysIdRoutine m_sysIdRoutineRotation =
       new SysIdRoutine(
@@ -150,10 +169,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     super(drivetrainConstants, modules);
 
     currentState = getState();
-    /*if (Utils.isSimulation()) {
-        startSimThread();
+
+    if (Utils.isSimulation()) {
+      startSimThread();
     }
-    */
+
+    SmartDashboard.putData(field);
   }
 
   /**
@@ -172,10 +193,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       double odometryUpdateFrequency,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(drivetrainConstants, odometryUpdateFrequency, modules);
-    /*if (Utils.isSimulation()) {
-        startSimThread();
+
+    if (Utils.isSimulation()) {
+      startSimThread();
     }
-    */
+
+    SmartDashboard.putData(field);
   }
 
   /**
@@ -205,10 +228,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         odometryStandardDeviation,
         visionStandardDeviation,
         modules);
-    /*if (Utils.isSimulation()) {
-        startSimThread();
+
+    if (Utils.isSimulation()) {
+      startSimThread();
     }
-    */
+
+    SmartDashboard.putData(field);
   }
 
   public AutoFactory createAutoFactory() {
@@ -283,14 +308,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
   }
 
+  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
+    double omega =
+        // headingProfiledPIDController.getSetpoint().velocity+
+        headingProfiledPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    return omega;
+  }
+
   @Override
   public void periodic() {
     /*
      * Periodically try to apply the operator perspective.
-     * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
-     * This allows us to correct the perspective in case the robot code restarts mid-match.
-     * Otherwise, only check and apply the operator perspective if the DS is disabled.
-     * This ensures driving behavior doesn't change until an explicit disable event occurs during testing.
+     * If we haven't applied the operator perspective before, then we should apply
+     * it regardless of DS state.
+     * This allows us to correct the perspective in case the robot code restarts
+     * mid-match.
+     * Otherwise, only check and apply the operator perspective if the DS is
+     * disabled.
+     * This ensures driving behavior doesn't change until an explicit disable event
+     * occurs during testing.
      */
     currentState = getState();
 
@@ -327,26 +364,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
   }
 
-  // private void startSimThread() {
-  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
+  private void startSimThread() {
+    m_lastSimTime = Utils.getCurrentTimeSeconds();
 
-  //     /* Run simulation at a faster rate so PID gains behave more reasonably */
-  //     m_simNotifier = new Notifier(() -> {
-  //         final double currentTime = Utils.getCurrentTimeSeconds();
-  //         double deltaTime = currentTime - m_lastSimTime;
-  //         m_lastSimTime = currentTime;
+    /* Run simulation at a faster rate so PID gains behave more reasonably */
+    m_simNotifier =
+        new Notifier(
+            () -> {
+              final double currentTime = Utils.getCurrentTimeSeconds();
+              double deltaTime = currentTime - m_lastSimTime;
+              m_lastSimTime = currentTime;
 
-  //         /* use the measured time delta, get battery voltage from WPILib */
-  //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
-  //     });
-  //     m_simNotifier.startPeriodic(kSimLoopPeriod);
-  // }
-
-  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
-    double omega =
-        // headingProfiledPIDController.getSetpoint().velocity+
-        headingProfiledPIDController.calculate(
-            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
-    return omega;
+              /* use the measured time delta, get battery voltage from WPILib */
+              updateSimState(deltaTime, RobotController.getBatteryVoltage());
+            });
+    m_simNotifier.startPeriodic(kSimLoopPeriod);
   }
 }
