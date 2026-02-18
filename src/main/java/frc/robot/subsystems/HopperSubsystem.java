@@ -124,7 +124,7 @@ public class HopperSubsystem extends SubsystemBase {
 
   // Commands
   public Command runHopperCommand(double speedMetersPerSec) {
-    return startEnd(() -> this.runHopper(speedMetersPerSec), this::stop);
+    return startEnd(() -> runHopper(speedMetersPerSec), this::stop);
   }
 
   @Override
