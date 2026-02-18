@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -210,29 +209,25 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command runRollersCommand() {
-    return Commands.startEnd(
-        () -> {
-          this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
-        },
-        this::stopRollers,
-        this);
+    return startEnd(
+        () -> this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
   }
 
   public Command runRollersCommand(double targetRollers_RPS) {
-    return Commands.startEnd(
-        () -> {
-          this.runRollers(targetRollers_RPS);
-        },
-        this::stopRollers,
-        this);
+    return startEnd(() -> this.runRollers(targetRollers_RPS), this::stopRollers);
   }
 
   public Command armToDegrees(double degrees) {
-    return Commands.run(
+    return runOnce(() -> this.setArmDegrees(degrees));
+  }
+
+  public Command extendArmAndRunRollers() {
+    return runEnd(
         () -> {
-          this.setArmDegrees(degrees);
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
+          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
         },
-        this);
+        this::stopRollers);
   }
 
   @Override
@@ -261,15 +256,16 @@ public class IntakeSubsystem extends SubsystemBase {
     // DogLog.log("Subsystems/Intake/Rollers/Target Speed (rps)",
     // Constants.Intake.Rollers.TARGET_MOTOR_RPS);
     // DogLog.log(
-    //     "Subsystems/Intake/Rollers/Motor Velocity (rots/s)",
-    //     rollersMotor.getVelocity().getValueAsDouble());
+    // "Subsystems/Intake/Rollers/Motor Velocity (rots/s)",
+    // rollersMotor.getVelocity().getValueAsDouble());
     // DogLog.log(
-    //     "Subsystems/Intake/Rollers/Motor Position (rots)",
-    //     rollersMotor.getPosition().getValueAsDouble());
+    // "Subsystems/Intake/Rollers/Motor Position (rots)",
+    // rollersMotor.getPosition().getValueAsDouble());
     // // arm
-    // DogLog.log("Subsystems/Intake/Arm/CANcoder Position (raw)", getCancoderPositionRaw());
+    // DogLog.log("Subsystems/Intake/Arm/CANcoder Position (raw)",
+    // getCancoderPositionRaw());
     // DogLog.log(
-    //     "Subsystems/Intake/Arm/AbsolutePosition (degrees)",
+    // "Subsystems/Intake/Arm/AbsolutePosition (degrees)",
     // getArmAbsolutePosition().getDegrees());
     // DogLog.log("Subsystems/Intake/Arm/TargetAngleDeg", targetAngleDeg);
   }
@@ -332,7 +328,8 @@ public class IntakeSubsystem extends SubsystemBase {
     // 5) Battery sag from total simulated current draw
     // double totalCurrentAmps = rollersMechanismSim.getCurrentDrawAmps() +
     // armMechanismSim.getCurrentDrawAmps();
-    // double loadedBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
+    // double loadedBatteryV =
+    // BatterySim.calculateDefaultBatteryLoadedVoltage(totalCurrentAmps);
     // RoboRioSim.setVInVoltage(loadedBatteryV);
 
     double rollersSupplyCurrentAmps = rollersMotorSimState.getSupplyCurrent();
