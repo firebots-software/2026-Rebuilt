@@ -95,7 +95,9 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
-    DogLog.log("Subsystems/Vision/addFilteredPoseworking", true);
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/latestVisionResultExists", latestVisionResult == null);
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/numTargets", latestVisionResult.getTargets().size());
+
 
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
       DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());

@@ -82,9 +82,9 @@ public class RobotContainer {
   private final AutoChooser autoChooser = new AutoChooser();
 
   public final VisionSubsystem visionRight =
-      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.RIGHT_CAM) : null;
+      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.FRONT_RIGHT_CAM) : null;
   public final VisionSubsystem visionLeft =
-      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.LEFT_CAM) : null;
+      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.FRONT_LEFT_CAM) : null;
   // public final VisionSubsystem visionRearRight =
   // Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
   // public final VisionSubsystem visionRearLeft =
