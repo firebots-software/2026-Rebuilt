@@ -175,7 +175,7 @@ public class RobotContainer {
       joystick.leftBumper().whileTrue(intakeSubsystem.extendArmAndRunRollers());
 
       // intake default command - retract arm if hopper is empty, idle if not
-      if (Constants.hopperOnRobot) {
+      if (Constants.hopperOnRobot && Constants.visionOnRobot) {
         intakeSubsystem.setDefaultCommand(
             new ConditionalCommand(
                 intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
