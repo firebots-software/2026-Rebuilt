@@ -279,14 +279,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return currentState;
   }
 
-  public double vxMetersPerSecond() {
-    return currentState.Speeds.vxMetersPerSecond;
-  }
-
-  public double vyMetersPerSecond() {
-    return currentState.Speeds.vyMetersPerSecond;
-  }
-
   public void applyFieldSpeeds(ChassisSpeeds speeds) {
     setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
   }

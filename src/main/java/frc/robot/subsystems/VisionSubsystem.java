@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
@@ -185,7 +186,12 @@ public class VisionSubsystem extends SubsystemBase {
     int tagCount = tags.size();
     DogLog.log("Subsystems/Vision/tagCount", tagCount);
 
-    double currentSpeed = Math.hypot(swerve.vxMetersPerSecond(), swerve.vyMetersPerSecond());
+    ChassisSpeeds robotSpeeds = swerve.getState().Speeds;
+
+    var field =
+        ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
+
+    double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
 
     // Compute noise model
     double nX =
