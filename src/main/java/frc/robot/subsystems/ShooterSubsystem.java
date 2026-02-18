@@ -82,16 +82,12 @@ public class ShooterSubsystem extends SubsystemBase {
     warmUpMotor1.setControl(follower);
     warmUpMotor2.setControl(follower);
 
-    if (RobotBase.isSimulation()) {
-      setupSimulation();
-    }
+    if (RobotBase.isSimulation()) setupSimulation();
   }
 
   private void setupSimulation() {
     shooterSimState = warmUpMotor3.getSimState();
-
     shooterSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-
     shooterSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
     // Use a SINGLE motor model since only Motor 3 is actively controlled
@@ -146,22 +142,21 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Commands
   public Command shootAtSpeedCommand() {
-    return Commands.runEnd(
-        () -> this.setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter, this);
+    return runEnd(() -> setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter);
   }
 
   public Command shootAtSpeedCommand(double ballSpeed) {
-    return Commands.runEnd(() -> this.setBallSpeed(ballSpeed), this::stopShooter, this);
+    return runEnd(() -> setBallSpeed(ballSpeed), this::stopShooter);
   }
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Shooter/TargetSpeed", targetBallSpeed);
-    DogLog.log("Subsystems/Shooter/IsAtSpeed", isAtSpeed());
-    DogLog.log("Subsystems/Shooter/CurrentSpeed", getCurrentBallSpeed());
+    DogLog.log("Subsystems/Shooter/targetSpeed", targetBallSpeed);
+    DogLog.log("Subsystems/Shooter/isAtSpeed", isAtSpeed());
+    DogLog.log("Subsystems/Shooter/currentSpeed", getCurrentBallSpeed());
     DogLog.log(
-        "Subsystems/Shooter/Motor3VelocityRPS", warmUpMotor3.getVelocity().getValueAsDouble());
-    DogLog.log("Subsystems/Shooter/Motor3Volts", warmUpMotor3.getMotorVoltage().getValueAsDouble());
+        "Subsystems/Shooter/motor3VelocityRPS", warmUpMotor3.getVelocity().getValueAsDouble());
+    DogLog.log("Subsystems/Shooter/motor3Volts", warmUpMotor3.getMotorVoltage().getValueAsDouble());
   }
 
   @Override
