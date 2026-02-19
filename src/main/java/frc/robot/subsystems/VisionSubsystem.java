@@ -122,10 +122,10 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/addFilteredPoseworking", true);
 
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasVisionResult", false);
+      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", false);
       return;
     }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasVisionResult", true);
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", true);
 
     // Ensure we have a valid pose estimate and vision result from periodic()
     if (visionEst.isEmpty()) {
@@ -254,11 +254,17 @@ public class VisionSubsystem extends SubsystemBase {
         estimatedPose.timestampSeconds,
         noiseVector);
 
+    hasValidMeasurement = true;
+
     if (measuredPose == null) {
       DogLog.log("Subsystems/Vision/measuredPoseAvailable", false);
     } else {
       DogLog.log("Subsystems/Vision/measuredPoseAvailable", true);
     }
+  }
+
+  public boolean hasValidMeasurement() {
+    return hasValidMeasurement;
   }
 
   private void processPoseEstimate(

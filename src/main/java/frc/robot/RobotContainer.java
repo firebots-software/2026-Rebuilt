@@ -235,25 +235,27 @@ public class RobotContainer {
     VisionSubsystem preferredVision = null;
     double preferredDistance = Double.MAX_VALUE;
 
-    if (visionFrontRight.getMinDistance() < preferredDistance) {
+    if (visionFrontRight.getMinDistance() < preferredDistance && visionFrontRight.hasValidMeasurement()) {
       preferredVision = visionFrontRight;
       preferredDistance = visionFrontRight.getMinDistance();
     }
 
-    if (visionFrontLeft.getMinDistance() < preferredDistance) {
+    if (visionFrontLeft.getMinDistance() < preferredDistance && visionFrontLeft.hasValidMeasurement()) {
       preferredVision = visionFrontLeft;
       preferredDistance = visionFrontLeft.getMinDistance();
     }
 
-    // if (visionRearRight.getMinDistance() < preferredDistance) {
+    // if (visionRearRight.getMinDistance() < preferredDistance && visionRearRight.hasValidMeasurement()) {
     //   preferredVision = visionRearRight;
     //   preferredDistance = visionRearRight.getMinDistance();
     // }
 
-    // if (visionRearLeft.getMinDistance() < preferredDistance) {
+    // if (visionRearLeft.getMinDistance() < preferredDistance && visionRearLeft.hasValidMeasurement()) {
     //   preferredVision = visionRearLeft;
     //   preferredDistance = visionRearLeft.getMinDistance();
     // }
+
+    if (preferredVision == null) return;
 
     DogLog.log("Subsystem/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
 
