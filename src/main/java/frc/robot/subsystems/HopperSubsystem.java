@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -17,7 +18,6 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
@@ -54,13 +54,13 @@ public class HopperSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
 
-    hopperMotor.getConfigurator().apply(s0c);
-    hopperMotor.getConfigurator().apply(currentLimitConfigs);
-    hopperMotor.getConfigurator().apply(motorOutputConfigs);
+    TalonFXConfigurator hopperConfigurator = hopperMotor.getConfigurator();
 
-    if (RobotBase.isSimulation()) {
-      setupSimulation();
-    }
+    hopperConfigurator.apply(s0c);
+    hopperConfigurator.apply(currentLimitConfigs);
+    hopperConfigurator.apply(motorOutputConfigs);
+
+    if (RobotBase.isSimulation()) setupSimulation();
   }
 
   private void setupSimulation() {
@@ -68,7 +68,7 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
     hopperMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
-    var krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
+    DCMotor krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
 
     hopperMechanismSim =
         new DCMotorSim(
@@ -88,22 +88,16 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void stop() {
-    targetSurfaceSpeedMetersPerSecond = 0.0;
-    hopperMotor.setControl(
-        m_velocityRequest.withVelocity(
-            targetSurfaceSpeedMetersPerSecond
-                * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
+    hopperMotor.setControl(m_velocityRequest.withVelocity(0));
   }
 
   public double getFloorSpeedMPS() {
-    double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
-    return measuredMotorSpeedRotationsPerSecond
+    return hopperMotor.getVelocity().getValueAsDouble()
         * Constants.Hopper.HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
   }
 
   public double getAgitatorSpeedRPS() {
-    double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
-    return measuredMotorSpeedRotationsPerSecond
+    return hopperMotor.getVelocity().getValueAsDouble()
         * Constants.Hopper.AGITATOR_ROTATIONS_PER_MOTOR_ROTATION;
   }
 
@@ -115,7 +109,6 @@ public class HopperSubsystem extends SubsystemBase {
         <= Constants.Hopper.HOPPER_VELOCITY_TOLERANCE_ROTATIONS_PER_SECOND;
   }
 
-  // placeholder boolean function for seeing how many balls are in hopper
   public boolean isHopperSufficientlyEmpty(FuelGaugeDetection fuelGaugeDetection) {
     return (fuelGaugeDetection != null
         ? fuelGaugeDetection.GaugeLessThanEqualTo(
@@ -125,22 +118,13 @@ public class HopperSubsystem extends SubsystemBase {
 
   // Commands
   public Command runHopperCommand() {
-    return Commands.startEnd(
-        () -> {
-          this.runHopper(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND);
-        },
-        this::stop,
-        this);
+    return startEnd(
+        () -> runHopper(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND), this::stop);
   }
 
   // Commands
   public Command runHopperCommand(double speedMetersPerSec) {
-    return Commands.startEnd(
-        () -> {
-          this.runHopper(speedMetersPerSec);
-        },
-        this::stop,
-        this);
+    return startEnd(() -> runHopper(speedMetersPerSec), this::stop);
   }
 
   @Override
