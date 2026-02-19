@@ -11,8 +11,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
@@ -31,6 +29,8 @@ public final class Constants {
   }
 
   public static final class Intake {
+    public static final double HAS_PIECE_CURRENT_AMPS = 35.0;
+    public static final double HAS_PIECE_THRESHOLD_SEC = 0.15;
 
     /** Constants for the intake deployment arm (four-bar linkage) */
     public static final class Arm {
@@ -79,6 +79,8 @@ public final class Constants {
       public static final double ARM_POS_IDLE = 45.0; // subject to change
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
+
+      public static final double POWER_RETRACT_TORQUE_CURRENT_FOC = 0f; // TODO: get val
 
       // Simulation
       public static final double SIM_MOI_KG_M2 = 0.1;
@@ -160,10 +162,10 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.JAMES_HARDEN;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
 
-    public static final double targetPositionError = 0.05;
-    public static final double targetAngleError = 0.02;
+    public static final double targetPositionError = 0.03;
+    public static final double targetAngleError = 0.1;
 
     public static enum SwerveLevel {
       L2(6.75, 21.428571428571427),
@@ -210,6 +212,65 @@ public final class Constants {
         this.KS = KS;
         this.KV = KV;
         this.KA = KA;
+      }
+    }
+
+    public static enum SwerveDriveToPosePIDValues {
+      SERRANO(3.067, 0, 0, 4.167, 0, 0, 3.667, 0, 0),
+      PROTO(0, 0, 0, 0, 0, 0, 0, 0, 0),
+      JAMES_HARDEN(0, 0, 0, 0, 0, 0, 0, 0, 0),
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0);
+      public final double kPX;
+      public final double kIX;
+      public final double kDX;
+      public final double kPY;
+      public final double kIY;
+      public final double kDY;
+      public final double kPR;
+      public final double kIR;
+      public final double kDR;
+
+      SwerveDriveToPosePIDValues(
+          double kPX,
+          double kIX,
+          double kDX,
+          double kPY,
+          double kIY,
+          double kDY,
+          double kPR,
+          double kIR,
+          double kDR) {
+        this.kPX = kPX;
+        this.kIX = kIX;
+        this.kDX = kDX;
+        this.kPY = kPY;
+        this.kIY = kIY;
+        this.kDY = kDY;
+        this.kPR = kPR;
+        this.kIR = kIR;
+        this.kDR = kDR;
+      }
+    }
+
+    public static enum SwerveDriveToPoseProfileValues {
+      SERRANO(2, 2, 2, 2),
+      PROTO(0.5, 0.5, 0.2, 0.2),
+      JAMES_HARDEN(0.5, 0.5, 0.2, 0.2),
+      COBRA(0.5, 0.5, 0.5, 0.5); // 5.67, 8.67, 1.9, 1.9
+      public final double maxVelocityLinear,
+          maxAccelerationLinear,
+          maxVelocityAngular,
+          maxAccelerationAngular;
+
+      SwerveDriveToPoseProfileValues(
+          double maxVelocityLinear,
+          double maxAccelerationLinear,
+          double maxVelocityAngular,
+          double maxAccelerationAngular) {
+        this.maxVelocityLinear = maxVelocityLinear;
+        this.maxAccelerationLinear = maxAccelerationLinear;
+        this.maxVelocityAngular = maxVelocityAngular;
+        this.maxAccelerationAngular = maxAccelerationAngular;
       }
     }
 
@@ -277,6 +338,8 @@ public final class Constants {
           SwerveLevel.L3, // what level the swerve drive is
           SwerveDrivePIDValues.SERRANO,
           SwerveSteerPIDValues.SERRANO,
+          SwerveDriveToPosePIDValues.SERRANO,
+          SwerveDriveToPoseProfileValues.SERRANO,
           ChoreoPIDValues.SERRANO,
           RobotDimensions.SERRANO,
           "Patrice the Pineapple",
@@ -291,6 +354,8 @@ public final class Constants {
           SwerveLevel.L2, // what level the swerve drive is
           SwerveDrivePIDValues.PROTO,
           SwerveSteerPIDValues.PROTO,
+          SwerveDriveToPosePIDValues.PROTO,
+          SwerveDriveToPoseProfileValues.PROTO,
           ChoreoPIDValues.PROTO,
           RobotDimensions.PROTO,
           "rio",
@@ -305,6 +370,8 @@ public final class Constants {
           SwerveLevel.L3,
           SwerveDrivePIDValues.JAMES_HARDEN,
           SwerveSteerPIDValues.JAMES_HARDEN,
+          SwerveDriveToPosePIDValues.JAMES_HARDEN,
+          SwerveDriveToPoseProfileValues.JAMES_HARDEN,
           ChoreoPIDValues.JAMES_HARDEN,
           RobotDimensions.JAMES_HARDEN,
           "JamesHarden",
@@ -319,6 +386,8 @@ public final class Constants {
           SwerveLevel.FIVEN_L3,
           SwerveDrivePIDValues.COBRA,
           SwerveSteerPIDValues.COBRA,
+          SwerveDriveToPosePIDValues.COBRA,
+          SwerveDriveToPoseProfileValues.COBRA,
           ChoreoPIDValues.COBRA,
           RobotDimensions.COBRA,
           "Viper",
@@ -332,6 +401,8 @@ public final class Constants {
       public final SwerveLevel SWERVE_LEVEL;
       public final SwerveDrivePIDValues SWERVE_DRIVE_PID_VALUES;
       public final SwerveSteerPIDValues SWERVE_STEER_PID_VALUES;
+      public final SwerveDriveToPosePIDValues SWERVE_DRIVE_TO_POSE_PID_VALUES;
+      public final SwerveDriveToPoseProfileValues SWERVE_DRIVE_TO_POSE_PROFILE_VALUES;
       public final ChoreoPIDValues CHOREO_PID_VALUES;
       public final RobotDimensions ROBOT_DIMENSIONS;
       public final String CANBUS_NAME;
@@ -347,6 +418,8 @@ public final class Constants {
           SwerveLevel swerveLevel,
           SwerveDrivePIDValues swerveDrivePIDValues,
           SwerveSteerPIDValues swerveSteerPIDValues,
+          SwerveDriveToPosePIDValues swerveDriveToPosePIDValues,
+          SwerveDriveToPoseProfileValues swerveDriveToPoseProfileValues,
           ChoreoPIDValues choreoPIDValues,
           RobotDimensions robotDimensions,
           String canbus_name,
@@ -360,6 +433,8 @@ public final class Constants {
         SWERVE_LEVEL = swerveLevel;
         SWERVE_DRIVE_PID_VALUES = swerveDrivePIDValues;
         SWERVE_STEER_PID_VALUES = swerveSteerPIDValues;
+        SWERVE_DRIVE_TO_POSE_PID_VALUES = swerveDriveToPosePIDValues;
+        SWERVE_DRIVE_TO_POSE_PROFILE_VALUES = swerveDriveToPoseProfileValues;
         CHOREO_PID_VALUES = choreoPIDValues;
         ROBOT_DIMENSIONS = robotDimensions;
         CANBUS_NAME = canbus_name;
@@ -388,7 +463,7 @@ public final class Constants {
     public static final double mmcV = 80; // TODO: acquire good ones
     public static final double mmcA = 80;
 
-    public static final double KP = .4;
+    public static final double KP = 0.4;
     public static final double KI = 0;
     public static final double KD = 0;
 
@@ -402,26 +477,27 @@ public final class Constants {
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 250d;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
+          1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
 
       // As I understand it, resting postion would probably always be consistent
       public static final double L1_MUSCLE_UP_FORWARD = 0; // TODO: get vals
       public static final double L2_MUSCLE_UP_FORWARD = 0; // TODO: get vals
       public static final double L3_MUSCLE_UP_FORWARD = 0; // TODO: get vals
       public static final double MUSCLE_UP_BACK = 0; // TODO: get vals
+      public static final double MUSCLEUP_DOWN_VELOCITY = -1;
 
-      public static final int MOTOR_PORT = -1; // TODO: get vals
-
-      public static final int ENCODER_PORT = -1; // TODO: get vals
-      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
-      public static final int ENCODER_OFFSET = 0; // TODO: get vals
+      public static final int MOTOR_PORT = 11;
     }
 
     public static class SitUp {
-      public static final double SIT_UP_TOLERANCE = .1;
+      public static final double SIT_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 100d;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
+          1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
 
       public static final double CURRENT_SUPPLY_LIMIT = 60;
       public static final double CURRENT_STATOR_LIMIT = 100;
@@ -429,29 +505,33 @@ public final class Constants {
       public static final double SIT_UP_ANGLE = 0; // TODO: get vals
       public static final double SIT_BACK_ANGLE = 0; // TODO: get vals
 
-      public static final int MOTOR_PORT = -1; // TODO: get vals
+      public static final int MOTOR_PORT = 12;
 
-      public static final int ENCODER_PORT = -1; // TODO: get vals
-      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+      public static final int ENCODER_PORT = 13;
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 1;
       public static final int ENCODER_OFFSET = 0; // TODO: get vals
     }
 
     public static class PullUp {
-      public static final double PULL_UP_TOLERANCE = .1;
+      public static final double PULL_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 17d;
-      public static final double PULLEY_BELT_LENGTH_M = 0; // TODO: get actual value
-      public static final double MOTOR_ROTS_PER_METERS_OF_BELT_TRAVERSAL =
+      public static final double PULLEY_BELT_LENGTH_M = 1.1;
+      public static final double MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL =
           MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
+      public static final double METERS_OF_BELT_TRAVERSAL_TO_MOTOR_ROTS =
+          1 / MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL;
 
       // As I understand it, resting postion would probably always be consistent
       public static final double L1_REACH_POS = 0; // TODO: get vals
       public static final double L2_REACH_POS = 0; // TODO: get vals
       public static final double L3_REACH_POS = 0; // TODO: get vals
       public static final double PULL_DOWN_POS = 0; // TODO: get vals
+      public static final double PULL_DOWN_POS_FOR_L1 = 0; // TODO: get vals
+      public static final double PULL_DOWN_VELOCITY = -1; // TODO: get vals
 
-      public static final int MOTOR_PORT_L = -1; // TODO: get vals
-      public static final int MOTOR_PORT_R = -1; // TODO: get vals
+      public static final int MOTOR_PORT_L = 9;
+      public static final int MOTOR_PORT_R = 10;
     }
   }
 
@@ -510,24 +590,8 @@ public final class Constants {
 
   public static class Vision {
 
-    // initializes cameras for use in VisionSubsystem
-    public static enum Cameras {
-      FRONT_RIGHT_CAM("frontRightCam"),
-      FRONT_LEFT_CAM("frontLeftCam"),
-      REAR_RIGHT_CAM("rearRightCam"),
-      REAR_LEFT_CAM("rearLeftCam"),
-      COLOR_CAM("colorCam");
-
-      private String loggingName;
-
-      Cameras(String name) {
-        loggingName = name;
-      }
-
-      public String getLoggingName() {
-        return loggingName;
-      }
-    }
+    // TODO: be able to set this at the start of the match
+    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
 
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
@@ -575,42 +639,46 @@ public final class Constants {
     public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5);
     public static final double REAR_LEFT_YAW = Units.degreesToRadians(180.0);
 
-    public static final double COLOR_X = Units.inchesToMeters(8.867);
-    public static final double COLOR_Y = Units.inchesToMeters(12.478);
-    public static final double COLOR_Z = Units.inchesToMeters(6.158);
-    public static final double COLOR_ROLL = Units.degreesToRadians(0.0);
-    public static final double COLOR_PITCH = Units.degreesToRadians(8.7);
-    public static final double COLOR_YAW = Units.degreesToRadians(0.0);
-
-    // initializing Transform3d for use in future field visualization
-    public static Transform3d getCameraTransform(Cameras camera) {
-      switch (camera) {
-        case FRONT_RIGHT_CAM: // TODO: SID: rename FRONT_RIGHT_CAM
-          return new Transform3d(
+    // initializes cameras for use in VisionSubsystem
+    public static enum VisionCamera {
+      FRONT_RIGHT_CAM(
+          "frontRightCam",
+          new Transform3d(
               new Translation3d(FRONT_RIGHT_X, FRONT_RIGHT_Y, FRONT_RIGHT_Z),
-              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW));
+              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW))),
 
-        case FRONT_LEFT_CAM: // TODO: SID: rename FRONT_LEFT_CAM
-          return new Transform3d(
+      FRONT_LEFT_CAM(
+          "frontLeftCam",
+          new Transform3d(
               new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
-              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW));
+              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW))),
 
-        case REAR_RIGHT_CAM:
-          return new Transform3d(
+      REAR_RIGHT_CAM(
+          "rearRightCam",
+          new Transform3d(
               new Translation3d(REAR_RIGHT_X, REAR_RIGHT_Y, REAR_RIGHT_Z),
-              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW));
+              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW))),
 
-        case REAR_LEFT_CAM:
-          return new Transform3d(
+      REAR_LEFT_CAM(
+          "rearLeftCam",
+          new Transform3d(
               new Translation3d(REAR_LEFT_X, REAR_LEFT_Y, REAR_LEFT_Z),
-              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW));
+              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW)));
 
-        case COLOR_CAM:
-          return new Transform3d(
-              new Translation3d(COLOR_X, COLOR_Y, COLOR_Z),
-              new Rotation3d(COLOR_ROLL, COLOR_PITCH, COLOR_YAW));
-        default:
-          throw new IllegalArgumentException("Unknown camera ID: " + camera);
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      VisionCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
       }
     }
   }
@@ -620,6 +688,37 @@ public final class Constants {
     public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
+
+    public static final double FUEL_GAUGE_X = Units.inchesToMeters(8.867);
+    public static final double FUEL_GAUGE_Y = Units.inchesToMeters(12.478);
+    public static final double FUEL_GAUGE_Z = Units.inchesToMeters(6.158);
+    public static final double FUEL_GAUGE_ROLL = Units.degreesToRadians(0.0);
+    public static final double FUEL_GAUGE_PITCH = Units.degreesToRadians(8.7);
+    public static final double FUEL_GAUGE_YAW = Units.degreesToRadians(0.0);
+
+    public static enum FuelGaugeCamera {
+      FUEL_GAUGE_CAM(
+          "fuelGaugeCam",
+          new Transform3d(
+              new Translation3d(FUEL_GAUGE_X, FUEL_GAUGE_Y, FUEL_GAUGE_Z),
+              new Rotation3d(FUEL_GAUGE_ROLL, FUEL_GAUGE_PITCH, FUEL_GAUGE_YAW)));
+
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      FuelGaugeCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
+      }
+    }
 
     public static enum GaugeCalculationType {
       RAW(),
@@ -672,6 +771,9 @@ public final class Constants {
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
     public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double MIN_DIST_FT = 4d;
+    public static final double MAX_DIST_FT = 8d;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
   }

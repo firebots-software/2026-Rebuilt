@@ -13,29 +13,27 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Vision.VisionCamera;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem extends SubsystemBase {
 
-  private final Constants.Vision.Cameras cameraID;
+  private final Constants.Vision.VisionCamera cameraID;
 
   private String cameraTitle;
-
-  // NOTE FOR SID/SAKETH: come back to ln 57-70 in 2025 repo
 
   // VISION:
   private double maxDistance = 15.0; // meters, beyond which readings are dropped
 
   // normalization maximums
-  private double maximumRobotSpeed = 5d;
+  private double maximumRobotSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
   // Noise parameters
   private double calibrationFactor = 1d; // constant multiplier to everything
@@ -47,22 +45,24 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
-  private Optional<MultiTargetPNPResult> visionResult;
   Optional<EstimatedRobotPose> visionEst;
-  private List<PhotonTrackedTarget> tags;
   private final AprilTagFieldLayout fieldLayout;
-
-  public final double acceptableYawThreshold = 60d;
+  private boolean hasValidMeasurement;
 
   public static final double timestampDiffThreshold = 0.5;
   public static final double timestampFPGACorrection = -0.03;
 
+  // addFilteredPose() vals
+  Pose2d latestMeasuredPose;
+  double latestFinalTimestamp;
+  Matrix<N3, N1> latestNoiseVector;
+
   // constructor for VisionSubsystem
-  public VisionSubsystem(Constants.Vision.Cameras cameraID) {
+  public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
 
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
-    Transform3d robotToCamera = Constants.Vision.getCameraTransform(cameraID);
+    Transform3d robotToCamera = cameraID.getCameraTransform();
 
     // load field layout
     this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
@@ -78,62 +78,48 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
-    // VISION:
     visionEst = Optional.empty();
     latestVisionResult = null;
+    hasValidMeasurement = false;
 
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
     for (PhotonPipelineResult result : results) {
       latestVisionResult = result;
       visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEst.isEmpty()) {
-        visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
-      }
+      if (visionEst.isEmpty()) visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
     }
 
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/CameraConnected", true);
   }
 
-  public void addFilteredPose(CommandSwerveDrivetrain swerve) {
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/latestVisionResultExists", latestVisionResult == null);
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/numTargets", latestVisionResult.getTargets().size());
+  public VisionCamera getCamera() {
+    return cameraID;
+  }
 
+  public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
+    hasValidMeasurement = false;
+
+    DogLog.log("Subsystems/Vision/addFilteredPoseworking", true);
 
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", false);
+      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasResult", false);
       return;
     }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", true);
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasResult", true);
 
     // Ensure we have a valid pose estimate and vision result from periodic()
     if (visionEst.isEmpty()) {
+      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", false);
       return;
     }
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", true);
 
     // distance to closest april tag
-    double minDistance =
-        latestVisionResult.getTargets().stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .min()
-            .orElse(Double.NaN);
-
-    DogLog.log("Subsystems/Vision/closestTagDistance", minDistance);
+    double minDistance = getMinDistance();
 
     // average distance to all visible april tags
-    double averageDistance =
-        latestVisionResult.getTargets().stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .average()
-            .orElse(Double.NaN);
-    DogLog.log("Subsystems/Vision/averageTagDistance", averageDistance);
+    double averageDistance = getAverageDistance();
 
-    // 2025-reefscape has a validTags list on lines 160-166, replacing it with a
-    // list of all tags
-    // for 26
-
-    // VISION: to end
     // creates a list of all detected tags and logs for debugging
     List<PhotonTrackedTarget> tags =
         latestVisionResult.getTargets().stream().collect(Collectors.toList());
@@ -237,10 +223,9 @@ public class VisionSubsystem extends SubsystemBase {
         currentSpeed,
         tagCount,
         estimatedPose.timestampSeconds,
-        noiseVector,
-        swerve);
+        noiseVector);
 
-    DogLog.log("Subsystems/Vision/VisionPoseEstimate", measuredPose);
+    hasValidMeasurement = true;
 
     if (measuredPose == null) {
       DogLog.log("Subsystems/Vision/measuredPoseAvailable", false);
@@ -249,14 +234,43 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  public double getMinDistance() {
+    double minDist =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+                .min()
+                .orElse(Double.NaN);
+
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/closestTagDistance", minDist);
+    return minDist;
+  }
+
+  public double getAverageDistance() {
+    double avgDist =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+                .average()
+                .orElse(Double.NaN);
+
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/averageTagDistance", avgDist);
+    return avgDist;
+  }
+
+  public boolean hasValidMeasurement() {
+    return hasValidMeasurement;
+  }
+
   private void processPoseEstimate(
       Pose2d measuredPose,
       double averageDistance,
       double currentSpeed,
       int tagCount,
       double timestamp,
-      Matrix<N3, N1> noiseVector,
-      CommandSwerveDrivetrain swerve) {
+      Matrix<N3, N1> noiseVector) {
 
     // Use vision timestamp if within threshold of FPGA timestamp
     double fpgaTimestamp = Timer.getFPGATimestamp();
@@ -266,16 +280,13 @@ public class VisionSubsystem extends SubsystemBase {
             ? fpgaTimestamp + timestampFPGACorrection
             : timestamp;
 
-    swerve.addVisionMeasurement(measuredPose, finalTimestamp, noiseVector);
+    latestMeasuredPose = measuredPose;
+    latestFinalTimestamp = finalTimestamp;
+    latestNoiseVector = noiseVector;
   }
 
-  // prev. year had isTagOnActiveSide but not relevant this year
-
-  private boolean acceptableYaw(double yaw) {
-    boolean yawIsAcceptable = Math.abs(yaw) < acceptableYawThreshold;
-    DogLog.log("Subsystems/Vision/acceptableYaw", yawIsAcceptable);
-
-    return yawIsAcceptable;
+  public void addFilteredPose(CommandSwerveDrivetrain swerve) {
+    swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
 
   private double computeNoiseXY(
