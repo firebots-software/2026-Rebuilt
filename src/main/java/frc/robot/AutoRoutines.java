@@ -156,6 +156,8 @@ public class AutoRoutines {
     return routine.cmd();
   }
 
+
+
   public Command getPathCommandSafely(AutoTrajectory traj) {
     return traj != null ? traj.cmd() : Commands.none();
   }
