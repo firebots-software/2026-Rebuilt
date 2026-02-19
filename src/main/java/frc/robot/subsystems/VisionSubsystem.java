@@ -284,8 +284,6 @@ public class VisionSubsystem extends SubsystemBase {
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
 
-
-
   private boolean acceptableYaw(double yaw) {
     boolean yawIsAcceptable = Math.abs(yaw) < acceptableYawThreshold;
     DogLog.log("Subsystems/Vision/acceptableYaw", yawIsAcceptable);

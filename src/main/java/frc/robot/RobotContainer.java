@@ -227,7 +227,6 @@ public class RobotContainer {
     /*|| visionRearRight == null
     || visionRearLeft == null */ ) return;
 
-
     visionFrontRight.calculateFilteredPose(drivetrain);
     visionFrontLeft.calculateFilteredPose(drivetrain);
     // visionRearRight.calculateFilteredPose(drivetrain);
@@ -236,10 +235,8 @@ public class RobotContainer {
     VisionSubsystem preferredSubsystem = null;
     double preferredDistance = Double.MAX_VALUE;
 
-    
-
     if (visionFrontRight.getMinDistance() < preferredDistance) {
-      preferredSubsystem  = visionFrontRight;
+      preferredSubsystem = visionFrontRight;
       preferredDistance = visionFrontRight.getMinDistance();
     }
 
@@ -257,8 +254,6 @@ public class RobotContainer {
     //   preferredSubsystem = visionRearLeft;
     //   preferredDistance = visionRearLeft.getMinDistance();
     // }
-
-    
 
     DogLog.log("Subsystems/Vision/VisionPoseEstimate", drivetrain.getState().Pose);
   }
