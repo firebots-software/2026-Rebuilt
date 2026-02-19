@@ -367,7 +367,7 @@ public class RobotContainer {
 
     preferredVision.addFilteredPose(drivetrain);
 
-    DogLog.log("Subsystems/Vision/VisionPoseEstimate", drivetrain.getState().Pose);
+    DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
   }
 
   public static void setAlliance() {

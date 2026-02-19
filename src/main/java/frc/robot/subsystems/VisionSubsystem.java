@@ -68,7 +68,6 @@ public class VisionSubsystem extends SubsystemBase {
     this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     // initialize poseEstimator
-
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
 
     cameraTitle = cameraID.getLoggingName();
@@ -125,10 +124,13 @@ public class VisionSubsystem extends SubsystemBase {
         latestVisionResult.getTargets().stream().collect(Collectors.toList());
 
     // log area and yaw for all detected april tags
-    for (PhotonTrackedTarget tag : tags) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/Area", tag.getArea());
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/Yaw", tag.getYaw());
+    for (int tag = 0; tag < tags.size(); tag++) {
+      DogLog.log(
+          "Subsystems/Vision/" + cameraTitle + "/Tags/" + tag + "/Area", tags.get(tag).getArea());
+      DogLog.log(
+          "Subsystems/Vision/" + cameraTitle + "/Tags/" + tag + "/Yaw", tags.get(tag).getYaw());
     }
+
     // Extract pose estimate
     EstimatedRobotPose estimatedPose = visionEst.get();
     Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
