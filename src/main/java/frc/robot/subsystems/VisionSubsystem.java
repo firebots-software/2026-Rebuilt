@@ -141,9 +141,6 @@ public class VisionSubsystem extends SubsystemBase {
     // average distance to all visible april tags
     double averageDistance = getAverageDistance();
 
-    DogLog.log("Subsystems/Vision/closestTagDistance", minDistance);
-    DogLog.log("Subsystems/Vision/averageTagDistance", averageDistance);
-
     // Reject invalid or distant measurements
     if (Double.isNaN(minDistance) || minDistance > Constants.Vision.MAX_TAG_DISTANCE) {
       DogLog.log("Subsystems/Vision/" + cameraTitle + "/ThrownOutDistance", true);
@@ -229,7 +226,7 @@ public class VisionSubsystem extends SubsystemBase {
                 .min()
                 .orElse(Double.NaN);
 
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/closestTagDistance", minDist);
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/ClosestTagDistance", minDist);
     return minDist;
   }
 
@@ -242,7 +239,7 @@ public class VisionSubsystem extends SubsystemBase {
                 .average()
                 .orElse(Double.NaN);
 
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/averageTagDistance", avgDist);
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/AverageTagDistance", avgDist);
     return avgDist;
   }
 
