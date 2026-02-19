@@ -13,10 +13,9 @@ import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.Maneuver;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
-import frc.robot.commandGroups.BackBumpDTP;
+import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ExtendIntake;
-import frc.robot.commandGroups.ForwardBumpDTP;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.ShootBasic;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -105,9 +104,9 @@ public class AutoRoutines {
         .onTrue(
             (maneuver != null ? maneuver.resetOdometry() : Commands.none())
                 .andThen(getPathCommandSafely(maneuver))
-                .andThen(() -> new ForwardBumpDTP(swerveSubsystem))
+                .andThen(() -> new BumpDTP(swerveSubsystem, () -> true))
                 .andThen(getPathCommandSafely(intake))
-                .andThen(() -> new BackBumpDTP(swerveSubsystem))
+                .andThen(() -> new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(getPathCommandSafely(shootPos))
                 .andThen(
                     new ShootBasic(
@@ -144,9 +143,9 @@ public class AutoRoutines {
         .onTrue(
             (maneuver != null ? maneuver.resetOdometry() : Commands.none())
                 .andThen(getPathCommandSafely(maneuver))
-                .andThen(() -> new ForwardBumpDTP(swerveSubsystem))
+                .andThen(() -> new BumpDTP(swerveSubsystem, () -> true))
                 .andThen(getPathCommandSafely(intake))
-                .andThen(() -> new BackBumpDTP(swerveSubsystem))
+                .andThen(() -> new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(getPathCommandSafely(shootPos))
                 .andThen(
                     new ShootBasic(
