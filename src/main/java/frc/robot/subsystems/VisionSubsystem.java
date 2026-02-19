@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -111,8 +110,13 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getAverageDistance() {
-    double avgDist = (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
-    ? Double.MAX_VALUE : latestVisionResult.getTargets().stream().mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm()).average().orElse(Double.NaN);
+    double avgDist =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+                .average()
+                .orElse(Double.NaN);
 
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/averageTagDistance", avgDist);
     return avgDist;
