@@ -3,7 +3,6 @@ package frc.robot.commands.SwerveCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -86,15 +85,8 @@ public class SwerveJoystickCommandInArc extends Command {
     // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and
     // TELE_DRIVE_FAST_MODE_SPEED_PERCENT
 
-
-    xSpeed =
-            xSpeed
-            * driveSpeed
-            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
-    ySpeed =
-            ySpeed
-            * driveSpeed
-            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    xSpeed = xSpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    ySpeed = ySpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
     DogLog.log("Commands/joystickCommand/xSpeed", xSpeed);
     DogLog.log("Commands/joystickCommand/ySpeed", ySpeed);

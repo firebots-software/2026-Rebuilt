@@ -48,7 +48,7 @@ public class ShootWithWarning extends ParallelCommandGroup {
                 Units.metersToFeet(
                     Targeting.shootingSpeed(
                         target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-                () -> (Targeting.pointingAtTarget(target, drivetrain) && shooter.isAtSpeed()),
+            () -> (Targeting.pointingAtTarget(target, drivetrain) && shooter.isAtSpeed()),
             shooter,
             intake,
             hopper));

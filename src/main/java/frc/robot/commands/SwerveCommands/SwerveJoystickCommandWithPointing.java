@@ -3,7 +3,6 @@ package frc.robot.commands.SwerveCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -75,14 +74,8 @@ public class SwerveJoystickCommandWithPointing extends Command {
         (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.getAsDouble()))
             + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
 
-    xSpeed =
-            xSpeed
-            * driveSpeed
-            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
-    ySpeed =
-            ySpeed
-            * driveSpeed
-            * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    xSpeed = xSpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    ySpeed = ySpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
     // Final values to apply to drivetrain
 

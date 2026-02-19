@@ -18,16 +18,13 @@ public class Targeting {
         (targetAngle(targetNoOffset, drivetrain) + (2 * Math.PI)) % (2 * Math.PI);
 
     double robotHullAngle =
-        (drivetrain.getCurrentState().Pose.getRotation().getRadians() + (2 * Math.PI)) % (2 * Math.PI);
+        (drivetrain.getCurrentState().Pose.getRotation().getRadians() + (2 * Math.PI))
+            % (2 * Math.PI);
 
     double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
     if (diff > Math.PI) diff = 2 * Math.PI - diff;
-    DogLog.log(
-        "Subsystems/ShooterSubsystem/Shoot/rotationalErrorRadians",
-        diff);
-    boolean hullAimed =
-        diff
-            <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
+    DogLog.log("Subsystems/ShooterSubsystem/Shoot/rotationalErrorRadians", diff);
+    boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/pointing", hullAimed);
     return hullAimed;
   }
@@ -46,7 +43,8 @@ public class Targeting {
         MiscMath.RotatedPosAroundVertical(
             Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
             drivetrain.getCurrentState().Pose.getRotation().getRadians());
-    Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getCurrentState().Pose), new Vector3(gunOffset));
+    Vector3 gunPos =
+        Vector3.add(new Vector3(drivetrain.getCurrentState().Pose), new Vector3(gunOffset));
     Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
 
     Vector3 correctedPos = new Vector3(target);
