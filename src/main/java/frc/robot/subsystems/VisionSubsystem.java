@@ -118,12 +118,10 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/addFilteredPoseworking", true);
 
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", false);
+      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasVisionResult", false);
       return;
     }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", visionEst.isPresent());
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", true);
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasVisionResult", true);
 
     // Ensure we have a valid pose estimate and vision result from periodic()
     if (visionEst.isEmpty()) {
