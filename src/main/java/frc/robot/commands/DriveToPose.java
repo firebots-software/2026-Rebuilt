@@ -54,8 +54,6 @@ public class DriveToPose extends Command {
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
 
-    BooleanSupplier direction = (forwardOrBack == true) ? 
-
 
     path =
         new LinearPath(
