@@ -82,55 +82,55 @@ public class AutoRoutines {
     return traj;
   }
 
-  public Command Pedri(
-      Maneuver maneuverType, Intake intakeType, ShootPos shootType, ClimbPos climbType) {
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  // public Command Pedri(
+  //     Maneuver maneuverType, Intake intakeType, ShootPos shootType, ClimbPos climbType) {
+  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory maneuver = maneuver(routine, maneuverType);
-    AutoTrajectory intake = intake(routine, intakeType);
-    AutoTrajectory shootPos = shoot(routine, shootType);
-    AutoTrajectory climbPos = climb(routine, climbType);
+  //   AutoTrajectory maneuver = maneuver(routine, maneuverType);
+  //   AutoTrajectory intake = intake(routine, intakeType);
+  //   AutoTrajectory shootPos = shoot(routine, shootType);
+  //   AutoTrajectory climbPos = climb(routine, climbType);
 
-    // add proper dtp
-    routine
-        .active()
-        .onTrue(
-            (maneuver != null ? maneuver.resetOdometry() : Commands.none())
-                .andThen(getPathCommandSafely(maneuver))
-                .andThen(new DriveToPose(swerveSubsystem))
-                .andThen(getPathCommandSafely(intake))
-                .andThen(new DriveToPose(swerveSubsystem))
-                .andThen(getPathCommandSafely(shootPos))
-                .andThen(new ShootBasic(() -> 10d, () -> true, lebronShooterSubsystem,
-  intakeSubsystem, hopperSubsystem))
-                .andThen(getPathCommandSafely(climbPos))
-                .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+  //   // add proper dtp
+  //   routine
+  //       .active()
+  //       .onTrue(
+  //           (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+  //               .andThen(getPathCommandSafely(maneuver))
+  //               .andThen(new DriveToPose(swerveSubsystem))
+  //               .andThen(getPathCommandSafely(intake))
+  //               .andThen(new DriveToPose(swerveSubsystem))
+  //               .andThen(getPathCommandSafely(shootPos))
+  //               .andThen(new ShootBasic(() -> 10d, () -> true, lebronShooterSubsystem,
+  // intakeSubsystem, hopperSubsystem))
+  //               .andThen(getPathCommandSafely(climbPos))
+  //               .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
-    return routine.cmd();
-  }
+  //   return routine.cmd();
+  // }
 
-  public Command Fermin(Maneuver selectedManeuver, Intake selectedIntake, ShootPos
-  selectedShootPos, ClimbPos selectedClimbPos){
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  // public Command Fermin(Maneuver selectedManeuver, Intake selectedIntake, ShootPos
+  // selectedShootPos, ClimbPos selectedClimbPos){
+  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
-    AutoTrajectory intake = intake(routine, selectedIntake);
-    AutoTrajectory shootPos = shoot(routine, selectedShootPos);
-    AutoTrajectory climbPos = climb(routine, selectedClimbPos);
+  //   AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
+  //   AutoTrajectory intake = intake(routine, selectedIntake);
+  //   AutoTrajectory shootPos = shoot(routine, selectedShootPos);
+  //   AutoTrajectory climbPos = climb(routine, selectedClimbPos);
 
-    routine.active().onTrue(
-      (maneuver != null ? maneuver.resetOdometry() : Commands.none())
-      .andThen(getPathCommandSafely(maneuver))
-      .andThen(new DriveToPose(swerveSubsystem))
-      .andThen(getPathCommandSafely(intake))
-      .andThen(new DriveToPose(swerveSubsystem))
-      .andThen(getPathCommandSafely(shootPos))
-      .andThen(new Targeting)
-      .andThen(getPathCommandSafely(climbPos))
-      .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+  //   routine.active().onTrue(
+  //     (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+  //     .andThen(getPathCommandSafely(maneuver))
+  //     .andThen(new DriveToPose(swerveSubsystem))
+  //     .andThen(getPathCommandSafely(intake))
+  //     .andThen(new DriveToPose(swerveSubsystem))
+  //     .andThen(getPathCommandSafely(shootPos))
+  //     .andThen(new Targeting)
+  //     .andThen(getPathCommandSafely(climbPos))
+  //     .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
-    return routine.cmd();
-  }
+  //   return routine.cmd();
+  // }
 
   public Command trialPath() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
