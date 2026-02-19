@@ -16,7 +16,7 @@ import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
-import frc.robot.commandGroups.Shoot;
+import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
