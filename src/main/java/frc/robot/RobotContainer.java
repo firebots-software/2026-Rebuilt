@@ -269,7 +269,7 @@ public class RobotContainer {
 
     if (preferredVision == null) return;
 
-    DogLog.log("Subsystem/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
+    DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
 
     preferredVision.addFilteredPose(drivetrain);
 
