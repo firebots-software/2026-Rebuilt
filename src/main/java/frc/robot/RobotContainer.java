@@ -232,7 +232,7 @@ public class RobotContainer {
     //   // joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
     // }
 
-    joystick
+    debugJoystick
         .povUp()
         .whileTrue(
             new DriveToPose(
@@ -247,7 +247,7 @@ public class RobotContainer {
                             MiscUtils.plus(
                                 drivetrain.getCurrentState().Pose, new Translation2d(0, -2)))));
 
-    joystick
+    debugJoystick
         .povDown()
         .whileTrue(
             new DriveToPose(
@@ -264,7 +264,7 @@ public class RobotContainer {
                                 drivetrain.getCurrentState().Pose,
                                 new Pose2d(new Translation2d(0, -2), new Rotation2d(1.5708))))));
 
-    joystick
+    debugJoystick
         .povRight()
         .whileTrue(
             new DriveToPose(
@@ -274,7 +274,7 @@ public class RobotContainer {
                         drivetrain.getCurrentState().Pose,
                         new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708)))));
 
-    joystick
+    debugJoystick
         .povLeft()
         .whileTrue(
             new DriveToPose(
@@ -290,14 +290,6 @@ public class RobotContainer {
     // new Shoot(drivetrain, lebron, hopperSubsystem, redside),
     // new ArcLock(.....)
     // ));
-
-    // Auto sequence: choreo forward
-    Command trajCommand =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
-
-    // joystick.x().whileTrue(trajCommand);
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
