@@ -113,12 +113,6 @@ public class VisionSubsystem extends SubsystemBase {
     }
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", true);
 
-    // distance to closest april tag
-    double minDistance = getMinDistance();
-
-    // average distance to all visible april tags
-    double averageDistance = getAverageDistance();
-
     // creates a list of all detected tags and logs for debugging
     List<PhotonTrackedTarget> tags =
         latestVisionResult.getTargets().stream().collect(Collectors.toList());
@@ -144,18 +138,11 @@ public class VisionSubsystem extends SubsystemBase {
     Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/MeasuredPose", measuredPose);
 
-    // Distance calculations
-    minDistance =
-        tags.stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .min()
-            .orElse(Double.NaN);
+    // distance to closest april tag
+    double minDistance = getMinDistance();
 
-    averageDistance =
-        tags.stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .average()
-            .orElse(Double.NaN);
+    // average distance to all visible april tags
+    double averageDistance = getAverageDistance();
 
     DogLog.log("Subsystems/Vision/closestTagDistance", minDistance);
     DogLog.log("Subsystems/Vision/averageTagDistance", averageDistance);
