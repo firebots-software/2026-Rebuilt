@@ -259,9 +259,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // arm
     DogLog.log("Subsystems/Intake/Arm/targetAngle", targetAngleDeg);
-    DogLog.log(
-        "Subsystems/Intake/Arm/absoluteEncoderDegrees", getArmAbsolutePosition().getDegrees());
-    DogLog.log("Subsystems/Intake/Arm/absoluteEncoderRaw", getCancoderPositionRaw());
     DogLog.log("Subsystems/Intake/Arm/currentMotorPos", armMotor.getPosition().getValueAsDouble());
     DogLog.log("Subsystems/Intake/Arm/motorVolts", armMotor.getMotorVoltage().getValueAsDouble());
     DogLog.log(
