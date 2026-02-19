@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import java.util.Optional;
 
 public class MiscUtils {
   public static Pose2d plus(Pose2d a, Translation2d b) {
@@ -21,7 +22,42 @@ public class MiscUtils {
 
   public static Alliance getSecondAlliance() {
     String allianceChar = DriverStation.getGameSpecificMessage();
-    if (allianceChar.length() == 0) return null;
-    return allianceChar == "R" ? Alliance.Red : Alliance.Blue;
+    if (allianceChar.isEmpty()) return null;
+    switch (allianceChar.charAt(0)) {
+      case 'B':
+        return Alliance.Blue;
+      case 'R':
+        return Alliance.Red;
+      default:
+        return null;
+    }
+  }
+
+  public static boolean areWeActive() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+
+    if (alliance.isEmpty()) return false;
+    if (DriverStation.isAutonomousEnabled()) return true;
+    if (!DriverStation.isTeleopEnabled()) return false;
+
+    // teleop is enabled
+    double currentMatchTime = DriverStation.getMatchTime();
+    String allianceChar = DriverStation.getGameSpecificMessage();
+
+    if (allianceChar.isEmpty()) return true;
+    boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
+
+    boolean shift1Active =
+        switch (alliance.get()) {
+          case Red -> !redInactiveFirst;
+          case Blue -> redInactiveFirst;
+        };
+
+    if (currentMatchTime > 130) return true;
+    else if (currentMatchTime > 105) return shift1Active;
+    else if (currentMatchTime > 80) return !shift1Active;
+    else if (currentMatchTime > 55) return shift1Active;
+    else if (currentMatchTime > 30) return !shift1Active;
+    else return true;
   }
 }

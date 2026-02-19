@@ -35,9 +35,8 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   public void periodic() {
-
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (var result : results) latestVisionResult = result;
+    for (PhotonPipelineResult result : results) latestVisionResult = result;
 
     if (latestVisionResult == null) {
       DogLog.log("Subsystems/FuelGauge/BallPresent", false);
@@ -53,11 +52,8 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/BallSkew", b.getSkew());
 
           double rawArea = b.getArea();
-
           double smoothedRawArea = updateLatestList(latestRawMeasurements, rawArea);
-
           double avgMultipleBalls = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
-
           double smoothedMultipleBalls =
               updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
 
@@ -86,13 +82,9 @@ public class FuelGaugeDetection extends SubsystemBase {
     }
 
     if (!list.isEmpty()) {
-      for (double rawArea : list) {
-        smoothedArea += rawArea;
-      }
-      smoothedArea = smoothedArea / list.size();
-    } else {
-      smoothedArea = area;
-    }
+      for (double rawArea : list) smoothedArea += rawArea;
+      smoothedArea /= list.size();
+    } else smoothedArea = area;
 
     return smoothedArea;
   }
@@ -101,11 +93,8 @@ public class FuelGaugeDetection extends SubsystemBase {
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
 
     latestRawGauge = setFuelGauge(rawArea);
-
     latestSmoothedGauge = setFuelGauge(smoothedArea);
-
     latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);
-
     latestSmoothedMultipleBallsGauge = setFuelGauge(smoothedMultipleBalls);
 
     DogLog.log("Subsystems/FuelGauge/Gauge/RawGauge", latestRawGauge.toString());
@@ -135,6 +124,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   private Optional<PhotonTrackedTarget> getLargestBall() {
     if (latestVisionResult == null) return Optional.empty();
+
     List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
     if (targets.isEmpty()) return Optional.empty();
 
