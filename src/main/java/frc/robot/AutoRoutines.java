@@ -114,7 +114,7 @@ public class AutoRoutines {
     return routine.cmd();
   }
   
-  public Command Fermin (Maneuver selectedManeuver, Intake selectedIntake, ShootPos selectedShootPos, ClimbPos selectedClimbPos){
+  public Command Fermin(Maneuver selectedManeuver, Intake selectedIntake, ShootPos selectedShootPos, ClimbPos selectedClimbPos){
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     
     AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
