@@ -124,7 +124,7 @@ public class LEDSubsystem extends SubsystemBase {
     FLAME(
         "Flame",
         LEDState.FLAME_LEFT,
-        /* LEDState.FLAME_MIDDLE_LEFT, LEDState.FLAME_MIDDLE_IGHT, */ LEDState.FLAME_RIGHT);
+        /* LEDState.FLAME_MIDDLE_LEFT, LEDState.FLAME_MIDDLE_RIGHT, */ LEDState.FLAME_RIGHT);
 
     String name;
     LEDState[] animations;
