@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Climber.PullUp;
 import frc.robot.util.LoggedTalonFX;
 
 public class ClimberSubsystem extends SubsystemBase {
@@ -275,14 +276,15 @@ public class ClimberSubsystem extends SubsystemBase {
         PullUpCommand(Constants.Climber.PullUp.L2_REACH_POS),
         SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE),
         MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
-        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
-        MuscleUpCommand(Constants.Climber.MuscleUp.L2_MUSCLE_UP_FORWARD),
-        SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE));
+        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS_FOR_L2));
   }
 
   public Command L3ClimbCommand() {
     return Commands.sequence(
+        // L2 climb & going up to the rung
         L2ClimbCommand(),
+        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
+        MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD),
         // L3 climb
         PullUpCommand(Constants.Climber.PullUp.L3_REACH_POS),
         SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE),
