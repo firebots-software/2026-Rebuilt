@@ -113,6 +113,28 @@ public class AutoRoutines {
 
     return routine.cmd();
   }
+  
+  public Command Fermin (Maneuver selectedManeuver, Intake selectedIntake, ShootPos selectedShootPos, ClimbPos selectedClimbPos){
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    
+    AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
+    AutoTrajectory intake = intake(routine, selectedIntake);
+    AutoTrajectory shootPos = shoot(routine, selectedShootPos);
+    AutoTrajectory climbPos = climb(routine, selectedClimbPos);
+
+    routine.active().onTrue(
+      (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+      .andThen(getPathCommandSafely(maneuver))
+      .andThen(new DriveToPose(swerveSubsystem))
+      .andThen(getPathCommandSafely(intake))
+      .andThen(new DriveToPose(swerveSubsystem))
+      .andThen(getPathCommandSafely(shootPos))
+      .andThen(new Shoot(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
+      .andThen(getPathCommandSafely(climbPos))
+      .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+
+    return routine.cmd();
+  }
 
   public Command trialPath() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");

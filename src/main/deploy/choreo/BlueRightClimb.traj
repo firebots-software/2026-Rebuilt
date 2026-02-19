@@ -94,5 +94,5 @@
   "splits":[0]
  },
  "events":[
-   {"name":"Marker", "from":{"target":1, "targetTimestamp":1.42087, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
+   {"name":"ClimbMarker", "from":{"target":1, "targetTimestamp":1.42087, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"ClimbMarker"}}}]
 }

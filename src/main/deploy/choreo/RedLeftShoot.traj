@@ -10,8 +10,7 @@
     {"from":"last", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
     {"from":"first", "to":"last", "data":{"type":"KeepInRectangle", "props":{"x":0.0, "y":0.0, "w":16.541, "h":8.0692}}, "enabled":false},
     {"from":"first", "to":"last", "data":{"type":"MaxVelocity", "props":{"max":6.0}}, "enabled":true},
-    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":8.0}}, "enabled":true},
-    {"from":1, "to":1, "data":{"type":"StopPoint", "props":{}}, "enabled":true}],
+    {"from":"first", "to":"last", "data":{"type":"MaxAcceleration", "props":{"max":8.0}}, "enabled":true}],
   "targetDt":0.05
  },
  "params":{
@@ -91,5 +90,6 @@
     {"t":0.67865, "x":13.54325, "y":3.28084, "heading":2.56295, "vx":0.0, "vy":0.0, "omega":0.0, "ax":0.0, "ay":0.0, "alpha":0.0, "fx":[0.0,0.0,0.0,0.0], "fy":[0.0,0.0,0.0,0.0]}],
   "splits":[0]
  },
- "events":[]
+ "events":[
+   {"name":"ShootMarker", "from":{"target":1, "targetTimestamp":0.67865, "offset":{"exp":"0 s", "val":0.0}}, "event":{"type":"named", "data":{"name":"ShootMarker"}}}]
 }

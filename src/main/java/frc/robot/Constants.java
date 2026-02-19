@@ -418,7 +418,8 @@ public final class Constants {
         BlueRightIntakeM,
         BlueRightIntakeR,
         BlueRightIntakeML,
-        BlueRightIntakeMR
+        BlueRightIntakeMR,
+        Red
       }
 
       public static enum ShootPos {
