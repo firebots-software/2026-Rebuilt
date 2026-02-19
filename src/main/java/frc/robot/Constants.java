@@ -593,6 +593,8 @@ public final class Constants {
     // TODO: be able to set this at the start of the match
     public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
 
+    public static final double MAX_TAG_DISTANCE = 15.0; // meters, beyond which readings are dropped
+
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
     public static final double DISTANCE_EXPONENTIAL_BASE_X = 2.97294;

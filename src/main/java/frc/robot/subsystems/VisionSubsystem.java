@@ -29,9 +29,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   private String cameraTitle;
 
-  // VISION:
-  private double maxDistance = 15.0; // meters, beyond which readings are dropped
-
   // normalization maximums
   private double maximumRobotSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
@@ -148,7 +145,7 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/averageTagDistance", averageDistance);
 
     // Reject invalid or distant measurements
-    if (Double.isNaN(minDistance) || minDistance > maxDistance) {
+    if (Double.isNaN(minDistance) || minDistance > Constants.Vision.MAX_TAG_DISTANCE) {
       DogLog.log("Subsystems/Vision/" + cameraTitle + "/ThrownOutDistance", true);
       return;
     }
