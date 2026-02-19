@@ -5,7 +5,10 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -810,5 +813,10 @@ public final class Constants {
         new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
     public static Pose3d RED_HUB =
         new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
+
+    public static Pose2d RED_TOWER_R = new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));
+    public static Pose2d RED_TOWER_L = new Pose2d(14.871597290039062, 3.892498254776001, new Rotation2d(0));
+    public static Pose2d BLUE_TOWER_R = new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
+    public static Pose2d BLUE_TOWER_L = new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
   }
 }
