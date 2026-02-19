@@ -517,8 +517,8 @@ public final class Constants {
     public static class PullUp {
       public static final double PULL_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 17d;
-      public static final double PULLEY_BELT_LENGTH_M = 1.1;
+      public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 24.3d;
+      public static final double PULLEY_BELT_LENGTH_M = 1.21;
       public static final double MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL =
           MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
       public static final double METERS_OF_BELT_TRAVERSAL_TO_MOTOR_ROTS =
