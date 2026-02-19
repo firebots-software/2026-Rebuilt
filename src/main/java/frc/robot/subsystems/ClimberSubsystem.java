@@ -143,7 +143,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public boolean isMuscleUpAtPosition() {
     return Math.abs(
             muscleUpMotor.getPosition().getValueAsDouble()
-                    * Constants.Climber.SitUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT
+                    * Constants.Climber.MuscleUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT
                 - muscleUpTargetDeg)
         <= Constants.Climber.MuscleUp.MUSCLE_UP_TOLERANCE;
   }
@@ -151,7 +151,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public boolean isPullUpAtPosition() {
     return Math.abs(
             pullUpMotorR.getPosition().getValueAsDouble()
-                    * Constants.Climber.SitUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT
+                    * Constants.Climber.PullUp.MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL
                 - pullUpTargetPosition)
         <= Constants.Climber.PullUp.PULL_UP_TOLERANCE;
   }
