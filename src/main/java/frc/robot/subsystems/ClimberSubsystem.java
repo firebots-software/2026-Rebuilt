@@ -185,9 +185,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
   // Zeroing climb functions (only pull up because it doesn't have an encoder):
 
-  public void reduceCurrentLimits() {
+  public void reducePullUpCurrentLimits() {
     pullUpMotorR.updateCurrentLimits(30, 10);
     pullUpMotorL.updateCurrentLimits(30, 10);
+  }
+
+  public void reduceMuscleUpCurrentLimits() {
+    // TODO: make sure these current limits are correct
+    muscleUpMotor.updateCurrentLimits(30, 10);
   }
 
   public void movePullUpDown() {
@@ -195,22 +200,44 @@ public class ClimberSubsystem extends SubsystemBase {
         m_veclocityRequest.withVelocity(Constants.Climber.PullUp.PULL_DOWN_VELOCITY));
   }
 
-  public boolean checkCurrent() {
+  public void moveMuscleUpDown() {
+    muscleUpMotor.setControl(
+        m_veclocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
+  }
+
+  public boolean checkPullUpCurrent() {
     double supplyCurrent = Math.abs(pullUpMotorR.getSupplyCurrent().getValue().magnitude());
     double statorCurrent = Math.abs(pullUpMotorR.getStatorCurrent().getValue().magnitude());
 
     return supplyCurrent > 1.0 && statorCurrent > 20.0;
   }
 
-  public void resetCurrentLimits() {
+  public boolean checkMuscleUpCurrent() {
+    double supplyCurrent = Math.abs(muscleUpMotor.getSupplyCurrent().getValue().magnitude());
+    double statorCurrent = Math.abs(muscleUpMotor.getStatorCurrent().getValue().magnitude());
+
+    return supplyCurrent > 1.0 && statorCurrent > 20.0;
+  }
+
+  public void resetPullUpCurrentLimits() {
     pullUpMotorR.updateCurrentLimits(
         Constants.Climber.DEFAULT_SUPPLY_CURRENT, Constants.Climber.DEFAULT_STATOR_CURRENT);
     pullUpMotorL.updateCurrentLimits(
         Constants.Climber.DEFAULT_SUPPLY_CURRENT, Constants.Climber.DEFAULT_STATOR_CURRENT);
   }
 
+  public void resetMuscleUpCurrentLimits() {
+    muscleUpMotor.updateCurrentLimits(
+        Constants.Climber.DEFAULT_SUPPLY_CURRENT, Constants.Climber.DEFAULT_STATOR_CURRENT);
+  }
+
   public void resetPullUpPositionToZero() {
     pullUpMotorR.setPosition(0);
+  }
+
+  public void resetMuscleUpPositionToZero() {
+    muscleUpMotor.setPosition(0);
+    muscleUpEncoder.setPosition(0);
   }
 
   // Comands

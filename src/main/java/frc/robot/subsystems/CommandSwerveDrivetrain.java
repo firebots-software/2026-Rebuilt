@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
@@ -88,7 +89,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private ProfiledPIDController headingProfiledPIDController =
       new ProfiledPIDController(
           3.7, // 4 was good
-          0.4, //
+          0, //
           0,
           new TrapezoidProfile.Constraints(
               Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND - 1.5, // -1 was good
@@ -304,16 +305,39 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return currentState;
   }
 
-  public void applyFieldSpeeds(ChassisSpeeds speeds) {
+  public ChassisSpeeds getRobotSpeeds() {
+    return currentState.Speeds;
+  }
+
+  public void applyFieldSpeeds(
+      ChassisSpeeds speeds, WheelForceCalculator.Feedforwards feedforwards) {
+    setControl(
+        m_pathApplyFieldSpeeds
+            .withSpeeds(speeds)
+            .withWheelForceFeedforwardsX(feedforwards.x_newtons)
+            .withWheelForceFeedforwardsY(feedforwards.y_newtons));
+  }
+
+  public void applyOneFieldSpeeds(ChassisSpeeds speeds) {
     setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds));
   }
 
-  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
-    double omega =
-        // headingProfiledPIDController.getSetpoint().velocity+
-        headingProfiledPIDController.calculate(
-            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
-    return omega;
+  public Pose2d getPose() {
+    return currentState.Pose;
+  }
+
+  public double distanceToPose(Pose2d target) {
+    return getPose().getTranslation().getDistance(target.getTranslation());
+  }
+
+  public Rotation2d travelAngleTo(Pose2d targetPose) {
+    double deltaX = targetPose.getX() - getCurrentState().Pose.getX();
+    double deltaY = targetPose.getY() - getCurrentState().Pose.getY();
+    return new Rotation2d(Math.atan2(deltaY, deltaX));
+  }
+
+  public void resetPose(Pose2d pose) { // new
+    super.resetPose(pose);
   }
 
   @Override
@@ -342,14 +366,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 m_hasAppliedOperatorPerspective = true;
               });
     }
+
     if (this.getCurrentCommand() != null) {
       DogLog.log("Subsystems/Swerve/Current Command", this.getCurrentCommand().toString());
     }
     DogLog.log("Subsystems/Swerve/Pose", getCurrentState().Pose);
 
     DogLog.log("Subsystems/Swerve/CurrPoseX", getCurrentState().Pose.getX());
-    DogLog.log("Subsystems/Swerve/CurrPoseX", getCurrentState().Pose.getY());
-    DogLog.log("Subsystems/Swerve/CurrPoseX", getCurrentState().Pose.getRotation());
+    DogLog.log("Subsystems/Swerve/CurrPoseY", getCurrentState().Pose.getY());
+    DogLog.log("Subsystems/Swerve/CurrPoseRotRads", getCurrentState().Pose.getRotation());
   }
 
   @Override
@@ -362,6 +387,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       Pose2d visionRobotPose, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
     super.addVisionMeasurement(
         visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+  }
+
+  // private void startSimThread() {
+  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+  //     /* Run simulation at a faster rate so PID gains behave more reasonably */
+  //     m_simNotifier = new Notifier(() -> {
+  //         final double currentTime = Utils.getCurrentTimeSeconds();
+  //         double deltaTime = currentTime - m_lastSimTime;
+  //         m_lastSimTime = currentTime;
+
+  //         /* use the measured time delta, get battery voltage from WPILib */
+  //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
+  //     });
+  //     m_simNotifier.startPeriodic(kSimLoopPeriod);
+  // }
+
+  public ChassisSpeeds getFieldSpeeds() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+        currentState.Speeds, currentState.Pose.getRotation());
+  }
+
+  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
+    double omega =
+        // headingProfiledPIDController.getSetpoint().velocity+
+        headingProfiledPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    return omega;
   }
 
   private void startSimThread() {

@@ -8,21 +8,25 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
-import choreo.auto.AutoRoutine;
-import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
+import frc.robot.commandGroups.WarmUpAndShoot;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -32,6 +36,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -68,10 +73,13 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+  public final ShooterSubsystem shooter = new ShooterSubsystem();
+  public final HopperSubsystem hopper = new HopperSubsystem();
+  public final IntakeSubsystem intake = new IntakeSubsystem();
 
-  private final AutoFactory autoFactory; // no marker
+  private final AutoFactory autoFactory;
 
-  public final AutoRoutine autoRoutine; // with markers
+  private final AutoRoutines autoRoutines;
 
   private final AutoChooser autoChooser = new AutoChooser();
 
@@ -91,6 +99,7 @@ public class RobotContainer {
   public RobotContainer() {
     // paths without marker
     autoFactory = drivetrain.createAutoFactory();
+    autoRoutines = new AutoRoutines(autoFactory);
 
     Command redClimb =
         autoFactory
@@ -99,40 +108,20 @@ public class RobotContainer {
     Command redDepot =
         autoFactory
             .resetOdometry("RedDepot.traj")
-            .andThen(autoFactory.trajectoryCmd("RedDepot.traj"));
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
     Command redOutpost =
         autoFactory
             .resetOdometry("RedOutpost.traj")
-            .andThen(autoFactory.trajectoryCmd("RedOutpost.traj"));
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
     Command moveForward =
         autoFactory
             .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
-    Command niceAndLongPath =
-        autoFactory
-            .resetOdometry("NiceAndLongPath.traj")
-            .andThen(autoFactory.trajectoryCmd("NiceAndLongPath.traj"));
-
-    // paths with marker
-    autoRoutine = autoFactory.newRoutine("MoveForwardStop.traj");
-    AutoTrajectory moveForwardStopTraj = autoRoutine.trajectory("MoveForwardStop.traj");
-
-    autoRoutine
-        .active()
-        .onTrue(moveForwardStopTraj.resetOdometry().andThen(moveForwardStopTraj.cmd()));
-    moveForwardStopTraj
-        .atTime("waitPlease")
-        .onTrue(new InstantCommand(() -> DogLog.log("reached marker", true)));
-
-    Command moveForwardStop = autoRoutine.cmd();
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
 
     autoChooser.addCmd("redClimb", () -> redClimb);
     autoChooser.addCmd("redDepot", () -> redDepot);
     autoChooser.addCmd("redOutpost", () -> redOutpost);
     autoChooser.addCmd("moveForward", () -> moveForward);
-    autoChooser.addCmd("niceLongPath", () -> niceAndLongPath);
-
-    autoChooser.addCmd("moveForwardStop", () -> moveForwardStop);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -160,14 +149,17 @@ public class RobotContainer {
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
-            speedFunction,
-            joystick.leftTrigger()::getAsBoolean,
-            redside,
-            joystick.rightTrigger()::getAsBoolean, // must be same as shoot cmd binding
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> joystick.leftTrigger().getAsBoolean(),
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
+    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+      joystick
+          .rightBumper()
+          .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
+    }
     // x -> zero swerve
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
@@ -186,8 +178,18 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
-      // shooter default command - stop shooter
-      lebron.setDefaultCommand(lebron.run(lebron::stopShooter));
+      lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+      joystick
+          .rightTrigger()
+          .whileTrue(
+              new ArcAroundAndShoot(
+                  drivetrain,
+                  lebron,
+                  intakeSubsystem,
+                  hopperSubsystem,
+                  leftRightFunction,
+                  redside,
+                  joystick));
     }
 
     joystick
@@ -240,6 +242,61 @@ public class RobotContainer {
       joystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
     }
 
+    // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
+
+    // if (Constants.hopperOnRobot) {
+    //   // joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
+    // }
+
+    debugJoystick
+        .povUp()
+        .whileTrue(
+            new DriveToPose(
+                    drivetrain,
+                    () ->
+                        MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0)))
+                .andThen(new InstantCommand(() -> DogLog.log("first dtp done", true)))
+                .andThen(
+                    new DriveToPose(
+                        drivetrain,
+                        () ->
+                            MiscUtils.plus(
+                                drivetrain.getCurrentState().Pose, new Translation2d(0, -2)))));
+
+    debugJoystick
+        .povDown()
+        .whileTrue(
+            new DriveToPose(
+                    drivetrain,
+                    () ->
+                        MiscUtils.plusWithRotation(
+                            drivetrain.getCurrentState().Pose,
+                            new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708))))
+                .andThen(
+                    new DriveToPose(
+                        drivetrain,
+                        () ->
+                            MiscUtils.plusWithRotation(
+                                drivetrain.getCurrentState().Pose,
+                                new Pose2d(new Translation2d(0, -2), new Rotation2d(1.5708))))));
+
+    debugJoystick
+        .povRight()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () ->
+                    MiscUtils.plusWithRotation(
+                        drivetrain.getCurrentState().Pose,
+                        new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708)))));
+
+    debugJoystick
+        .povLeft()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
+
     // TODO: left trigger -> run LockOnCommand (not yet defined)
     // joystick.leftTrigger().whileTrue(new LockOnCommand(....));
 
@@ -249,70 +306,6 @@ public class RobotContainer {
     // new Shoot(drivetrain, lebron, hopperSubsystem, redside),
     // new ArcLock(.....)
     // ));
-
-    // Auto sequence: choreo forward
-    Command trajCommand =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("MoveForward.traj"));
-
-    // joystick.x().whileTrue(trajCommand);
-
-    if (Constants.hopperOnRobot) {
-      debugJoystick
-          .rightTrigger()
-          .whileTrue(
-              hopperSubsystem.runHopperCommand(
-                  Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND));
-    }
-
-    if (Constants.shooterOnRobot) {
-      debugJoystick.leftBumper().whileTrue(lebron.shootAtSpeedCommand());
-    }
-
-    // debug these
-    if (Constants.climberOnRobot) {
-      // L1 Commands
-      debugJoystick
-          .povDown()
-          .and(debugJoystick.a())
-          .onTrue(climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L1_REACH_POS));
-      debugJoystick
-          .povDown()
-          .and(debugJoystick.b())
-          .onTrue(
-              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD));
-      // L2 Commands
-      debugJoystick
-          .povRight()
-          .and(debugJoystick.a())
-          .onTrue(climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L2_REACH_POS));
-      debugJoystick
-          .povRight()
-          .and(debugJoystick.b())
-          .onTrue(
-              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L2_MUSCLE_UP_FORWARD));
-      // L3 Commands
-      debugJoystick
-          .povUp()
-          .and(debugJoystick.a())
-          .onTrue(climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L3_REACH_POS));
-      debugJoystick
-          .povUp()
-          .and(debugJoystick.b())
-          .onTrue(
-              climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.L3_MUSCLE_UP_FORWARD));
-      debugJoystick
-          .povUp()
-          .and(debugJoystick.a().negate())
-          .and(debugJoystick.b().negate())
-          .onTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE));
-      debugJoystick
-          .povDown()
-          .and(debugJoystick.a().negate())
-          .and(debugJoystick.b().negate())
-          .onTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE));
-    }
 
     drivetrain.registerTelemetry(logger::telemeterize);
   }
