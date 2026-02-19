@@ -54,8 +54,6 @@ public class VisionSubsystem extends SubsystemBase {
   private final AprilTagFieldLayout fieldLayout;
   private boolean hasValidMeasurement;
 
-  public final double acceptableYawThreshold = 60d;
-
   public static final double timestampDiffThreshold = 0.5;
   public static final double timestampFPGACorrection = -0.03;
 
@@ -290,13 +288,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
-  }
-
-  private boolean acceptableYaw(double yaw) {
-    boolean yawIsAcceptable = Math.abs(yaw) < acceptableYawThreshold;
-    DogLog.log("Subsystems/Vision/acceptableYaw", yawIsAcceptable);
-
-    return yawIsAcceptable;
   }
 
   private double computeNoiseXY(
