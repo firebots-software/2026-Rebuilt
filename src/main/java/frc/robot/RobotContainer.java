@@ -236,21 +236,21 @@ public class RobotContainer {
     if (Constants.climberOnRobot) {
       // y -> initiate climb
       // TODO: verify that command is correct
-      BooleanSupplier leftside = () -> true; //TODO: get button
+      BooleanSupplier leftside = () -> true; // TODO: get button
       Pose2d poseToDriveTo = new Pose2d();
       if (redside.getAsBoolean()) {
-      if (leftside.getAsBoolean()) {
-        poseToDriveTo = Constants.Landmarks.RED_TOWER_L;
+        if (leftside.getAsBoolean()) {
+          poseToDriveTo = Constants.Landmarks.RED_TOWER_L;
+        } else {
+          poseToDriveTo = Constants.Landmarks.RED_TOWER_R;
+        }
       } else {
-        poseToDriveTo = Constants.Landmarks.RED_TOWER_R;
-      }
-      } else {
-      if (leftside.getAsBoolean()) {
+        if (leftside.getAsBoolean()) {
           poseToDriveTo = Constants.Landmarks.BLUE_TOWER_L;
-      } else {
-        poseToDriveTo = Constants.Landmarks.BLUE_TOWER_R;
+        } else {
+          poseToDriveTo = Constants.Landmarks.BLUE_TOWER_R;
+        }
       }
-    }
       joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
 
       // a -> zero climber

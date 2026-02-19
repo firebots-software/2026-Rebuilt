@@ -6,7 +6,10 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class L2Climb extends SequentialCommandGroup {
-  public L2Climb(ClimberSubsystem climberSubsystem, CommandSwerveDrivetrain swerveDrivetrain, Pose2d poseToDriveTo) {
+  public L2Climb(
+      ClimberSubsystem climberSubsystem,
+      CommandSwerveDrivetrain swerveDrivetrain,
+      Pose2d poseToDriveTo) {
     addCommands(
         new L1Climb(climberSubsystem, swerveDrivetrain, poseToDriveTo),
         climberSubsystem.L2ClimbCommand(),
