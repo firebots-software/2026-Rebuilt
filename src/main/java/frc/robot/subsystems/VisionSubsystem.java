@@ -123,6 +123,14 @@ public class VisionSubsystem extends SubsystemBase {
     List<PhotonTrackedTarget> tags =
         latestVisionResult.getTargets().stream().collect(Collectors.toList());
 
+    // Get detected tags
+    tags = latestVisionResult.getTargets();
+    if (tags.isEmpty()) {
+      DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags", false);
+      return;
+    }
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags", true);
+
     // log area and yaw for all detected april tags
     for (int tag = 0; tag < tags.size(); tag++) {
       DogLog.log(
@@ -135,14 +143,6 @@ public class VisionSubsystem extends SubsystemBase {
     EstimatedRobotPose estimatedPose = visionEst.get();
     Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/MeasuredPose", measuredPose);
-
-    // Get detected tags
-    tags = latestVisionResult.getTargets();
-    if (tags.isEmpty()) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags", false);
-      return;
-    }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags", true);
 
     // Distance calculations
     minDistance =
