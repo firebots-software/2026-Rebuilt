@@ -1,25 +1,30 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.Maneuver;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
-import frc.robot.commandGroups.BumpDTP;
+import frc.robot.commandGroups.BackBumpDTP;
+import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.ExtendIntake;
+import frc.robot.commandGroups.ForwardBumpDTP;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.ShootBasic;
-import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.util.Targeting;
 
 public class AutoRoutines {
   private final AutoFactory autoFactory;
@@ -85,7 +90,7 @@ public class AutoRoutines {
     return traj;
   }
 
-  public Command Pedri(
+  public Command RedPedri(
       Maneuver maneuverType, Intake intakeType, ShootPos shootType, ClimbPos climbType) {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -100,14 +105,25 @@ public class AutoRoutines {
         .onTrue(
             (maneuver != null ? maneuver.resetOdometry() : Commands.none())
                 .andThen(getPathCommandSafely(maneuver))
-                .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
-                //.andThen(new DriveToPose(swerveSubsystem))
+                .andThen(() -> new ForwardBumpDTP(swerveSubsystem))
                 .andThen(getPathCommandSafely(intake))
-                .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
-                //.andThen(new DriveToPose(swerveSubsystem))
+                .andThen(() -> new BackBumpDTP(swerveSubsystem))
                 .andThen(getPathCommandSafely(shootPos))
-                //.andThen(new ShootBasic(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
-                .andThen(new ShootBasic(() -> 6.0, () -> true, lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
+                .andThen(
+                    new ShootBasic(
+                        () ->
+                            Units.metersToFeet(
+                                Targeting.shootingSpeed(
+                                    Constants.Landmarks.RED_HUB,
+                                    swerveSubsystem,
+                                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                        () ->
+                            (Targeting.pointingAtTarget(
+                                    Constants.Landmarks.RED_HUB, swerveSubsystem)
+                                && lebronShooterSubsystem.isAtSpeed()),
+                        lebronShooterSubsystem,
+                        intakeSubsystem,
+                        hopperSubsystem))
                 .andThen(getPathCommandSafely(climbPos))
                 .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
@@ -118,35 +134,37 @@ public class AutoRoutines {
       Maneuver maneuverType, Intake intakeType, ShootPos shootType, ClimbPos climbType) {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    routine.active().onTrue(
-      (maneuver != null ? maneuver.resetOdometry() : Commands.none())
-      .andThen(getPathCommandSafely(maneuver))
-      //.andThen(new DriveToPose(swerveSubsystem))
-      .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
-      .andThen(getPathCommandSafely(intake))
-      //.andThen(new DriveToPose(swerveSubsystem))
-      .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
-      .andThen(getPathCommandSafely(shootPos))
-      //.andThen(new Shoot(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
-      .andThen(new ShootBasic(() -> 6.0, () -> true, lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
-      .andThen(getPathCommandSafely(climbPos))
-      .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+    AutoTrajectory maneuver = maneuver(routine, maneuverType);
+    AutoTrajectory intake = intake(routine, intakeType);
+    AutoTrajectory shootPos = shoot(routine, shootType);
+    AutoTrajectory climbPos = climb(routine, climbType);
 
-    AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
-    AutoTrajectory intake = intake(routine, selectedIntake);
-    AutoTrajectory shootPos = shoot(routine, selectedShootPos);
-    AutoTrajectory climbPos = climb(routine, selectedClimbPos);
-
-    routine.active().onTrue(
-      (maneuver != null ? maneuver.resetOdometry() : Commands.none())
-      .andThen(getPathCommandSafely(maneuver))
-      .andThen(new DriveToPose(swerveSubsystem))
-      .andThen(getPathCommandSafely(intake))
-      .andThen(new DriveToPose(swerveSubsystem))
-      .andThen(getPathCommandSafely(shootPos))
-      .andThen(new Targeting)
-      .andThen(getPathCommandSafely(climbPos))
-      .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+    routine
+        .active()
+        .onTrue(
+            (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+                .andThen(getPathCommandSafely(maneuver))
+                .andThen(() -> new ForwardBumpDTP(swerveSubsystem))
+                .andThen(getPathCommandSafely(intake))
+                .andThen(() -> new BackBumpDTP(swerveSubsystem))
+                .andThen(getPathCommandSafely(shootPos))
+                .andThen(
+                    new ShootBasic(
+                        () ->
+                            Units.metersToFeet(
+                                Targeting.shootingSpeed(
+                                    Constants.Landmarks.RED_HUB,
+                                    swerveSubsystem,
+                                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                        () ->
+                            (Targeting.pointingAtTarget(
+                                    Constants.Landmarks.RED_HUB, swerveSubsystem)
+                                && lebronShooterSubsystem.isAtSpeed()),
+                        lebronShooterSubsystem,
+                        intakeSubsystem,
+                        hopperSubsystem))
+                .andThen(getPathCommandSafely(climbPos))
+                .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
     return routine.cmd();
   }
@@ -193,9 +211,9 @@ public class AutoRoutines {
 
   public void addCommandstoAutoChooser() {
     autoChooser.addCmd(
-        "Pedri - Left Side",
+        "Red Pedri - Left Side",
         () ->
-            Pedri(
+            RedPedri(
                 null,
                 Constants.Swerve.Auto.Intake.RedLeftIntakeL,
                 Constants.Swerve.Auto.ShootPos.RedLeftShoot,
