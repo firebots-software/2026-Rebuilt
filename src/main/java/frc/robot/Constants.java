@@ -478,7 +478,7 @@ public final class Constants {
     public static class MuscleUp {
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 250d;
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 124.583583583d;
       public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
       public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
           1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
@@ -496,7 +496,7 @@ public final class Constants {
     public static class SitUp {
       public static final double SIT_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 100d;
+      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 102.4d;
       public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
       public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
           1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
