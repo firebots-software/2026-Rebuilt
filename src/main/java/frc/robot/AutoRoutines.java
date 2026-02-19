@@ -14,6 +14,7 @@ import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.Maneuver;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.ClimbCommands.L1Climb;
+import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.ShootBasic;
@@ -103,11 +104,14 @@ public class AutoRoutines {
         .onTrue(
             (maneuver != null ? maneuver.resetOdometry() : Commands.none())
                 .andThen(getPathCommandSafely(maneuver))
-                .andThen(new DriveToPose(swerveSubsystem))
+                .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
+                //.andThen(new DriveToPose(swerveSubsystem))
                 .andThen(getPathCommandSafely(intake))
-                .andThen(new DriveToPose(swerveSubsystem))
+                .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
+                //.andThen(new DriveToPose(swerveSubsystem))
                 .andThen(getPathCommandSafely(shootPos))
-                .andThen(new Shoot(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
+                //.andThen(new ShootBasic(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
+                .andThen(new ShootBasic(() -> 6.0, () -> true, lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
                 .andThen(getPathCommandSafely(climbPos))
                 .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
@@ -125,11 +129,14 @@ public class AutoRoutines {
     routine.active().onTrue(
       (maneuver != null ? maneuver.resetOdometry() : Commands.none())
       .andThen(getPathCommandSafely(maneuver))
-      .andThen(new DriveToPose(swerveSubsystem))
+      //.andThen(new DriveToPose(swerveSubsystem))
+      .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
       .andThen(getPathCommandSafely(intake))
-      .andThen(new DriveToPose(swerveSubsystem))
+      //.andThen(new DriveToPose(swerveSubsystem))
+      .andThen(() -> new BumpDTP(swerveSubsystem, Constants.Swerve.DISTANCE_OVER_BUMP))
       .andThen(getPathCommandSafely(shootPos))
-      .andThen(new Shoot(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
+      //.andThen(new Shoot(lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
+      .andThen(new ShootBasic(() -> 6.0, () -> true, lebronShooterSubsystem, intakeSubsystem, hopperSubsystem))
       .andThen(getPathCommandSafely(climbPos))
       .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
