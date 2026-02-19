@@ -230,14 +230,14 @@ public class RobotContainer {
     VisionSubsystem best = null;
     double bestDist = Double.MAX_VALUE;
 
-    if (visionFrontRight.getMinDistance() < bestDist) {
-      bestDist = visionFrontRight.getMinDistance();
-      best = visionFrontRight;
-    }
-
     if (visionFrontLeft.getMinDistance() < bestDist) {
       bestDist = visionFrontLeft.getMinDistance();
       best = visionFrontLeft;
+    }
+
+    if (visionFrontRight.getMinDistance() < bestDist) {
+      bestDist = visionFrontRight.getMinDistance();
+      best = visionFrontRight;
     }
 
     // if (visionRearRight.getMinDistance() < bestDist) {

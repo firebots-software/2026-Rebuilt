@@ -99,12 +99,16 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getMinDistance() {
-    return (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
-        ? Double.MAX_VALUE
-        : latestVisionResult.getTargets().stream()
-            .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-            .min()
-            .orElse(Double.NaN);
+    double minDist =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+                .min()
+                .orElse(Double.NaN);
+
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/MinDistance", minDist);
+    return minDist;
   }
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
