@@ -237,7 +237,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void resetMuscleUpPositionToZero() {
     muscleUpMotor.setPosition(0);
-    muscleUpEncoder.setPosition(0);
   }
 
   // Comands
