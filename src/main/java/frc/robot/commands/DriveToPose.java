@@ -10,6 +10,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /** This Command drives the robot in a linear path to a specific pose. */
@@ -51,6 +53,9 @@ public class DriveToPose extends Command {
     this.swerve = swerve;
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
+
+    BooleanSupplier direction = (forwardOrBack == true) ? 
+
 
     path =
         new LinearPath(
