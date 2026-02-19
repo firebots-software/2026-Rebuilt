@@ -257,6 +257,9 @@ public class RobotContainer {
       best = visionFrontRight;
     }
 
+    visionFrontLeft.addFilteredPose(drivetrain);
+    visionFrontRight.addFilteredPose(drivetrain);
+
     if (bestDist != Double.MAX_VALUE) {
       DogLog.log("Subsystems/Vision/PreferredCamera", best.getCamera().getLoggingName());
       best.addFilteredPose(drivetrain);
