@@ -4,16 +4,12 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.Maneuver;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
-import frc.robot.commandGroups.ClimbCommands.L1Climb;
 import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
@@ -117,14 +113,10 @@ public class AutoRoutines {
 
     return routine.cmd();
   }
-  
-  public Command Fermin(Maneuver selectedManeuver, Intake selectedIntake, ShootPos selectedShootPos, ClimbPos selectedClimbPos){
+
+  public Command Fermin(
+      Maneuver maneuverType, Intake intakeType, ShootPos shootType, ClimbPos climbType) {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    
-    AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
-    AutoTrajectory intake = intake(routine, selectedIntake);
-    AutoTrajectory shootPos = shoot(routine, selectedShootPos);
-    AutoTrajectory climbPos = climb(routine, selectedClimbPos);
 
     routine.active().onTrue(
       (maneuver != null ? maneuver.resetOdometry() : Commands.none())
@@ -140,6 +132,22 @@ public class AutoRoutines {
       .andThen(getPathCommandSafely(climbPos))
       .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
 
+    AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
+    AutoTrajectory intake = intake(routine, selectedIntake);
+    AutoTrajectory shootPos = shoot(routine, selectedShootPos);
+    AutoTrajectory climbPos = climb(routine, selectedClimbPos);
+
+    routine.active().onTrue(
+      (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+      .andThen(getPathCommandSafely(maneuver))
+      .andThen(new DriveToPose(swerveSubsystem))
+      .andThen(getPathCommandSafely(intake))
+      .andThen(new DriveToPose(swerveSubsystem))
+      .andThen(getPathCommandSafely(shootPos))
+      .andThen(new Targeting)
+      .andThen(getPathCommandSafely(climbPos))
+      .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+
     return routine.cmd();
   }
 
@@ -148,22 +156,36 @@ public class AutoRoutines {
     AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
     AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
 
-    moveLeft.atTime("Log").onTrue(new InstantCommand(() -> DogLog.log("Reach target", true)));
-
     routine
         .active()
-        .onTrue(
-            moveLeft
-                .resetOdometry()
-                .andThen(
-                    new ParallelCommandGroup(
-                        new InstantCommand(() -> DogLog.log("start time", true)), moveLeft.cmd()))
-                .andThen(moveRight.cmd()));
+        .onTrue(moveLeft.resetOdometry().andThen(moveLeft.cmd()).andThen(moveRight.cmd()));
 
     return routine.cmd();
   }
 
+  public Command trialPathTwo(
+      Maneuver selectedManeuver,
+      Intake selectedIntake,
+      ShootPos selectedShootPos,
+      ClimbPos selectedClimbPos) {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
+    AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
+    AutoTrajectory intake = intake(routine, selectedIntake);
+    AutoTrajectory shootPos = shoot(routine, selectedShootPos);
+    AutoTrajectory climbPos = climb(routine, selectedClimbPos);
+
+    routine
+        .active()
+        .onTrue(
+            (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+                .andThen(getPathCommandSafely(maneuver))
+                .andThen(getPathCommandSafely(intake))
+                .andThen(getPathCommandSafely(shootPos))
+                .andThen(getPathCommandSafely(climbPos)));
+
+    return routine.cmd();
+  }
 
   public Command getPathCommandSafely(AutoTrajectory traj) {
     return traj != null ? traj.cmd() : Commands.none();
@@ -180,6 +202,10 @@ public class AutoRoutines {
                 Constants.Swerve.Auto.ClimbPos.RedLeftClimb));
 
     autoChooser.addCmd("Trial Path", () -> trialPath());
+
+    autoChooser.addCmd(
+        "Trial Path Two",
+        () -> trialPathTwo(Constants.Swerve.Auto.Maneuver.RedRightManeuverR, null, null, null));
   }
 
   public AutoChooser getAutoChooser() {

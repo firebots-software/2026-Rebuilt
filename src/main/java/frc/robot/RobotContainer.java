@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
@@ -96,7 +95,7 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines =
         new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, climberSubsystem);
-    
+
     autoChooser = autoRoutines.getAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
