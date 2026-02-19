@@ -83,12 +83,23 @@ public class VisionSubsystem extends SubsystemBase {
     latestVisionResult = null;
 
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
+    PhotonPipelineResult resultToUse = null;
     for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-      visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEst.isEmpty()) {
-        visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
+      resultToUse = result;
+    }
+
+    if (resultToUse == null) {
+      if (latestVisionResult == null) {
+        resultToUse = photonCamera.getLatestResult();
+      } else {
+        return;
       }
+    }
+
+    latestVisionResult = resultToUse;
+    visionEst = poseEstimator.estimateCoprocMultiTagPose(resultToUse);
+    if (visionEst.isEmpty()) {
+      visionEst = poseEstimator.estimateLowestAmbiguityPose(resultToUse);
     }
 
     DogLog.log("Subsystems/Vision/" + cameraTitle + "/CameraConnected", true);
