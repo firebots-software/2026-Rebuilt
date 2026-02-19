@@ -89,7 +89,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private ProfiledPIDController headingProfiledPIDController =
       new ProfiledPIDController(
           3.7, // 4 was good
-          0.4, //
+          0, //
           0,
           new TrapezoidProfile.Constraints(
               Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND - 1.5, // -1 was good
@@ -340,14 +340,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     super.resetPose(pose);
   }
 
-  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
-    double omega =
-        // headingProfiledPIDController.getSetpoint().velocity+
-        headingProfiledPIDController.calculate(
-            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
-    return omega;
-  }
-
   @Override
   public void periodic() {
     /*
@@ -395,6 +387,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       Pose2d visionRobotPose, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
     super.addVisionMeasurement(
         visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+  }
+
+  // private void startSimThread() {
+  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
+
+  //     /* Run simulation at a faster rate so PID gains behave more reasonably */
+  //     m_simNotifier = new Notifier(() -> {
+  //         final double currentTime = Utils.getCurrentTimeSeconds();
+  //         double deltaTime = currentTime - m_lastSimTime;
+  //         m_lastSimTime = currentTime;
+
+  //         /* use the measured time delta, get battery voltage from WPILib */
+  //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
+  //     });
+  //     m_simNotifier.startPeriodic(kSimLoopPeriod);
+  // }
+
+  public ChassisSpeeds getFieldSpeeds() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+        currentState.Speeds, currentState.Pose.getRotation());
+  }
+
+  public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
+    double omega =
+        // headingProfiledPIDController.getSetpoint().velocity+
+        headingProfiledPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    return omega;
   }
 
   private void startSimThread() {

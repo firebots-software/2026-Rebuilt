@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
+import java.util.function.DoubleSupplier;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
@@ -146,6 +147,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command shootAtSpeedCommand(double ballSpeed) {
     return runEnd(() -> setBallSpeed(ballSpeed), this::stopShooter);
+  }
+
+  public Command shootAtSpeedCommand(DoubleSupplier ballSpeed) {
+    return runEnd(() -> this.setBallSpeed(ballSpeed.getAsDouble()), this::stopShooter);
   }
 
   @Override

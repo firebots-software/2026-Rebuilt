@@ -82,6 +82,8 @@ public final class Constants {
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
+      public static final double POWER_RETRACT_TORQUE_CURRENT_FOC = 0f; // TODO: get val
+
       // Simulation
       public static final double SIM_MOI_KG_M2 = 0.1;
     }
@@ -747,6 +749,9 @@ public final class Constants {
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
     public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double MIN_DIST_FT = 4d;
+    public static final double MAX_DIST_FT = 8d;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
   }

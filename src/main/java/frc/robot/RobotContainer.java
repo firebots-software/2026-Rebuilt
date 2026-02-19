@@ -18,11 +18,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
+import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -146,14 +149,17 @@ public class RobotContainer {
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
-            speedFunction,
-            joystick.leftTrigger()::getAsBoolean,
-            redside,
-            joystick.rightTrigger()::getAsBoolean, // must be same as shoot cmd binding
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> joystick.leftTrigger().getAsBoolean(),
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
+    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+      joystick
+          .rightBumper()
+          .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
+    }
     // x -> zero swerve
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
@@ -172,8 +178,18 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
-      // shooter default command - stop shooter
-      lebron.setDefaultCommand(lebron.run(lebron::stopShooter));
+      lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+      joystick
+          .rightTrigger()
+          .whileTrue(
+              new ArcAroundAndShoot(
+                  drivetrain,
+                  lebron,
+                  intakeSubsystem,
+                  hopperSubsystem,
+                  leftRightFunction,
+                  redside,
+                  joystick));
     }
 
     joystick
