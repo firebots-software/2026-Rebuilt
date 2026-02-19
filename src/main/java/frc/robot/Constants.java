@@ -530,6 +530,7 @@ public final class Constants {
       public static final double L3_REACH_POS = 0; // TODO: get vals
       public static final double PULL_DOWN_POS = 0; // TODO: get vals
       public static final double PULL_DOWN_POS_FOR_L1 = 0; // TODO: get vals
+      public static final double PULL_DOWN_POS_FOR_L2 = 0; // TODO: get vals
       public static final double PULL_DOWN_VELOCITY = -1; // TODO: get vals
 
       public static final int MOTOR_PORT_L = 9;
