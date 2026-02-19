@@ -95,7 +95,6 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines =
         new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, climberSubsystem);
-
     autoChooser = autoRoutines.getAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
