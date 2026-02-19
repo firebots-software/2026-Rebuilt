@@ -96,32 +96,6 @@ public class VisionSubsystem extends SubsystemBase {
     return cameraID;
   }
 
-  public double getMinDistance() {
-    double minDist =
-        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
-            ? Double.MAX_VALUE
-            : latestVisionResult.getTargets().stream()
-                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-                .min()
-                .orElse(Double.NaN);
-
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/closestTagDistance", minDist);
-    return minDist;
-  }
-
-  public double getAverageDistance() {
-    double avgDist =
-        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
-            ? Double.MAX_VALUE
-            : latestVisionResult.getTargets().stream()
-                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
-                .average()
-                .orElse(Double.NaN);
-
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/averageTagDistance", avgDist);
-    return avgDist;
-  }
-
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
     hasValidMeasurement = false;
 
@@ -258,6 +232,32 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       DogLog.log("Subsystems/Vision/measuredPoseAvailable", true);
     }
+  }
+
+  public double getMinDistance() {
+    double minDist =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+                .min()
+                .orElse(Double.NaN);
+
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/closestTagDistance", minDist);
+    return minDist;
+  }
+
+  public double getAverageDistance() {
+    double avgDist =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+                .average()
+                .orElse(Double.NaN);
+
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/averageTagDistance", avgDist);
+    return avgDist;
   }
 
   public boolean hasValidMeasurement() {
