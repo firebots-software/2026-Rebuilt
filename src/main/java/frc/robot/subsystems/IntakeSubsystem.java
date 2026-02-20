@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -240,11 +239,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command powerRetractCommand() {
-    return Commands.runOnce(
-        () -> {
-          powerRetract();
-        },
-        this);
+    return runOnce(this::powerRetract);
   }
 
   @Override
@@ -254,33 +249,33 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // rollers
     DogLog.log(
-        "Subsystems/Intake/Rollers/motorVolts", rollersMotor.getMotorVoltage().getValueAsDouble());
+        "Subsystems/Intake/Rollers/MotorVoltage",
+        rollersMotor.getMotorVoltage().getValueAsDouble());
     DogLog.log(
-        "Subsystems/Intake/Rollers/motorSetpoint",
+        "Subsystems/Intake/Rollers/MotorSetpoint (rps)",
         rollersMotor.getClosedLoopReference().getValueAsDouble());
-    DogLog.log("Subsystems/Intake/Rollers/At target speed", atTargetSpeed());
+    DogLog.log("Subsystems/Intake/Rollers/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
-        "Subsystems/Intake/Rollers/Target Speed (rps)", Constants.Intake.Rollers.TARGET_MOTOR_RPS);
+        "Subsystems/Intake/Rollers/TargetMotorSpeed (rps)",
+        Constants.Intake.Rollers.TARGET_MOTOR_RPS);
     DogLog.log(
-        "Subsystems/Intake/Rollers/Motor Velocity (rps)",
+        "Subsystems/Intake/Rollers/MotorVelocity (rps)",
         rollersMotor.getVelocity().getValueAsDouble());
     DogLog.log(
-        "Subsystems/Intake/Rollers/Motor Position (rots)",
+        "Subsystems/Intake/Rollers/MotorPosition (rots)",
         rollersMotor.getPosition().getValueAsDouble());
 
     // arm
-    DogLog.log("Subsystems/Intake/Arm/targetAngle", targetAngleDeg);
+    DogLog.log("Subsystems/Intake/Arm/TargetAngle (degs)", targetAngleDeg);
     DogLog.log(
-        "Subsystems/Intake/Arm/absoluteEncoderDegrees", getArmAbsolutePosition().getDegrees());
-    DogLog.log("Subsystems/Intake/Arm/absoluteEncoderRaw", getCancoderPositionRaw());
-    DogLog.log("Subsystems/Intake/Arm/currentMotorPos", armMotor.getPosition().getValueAsDouble());
-    DogLog.log("Subsystems/Intake/Arm/motorVolts", armMotor.getMotorVoltage().getValueAsDouble());
+        "Subsystems/Intake/Arm/AbsoluteEncoderDegrees (degs)",
+        getArmAbsolutePosition().getDegrees());
+    DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
     DogLog.log(
-        "Subsystems/Intake/Arm/motorSetpoint",
+        "Subsystems/Intake/Arm/MotorSetpoint (rots)",
         armMotor.getClosedLoopReference().getValueAsDouble());
-    DogLog.log("Subsystems/Intake/Arm/CANcoder Position (raw)", getCancoderPositionRaw());
     DogLog.log(
-        "Subsystems/Intake/Arm/AbsolutePosition (degrees)", getArmAbsolutePosition().getDegrees());
+        "Subsystems/Intake/Arm/AbsolutePosition (degs)", getArmAbsolutePosition().getDegrees());
   }
 
   @Override
