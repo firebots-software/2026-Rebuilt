@@ -315,6 +315,7 @@ public class ClimberSubsystem extends SubsystemBase {
         pullUpMotorR.getPosition().getValueAsDouble()
             * Constants.Climber.PullUp.MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL);
 
-    DogLog.log("Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpPosInRotationsFromEncoder());
+    DogLog.log(
+        "Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpPosInRotationsFromEncoder());
   }
 }
