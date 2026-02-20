@@ -460,9 +460,6 @@ public final class Constants {
   }
 
   public static class Climber {
-    public static final double mmcV = 80; // TODO: acquire good ones
-    public static final double mmcA = 80;
-
     public static final double KP = 0.4;
     public static final double KI = 0;
     public static final double KD = 0;
@@ -764,11 +761,11 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 32; // TODO
 
-    public static final double SHOOTER_KP = 0.5; // TODO
-    public static final double SHOOTER_KI = 0.0; // TODO
-    public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.12; // TODO
-    public static final double SHOOTER_KA = 0.0; // TODO
+    public static final double KP = 0.5; // TODO
+    public static final double KI = 0.0; // TODO
+    public static final double KD = 0.0; // TODO
+    public static final double KV = 0.12; // TODO
+    public static final double KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
