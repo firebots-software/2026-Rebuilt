@@ -462,9 +462,6 @@ public final class Constants {
   }
 
   public static class Climber {
-    public static final double mmcV = 80; // TODO: acquire good ones
-    public static final double mmcA = 80;
-
     public static final double KP = 0.4;
     public static final double KI = 0;
     public static final double KD = 0;
@@ -618,24 +615,8 @@ public final class Constants {
 
   public static class Vision {
 
-    // initializes cameras for use in VisionSubsystem
-    public static enum Cameras {
-      RIGHT_CAM("frontRightCam"),
-      LEFT_CAM("frontLeftCam"),
-      REAR_RIGHT_CAM("rearRightCam"),
-      REAR_LEFT_CAM("rearLeftCam"),
-      COLOR_CAM("colorCam");
-
-      private String loggingName;
-
-      Cameras(String name) {
-        loggingName = name;
-      }
-
-      public String getLoggingName() {
-        return loggingName;
-      }
-    }
+    // TODO: be able to set this at the start of the match
+    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
 
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
@@ -683,42 +664,46 @@ public final class Constants {
     public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5);
     public static final double REAR_LEFT_YAW = Units.degreesToRadians(180.0);
 
-    public static final double COLOR_X = Units.inchesToMeters(8.867);
-    public static final double COLOR_Y = Units.inchesToMeters(12.478);
-    public static final double COLOR_Z = Units.inchesToMeters(6.158);
-    public static final double COLOR_ROLL = Units.degreesToRadians(0.0);
-    public static final double COLOR_PITCH = Units.degreesToRadians(8.7);
-    public static final double COLOR_YAW = Units.degreesToRadians(0.0);
-
-    // initializing Transform3d for use in future field visualization
-    public static Transform3d getCameraTransform(Cameras camera) {
-      switch (camera) {
-        case RIGHT_CAM: // TODO: SID: rename FRONT_RIGHT_CAM
-          return new Transform3d(
+    // initializes cameras for use in VisionSubsystem
+    public static enum VisionCamera {
+      FRONT_RIGHT_CAM(
+          "frontRightCam",
+          new Transform3d(
               new Translation3d(FRONT_RIGHT_X, FRONT_RIGHT_Y, FRONT_RIGHT_Z),
-              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW));
+              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW))),
 
-        case LEFT_CAM: // TODO: SID: rename FRONT_LEFT_CAM
-          return new Transform3d(
+      FRONT_LEFT_CAM(
+          "frontLeftCam",
+          new Transform3d(
               new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
-              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW));
+              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW))),
 
-        case REAR_RIGHT_CAM:
-          return new Transform3d(
+      REAR_RIGHT_CAM(
+          "rearRightCam",
+          new Transform3d(
               new Translation3d(REAR_RIGHT_X, REAR_RIGHT_Y, REAR_RIGHT_Z),
-              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW));
+              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW))),
 
-        case REAR_LEFT_CAM:
-          return new Transform3d(
+      REAR_LEFT_CAM(
+          "rearLeftCam",
+          new Transform3d(
               new Translation3d(REAR_LEFT_X, REAR_LEFT_Y, REAR_LEFT_Z),
-              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW));
+              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW)));
 
-        case COLOR_CAM:
-          return new Transform3d(
-              new Translation3d(COLOR_X, COLOR_Y, COLOR_Z),
-              new Rotation3d(COLOR_ROLL, COLOR_PITCH, COLOR_YAW));
-        default:
-          throw new IllegalArgumentException("Unknown camera ID: " + camera);
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      VisionCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
       }
     }
   }
@@ -728,6 +713,37 @@ public final class Constants {
     public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
+
+    public static final double FUEL_GAUGE_X = Units.inchesToMeters(8.867);
+    public static final double FUEL_GAUGE_Y = Units.inchesToMeters(12.478);
+    public static final double FUEL_GAUGE_Z = Units.inchesToMeters(6.158);
+    public static final double FUEL_GAUGE_ROLL = Units.degreesToRadians(0.0);
+    public static final double FUEL_GAUGE_PITCH = Units.degreesToRadians(8.7);
+    public static final double FUEL_GAUGE_YAW = Units.degreesToRadians(0.0);
+
+    public static enum FuelGaugeCamera {
+      FUEL_GAUGE_CAM(
+          "fuelGaugeCam",
+          new Transform3d(
+              new Translation3d(FUEL_GAUGE_X, FUEL_GAUGE_Y, FUEL_GAUGE_Z),
+              new Rotation3d(FUEL_GAUGE_ROLL, FUEL_GAUGE_PITCH, FUEL_GAUGE_YAW)));
+
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      FuelGaugeCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
+      }
+    }
 
     public static enum GaugeCalculationType {
       RAW(),
@@ -759,11 +775,11 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 32; // TODO
 
-    public static final double SHOOTER_KP = 0.5; // TODO
-    public static final double SHOOTER_KI = 0.0; // TODO
-    public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.12; // TODO
-    public static final double SHOOTER_KA = 0.0; // TODO
+    public static final double KP = 0.5; // TODO
+    public static final double KI = 0.0; // TODO
+    public static final double KD = 0.0; // TODO
+    public static final double KV = 0.12; // TODO
+    public static final double KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
