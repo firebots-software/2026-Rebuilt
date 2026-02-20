@@ -507,10 +507,36 @@ public final class Constants {
       }
 
       public static enum ClimbPos {
-        RedLeftClimb,
-        RedRightClimb,
-        BlueLeftClimb,
-        BlueRightClimb
+        RedLeftClimbL,
+        RedLeftClimbR,
+        RedRightClimbL,
+        RedRightClimbR,
+        BlueLeftClimbL,
+        BlueLeftClimbR,
+        BlueRightClimbL,
+        BlueRightClimbR
+      }
+
+      public static enum Depot {
+        RedDepotL,
+        RedDepotM,
+        RedDepotR,
+        BlueDepotL,
+        BlueDepotM,
+        BlueDepotR,
+        RedDepotToShoot,
+        BlueDepotToShoot
+      }
+
+      public static enum Outpost {
+        RedOutpostL,
+        RedOutpostM,
+        RedOutpostR,
+        BlueOutpostL,
+        BlueOutpostM,
+        BlueOutpostR,
+        RedOutpostToShoot,
+        BlueOutpostToShoot
       }
     }
   }
