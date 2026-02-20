@@ -561,56 +561,48 @@ public final class Constants {
   }
 
   public static class Hopper {
-    // --- Mechanical transmission ---
-    // Motor turns needed for one hopper pulley turn (5:1 reduction)
-    public static final double MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION = 5.0;
-    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
-        (20.0 / 24.0) * (60.0 / 12.0);
-
-    // Timing belt geometry
-    public static final double HOPPER_BELT_TOOTH_PITCH_METERS =
-        0.005; // length of belt movement per tooth moved on it
-    public static final double HOPPER_BELT_TOOTH_COUNT =
-        220.0; // number of teeth on the actual belt for full revolution
-    public static final double HOPPER_BELT_LOOP_LENGTH_METERS =
-        HOPPER_BELT_TOOTH_COUNT * HOPPER_BELT_TOOTH_PITCH_METERS; // total length of the belt
-
-    // Linear travel conversion
-    // meters of belt travel per motor rotation
-    public static final double HOPPER_BELT_METERS_PER_MOTOR_ROTATION =
-        HOPPER_BELT_LOOP_LENGTH_METERS / MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
-
-    // inverse conversion (sometimes convenient in control code)
-    // motor rotations per meter of belt travel
-    public static final double MOTOR_ROTATIONS_PER_HOPPER_BELT_METER =
-        1.0 / HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
-
-    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
-        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
-
-    // --- Operating targets ---
-    public static final double HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND = 6.0;
-    public static final double HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND =
-        Units.feetToMeters(HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND);
-
-    // --- Hardware IDs ---
     public static final int MOTOR_PORT = 9;
 
-    // --- Closed-loop velocity gains (Phoenix Slot0) ---
+    public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
+    public static final double TARGET_SURFACE_SPEED_MPS = TARGET_SURFACE_SPEED_FPS * 0.3048;
+
     public static final double kP = 0.01;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.124;
 
-    // --- Current limits ---
-    public static final double HOPPER_STATOR_LIMIT_AMPS = 30.0;
-    public static final double HOPPER_SUPPLY_LIMIT_AMPS = 30.0;
+    public static final double STATOR_LIMIT_AMPS = 30.0;
+    public static final double SUPPLY_LIMIT_AMPS = 30.0;
 
-    // --- Control tolerance ---
-    public static final double HOPPER_VELOCITY_TOLERANCE_ROTATIONS_PER_SECOND = 0.1;
+    public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
+    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
+        (20.0 / 24.0) * (60.0 / 12.0);
 
-    // --- Simulation ---
-    public static final double HOPPER_SIM_MECHANISM_MOI_KG_M2 = 0.0008;
+    public static final double BELT_TOOTH_PITCH_METERS =
+        0.005; // length of belt movement per tooth moved on it
+    public static final double FLOOR_PULLEY_TOOTH_COUNT = 24.0;
+    public static final double BELT_LOOP_TOOTH_COUNT =
+        220.0; // number of teeth on the actual belt for full revolution
+    public static final double BELT_LOOP_LENGTH_METERS =
+        BELT_LOOP_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+
+    public static final double BELT_TRAVEL_METERS_PER_PULLEY_ROTATION =
+        FLOOR_PULLEY_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+
+    public static final double BELT_TRAVEL_METERS_PER_MOTOR_ROTATION =
+        BELT_TRAVEL_METERS_PER_PULLEY_ROTATION / MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
+
+    public static final double MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER =
+        1.0 / BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
+
+    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
+        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
+
+    public static final double MOTOR_SPEED_TOLERANCE_RPS = 0.1;
+
+    public static class Simulation {
+      public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
+    }
   }
 
   public static class Vision {

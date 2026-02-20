@@ -28,7 +28,7 @@ public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
   private double targetSurfaceSpeedMps = 0.0;
 
-  // Simulation objects
+  // Simulation Objects
   private TalonFXSimState hopperMotorSimState;
   private DCMotorSim hopperMechanismSim;
 
@@ -37,8 +37,8 @@ public class HopperSubsystem extends SubsystemBase {
   public HopperSubsystem() {
     CurrentLimitsConfigs currentLimitConfigs =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Hopper.HOPPER_STATOR_LIMIT_AMPS)
-            .withSupplyCurrentLimit(Constants.Hopper.HOPPER_SUPPLY_LIMIT_AMPS);
+            .withStatorCurrentLimit(Constants.Hopper.STATOR_LIMIT_AMPS)
+            .withSupplyCurrentLimit(Constants.Hopper.SUPPLY_LIMIT_AMPS);
 
     Slot0Configs s0c =
         new Slot0Configs()
@@ -79,8 +79,8 @@ public class HopperSubsystem extends SubsystemBase {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
                 krakenGearboxModel,
-                Constants.Hopper.HOPPER_SIM_MECHANISM_MOI_KG_M2,
-                Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION),
+                Constants.Hopper.Simulation.MECHANISM_SIM_MOI_KG_M2,
+                Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION),
             krakenGearboxModel); // add stddevs later if it makes sense
   }
 
@@ -88,7 +88,7 @@ public class HopperSubsystem extends SubsystemBase {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
     hopperMotor.setControl(
         m_velocityRequest.withVelocity(
-            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
+            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
   }
 
   public void stop() {
@@ -98,7 +98,7 @@ public class HopperSubsystem extends SubsystemBase {
 
   public double getFloorSpeedMPS() {
     return hopperMotor.getVelocity().getValueAsDouble()
-        * Constants.Hopper.HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
+        * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
   }
 
   public double getAgitatorSpeedRPS() {
@@ -109,9 +109,9 @@ public class HopperSubsystem extends SubsystemBase {
   public boolean atTargetSpeed() {
     double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
     double targetMotorSpeedRotationsPerSecond =
-        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER;
+        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER;
     return Math.abs(measuredMotorSpeedRotationsPerSecond - targetMotorSpeedRotationsPerSecond)
-        <= Constants.Hopper.HOPPER_VELOCITY_TOLERANCE_ROTATIONS_PER_SECOND;
+        <= Constants.Hopper.MOTOR_SPEED_TOLERANCE_RPS;
   }
 
   public boolean isHopperSufficientlyEmpty(FuelGaugeDetection fuelGaugeDetection) {
@@ -124,7 +124,7 @@ public class HopperSubsystem extends SubsystemBase {
   // Commands
   public Command runHopperCommand() {
     return startEnd(
-        () -> runHopper(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND), this::stop);
+        () -> runHopper(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
   }
 
   // Commands
@@ -138,7 +138,7 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Hopper/At target speed", atTargetSpeed());
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed(RPS)",
-        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER);
+        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
     DogLog.log(
         "Subsystems/Hopper/CurrentMotorSpeed(RPS)", hopperMotor.getVelocity().getValueAsDouble());
     DogLog.log("Subsystems/Hopper/AppliedVolts", hopperMotor.getMotorVoltage().getValueAsDouble());
@@ -170,10 +170,10 @@ public class HopperSubsystem extends SubsystemBase {
     // Motor spins faster: 5 motor rotations = 1 pulley rotation
     double motorRotorPositionRotations =
         hopperMechanismPositionRotations
-            * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
+            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
     double motorRotorVelocityRotationsPerSecond =
         hopperMechanismVelocityRotationsPerSecond
-            * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
+            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
 
     hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
     hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
