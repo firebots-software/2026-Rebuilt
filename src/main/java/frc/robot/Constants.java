@@ -7,12 +7,10 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = false;
+  public static final boolean hopperOnRobot = true;
+  public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
@@ -460,100 +458,10 @@ public final class Constants {
     public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
         26.971;
-
-    public static class Auto {
-      public static enum Maneuver {
-        RedLeftManeuverL,
-        RedLeftManeuverR,
-        RedRightManeuverL,
-        RedRightManeuverR,
-        BlueLeftManeuverL,
-        BlueLeftManeuverR,
-        BlueRightManeuverL,
-        BlueRightManeuverR
-      }
-
-      public static enum Intake {
-        RedLeftIntakeL,
-        RedLeftIntakeM,
-        RedLeftIntakeR,
-        RedLeftIntakeML,
-        RedLeftIntakeMR,
-        RedRightIntakeL,
-        RedRightIntakeM,
-        RedRightIntakeR,
-        RedRightIntakeML,
-        RedRightIntakeMR,
-        BlueLeftIntakeL,
-        BlueLeftIntakeM,
-        BlueLeftIntakeR,
-        BlueLeftIntakeML,
-        BlueLeftIntakeMR,
-        BlueRightIntakeL,
-        BlueRightIntakeM,
-        BlueRightIntakeR,
-        BlueRightIntakeML,
-        BlueRightIntakeMR,
-        RedRightIntakeSweep,
-        RedLeftIntakeSweep,
-        BlueRightIntakeSweep,
-        BlueLeftIntakeSweep
-      }
-
-      public static enum ShootPos {
-        RedLeftShoot,
-        RedRightShoot,
-        BlueLeftShoot,
-        BlueRightShoot,
-        RedDepotToShoot,
-        BlueDepotToShoot,
-        RedOutpostToShoot,
-        BlueOutpostToShoot
-      }
-
-      public static enum ClimbPos {
-        RedLeftClimbL,
-        RedLeftClimbR,
-        RedRightClimbL,
-        RedRightClimbR,
-        BlueLeftClimbL,
-        BlueLeftClimbR,
-        BlueRightClimbL,
-        BlueRightClimbR
-      }
-
-      public static enum Depot {
-        RedDepotL,
-        RedDepotM,
-        RedDepotR,
-        BlueDepotL,
-        BlueDepotM,
-        BlueDepotR,
-      }
-
-      public static enum Outpost {
-        RedOutpostL,
-        RedOutpostM,
-        RedOutpostR,
-        BlueOutpostL,
-        BlueOutpostM,
-        BlueOutpostR,
-      }
-
-      public static enum MiscPaths {
-        RedSweepRight,
-        RedSweepLeft,
-        BlueSweepRight,
-        BlueSweepLeft
-      }
-    }
   }
 
   public static class Climber {
-    public static final double mmcV = 80; // TODO: acquire good ones
-    public static final double mmcA = 80;
-
-    public static final double KP = .4;
+    public static final double KP = 0.4;
     public static final double KI = 0;
     public static final double KD = 0;
 
@@ -567,26 +475,27 @@ public final class Constants {
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 250d;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
+          1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
 
       // As I understand it, resting postion would probably always be consistent
       public static final double L1_MUSCLE_UP_FORWARD = 0; // TODO: get vals
       public static final double L2_MUSCLE_UP_FORWARD = 0; // TODO: get vals
       public static final double L3_MUSCLE_UP_FORWARD = 0; // TODO: get vals
       public static final double MUSCLE_UP_BACK = 0; // TODO: get vals
+      public static final double MUSCLEUP_DOWN_VELOCITY = -1;
 
-      public static final int MOTOR_PORT = -1; // TODO: get vals
-
-      public static final int ENCODER_PORT = -1; // TODO: get vals
-      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
-      public static final int ENCODER_OFFSET = 0; // TODO: get vals
+      public static final int MOTOR_PORT = 11;
     }
 
     public static class SitUp {
-      public static final double SIT_UP_TOLERANCE = .1;
+      public static final double SIT_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 100d;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
+          1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
 
       public static final double CURRENT_SUPPLY_LIMIT = 60;
       public static final double CURRENT_STATOR_LIMIT = 100;
@@ -594,29 +503,33 @@ public final class Constants {
       public static final double SIT_UP_ANGLE = 0; // TODO: get vals
       public static final double SIT_BACK_ANGLE = 0; // TODO: get vals
 
-      public static final int MOTOR_PORT = -1; // TODO: get vals
+      public static final int MOTOR_PORT = 12;
 
-      public static final int ENCODER_PORT = -1; // TODO: get vals
-      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 0;
+      public static final int ENCODER_PORT = 13;
+      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 1;
       public static final int ENCODER_OFFSET = 0; // TODO: get vals
     }
 
     public static class PullUp {
-      public static final double PULL_UP_TOLERANCE = .1;
+      public static final double PULL_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 17d;
-      public static final double PULLEY_BELT_LENGTH_M = 0; // TODO: get actual value
-      public static final double MOTOR_ROTS_PER_METERS_OF_BELT_TRAVERSAL =
+      public static final double PULLEY_BELT_LENGTH_M = 1.1;
+      public static final double MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL =
           MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
+      public static final double METERS_OF_BELT_TRAVERSAL_TO_MOTOR_ROTS =
+          1 / MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL;
 
       // As I understand it, resting postion would probably always be consistent
       public static final double L1_REACH_POS = 0; // TODO: get vals
       public static final double L2_REACH_POS = 0; // TODO: get vals
       public static final double L3_REACH_POS = 0; // TODO: get vals
       public static final double PULL_DOWN_POS = 0; // TODO: get vals
+      public static final double PULL_DOWN_POS_FOR_L1 = 0; // TODO: get vals
+      public static final double PULL_DOWN_VELOCITY = -1; // TODO: get vals
 
-      public static final int MOTOR_PORT_L = -1; // TODO: get vals
-      public static final int MOTOR_PORT_R = -1; // TODO: get vals
+      public static final int MOTOR_PORT_L = 9;
+      public static final int MOTOR_PORT_R = 10;
     }
   }
 
@@ -676,24 +589,8 @@ public final class Constants {
 
   public static class Vision {
 
-    // initializes cameras for use in VisionSubsystem
-    public static enum Cameras {
-      RIGHT_CAM("frontRightCam"),
-      LEFT_CAM("frontLeftCam"),
-      REAR_RIGHT_CAM("rearRightCam"),
-      REAR_LEFT_CAM("rearLeftCam"),
-      COLOR_CAM("colorCam");
-
-      private String loggingName;
-
-      Cameras(String name) {
-        loggingName = name;
-      }
-
-      public String getLoggingName() {
-        return loggingName;
-      }
-    }
+    // TODO: be able to set this at the start of the match
+    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
 
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
@@ -741,42 +638,46 @@ public final class Constants {
     public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5);
     public static final double REAR_LEFT_YAW = Units.degreesToRadians(180.0);
 
-    public static final double COLOR_X = Units.inchesToMeters(8.867);
-    public static final double COLOR_Y = Units.inchesToMeters(12.478);
-    public static final double COLOR_Z = Units.inchesToMeters(6.158);
-    public static final double COLOR_ROLL = Units.degreesToRadians(0.0);
-    public static final double COLOR_PITCH = Units.degreesToRadians(8.7);
-    public static final double COLOR_YAW = Units.degreesToRadians(0.0);
-
-    // initializing Transform3d for use in future field visualization
-    public static Transform3d getCameraTransform(Cameras camera) {
-      switch (camera) {
-        case RIGHT_CAM: // TODO: SID: rename FRONT_RIGHT_CAM
-          return new Transform3d(
+    // initializes cameras for use in VisionSubsystem
+    public static enum VisionCamera {
+      FRONT_RIGHT_CAM(
+          "frontRightCam",
+          new Transform3d(
               new Translation3d(FRONT_RIGHT_X, FRONT_RIGHT_Y, FRONT_RIGHT_Z),
-              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW));
+              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW))),
 
-        case LEFT_CAM: // TODO: SID: rename FRONT_LEFT_CAM
-          return new Transform3d(
+      FRONT_LEFT_CAM(
+          "frontLeftCam",
+          new Transform3d(
               new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
-              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW));
+              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW))),
 
-        case REAR_RIGHT_CAM:
-          return new Transform3d(
+      REAR_RIGHT_CAM(
+          "rearRightCam",
+          new Transform3d(
               new Translation3d(REAR_RIGHT_X, REAR_RIGHT_Y, REAR_RIGHT_Z),
-              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW));
+              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW))),
 
-        case REAR_LEFT_CAM:
-          return new Transform3d(
+      REAR_LEFT_CAM(
+          "rearLeftCam",
+          new Transform3d(
               new Translation3d(REAR_LEFT_X, REAR_LEFT_Y, REAR_LEFT_Z),
-              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW));
+              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW)));
 
-        case COLOR_CAM:
-          return new Transform3d(
-              new Translation3d(COLOR_X, COLOR_Y, COLOR_Z),
-              new Rotation3d(COLOR_ROLL, COLOR_PITCH, COLOR_YAW));
-        default:
-          throw new IllegalArgumentException("Unknown camera ID: " + camera);
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      VisionCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
       }
     }
   }
@@ -786,6 +687,37 @@ public final class Constants {
     public static final int MAX_FUEL_GAUGE_MEASUREMENTS = 33;
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
+
+    public static final double FUEL_GAUGE_X = Units.inchesToMeters(8.867);
+    public static final double FUEL_GAUGE_Y = Units.inchesToMeters(12.478);
+    public static final double FUEL_GAUGE_Z = Units.inchesToMeters(6.158);
+    public static final double FUEL_GAUGE_ROLL = Units.degreesToRadians(0.0);
+    public static final double FUEL_GAUGE_PITCH = Units.degreesToRadians(8.7);
+    public static final double FUEL_GAUGE_YAW = Units.degreesToRadians(0.0);
+
+    public static enum FuelGaugeCamera {
+      FUEL_GAUGE_CAM(
+          "fuelGaugeCam",
+          new Transform3d(
+              new Translation3d(FUEL_GAUGE_X, FUEL_GAUGE_Y, FUEL_GAUGE_Z),
+              new Rotation3d(FUEL_GAUGE_ROLL, FUEL_GAUGE_PITCH, FUEL_GAUGE_YAW)));
+
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      FuelGaugeCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
+      }
+    }
 
     public static enum GaugeCalculationType {
       RAW(),
@@ -817,11 +749,11 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 32; // TODO
 
-    public static final double SHOOTER_KP = 0.5; // TODO
-    public static final double SHOOTER_KI = 0.0; // TODO
-    public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.12; // TODO
-    public static final double SHOOTER_KA = 0.0; // TODO
+    public static final double KP = 0.5; // TODO
+    public static final double KI = 0.0; // TODO
+    public static final double KD = 0.0; // TODO
+    public static final double KV = 0.12; // TODO
+    public static final double KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 

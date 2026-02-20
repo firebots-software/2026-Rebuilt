@@ -30,7 +30,7 @@ public class FuelGaugeDetection extends SubsystemBase {
   private FuelGauge latestMultipleBallsGauge;
   private FuelGauge latestSmoothedMultipleBallsGauge;
 
-  public FuelGaugeDetection(Constants.Vision.Cameras cameraID) {
+  public FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
   }
 
