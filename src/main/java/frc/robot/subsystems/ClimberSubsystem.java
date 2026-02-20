@@ -122,7 +122,7 @@ public class ClimberSubsystem extends SubsystemBase {
     pullUpTargetPosition = metersFromZero * Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
     pullUpMotorR.setControl(m_positionRequest.withPosition(pullUpTargetPosition));
   }
-  
+
   public boolean isSitUpAtPosition() {
     return Math.abs(
             sitUpMotor.getPosition().getValueAsDouble()
