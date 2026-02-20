@@ -476,65 +476,87 @@ public final class Constants {
     public static final double BRAKE_ANGLE = 30.0;
 
     public static class MuscleUp {
+      public static final int MOTOR_PORT = 11;
+
+      public static final double KP = 0.4;
+      public static final double KI = 0;
+      public static final double KD = 0;
+      public static final double KV = 0.12;
+      public static final double KG = 0;
+      public static final double KS = 0;
+
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 124.583583583d;
-      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
-      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
-          1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
+      public static final double MOTOR_ROTS_PER_ARM_ROTS = (1.0 / 20.0) * (16.0 / 46.0) * (24.0 / 52.0) * (1.0 / 2.0);
+      public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
+      public static final double MOTOR_ROTS_PER_ARM_DEGREES = ARM_ROTS_PER_MOTOR_ROTS / 360d;
+      public static final double ARM_DEGREES_PER_MOTOR_ROTS =
+          1 / MOTOR_ROTS_PER_ARM_DEGREES;
 
       // As I understand it, resting postion would probably always be consistent
-      public static final double L1_MUSCLE_UP_FORWARD = 0; // TODO: get vals
-      public static final double L2_MUSCLE_UP_FORWARD = 0; // TODO: get vals
-      public static final double L3_MUSCLE_UP_FORWARD = 0; // TODO: get vals
-      public static final double MUSCLE_UP_BACK = 0; // TODO: get vals
+      public static final double L1_MUSCLE_UP_FORWARD = 95; // TODO: get vals, true val is 96.927 for all, 95 for testing
+      public static final double L2_MUSCLE_UP_FORWARD = 95; // TODO: get vals
+      public static final double L3_MUSCLE_UP_FORWARD = 95; // TODO: get vals
+      public static final double MUSCLE_UP_BACK = 0;
       public static final double MUSCLEUP_DOWN_VELOCITY = -1;
 
-      public static final int MOTOR_PORT = 11;
+      public static final double SUPPLY_CURRENT_LIMIT = 30;
+      public static final double STATOR_CURRENT_LIMIT = 30;
     }
 
     public static class SitUp {
+      public static final int MOTOR_PORT = 12;
+      public static final int ENCODER_PORT = 13;
+
+      public static final int ENCODER_OFFSET = 0; // TODO: get vals
+
+      public static final double KP = 0.4;
+      public static final double KI = 0;
+      public static final double KD = 0;
+      public static final double KV = 0.12;
+      public static final double KG = 0;
+      public static final double KS = 0;
+
       public static final double SIT_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_TO_ARM_ROTS = 1d / 102.4d;
-      public static final double MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT = MOTOR_ROTS_TO_ARM_ROTS * 360d;
+      public static final double MOTOR_ROTS_PER_ARM_ROTS = (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
+      public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
+      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROTS / 360d;
       public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
-          1 / MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT;
+          1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
+      public static final double ENCODER_ROTS_PER_ARM_ROTATIONS = 1.0;
+      public static final double SIT_UP_ANGLE_DEGREES = 90.0;
+      public static final double SIT_BACK_ANGLE_DEGREES = 65.0;
 
-      public static final double CURRENT_SUPPLY_LIMIT = 60;
-      public static final double CURRENT_STATOR_LIMIT = 100;
-
-      public static final double SIT_UP_ANGLE = 0; // TODO: get vals
-      public static final double SIT_BACK_ANGLE = 0; // TODO: get vals
-
-      public static final int MOTOR_PORT = 12;
-
-      public static final int ENCODER_PORT = 13;
-      public static final int ENCODER_ROTATIONS_TO_ARM_ROTATIONS = 1;
-      public static final int ENCODER_OFFSET = 0; // TODO: get vals
+      public static final double SUPPLY_CURRENT_LIMIT = 60.0;
+      public static final double STATOR_CURRENT_LIMIT = 100.0;
     }
 
     public static class PullUp {
-      public static final double PULL_UP_TOLERANCE = 0.1;
+      public static final int MOTOR_L_PORT = 9;
+      public static final int MOTOR_R_PORT = 10;
 
-      public static final double MOTOR_ROTS_TO_PULLEY_ROTS = 1d / 24.3d;
-      public static final double PULLEY_BELT_LENGTH_M = 1.21;
-      public static final double MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL =
-          MOTOR_ROTS_TO_PULLEY_ROTS * PULLEY_BELT_LENGTH_M;
-      public static final double METERS_OF_BELT_TRAVERSAL_TO_MOTOR_ROTS =
-          1 / MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL;
+      public static final double KP = 0.4;
+      public static final double KI = 0;
+      public static final double KD = 0;
+      public static final double KV = 0.12;
+      public static final double KG = 0;
+      public static final double KS = 0;
 
-      // As I understand it, resting postion would probably always be consistent
-      public static final double L1_REACH_POS = 0; // TODO: get vals
-      public static final double L2_REACH_POS = 0; // TODO: get vals
-      public static final double L3_REACH_POS = 0; // TODO: get vals
-      public static final double PULL_DOWN_POS = 0; // TODO: get vals
-      public static final double PULL_DOWN_POS_FOR_L1 = 0; // TODO: get vals
-      public static final double PULL_DOWN_POS_FOR_L2 = 0; // TODO: get vals
-      public static final double PULL_DOWN_VELOCITY = -1; // TODO: get vals
+      public static final double PULL_UP_TOLERANCE_METERS = 0.1;
 
-      public static final int MOTOR_PORT_L = 9;
-      public static final int MOTOR_PORT_R = 10;
+      public static final double MOTOR_ROTS_PER_BELT_METERS = 151.875;
+
+      public static final double L1_REACH_POS = 0;
+      public static final double L2_REACH_POS = 0;
+      public static final double L3_REACH_POS = 0;
+      public static final double PULL_DOWN_POS = -0.369885;
+      public static final double PULL_DOWN_POS_L1_AUTO = 0.177;
+
+      public static final double SUPPLY_CURRENT_LIMIT = 30;
+      public static final double STATOR_CURRENT_LIMIT = 30;
+
+      public static final double PULL_DOWN_VELOCITY = -1f;
     }
   }
 
