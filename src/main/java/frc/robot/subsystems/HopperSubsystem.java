@@ -61,6 +61,13 @@ public class HopperSubsystem extends SubsystemBase {
     hopperConfigurator.apply(motorOutputConfigs);
 
     if (RobotBase.isSimulation()) setupSimulation();
+
+    DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
+    DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
+    DogLog.log("Subsystems/Hopper/Gains/kD", Constants.Hopper.kD);
+    DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
+    DogLog.log("Subsystems/Hopper/Gains/kG", Constants.Hopper.kG);
+    DogLog.log("Subsystems/Hopper/Gains/kS", Constants.Hopper.kS);
   }
 
   private void setupSimulation() {
@@ -129,18 +136,16 @@ public class HopperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Hopper/Target Speed", targetSurfaceSpeedMetersPerSecond);
-    DogLog.log("Subsystems/Hopper/At target speed", atTargetSpeed());
+    DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMetersPerSecond);
+    DogLog.log("Subsystems/Hopper/CurrentSurfaceSpeed (mps)", hopperMotor.getVelocity().getValueAsDouble() * Constants.Hopper.HOPPER_BELT_METERS_PER_MOTOR_ROTATION);
+    DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
-        "Subsystems/Hopper/TargetMotorSpeed(RPS)",
+        "Subsystems/Hopper/TargetMotorVelocity (Rps)",
         targetSurfaceSpeedMetersPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER);
     DogLog.log(
-        "Subsystems/Hopper/CurrentMotorSpeed(RPS)", hopperMotor.getVelocity().getValueAsDouble());
-    DogLog.log("Subsystems/Hopper/AppliedVolts", hopperMotor.getMotorVoltage().getValueAsDouble());
-    hopperMotor.getVelocity().getValueAsDouble();
-    DogLog.log(
-        "Subsystems/Hopper/Motor Current (stator)",
-        hopperMotor.getStatorCurrent().getValueAsDouble());
+        "Subsystems/Hopper/CurrentMotorVelocity (Rps)", hopperMotor.getVelocity().getValueAsDouble());
+
+    DogLog.log("Subsystems/Hopper/ActiveCommand", (getCurrentCommand() == null) ? "None" : getCurrentCommand().getName());
   }
 
   @Override

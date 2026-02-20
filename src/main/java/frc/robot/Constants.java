@@ -576,6 +576,8 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.124;
+    public static final double kG = 0;
+    public static final double kS = 0;
 
     // --- Current limits ---
     public static final double HOPPER_STATOR_LIMIT_AMPS = 30.0;
