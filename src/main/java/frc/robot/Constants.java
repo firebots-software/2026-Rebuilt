@@ -461,7 +461,7 @@ public final class Constants {
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
         26.971;
 
-     public static class Auto {
+    public static class Auto {
       public static enum Maneuver {
         RedLeftManeuverL,
         RedLeftManeuverR,
