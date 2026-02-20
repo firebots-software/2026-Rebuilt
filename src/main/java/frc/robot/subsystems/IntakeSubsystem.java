@@ -126,6 +126,17 @@ public class IntakeSubsystem extends SubsystemBase {
     armMotorConfig.apply(armConfig);
     rollersMotorConfig.apply(rollersConfig);
 
+    DogLog.log("Subsystems/Intake/Arm/Gains/kP", Constants.Intake.Arm.KP);
+    DogLog.log("Subsystems/Intake/Arm/Gains/kI", Constants.Intake.Arm.KI);
+    DogLog.log("Subsystems/Intake/Arm/Gains/kD", Constants.Intake.Arm.KD);
+    DogLog.log("Subsystems/Intake/Arm/Gains/kV", Constants.Intake.Arm.KV);
+    DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.KG);
+
+    DogLog.log("Subsystems/Intake/Rollers/Gains/kP", Constants.Intake.Rollers.KP);
+    DogLog.log("Subsystems/Intake/Rollers/Gains/kI", Constants.Intake.Rollers.KI);
+    DogLog.log("Subsystems/Intake/Rollers/Gains/kD", Constants.Intake.Rollers.KD);
+    DogLog.log("Subsystems/Intake/Rollers/Gains/kV", Constants.Intake.Rollers.KV);
+
     if (RobotBase.isSimulation()) setupSimulation();
   }
 

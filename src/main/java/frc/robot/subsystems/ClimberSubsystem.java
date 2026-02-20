@@ -114,6 +114,10 @@ public class ClimberSubsystem extends SubsystemBase {
                 .withSensorToMechanismRatio(
                     Constants.Climber.SitUp.ENCODER_ROTATIONS_TO_ARM_ROTATIONS)
                 .withRotorToSensorRatio(Constants.Climber.SitUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT));
+
+    DogLog.log("Subsystems/Climber/Gains/kP", Constants.Climber.KP);
+    DogLog.log("Subsystems/Climber/Gains/kI", Constants.Climber.KI);
+    DogLog.log("Subsystems/Climber/Gains/kD", Constants.Climber.KD);
   }
 
   public void setSitUpPosition(double degrees) {
@@ -299,18 +303,19 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     DogLog.log(
-        "Climber/SitUpPositionDeg",
+        "Subsystems/Climber/SitUpPositionDeg",
         sitUpMotor.getPosition().getValueAsDouble()
             * Constants.Climber.SitUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT);
     DogLog.log(
-        "Climber/MuscleUpPositionDeg",
+        "Subsystems/Climber/MuscleUpPositionDeg",
         muscleUpMotor.getPosition().getValueAsDouble()
             * Constants.Climber.MuscleUp.MOTOR_ROTS_TO_DEGREES_OF_ARM_ROT);
     DogLog.log(
-        "Climber/PullUpPositionMeter",
+        "Subsystems/Climber/PullUpPositionMeter",
         pullUpMotorR.getPosition().getValueAsDouble()
             * Constants.Climber.PullUp.MOTOR_ROTS_TO_METERS_OF_BELT_TRAVERSAL);
 
-    DogLog.log("Climber/SitUpPositionFromEncoderRots", getSitUpPosInRotationsFromEncoder());
+    DogLog.log(
+        "Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpPosInRotationsFromEncoder());
   }
 }

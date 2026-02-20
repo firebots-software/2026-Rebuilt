@@ -60,6 +60,11 @@ public class HopperSubsystem extends SubsystemBase {
     hopperConfigurator.apply(currentLimitConfigs);
     hopperConfigurator.apply(motorOutputConfigs);
 
+    DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
+    DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
+    DogLog.log("Subsystems/Hopper/Gains/kD", Constants.Hopper.kD);
+    DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
+
     if (RobotBase.isSimulation()) setupSimulation();
   }
 
