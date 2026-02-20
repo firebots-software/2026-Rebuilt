@@ -158,7 +158,9 @@ public class AutoRoutines {
                         intakeSubsystem,
                         hopperSubsystem))
                 .andThen(getPathCommandSafely(climbPos))
-                .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+                .andThen(
+                    new L1Climb(
+                        climberSubsystem, swerveSubsystem, Constants.Landmarks.RED_TOWER_L)));
 
     return routine.cmd();
   }
@@ -247,7 +249,9 @@ public class AutoRoutines {
                         intakeSubsystem,
                         hopperSubsystem))
                 .andThen(getPathCommandSafely(climbPos))
-                .andThen(new L1Climb(climberSubsystem, swerveSubsystem)));
+                .andThen(
+                    new L1Climb(
+                        climberSubsystem, swerveSubsystem, Constants.Landmarks.RED_TOWER_R)));
 
     return routine.cmd();
   }
