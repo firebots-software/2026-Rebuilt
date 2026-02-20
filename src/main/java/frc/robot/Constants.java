@@ -592,7 +592,9 @@ public final class Constants {
     public static boolean SKIP_TO_FALLBACK = false;
 
     // TODO: move this somewhere else
-    public static void updateFallbackCamera(VisionCamera cam) { FALLBACK_CAMERA = cam; }
+    public static void updateFallbackCamera(VisionCamera cam) {
+      FALLBACK_CAMERA = cam;
+    }
 
     public static final double MAX_TAG_DISTANCE = 15.0; // meters, beyond which readings are dropped
 
