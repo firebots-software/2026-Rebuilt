@@ -5,13 +5,12 @@ import static edu.wpi.first.units.Units.Rotations;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -33,8 +32,8 @@ public class ClimberSubsystem extends SubsystemBase {
   private final CANcoder sitUpEncoder;
   private final Servo brake;
 
-  private final VelocityVoltage m_veclocityRequest = new VelocityVoltage(0);
-  private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
+  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
+  private final PositionVoltage m_positionRequest = new PositionVoltage(0);
 
   public ClimberSubsystem() {
     CurrentLimitsConfigs regClc =
@@ -69,10 +68,6 @@ public class ClimberSubsystem extends SubsystemBase {
     TalonFXConfigurator pullUpRightConfigurator = pullUpMotorR.getConfigurator();
 
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
-    MotionMagicConfigs mmc =
-        new MotionMagicConfigs()
-            .withMotionMagicCruiseVelocity(Constants.Climber.mmcV)
-            .withMotionMagicAcceleration(Constants.Climber.mmcA);
 
     muscleUpConfigurator.apply(s0c);
     sitUpConfigurator.apply(s0c);
@@ -88,11 +83,6 @@ public class ClimberSubsystem extends SubsystemBase {
     sitUpConfigurator.apply(moc);
     pullUpRightConfigurator.apply(moc);
     pullUpLeftConfigurator.apply(moc);
-
-    muscleUpConfigurator.apply(mmc);
-    sitUpConfigurator.apply(mmc);
-    pullUpRightConfigurator.apply(mmc);
-    pullUpLeftConfigurator.apply(mmc);
 
     // create fusedcancoder
     sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT);
@@ -122,18 +112,18 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void setSitUpPosition(double degrees) {
     sitUpTargetDeg = degrees * Constants.Climber.SitUp.DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS;
-    sitUpMotor.setControl(m_motionMagicRequest.withPosition(sitUpTargetDeg));
+    sitUpMotor.setControl(m_positionRequest.withPosition(sitUpTargetDeg));
   }
 
   public void setMuscleUpPosition(double degrees) {
     muscleUpTargetDeg = degrees * Constants.Climber.MuscleUp.DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS;
-    muscleUpMotor.setControl(m_motionMagicRequest.withPosition(muscleUpTargetDeg));
+    muscleUpMotor.setControl(m_positionRequest.withPosition(muscleUpTargetDeg));
   }
 
   public void setPullUpPosition(double metersFromZero) {
     pullUpTargetPosition =
         metersFromZero * Constants.Climber.PullUp.METERS_OF_BELT_TRAVERSAL_TO_MOTOR_ROTS;
-    pullUpMotorR.setControl(m_motionMagicRequest.withPosition(pullUpTargetPosition));
+    pullUpMotorR.setControl(m_positionRequest.withPosition(pullUpTargetPosition));
   }
 
   public boolean isSitUpAtPosition() {
@@ -201,12 +191,12 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void movePullUpDown() {
     pullUpMotorR.setControl(
-        m_veclocityRequest.withVelocity(Constants.Climber.PullUp.PULL_DOWN_VELOCITY));
+        m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_DOWN_VELOCITY));
   }
 
   public void moveMuscleUpDown() {
     muscleUpMotor.setControl(
-        m_veclocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
+        m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
   }
 
   public boolean checkPullUpCurrent() {
