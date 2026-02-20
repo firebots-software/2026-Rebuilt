@@ -460,9 +460,6 @@ public final class Constants {
   }
 
   public static class Climber {
-    public static final double mmcV = 80; // TODO: acquire good ones
-    public static final double mmcA = 80;
-
     public static final double KP = 0.4;
     public static final double KI = 0;
     public static final double KD = 0;
