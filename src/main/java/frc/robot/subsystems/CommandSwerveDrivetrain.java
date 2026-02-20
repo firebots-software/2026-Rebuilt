@@ -320,7 +320,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public void applyOneFieldSpeeds(ChassisSpeeds speeds) {
-    setControl(m_pathApplyFieldSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity));
+    setControl(
+        m_pathApplyFieldSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity));
   }
 
   public Pose2d getPose() {

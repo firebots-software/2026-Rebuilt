@@ -1,6 +1,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -503,7 +504,11 @@ public final class Constants {
         RedLeftShoot,
         RedRightShoot,
         BlueLeftShoot,
-        BlueRightShoot
+        BlueRightShoot,
+        RedDepotToShoot,
+        BlueDepotToShoot,
+        RedOutpostToShoot,
+        BlueOutpostToShoot
       }
 
       public static enum ClimbPos {
@@ -524,8 +529,6 @@ public final class Constants {
         BlueDepotL,
         BlueDepotM,
         BlueDepotR,
-        RedDepotToShoot,
-        BlueDepotToShoot
       }
 
       public static enum Outpost {
@@ -535,8 +538,13 @@ public final class Constants {
         BlueOutpostL,
         BlueOutpostM,
         BlueOutpostR,
-        RedOutpostToShoot,
-        BlueOutpostToShoot
+      }
+
+      public static enum MiscPaths {
+        RedSweepRight,
+        RedSweepLeft,
+        BlueSweepRight,
+        BlueSweepLeft
       }
     }
   }
