@@ -26,7 +26,7 @@ import frc.robot.util.LoggedTalonFX;
 
 public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
-  private double targetSurfaceSpeedMetersPerSecond = 0.0;
+  private double targetSurfaceSpeedMps = 0.0;
 
   // Simulation objects
   private TalonFXSimState hopperMotorSimState;
@@ -84,16 +84,15 @@ public class HopperSubsystem extends SubsystemBase {
             krakenGearboxModel); // add stddevs later if it makes sense
   }
 
-  public void runHopper(double targetSurfaceSpeedMetersPerSecond) {
-    this.targetSurfaceSpeedMetersPerSecond = targetSurfaceSpeedMetersPerSecond;
+  public void runHopper(double targetSurfaceSpeedMps) {
+    this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
     hopperMotor.setControl(
         m_velocityRequest.withVelocity(
-            targetSurfaceSpeedMetersPerSecond
-                * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
+            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
   }
 
   public void stop() {
-    targetSurfaceSpeedMetersPerSecond = 0.0;
+    targetSurfaceSpeedMps = 0.0;
     hopperMotor.setControl(m_velocityRequest.withVelocity(0));
   }
 
@@ -110,7 +109,7 @@ public class HopperSubsystem extends SubsystemBase {
   public boolean atTargetSpeed() {
     double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
     double targetMotorSpeedRotationsPerSecond =
-        targetSurfaceSpeedMetersPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER;
+        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER;
     return Math.abs(measuredMotorSpeedRotationsPerSecond - targetMotorSpeedRotationsPerSecond)
         <= Constants.Hopper.HOPPER_VELOCITY_TOLERANCE_ROTATIONS_PER_SECOND;
   }
@@ -129,17 +128,17 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   // Commands
-  public Command runHopperCommand(double speedMetersPerSec) {
-    return startEnd(() -> runHopper(speedMetersPerSec), this::stop);
+  public Command runHopperCommand(double targetSurfaceSpeedMps) {
+    return startEnd(() -> runHopper(targetSurfaceSpeedMps), this::stop);
   }
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Hopper/Target Speed", targetSurfaceSpeedMetersPerSecond);
+    DogLog.log("Subsystems/Hopper/Target Speed", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/At target speed", atTargetSpeed());
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed(RPS)",
-        targetSurfaceSpeedMetersPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER);
+        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER);
     DogLog.log(
         "Subsystems/Hopper/CurrentMotorSpeed(RPS)", hopperMotor.getVelocity().getValueAsDouble());
     DogLog.log("Subsystems/Hopper/AppliedVolts", hopperMotor.getMotorVoltage().getValueAsDouble());
