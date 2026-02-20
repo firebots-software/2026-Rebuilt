@@ -473,7 +473,7 @@ public final class Constants {
     public static final double DEFAULT_STATOR_CURRENT = 30.0;
 
     public static final int BRAKE_PORT = 7; // TODO
-    public static final double BRAKE_ANGLE = 30.0;
+    public static final double BRAKE_ANGLE = 24.838;
     public static final double UNBRAKE_ANGLE = 0.0;
 
     public static class MuscleUp {
