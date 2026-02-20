@@ -263,8 +263,7 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Intake/Arm/CurrentMotorPosition (rots)",
         armMotor.getPosition().getValueAsDouble());
-    DogLog.log(
-        "Subsystems/Intake/Arm/MotorVoltage", armMotor.getMotorVoltage().getValueAsDouble());
+    DogLog.log("Subsystems/Intake/Arm/MotorVoltage", armMotor.getMotorVoltage().getValueAsDouble());
     DogLog.log(
         "Subsystems/Intake/Arm/MotorSetpoint (rots)",
         armMotor.getClosedLoopReference().getValueAsDouble());
