@@ -576,8 +576,9 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.124;
-    public static final double kG = 0;
-    public static final double kS = 0;
+    public static final double kG = 0.0;
+    public static final double kS = 0.0;
+    public static final double kA = 0.0;
 
     // --- Current limits ---
     public static final double HOPPER_STATOR_LIMIT_AMPS = 30.0;
@@ -733,10 +734,12 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 32; // TODO
 
-    public static final double SHOOTER_KP = 0.5; // TODO
-    public static final double SHOOTER_KI = 0.0; // TODO
-    public static final double SHOOTER_KD = 0.0; // TODO
-    public static final double SHOOTER_KV = 0.12; // TODO
+    public static final double KP = 0.5; // TODO
+    public static final double KI = 0.0; // TODO
+    public static final double KD = 0.0; // TODO
+    public static final double KV = 0.12; // TODO
+    public static final double KG = 0.0; // TODO
+    public static final double KS = 0.0; // TODO
     public static final double SHOOTER_KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
@@ -757,6 +760,8 @@ public final class Constants {
 
     public static final double MIN_DIST_FT = 4d;
     public static final double MAX_DIST_FT = 8d;
+
+    public static final double TOLERANCE_RPS = 2.0;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
   }

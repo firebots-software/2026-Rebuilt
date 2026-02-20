@@ -32,8 +32,7 @@ import java.util.function.DoubleSupplier;
 public class ShooterSubsystem extends SubsystemBase {
   private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
-  private double targetBallSpeed = 0; // this needs to be consistent
-  private static final double TOLERANCE_RPS = 2.0; // tolerance in rotations per second
+  private double targetShooterVelocityRps;
 
   // Simulation objects
   private TalonFXSimState shooterSimState;
@@ -47,11 +46,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Slot0Configs s0c =
         new Slot0Configs()
-            .withKP(Constants.Shooter.SHOOTER_KP)
-            .withKI(Constants.Shooter.SHOOTER_KI)
-            .withKD(Constants.Shooter.SHOOTER_KD)
-            .withKV(Constants.Shooter.SHOOTER_KV)
-            .withKA(Constants.Shooter.SHOOTER_KA);
+            .withKP(Constants.Shooter.KP)
+            .withKI(Constants.Shooter.KI)
+            .withKD(Constants.Shooter.KD)
+            .withKV(Constants.Shooter.KV)
+            .withKA(Constants.Shooter.KA);
 
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
@@ -83,6 +82,13 @@ public class ShooterSubsystem extends SubsystemBase {
     warmUpMotor2.setControl(follower);
 
     if (RobotBase.isSimulation()) setupSimulation();
+
+    DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.KP);
+    DogLog.log("Subsystems/Shooter/Gains/kI", Constants.Shooter.KI);
+    DogLog.log("Subsystems/Shooter/Gains/kD", Constants.Shooter.KD);
+    DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.KV);
+    DogLog.log("Subsystems/Shooter/Gains/kG", Constants.Shooter.KG);
+    DogLog.log("Subsystems/Shooter/Gains/kS", Constants.Shooter.KS);
   }
 
   private void setupSimulation() {
@@ -122,8 +128,8 @@ public class ShooterSubsystem extends SubsystemBase {
   // what Jeff said that relationship is
   // so now max is 104.72 and min is 71.2
   public void setBallSpeed(double ballSpeed) {
-    targetBallSpeed = ballSpeed;
-    shooter.setControl(m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0)));
+    targetBallSpeedFtps = ballSpeed;
+    shooter.setControl(m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeedFtps / 2.0)));
   }
 
   public void stopShooter() {
@@ -132,8 +138,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public boolean isAtSpeed() {
     return Math.abs(
-            calculateFtPSToRPS(targetBallSpeed) - (shooter.getVelocity().getValueAsDouble() * 2))
-        <= TOLERANCE_RPS;
+            calculateFtPSToRPS(targetBallSpeedFtps) - (shooter.getVelocity().getValueAsDouble() * 2))
+        <= Constants.Shooter.TOLERANCE_RPS;
   }
 
   public double getCurrentBallSpeed() {
@@ -155,7 +161,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Shooter/targetSpeed", targetBallSpeed);
+    DogLog.log("Subsystems/Shooter/targetSpeed", targetBallSpeedFtps);
     DogLog.log("Subsystems/Shooter/isAtSpeed", isAtSpeed());
     DogLog.log("Subsystems/Shooter/currentSpeed", getCurrentBallSpeed());
     DogLog.log(
