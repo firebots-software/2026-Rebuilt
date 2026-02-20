@@ -246,6 +246,19 @@ public class VisionSubsystem extends SubsystemBase {
     return avgDist;
   }
 
+  public double getMaxDistance() {
+    double maxDist =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
+                .max()
+                .orElse(Double.NaN);
+
+    DogLog.log("Subsystems/Vision/" + cameraTitle + "/AverageTagDistance", maxDist);
+    return maxDist;
+  }
+
   public boolean hasValidMeasurement() {
     return hasValidMeasurement;
   }
