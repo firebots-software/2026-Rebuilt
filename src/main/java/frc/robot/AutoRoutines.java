@@ -35,6 +35,7 @@ public class AutoRoutines {
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
   private final ClimberSubsystem climberSubsystem;
+
   // i will figure out alliance side and add supplier to this
 
   public AutoRoutines(
@@ -190,7 +191,9 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(outpost))
                 .andThen(getPathCommandSafely(outpost))
-                .andThen(new WaitCommand(3)) // correct, or is there smth else to do when intaking from outpost?
+                .andThen(
+                    new WaitCommand(
+                        3)) // correct, or is there smth else to do when intaking from outpost?
                 .andThen(getPathCommandSafely(shoot))
                 .andThen(
                     new ShootBasic(
@@ -224,7 +227,9 @@ public class AutoRoutines {
         .onTrue(
             resetPathOdometrySafely(outpost)
                 .andThen(getPathCommandSafely(outpost))
-                .andThen(new WaitCommand(3)) // correct, or is there smth else to do when intaking from outpost?
+                .andThen(
+                    new WaitCommand(
+                        3)) // correct, or is there smth else to do when intaking from outpost?
                 .andThen(getPathCommandSafely(shootPos))
                 .andThen(
                     new ShootBasic(
