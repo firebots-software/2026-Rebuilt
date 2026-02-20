@@ -566,6 +566,8 @@ public final class Constants {
     public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
     public static final double TARGET_SURFACE_SPEED_MPS = TARGET_SURFACE_SPEED_FPS * 0.3048;
 
+    public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
+
     public static final double kP = 0.01;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
@@ -598,7 +600,6 @@ public final class Constants {
     public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
         1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
 
-    public static final double MOTOR_SPEED_TOLERANCE_RPS = 0.1;
 
     public static class Simulation {
       public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
