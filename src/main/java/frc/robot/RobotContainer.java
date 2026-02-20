@@ -325,11 +325,14 @@ public class RobotContainer {
     /*|| visionRearRight == null
     || visionRearLeft == null */ ) return;
 
-    VisionSubsystem visionFallback;
-    if (fallbackCamera == VisionCamera.FRONT_RIGHT_CAM) visionFallback = visionFrontRight;
-    else visionFallback = visionFrontLeft;
-    // if (fallbackCamera == VisionCamera.REAR_RIGHT_CAM) visionFallback = visionRearRight;
-    // if (fallbackCamera == VisionCamera.REAR_LEFT_CAM) visionFallback = visionRearLeft;
+    VisionSubsystem visionFallback =
+        switch (fallbackCamera) {
+          case FRONT_RIGHT_CAM -> visionFrontRight;
+          case FRONT_LEFT_CAM -> visionFrontLeft;
+          case REAR_RIGHT_CAM -> null;
+          case REAR_LEFT_CAM -> null;
+          default -> visionFrontRight;
+        };
 
     visionFrontRight.calculateFilteredPose(drivetrain);
     visionFrontLeft.calculateFilteredPose(drivetrain);
