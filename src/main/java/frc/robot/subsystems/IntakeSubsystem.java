@@ -251,26 +251,26 @@ public class IntakeSubsystem extends SubsystemBase {
         "Subsystems/Intake/Rollers/MotorVelocity (rps)",
         rollersMotor.getVelocity().getValueAsDouble());
     DogLog.log(
-        "Subsystems/Intake/Rollers/MotorPosition (rot)",
+        "Subsystems/Intake/Rollers/MotorPosition (rots)",
         rollersMotor.getPosition().getValueAsDouble());
 
     // arm
-    DogLog.log("Subsystems/Intake/Arm/TargetAngle (deg)", targetAngleDeg);
+    DogLog.log("Subsystems/Intake/Arm/TargetAngle (degs)", targetAngleDeg);
     DogLog.log(
-        "Subsystems/Intake/Arm/AbsoluteEncoderDegrees (deg)",
+        "Subsystems/Intake/Arm/AbsoluteEncoderDegrees (degs)",
         getArmAbsolutePosition().getDegrees());
-    DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rot)", getCancoderPositionRaw());
+    DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
     DogLog.log(
-        "Subsystems/Intake/Arm/CurrentMotorPosition (rot)",
+        "Subsystems/Intake/Arm/CurrentMotorPosition (rots)",
         armMotor.getPosition().getValueAsDouble());
     DogLog.log(
-        "Subsystems/Intake/Arm/MotorVoltage (V)", armMotor.getMotorVoltage().getValueAsDouble());
+        "Subsystems/Intake/Arm/MotorVoltage", armMotor.getMotorVoltage().getValueAsDouble());
     DogLog.log(
-        "Subsystems/Intake/Arm/MotorSetpoint (rot)",
+        "Subsystems/Intake/Arm/MotorSetpoint (rots)",
         armMotor.getClosedLoopReference().getValueAsDouble());
-    DogLog.log("Subsystems/Intake/Arm/CANcoderPositionRaw (rot)", getCancoderPositionRaw());
+    DogLog.log("Subsystems/Intake/Arm/CANcoderPositionRaw (rots)", getCancoderPositionRaw());
     DogLog.log(
-        "Subsystems/Intake/Arm/AbsolutePosition (deg)", getArmAbsolutePosition().getDegrees());
+        "Subsystems/Intake/Arm/AbsolutePosition (degs)", getArmAbsolutePosition().getDegrees());
   }
 
   @Override
