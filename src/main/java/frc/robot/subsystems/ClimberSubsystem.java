@@ -111,8 +111,7 @@ public class ClimberSubsystem extends SubsystemBase {
         new TalonFXConfiguration()
             .Feedback.withFeedbackRemoteSensorID(sitUpEncoder.getDeviceID())
                 .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-                .withSensorToMechanismRatio(
-                    Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROTATIONS)
+                .withSensorToMechanismRatio(Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROTATIONS)
                 .withRotorToSensorRatio(Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROTATIONS));
   }
 
@@ -127,8 +126,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setPullUpPosition(double metersFromZero) {
-    pullUpTargetPosition =
-        metersFromZero * Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
+    pullUpTargetPosition = metersFromZero * Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
     pullUpMotorR.setControl(m_motionMagicRequest.withPosition(pullUpTargetPosition));
   }
 
@@ -174,6 +172,10 @@ public class ClimberSubsystem extends SubsystemBase {
   public void stopMuscleUp() {
     muscleUpTargetDeg = muscleUpMotor.getPosition().getValueAsDouble();
     muscleUpMotor.setPosition(muscleUpTargetDeg);
+  }
+
+  public void unbrakeClimb() {
+    brake.setAngle(Constants.Climber.UNBRAKE_ANGLE);
   }
 
   public void brakeClimb() {

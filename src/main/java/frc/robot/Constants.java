@@ -474,6 +474,7 @@ public final class Constants {
 
     public static final int BRAKE_PORT = 7; // TODO
     public static final double BRAKE_ANGLE = 30.0;
+    public static final double UNBRAKE_ANGLE = 0.0;
 
     public static class MuscleUp {
       public static final int MOTOR_PORT = 11;
@@ -487,14 +488,15 @@ public final class Constants {
 
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_PER_ARM_ROTS = (1.0 / 20.0) * (16.0 / 46.0) * (24.0 / 52.0) * (1.0 / 2.0);
+      public static final double MOTOR_ROTS_PER_ARM_ROTS =
+          (1.0 / 20.0) * (16.0 / 46.0) * (24.0 / 52.0) * (1.0 / 2.0);
       public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
       public static final double MOTOR_ROTS_PER_ARM_DEGREES = ARM_ROTS_PER_MOTOR_ROTS / 360d;
-      public static final double ARM_DEGREES_PER_MOTOR_ROTS =
-          1 / MOTOR_ROTS_PER_ARM_DEGREES;
+      public static final double ARM_DEGREES_PER_MOTOR_ROTS = 1 / MOTOR_ROTS_PER_ARM_DEGREES;
 
       // As I understand it, resting postion would probably always be consistent
-      public static final double L1_MUSCLE_UP_FORWARD = 95; // TODO: get vals, true val is 96.927 for all, 95 for testing
+      public static final double L1_MUSCLE_UP_FORWARD =
+          95; // TODO: get vals, true val is 96.927 for all, 95 for testing
       public static final double L2_MUSCLE_UP_FORWARD = 95; // TODO: get vals
       public static final double L3_MUSCLE_UP_FORWARD = 95; // TODO: get vals
       public static final double MUSCLE_UP_BACK = 0;
@@ -519,7 +521,8 @@ public final class Constants {
 
       public static final double SIT_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_PER_ARM_ROTS = (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
+      public static final double MOTOR_ROTS_PER_ARM_ROTS =
+          (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
       public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
       public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROTS / 360d;
       public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
