@@ -99,8 +99,6 @@ public class RobotContainer {
   // Constants.visionOnRobot ? new
   // VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
 
-  VisionCamera fallbackCamera = Constants.Vision.FALLBACK_CAMERA;
-
   public final FuelGaugeDetection visionFuelGauge =
       Constants.visionOnRobot
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
@@ -325,18 +323,15 @@ public class RobotContainer {
     /*|| visionRearRight == null
     || visionRearLeft == null */ ) return;
 
+    VisionSubsystem visionFallback;
 
-    // fallbackCamera = Constants.Vision.FALLBACK_CAMERA;
-    // VisionSubsystem visionFallback =
-    //     switch (fallbackCamera) {
-    //       case FRONT_RIGHT_CAM -> visionFrontRight;
-    //       case FRONT_LEFT_CAM -> visionFrontLeft;
-    //       // case REAR_RIGHT_CAM -> null;
-    //       // case REAR_LEFT_CAM -> null;
-    //       default -> visionFrontLeft;
-    //     };
+    VisionCamera fallbackCamera = Constants.Vision.FALLBACK_CAMERA;
 
-    VisionSubsystem visionFallback = visionFrontLeft;
+    if (fallbackCamera == VisionCamera.FRONT_RIGHT_CAM) visionFallback = visionFrontRight;
+    else visionFallback = visionFrontLeft;
+    // if (fallbackCamera == VisionCamera.REAR_RIGHT_CAM) visionFallback = visionRearRight;
+    // if (fallbackCamera == VisionCamera.REAR_LEFT_CAM) visionFallback = visionRearLeft;
+
 
     visionFrontRight.calculateFilteredPose(drivetrain);
     visionFrontLeft.calculateFilteredPose(drivetrain);
@@ -402,10 +397,6 @@ public class RobotContainer {
     preferredVision.addFilteredPose(drivetrain);
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
-  }
-
-  public void setFallbackCamera(VisionCamera cam) {
-    fallbackCamera = cam;
   }
 
   public static void setAlliance() {
