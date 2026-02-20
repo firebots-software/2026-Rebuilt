@@ -100,7 +100,7 @@ public class AutoRoutines {
       traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
       traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
     }
-    
+
     return traj;
   }
 
@@ -132,11 +132,13 @@ public class AutoRoutines {
     routine
         .active()
         .onTrue(
-            (maneuver.resetOdometry())
+            resetPathOdometrySafely(maneuver)
                 .andThen(getPathCommandSafely(maneuver))
                 .andThen(() -> new BumpDTP(swerveSubsystem, () -> true))
+                .andThen(resetPathOdometrySafely(intake))
                 .andThen(getPathCommandSafely(intake))
                 .andThen(() -> new BumpDTP(swerveSubsystem, () -> false))
+                .andThen(resetPathOdometrySafely(shootPos))
                 .andThen(getPathCommandSafely(shootPos))
                 .andThen(
                     new ShootBasic(
@@ -178,13 +180,14 @@ public class AutoRoutines {
     routine
         .active()
         .onTrue(
-            maneuver
-                .resetOdometry()
+            resetPathOdometrySafely(maneuver)
                 .andThen(getPathCommandSafely(maneuver))
                 .andThen(new BumpDTP(swerveSubsystem, () -> true))
+                .andThen(resetPathOdometrySafely(intake))
                 .andThen(getPathCommandSafely(intake))
                 .andThen(getPathCommandSafely(miscPaths))
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
+                .andThen(resetPathOdometrySafely(outpost))
                 .andThen(getPathCommandSafely(outpost))
                 .andThen(new WaitCommand(10)) // correct?
                 .andThen(getPathCommandSafely(shoot))
@@ -218,8 +221,7 @@ public class AutoRoutines {
     routine
         .active()
         .onTrue(
-            outpost
-                .resetOdometry()
+            resetPathOdometrySafely(outpost)
                 .andThen(getPathCommandSafely(outpost))
                 .andThen(new WaitCommand(10)) // is this correct?
                 .andThen(getPathCommandSafely(shootPos))
@@ -273,7 +275,7 @@ public class AutoRoutines {
     routine
         .active()
         .onTrue(
-            (maneuver != null ? maneuver.resetOdometry() : Commands.none())
+            resetPathOdometrySafely(maneuver)
                 .andThen(getPathCommandSafely(maneuver))
                 .andThen(getPathCommandSafely(intake))
                 .andThen(getPathCommandSafely(shootPos))
@@ -282,12 +284,17 @@ public class AutoRoutines {
     return routine.cmd();
   }
 
+  // this may not be needed, but is good to have
   public Command getPathCommandSafely(AutoTrajectory traj) {
     return traj != null ? traj.cmd() : Commands.none();
   }
 
-  // i need to add this: maneuver != null ? maneuver.resetOdometry() : Commands.none(), and then
-  // instead call reset odo on next path instead, but idk how to cleanly
+  // this may not be needed, but is good to have
+  public Command resetPathOdometrySafely(AutoTrajectory traj) {
+    return traj != null ? traj.resetOdometry() : Commands.none();
+  }
+
+  // if first path is null and odo is not reset, should i add smth to reset next path or is that OD
   public void addCommandstoAutoChooser() {
     autoChooser.addCmd(
         "Red Pedri - Left Side",
