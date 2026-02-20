@@ -54,7 +54,6 @@ public class DriveToPose extends Command {
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
 
-
     path =
         new LinearPath(
             new TrapezoidProfile.Constraints(
