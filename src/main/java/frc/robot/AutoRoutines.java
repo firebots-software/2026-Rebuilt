@@ -96,6 +96,11 @@ public class AutoRoutines {
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
+    if (traj != null) {
+      traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+      traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+    }
+    
     return traj;
   }
 
