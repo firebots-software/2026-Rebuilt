@@ -125,8 +125,12 @@ public class VisionSubsystem extends SubsystemBase {
     // log area and yaw for all detected april tags
 
     for (PhotonTrackedTarget tag : tags) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags/" + tag.getFiducialId() + "Yaw", tag.getYaw());
+      DogLog.log(
+          "Subsystems/Vision/" + cameraTitle + "/Tags/" + tag.getFiducialId() + "/Area",
+          tag.getArea());
+      DogLog.log(
+          "Subsystems/Vision/" + cameraTitle + "/Tags/" + tag.getFiducialId() + "/Yaw",
+          tag.getYaw());
     }
 
     // Extract pose estimate
