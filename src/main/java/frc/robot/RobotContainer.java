@@ -337,28 +337,52 @@ public class RobotContainer {
     VisionSubsystem preferredVision = visionFallback;
     double preferredDistance = Double.MAX_VALUE;
 
-    if (visionFrontRight.getMinDistance() < preferredDistance
+    double frontRightDist, frontLeftDist /*, rearRightDist, rearLeftDist */;
+
+    switch(Constants.Vision.CAMERA_SELECTION_METHOD) {
+        case MIN:
+        default:
+            frontRightDist = visionFrontRight.getMinDistance();
+            frontLeftDist = visionFrontLeft.getMinDistance();
+            // rearRightDist = visionRearRight.getMinDistance();
+            // rearLeftDist = visionRearLeft.getMinDistance();
+            break;
+        case AVG:
+            frontRightDist = visionFrontRight.getAverageDistance();
+            frontLeftDist = visionFrontLeft.getAverageDistance();
+            // rearRightDist = visionRearRight.getAverageDistance();
+            // rearLeftDist = visionRearLeft.getAverageDistance();
+            break;
+        case MAX:
+            frontRightDist = visionFrontRight.getMaxDistance();
+            frontLeftDist = visionFrontLeft.getMaxDistance();
+            // rearRightDist = visionRearRight.getMaxDistance();
+            // rearLeftDist = visionRearLeft.getMaxDistance();
+            break;
+    }
+
+    if (frontRightDist < preferredDistance
         && visionFrontRight.hasValidMeasurement()) {
       preferredVision = visionFrontRight;
-      preferredDistance = visionFrontRight.getMinDistance();
+      preferredDistance = frontRightDist;
     }
 
-    if (visionFrontLeft.getMinDistance() < preferredDistance
+    if (frontLeftDist < preferredDistance
         && visionFrontLeft.hasValidMeasurement()) {
       preferredVision = visionFrontLeft;
-      preferredDistance = visionFrontLeft.getMinDistance();
+      preferredDistance = frontLeftDist;
     }
 
-    // if (visionRearRight.getMinDistance() < preferredDistance &&
+    // if (rearRightDist < preferredDistance &&
     // visionRearRight.hasValidMeasurement()) {
     //   preferredVision = visionRearRight;
-    //   preferredDistance = visionRearRight.getMinDistance();
+    //   preferredDistance = rearRightDist;
     // }
 
-    // if (visionRearLeft.getMinDistance() < preferredDistance &&
+    // if (rearLeftDist < preferredDistance &&
     // visionRearLeft.hasValidMeasurement()) {
     //   preferredVision = visionRearLeft;
-    //   preferredDistance = visionRearLeft.getMinDistance();
+    //   preferredDistance = rearLeftDist;
     // }
 
     if (preferredVision == null) return;

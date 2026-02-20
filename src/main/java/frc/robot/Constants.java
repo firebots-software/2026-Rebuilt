@@ -683,6 +683,14 @@ public final class Constants {
         return cameraTransform;
       }
     }
+
+    public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
+
+    public static enum CameraSelectionMethod {
+      MIN(),
+      AVG(),
+      MAX();
+    }
   }
 
   public static class FuelGaugeDetection {
