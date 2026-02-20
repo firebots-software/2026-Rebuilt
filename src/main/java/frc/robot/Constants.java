@@ -554,7 +554,7 @@ public final class Constants {
       public static final double L2_REACH_POS = 0;
       public static final double L3_REACH_POS = 0;
       public static final double PULL_DOWN_POS = -0.369885;
-      public static final double PULL_DOWN_POS_L1_AUTO = 0.177;
+      public static final double PULL_DOWN_POS_L1_AUTO = -0.192885;
 
       public static final double SUPPLY_CURRENT_LIMIT = 30;
       public static final double STATOR_CURRENT_LIMIT = 30;
