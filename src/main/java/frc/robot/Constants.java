@@ -7,6 +7,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = true;
@@ -458,6 +460,93 @@ public final class Constants {
     public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
         26.971;
+
+     public static class Auto {
+      public static enum Maneuver {
+        RedLeftManeuverL,
+        RedLeftManeuverR,
+        RedRightManeuverL,
+        RedRightManeuverR,
+        BlueLeftManeuverL,
+        BlueLeftManeuverR,
+        BlueRightManeuverL,
+        BlueRightManeuverR
+      }
+
+      public static enum Intake {
+        RedLeftIntakeL,
+        RedLeftIntakeM,
+        RedLeftIntakeR,
+        RedLeftIntakeML,
+        RedLeftIntakeMR,
+        RedRightIntakeL,
+        RedRightIntakeM,
+        RedRightIntakeR,
+        RedRightIntakeML,
+        RedRightIntakeMR,
+        BlueLeftIntakeL,
+        BlueLeftIntakeM,
+        BlueLeftIntakeR,
+        BlueLeftIntakeML,
+        BlueLeftIntakeMR,
+        BlueRightIntakeL,
+        BlueRightIntakeM,
+        BlueRightIntakeR,
+        BlueRightIntakeML,
+        BlueRightIntakeMR,
+        RedRightIntakeSweep,
+        RedLeftIntakeSweep,
+        BlueRightIntakeSweep,
+        BlueLeftIntakeSweep
+      }
+
+      public static enum ShootPos {
+        RedLeftShoot,
+        RedRightShoot,
+        BlueLeftShoot,
+        BlueRightShoot,
+        RedDepotToShoot,
+        BlueDepotToShoot,
+        RedOutpostToShoot,
+        BlueOutpostToShoot
+      }
+
+      public static enum ClimbPos {
+        RedLeftClimbL,
+        RedLeftClimbR,
+        RedRightClimbL,
+        RedRightClimbR,
+        BlueLeftClimbL,
+        BlueLeftClimbR,
+        BlueRightClimbL,
+        BlueRightClimbR
+      }
+
+      public static enum Depot {
+        RedDepotL,
+        RedDepotM,
+        RedDepotR,
+        BlueDepotL,
+        BlueDepotM,
+        BlueDepotR,
+      }
+
+      public static enum Outpost {
+        RedOutpostL,
+        RedOutpostM,
+        RedOutpostR,
+        BlueOutpostL,
+        BlueOutpostM,
+        BlueOutpostR,
+      }
+
+      public static enum MiscPaths {
+        RedSweepRight,
+        RedSweepLeft,
+        BlueSweepRight,
+        BlueSweepLeft
+      }
+    }
   }
 
   public static class Climber {
