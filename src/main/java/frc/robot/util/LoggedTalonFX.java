@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import java.util.ArrayList;
@@ -33,7 +34,13 @@ public class LoggedTalonFX extends TalonFX {
       supplyVoltage,
       error,
       reference,
-      rotorPosition;
+      rotorPosition,
+      configuredKP,
+      configuredKS,
+      configuredKV,
+      configuredKI,
+      configuredKD,
+      configuredKG;
 
   /**
    * @param deviceName Designated name of this LoggedTalonFX
@@ -95,6 +102,12 @@ public class LoggedTalonFX extends TalonFX {
     this.error = name + "/closedloop/error";
     this.reference = name + "/closedloop/reference";
     this.rotorPosition = name + "/closedloop/rotorPosition";
+    this.configuredKP = name + "gains/KP";
+    this.configuredKS = name + "gains/KS";
+    this.configuredKV = name + "gains/KV";
+    this.configuredKI = name + "gains/KI";
+    this.configuredKD = name + "gains/KD";
+    this.configuredKG = name + "gains/KG";
 
     // Applying current limits
     CurrentLimitsConfigs clc =
@@ -155,5 +168,14 @@ public class LoggedTalonFX extends TalonFX {
     // Voltage
     DogLog.log(motorVoltage, this.getMotorVoltage().getValueAsDouble());
     DogLog.log(supplyVoltage, this.getSupplyVoltage().getValueAsDouble());
+
+    // Gains
+    this.getConfigurator().refresh(motorConfiguration);
+    DogLog.log(configuredKP, motorConfiguration.Slot0.kP);
+    DogLog.log(configuredKS, motorConfiguration.Slot0.kS);
+    DogLog.log(configuredKV, motorConfiguration.Slot0.kV);
+    DogLog.log(configuredKI, motorConfiguration.Slot0.kI);
+    DogLog.log(configuredKD, motorConfiguration.Slot0.kD);
+    DogLog.log(configuredKG, motorConfiguration.Slot0.kG);
   }
 }
