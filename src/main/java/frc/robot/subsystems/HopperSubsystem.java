@@ -12,6 +12,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -154,34 +155,30 @@ public class HopperSubsystem extends SubsystemBase {
   public void simulationPeriodic() {
     if (hopperMotorSimState == null || hopperMechanismSim == null) return;
 
-    // 1) Supply voltage to CTRE sim
+    // 1. How many volts applied to the motor?
     hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    // 2) Read applied motor voltage and step mechanism plant
     double appliedMotorVoltageVolts =
-        hopperMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+        hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
     hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
     hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-    // 3) Mechanism-side sim -> rotor-side sensor state
-    // DCMotorSim tracks the pulley/belt mechanism (after gear reduction)
+    // 2. What happens to the simulated mechanism?
     double hopperMechanismVelocityRotationsPerSecond =
         hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
     double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
 
-    // Convert mechanism rotations to motor rotor rotations
-    // Motor spins faster: 5 motor rotations = 1 pulley rotation
+    // 3. Updating the simulated motor based on the behavior of the simulated mechanism
     double motorRotorPositionRotations =
         hopperMechanismPositionRotations
             * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
     double motorRotorVelocityRotationsPerSecond =
         hopperMechanismVelocityRotationsPerSecond
             * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-
     hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
     hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
 
-    // 4) Battery sag model
+    // 4. What happens to the battery (simulated)?
     double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
     double targetBatteryV =
         BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
