@@ -149,6 +149,9 @@ public class IntakeSubsystem extends SubsystemBase {
     rollersMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
     armMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
 
+    armCancoderSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+    armCancoderSimState.SensorOffset = Constants.Intake.Arm.ENCODER_OFFSET;
+
     rollersMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
     armMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
 
@@ -206,8 +209,20 @@ public class IntakeSubsystem extends SubsystemBase {
             getCancoderPositionRaw() * Constants.Intake.Arm.ARM_ROTS_PER_CANCODER_ROT));
   }
 
+  // TODO: Verify this is the same used w/ the feedback
+  public Rotation2d getArmFusedPosition() {
+    return new Rotation2d(
+        Units.rotationsToRadians(
+            armMotor.getPosition().getValueAsDouble()));
+  }
+
   public double getCancoderPositionRaw() {
     return cancoder.getAbsolutePosition().getValueAsDouble();
+  }
+
+  public boolean atTargetAngle() {
+    return Math.abs(getArmFusedPosition().getDegrees() - targetAngleDeg)
+        <= Constants.Intake.Arm.POSITION_TOLERANCE_DEGREES;
   }
 
   public boolean atTargetSpeed() {
@@ -249,9 +264,12 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Rollers/TargetSpeed (rps)", targetRollersRPS);
     DogLog.log("Subsystems/Intake/Rollers/AtTargetSpeed", atTargetSpeed());
 
+    DogLog.log("Subsystems/Intake/Arm/AtTargetAngle", atTargetAngle());
     DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
     DogLog.log(
-        "Subsystems/Intake/Arm/CurrentPosition (degs)", getArmAbsolutePosition().getDegrees());
+        "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)", getArmAbsolutePosition().getDegrees());
+    DogLog.log(
+        "Subsystems/Intake/Arm/FusedCurrentPosition (degs)", getArmFusedPosition().getDegrees());
     DogLog.log(
         "Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
   }
