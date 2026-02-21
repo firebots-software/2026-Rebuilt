@@ -220,7 +220,9 @@ public class RobotContainer {
     if (Constants.intakeOnRobot) {
       debugJoystick
           .leftTrigger()
-          .whileTrue(intakeSubsystem.runRollersUntilInterruptedCommand(Constants.Intake.Rollers.TARGET_ROLLER_RPS));
+          .whileTrue(
+              intakeSubsystem.runRollersUntilInterruptedCommand(
+                  Constants.Intake.Rollers.TARGET_ROLLER_RPS));
 
       // left trigger + x -> arm to retracted pos (90)
       debugJoystick

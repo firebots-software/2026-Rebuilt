@@ -59,7 +59,8 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
       public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
 
-      public static final double MOTOR_ROTS_PER_ARM_ROT = (25.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
+      public static final double MOTOR_ROTS_PER_ARM_ROT =
+          (25.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
       public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
       public static final double ARM_DEGREES_PER_MOTOR_ROT = 360.0 / MOTOR_ROTS_PER_ARM_ROT;
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
@@ -76,7 +77,7 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final int CAN_ID = 15; 
+      public static final int CAN_ID = 15;
 
       public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: Tune
 
@@ -95,7 +96,7 @@ public final class Constants {
       public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
       public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
-        DESIGNED_SURFACE_SPEED_FT_PER_SEC * 0.3048;
+          DESIGNED_SURFACE_SPEED_FT_PER_SEC * 0.3048;
       public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC =
           DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
 
@@ -103,11 +104,10 @@ public final class Constants {
           (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
-      
+
       public static final class Simulation {
-        public static final double SIM_MOI_KG_M2 =
-            0.0003;
-        }
+        public static final double SIM_MOI_KG_M2 = 0.0003;
+      }
     }
   }
 
@@ -549,7 +549,6 @@ public final class Constants {
     public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
         1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
 
-
     public static class Simulation {
       public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
     }
@@ -768,37 +767,38 @@ public final class Constants {
   //   }
   // }
   public static final class Shooter {
-      public static final int WARMUP_1_ID = 35; // TODO
-      public static final int WARMUP_2_ID = 34; // TODO
-      public static final int WARMUP_3_ID = 32; // TODO
+    public static final int WARMUP_1_ID = 35; // TODO
+    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_3_ID = 32; // TODO
 
-      public static final double KP = 0.5; // TODO
-      public static final double KI = 0.0; // TODO
-      public static final double KD = 0.0; // TODO
-      public static final double KV = 0.12; // TODO
-      public static final double KA = 0.0; // TODO
-      public static final double STATOR_CURRENT_LIMIT = 30.0;
-      public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final double KP = 0.5; // TODO
+    public static final double KI = 0.0; // TODO
+    public static final double KD = 0.0; // TODO
+    public static final double KV = 0.12; // TODO
+    public static final double KA = 0.0; // TODO
+    public static final double STATOR_CURRENT_LIMIT = 30.0;
+    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-      public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
-      public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
-      public static final double SHOOT_FOR_AUTO = 104.72;
+    public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
+    public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
+    public static final double SHOOT_FOR_AUTO = 104.72;
 
-      public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
+    public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
 
-      public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
+    public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
-      public static final boolean SHOOTS_BACKWARDS = false;
+    public static final boolean SHOOTS_BACKWARDS = false;
 
-      public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
+    public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
-      public static final int TARGETING_CALCULATION_PRECISION = 5;
+    public static final int TARGETING_CALCULATION_PRECISION = 5;
 
-      public static final double MIN_DIST_FT = 4d;
-      public static final double MAX_DIST_FT = 8d;
+    public static final double MIN_DIST_FT = 4d;
+    public static final double MAX_DIST_FT = 8d;
 
-      public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
-    }
+    public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
+  }
+
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
     public static final double RIGHT_JOYSTICK_DEADBAND = 0.07;

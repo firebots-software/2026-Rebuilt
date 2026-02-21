@@ -131,11 +131,10 @@ public class HopperSubsystem extends SubsystemBase {
 
   // Stops the Hopper when interrupted
   public Command runHopperUntilInterruptedCommand() {
-    return startEnd(
-        () -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
+    return startEnd(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
   }
 
-    // Stops the Hopper when interrupted
+  // Stops the Hopper when interrupted
   public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
@@ -158,8 +157,7 @@ public class HopperSubsystem extends SubsystemBase {
     // 1. How many volts applied to the motor?
     hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    double appliedMotorVoltageVolts =
-        hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
+    double appliedMotorVoltageVolts = hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
     hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
     hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 

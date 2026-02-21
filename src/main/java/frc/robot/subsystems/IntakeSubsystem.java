@@ -199,8 +199,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setPowerRetract() {
-    armMotor.setControl(
-        new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
+    armMotor.setControl(new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
   }
 
   public Rotation2d getArmUnfusedPosition() {
@@ -211,9 +210,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // TODO: Verify this is the same used w/ the feedback
   public Rotation2d getArmPosition() {
-    return new Rotation2d(
-        Units.rotationsToRadians(
-            armMotor.getPosition().getValueAsDouble()));
+    return new Rotation2d(Units.rotationsToRadians(armMotor.getPosition().getValueAsDouble()));
   }
 
   public double getCancoderPositionRaw() {
@@ -260,7 +257,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Intake/Rollers/CurrentSpeed (rps)", rollersMotor.getVelocity().getValueAsDouble() * Constants.Intake.Rollers.ROLLER_ROTS_PER_MOTOR_ROT);
+    DogLog.log(
+        "Subsystems/Intake/Rollers/CurrentSpeed (rps)",
+        rollersMotor.getVelocity().getValueAsDouble()
+            * Constants.Intake.Rollers.ROLLER_ROTS_PER_MOTOR_ROT);
     DogLog.log("Subsystems/Intake/Rollers/TargetSpeed (rps)", targetRollersRPS);
     DogLog.log("Subsystems/Intake/Rollers/AtTargetSpeed", atTargetSpeed());
 
@@ -270,8 +270,7 @@ public class IntakeSubsystem extends SubsystemBase {
         "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)", getArmPosition().getDegrees());
     DogLog.log(
         "Subsystems/Intake/Arm/FusedCurrentPosition (degs)", getArmUnfusedPosition().getDegrees());
-    DogLog.log(
-        "Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
+    DogLog.log("Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
   }
 
   @Override
@@ -325,8 +324,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // 4. Keep CANcoder sim in sync with arm mechanism position/velocity
     armCancoderSimState.setRawPosition(
         armMechPosRot * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
-    armCancoderSimState.setVelocity(
-        armMechVelRps * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+    armCancoderSimState.setVelocity(armMechVelRps * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
 
     // 4. What happens to the battery (simulated)?
     double rollersSupplyCurrentAmps = rollersMotorSimState.getSupplyCurrent();
