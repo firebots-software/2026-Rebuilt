@@ -197,7 +197,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setPowerRetract() {
     armMotor.setControl(
-        new TorqueCurrentFOC(Constants.Intake.Arm.POWER_REACT_TORQUE_CURRENT));
+        new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
   }
 
   public Rotation2d getArmAbsolutePosition() {
