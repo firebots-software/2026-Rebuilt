@@ -49,6 +49,7 @@ public final class Constants {
 
       public static final double POWER_REACT_TORQUE_CURRENT = 20.0; // TODO: Tune empirically
 
+      // TODO: Tune
       public static final double kV = 0.01;
       public static final double kP = 80.0;
       public static final double kI = 0.0;
@@ -79,6 +80,7 @@ public final class Constants {
 
       public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: Tune
 
+      // TODO: Tune
       public static final double kV = 0.14;
       public static final double kP = 0.0;
       public static final double kI = 0.0;
@@ -514,6 +516,7 @@ public final class Constants {
 
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
+    // TODO: Tune
     public static final double kP = 0.01;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
