@@ -203,14 +203,14 @@ public class IntakeSubsystem extends SubsystemBase {
         new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
   }
 
-  public Rotation2d getArmAbsolutePosition() {
+  public Rotation2d getArmUnfusedPosition() {
     return new Rotation2d(
         Units.rotationsToRadians(
             getCancoderPositionRaw() * Constants.Intake.Arm.ARM_ROTS_PER_CANCODER_ROT));
   }
 
   // TODO: Verify this is the same used w/ the feedback
-  public Rotation2d getArmFusedPosition() {
+  public Rotation2d getArmPosition() {
     return new Rotation2d(
         Units.rotationsToRadians(
             armMotor.getPosition().getValueAsDouble()));
@@ -221,7 +221,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetAngle() {
-    return Math.abs(getArmFusedPosition().getDegrees() - targetAngleDeg)
+    return Math.abs(getArmPosition().getDegrees() - targetAngleDeg)
         <= Constants.Intake.Arm.POSITION_TOLERANCE_DEGREES;
   }
 
@@ -267,9 +267,9 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/AtTargetAngle", atTargetAngle());
     DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
     DogLog.log(
-        "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)", getArmAbsolutePosition().getDegrees());
+        "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)", getArmPosition().getDegrees());
     DogLog.log(
-        "Subsystems/Intake/Arm/FusedCurrentPosition (degs)", getArmFusedPosition().getDegrees());
+        "Subsystems/Intake/Arm/FusedCurrentPosition (degs)", getArmUnfusedPosition().getDegrees());
     DogLog.log(
         "Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
   }
