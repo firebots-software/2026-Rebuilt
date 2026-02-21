@@ -81,10 +81,10 @@ public class HopperSubsystem extends SubsystemBase {
                 krakenGearboxModel,
                 Constants.Hopper.Simulation.MECHANISM_SIM_MOI_KG_M2,
                 Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION),
-            krakenGearboxModel); // add stddevs later if it makes sense
+            krakenGearboxModel);
   }
 
-  public void runHopper(double targetSurfaceSpeedMps) {
+  public void runHopperMps(double targetSurfaceSpeedMps) {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
     hopperMotor.setControl(
         m_velocityRequest.withVelocity(
@@ -107,11 +107,8 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
-    double targetMotorSpeedRotationsPerSecond =
-        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER;
-    return Math.abs(measuredMotorSpeedRotationsPerSecond - targetMotorSpeedRotationsPerSecond)
-        <= Constants.Hopper.MOTOR_SPEED_TOLERANCE_RPS;
+    return Math.abs(getFloorSpeedMPS() - targetSurfaceSpeedMps)
+        <= Constants.Hopper.FLOOR_SPEED_TOLERANCE_MPS;
   }
 
   public boolean isHopperSufficientlyEmpty(FuelGaugeDetection fuelGaugeDetection) {
@@ -121,15 +118,21 @@ public class HopperSubsystem extends SubsystemBase {
         : false);
   }
 
-  // Commands
   public Command runHopperCommand() {
-    return startEnd(
-        () -> runHopper(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
+    return runOnce(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
   }
 
-  // Commands
   public Command runHopperCommand(double targetSurfaceSpeedMps) {
-    return startEnd(() -> runHopper(targetSurfaceSpeedMps), this::stop);
+    return runOnce(() -> runHopperMps(targetSurfaceSpeedMps));
+  }
+
+  public Command runHopperUntilInterruptedCommand() {
+    return startEnd(
+        () -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
+  }
+
+  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
+    return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
   @Override
