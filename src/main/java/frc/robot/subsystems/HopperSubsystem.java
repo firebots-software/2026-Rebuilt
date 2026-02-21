@@ -118,19 +118,23 @@ public class HopperSubsystem extends SubsystemBase {
         : false);
   }
 
+  // Does not stop the Hopper when interrupted
   public Command runHopperCommand() {
     return runOnce(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
   }
 
+  // Does not stop the Hopper when interrupted
   public Command runHopperCommand(double targetSurfaceSpeedMps) {
     return runOnce(() -> runHopperMps(targetSurfaceSpeedMps));
   }
 
+  // Stops the Hopper when interrupted
   public Command runHopperUntilInterruptedCommand() {
     return startEnd(
         () -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
   }
 
+    // Stops the Hopper when interrupted
   public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
