@@ -17,6 +17,6 @@ public class ExpelToFullyRetract extends SequentialCommandGroup {
         shooterSubsystem
             .shootAtSpeedCommand()
             .until(() -> hopperSubsystem.isHopperSufficientlyEmpty(fuelGaugeDetection)),
-        intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+        intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED));
   }
 }
