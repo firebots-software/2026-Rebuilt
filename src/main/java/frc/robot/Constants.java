@@ -12,7 +12,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
@@ -51,9 +52,10 @@ public final class Constants {
 
       // = 77.777 / 360 = 0.216 motor rotations per degree
       // public static final double MOTOR_ROTS_PER_ARM_DEGREES =
-      //     Units.degreesToRotations(ARM_ROTS_PER_MOTOR_ROTS);
+      // Units.degreesToRotations(ARM_ROTS_PER_MOTOR_ROTS);
 
-      // public static final double ARM_DEGREES_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_DEGREES;
+      // public static final double ARM_DEGREES_PER_MOTOR_ROTS = 1.0 /
+      // MOTOR_ROTS_PER_ARM_DEGREES;
 
       /** Absolute encoder ratio: 2.666:1 between encoder and axle */
       public static final double CANCODER_ROTS_PER_ARM_ROTS = (8.0 / 3.0);
@@ -62,7 +64,8 @@ public final class Constants {
       public static final double ENCODER_OFFSET = 0.0; // TODO: Calibrate on robot
 
       // Control Constants (Position closed-loop and torque control)
-      // Note: MRD specifies <insert> for most values - these need characterization/tuning
+      // Note: MRD specifies <insert> for most values - these need
+      // characterization/tuning
       public static final double KV = 0.01; // V*s/rot - TODO: Verify on new robot
       public static final double KP = 80.0; // V/rot - TODO: Verify on new robot
       public static final double KI = 0.0;
@@ -165,6 +168,8 @@ public final class Constants {
 
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
+    // the distance over the bump in meters
+    public static final double DISTANCE_OVER_BUMP = 1.0;
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
@@ -449,7 +454,8 @@ public final class Constants {
     // TODO: CHANGE FOR NEW ROBOT
     // these outline the speed calculations
     public static final double PHYSICAL_MAX_SPEED_METERS_PER_SECOND = 4.868;
-    // 5.944; // before: 4.8768;// 18ft/s = 5.486, 19m/s = 5.791ft/s, 19.5m/s = 5.944 ft/s,
+    // 5.944; // before: 4.8768;// 18ft/s = 5.486, 19m/s = 5.791ft/s, 19.5m/s =
+    // 5.944 ft/s,
     public static final double PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND = 10.917;
     public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
@@ -459,6 +465,93 @@ public final class Constants {
     public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
         26.971;
+
+    public static class Auto {
+      public static enum Maneuver {
+        RedLeftManeuverL,
+        RedLeftManeuverR,
+        RedRightManeuverL,
+        RedRightManeuverR,
+        BlueLeftManeuverL,
+        BlueLeftManeuverR,
+        BlueRightManeuverL,
+        BlueRightManeuverR
+      }
+
+      public static enum Intake {
+        RedLeftIntakeL,
+        RedLeftIntakeM,
+        RedLeftIntakeR,
+        RedLeftIntakeML,
+        RedLeftIntakeMR,
+        RedRightIntakeL,
+        RedRightIntakeM,
+        RedRightIntakeR,
+        RedRightIntakeML,
+        RedRightIntakeMR,
+        BlueLeftIntakeL,
+        BlueLeftIntakeM,
+        BlueLeftIntakeR,
+        BlueLeftIntakeML,
+        BlueLeftIntakeMR,
+        BlueRightIntakeL,
+        BlueRightIntakeM,
+        BlueRightIntakeR,
+        BlueRightIntakeML,
+        BlueRightIntakeMR,
+        RedRightIntakeSweep,
+        RedLeftIntakeSweep,
+        BlueRightIntakeSweep,
+        BlueLeftIntakeSweep
+      }
+
+      public static enum ShootPos {
+        RedLeftShoot,
+        RedRightShoot,
+        BlueLeftShoot,
+        BlueRightShoot,
+        RedDepotToShoot,
+        BlueDepotToShoot,
+        RedOutpostToShoot,
+        BlueOutpostToShoot
+      }
+
+      public static enum ClimbPos {
+        RedLeftClimbL,
+        RedLeftClimbR,
+        RedRightClimbL,
+        RedRightClimbR,
+        BlueLeftClimbL,
+        BlueLeftClimbR,
+        BlueRightClimbL,
+        BlueRightClimbR
+      }
+
+      public static enum Depot {
+        RedDepotL,
+        RedDepotM,
+        RedDepotR,
+        BlueDepotL,
+        BlueDepotM,
+        BlueDepotR,
+      }
+
+      public static enum Outpost {
+        RedOutpostL,
+        RedOutpostM,
+        RedOutpostR,
+        BlueOutpostL,
+        BlueOutpostM,
+        BlueOutpostR,
+      }
+
+      public static enum MiscPaths {
+        RedSweepRight,
+        RedSweepLeft,
+        BlueSweepRight,
+        BlueSweepLeft
+      }
+    }
   }
 
   public static class Climber {
@@ -571,7 +664,8 @@ public final class Constants {
     public static final double HOPPER_BELT_TOOTH_PITCH_METERS =
         0.005; // length of belt movement per tooth moved on it
     public static final double HOPPER_BELT_TOOTH_COUNT =
-        220.0; // number of teeth on the actual belt for full revolution
+        220.0; // number of teeth on the actual belt for full
+    // revolution
     public static final double HOPPER_BELT_LOOP_LENGTH_METERS =
         HOPPER_BELT_TOOTH_COUNT * HOPPER_BELT_TOOTH_PITCH_METERS; // total length of the belt
 
@@ -835,6 +929,7 @@ public final class Constants {
       RightStick(10),
       Back(7),
       Start(8);
+
       public final int value;
 
       XBoxButtonID(int value) {

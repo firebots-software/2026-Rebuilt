@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
@@ -78,11 +77,8 @@ public class RobotContainer {
   public final HopperSubsystem hopper = new HopperSubsystem();
   public final IntakeSubsystem intake = new IntakeSubsystem();
 
-  private final AutoFactory autoFactory;
-
   private final AutoRoutines autoRoutines;
-
-  private final AutoChooser autoChooser = new AutoChooser();
+  private final AutoChooser autoChooser;
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
@@ -105,31 +101,9 @@ public class RobotContainer {
           : null;
 
   public RobotContainer() {
-    // paths without marker
-    autoFactory = drivetrain.createAutoFactory();
-    autoRoutines = new AutoRoutines(autoFactory);
-
-    Command redClimb =
-        autoFactory
-            .resetOdometry("RedClimb.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redDepot =
-        autoFactory
-            .resetOdometry("RedDepot.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redOutpost =
-        autoFactory
-            .resetOdometry("RedOutpost.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command moveForward =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-
-    autoChooser.addCmd("redClimb", () -> redClimb);
-    autoChooser.addCmd("redDepot", () -> redDepot);
-    autoChooser.addCmd("redOutpost", () -> redOutpost);
-    autoChooser.addCmd("moveForward", () -> moveForward);
+    autoRoutines =
+        new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, climberSubsystem);
+    autoChooser = autoRoutines.getAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
