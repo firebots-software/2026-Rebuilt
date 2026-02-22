@@ -39,7 +39,7 @@ public final class Constants {
       public static final double ARM_LENGTH_METERS = 0.35;
 
       public static final int CAN_ID = 14; // TODO: VERIFY
-      public static final int ENCODER_PORT = 16; // TODO: VERIFY
+      public static final int ENCODER_PORT = 15; // TODO: VERIFY
 
       public static final double MOTOR_ROTS_PER_ARM_ROTS = (700.0 / 9.0);
       public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
@@ -91,7 +91,7 @@ public final class Constants {
     /** Constants for the intake roller wheels */
     public static final class Rollers {
       // Hardware Configuration
-      public static final int CAN_ID = 11; // TODO: Get CAN ID from MRD table (currently blank)
+      public static final int CAN_ID = 16; // TODO: Get CAN ID from MRD table (currently blank)
 
       // Gear Ratios & Conversions
       /**
@@ -594,7 +594,7 @@ public final class Constants {
         Units.feetToMeters(HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND);
 
     // --- Hardware IDs ---
-    public static final int MOTOR_PORT = 9;
+    public static final int MOTOR_PORT = 17;
 
     // --- Closed-loop velocity gains (Phoenix Slot0) ---
     public static final double kP = 0.01;
@@ -789,7 +789,7 @@ public final class Constants {
   public static final class Shooter {
     public static final int WARMUP_1_ID = 35; // TODO
     public static final int WARMUP_2_ID = 34; // TODO
-    public static final int WARMUP_3_ID = 32; // TODO
+    public static final int WARMUP_3_ID = 33; // TODO
 
     public static final double KP = 0.5; // TODO
     public static final double KI = 0.0; // TODO
