@@ -64,7 +64,6 @@ public class RobotContainer {
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CommandXboxController debugJoystick = new CommandXboxController(1);
-  private final CommandXboxController goatJoystick = new CommandXboxController(2);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
