@@ -112,7 +112,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersSlot0Configs;
     rollersConfig.CurrentLimits = rollersCurrentLimitsConfigs;
-    rollersConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    rollersConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rollersConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     TalonFXConfiguration armConfig = new TalonFXConfiguration();

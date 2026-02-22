@@ -14,6 +14,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -76,6 +77,10 @@ public class ClimberSubsystem extends SubsystemBase {
     TalonFXConfigurator pullUpRightConfigurator = pullUpMotorR.getConfigurator();
 
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
+    MotorOutputConfigs mocReversed =
+        new MotorOutputConfigs()
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInverted(InvertedValue.Clockwise_Positive);
 
     muscleUpConfigurator.apply(s0c);
     sitUpConfigurator.apply(s0c);
@@ -87,10 +92,10 @@ public class ClimberSubsystem extends SubsystemBase {
     pullUpRightConfigurator.apply(regClc);
     pullUpLeftConfigurator.apply(regClc);
 
-    muscleUpConfigurator.apply(moc);
+    muscleUpConfigurator.apply(mocReversed);
     sitUpConfigurator.apply(moc);
     pullUpRightConfigurator.apply(moc);
-    pullUpLeftConfigurator.apply(moc);
+    pullUpLeftConfigurator.apply(mocReversed);
 
     // create fusedcancoder
     sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT);
