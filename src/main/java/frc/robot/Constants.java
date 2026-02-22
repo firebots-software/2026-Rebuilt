@@ -15,9 +15,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = false;
+  public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = false;
-  public static final boolean visionOnRobot = true;
+  public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
 
