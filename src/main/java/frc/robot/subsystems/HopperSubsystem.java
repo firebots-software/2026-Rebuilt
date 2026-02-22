@@ -140,7 +140,10 @@ public class HopperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Hopper/CurrentSurfaceSpeed (mps)", hopperMotor.getVelocity().getValueAsDouble() * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
+    DogLog.log(
+        "Subsystems/Hopper/CurrentSurfaceSpeed (mps)",
+        hopperMotor.getVelocity().getValueAsDouble()
+            * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
