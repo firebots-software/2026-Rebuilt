@@ -16,9 +16,9 @@ import edu.wpi.first.units.measure.*;
 
 public final class Constants {
   public static final boolean hopperOnRobot = true;
-  public static final boolean intakeOnRobot = false;
+  public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
-  public static final boolean shooterOnRobot = false;
+  public static final boolean shooterOnRobot = true;
   public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
@@ -772,10 +772,10 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 33; // TODO
 
-    public static final double KP = 0.5; // TODO
+    public static final double KP = 0.0; // TODO
     public static final double KI = 0.0; // TODO
     public static final double KD = 0.0; // TODO
-    public static final double KV = 0.12; // TODO
+    public static final double KV = 0.124; // TODO
     public static final double KA = 0.0; // TODO
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;

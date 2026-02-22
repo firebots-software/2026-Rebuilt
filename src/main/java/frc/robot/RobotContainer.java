@@ -160,11 +160,11 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
-    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick
-          .rightBumper()
-          .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
-    }
+    // if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+    //   joystick
+    //       .rightBumper()
+    //       .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
+    // }
     // x -> zero swerve
     // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
@@ -262,6 +262,10 @@ public class RobotContainer {
 
       // a -> zero climber
       joystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
+    }
+
+    if (Constants.shooterOnRobot) {
+      joystick.povDown().whileTrue(lebron.shootAtSpeedCommand(71.2));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
