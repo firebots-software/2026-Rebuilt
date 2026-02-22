@@ -15,9 +15,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = false;
+  public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = false;
-  public static final boolean visionOnRobot = true;
+  public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
 
@@ -164,7 +164,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
@@ -597,7 +597,7 @@ public final class Constants {
     public static final int MOTOR_PORT = 17;
 
     // --- Closed-loop velocity gains (Phoenix Slot0) ---
-    public static final double kP = 0.01;
+    public static final double kP = 0.00;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.124;

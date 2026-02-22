@@ -169,7 +169,7 @@ public class RobotContainer {
           .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
     }
     // x -> zero swerve
-    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     if (Constants.intakeOnRobot) {
       // left bumper -> run intake
@@ -267,9 +267,9 @@ public class RobotContainer {
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
 
-    // if (Constants.hopperOnRobot) {
-    //   // joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
-    // }
+    if (Constants.hopperOnRobot) {
+      joystick.x().whileTrue(hopperSubsystem.runHopperCommand(1.0));
+    }
 
     debugJoystick
         .povUp()
