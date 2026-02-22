@@ -509,7 +509,7 @@ public final class Constants {
   }
 
   public static class Hopper {
-    public static final int MOTOR_PORT = 8;
+    public static final int MOTOR_PORT = 34;
 
     public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
     public static final double TARGET_SURFACE_SPEED_MPS = TARGET_SURFACE_SPEED_FPS * 0.3048;
@@ -768,7 +768,7 @@ public final class Constants {
   // }
   public static final class Shooter {
     public static final int WARMUP_1_ID = 35; // TODO
-    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_2_ID = 33; // TODO
     public static final int WARMUP_3_ID = 32; // TODO
 
     public static final double KP = 0.5; // TODO
