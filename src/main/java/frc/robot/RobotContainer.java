@@ -64,6 +64,7 @@ public class RobotContainer {
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CommandXboxController debugJoystick = new CommandXboxController(1);
+  private final CommandXboxController goatJoystick = new CommandXboxController(2);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -74,9 +75,9 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
-  public final ShooterSubsystem shooter = new ShooterSubsystem();
-  public final HopperSubsystem hopper = new HopperSubsystem();
-  public final IntakeSubsystem intake = new IntakeSubsystem();
+  // public final ShooterSubsystem shooter = new ShooterSubsystem();
+  // public final HopperSubsystem hopper = new HopperSubsystem();
+  // public final IntakeSubsystem intake = new IntakeSubsystem();
 
   private final AutoFactory autoFactory;
 
@@ -141,6 +142,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    goatJoystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand(1.0));
     // Swerve bindings - left joystick for translation, right joystick for rotation
     Trigger leftTrigger = joystick.leftTrigger();
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),

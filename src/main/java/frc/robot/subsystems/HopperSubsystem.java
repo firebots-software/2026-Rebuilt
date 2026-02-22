@@ -93,8 +93,7 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void stop() {
-    targetSurfaceSpeedMps = 0.0;
-    hopperMotor.setControl(m_velocityRequest.withVelocity(0));
+    runHopperMps(0.0);
   }
 
   public double getFloorSpeedMPS() {
@@ -135,12 +134,13 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   // Stops the Hopper when interrupted
-  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
-    return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
+  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeed_Mps) {
+    return startEnd(() -> runHopperMps(targetSurfaceSpeed_Mps), this::stop);
   }
 
   @Override
   public void periodic() {
+    DogLog.log("Subsystems/Hopper/CurrentSurfaceSpeed (mps)", hopperMotor.getVelocity().getValueAsDouble() * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
