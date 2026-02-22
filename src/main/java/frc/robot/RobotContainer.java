@@ -142,7 +142,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    goatJoystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand());
+    // goatJoystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand());
     // Swerve bindings - left joystick for translation, right joystick for rotation
     Trigger leftTrigger = joystick.leftTrigger();
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
@@ -174,17 +174,18 @@ public class RobotContainer {
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     if (Constants.intakeOnRobot) {
-      // left bumper -> run intake
-      joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      goatJoystick.x().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      // // left bumper -> run intake
+      // joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
-      // intake default command - retract arm if hopper is empty, idle if not
-      if (Constants.hopperOnRobot && Constants.visionOnRobot) {
-        intakeSubsystem.setDefaultCommand(
-            new ConditionalCommand(
-                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
-                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE),
-                () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
-      }
+      // // intake default command - retract arm if hopper is empty, idle if not
+      // if (Constants.hopperOnRobot && Constants.visionOnRobot) {
+      //   intakeSubsystem.setDefaultCommand(
+      //       new ConditionalCommand(
+      //           intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
+      //           intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE),
+      //           () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
+      // }
     }
 
     if (Constants.shooterOnRobot) {

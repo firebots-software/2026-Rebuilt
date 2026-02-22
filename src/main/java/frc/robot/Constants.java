@@ -15,8 +15,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = true;
-  public static final boolean intakeOnRobot = false;
+  public static final boolean hopperOnRobot = false;
+  public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
@@ -82,7 +82,7 @@ public final class Constants {
       public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: Tune
 
       // TODO: Tune
-      public static final double kV = 0.14;
+      public static final double kV = 0.124;
       public static final double kP = 0.0;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
