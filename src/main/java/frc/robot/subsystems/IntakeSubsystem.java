@@ -55,7 +55,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX(Constants.Intake.Rollers.CAN_ID);
-    armMotor = new LoggedTalonFX(Constants.Intake.Arm.CAN_ID);
+    armMotor =
+        new LoggedTalonFX(
+            Constants.Intake.Arm.CAN_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     targetAngleDeg = Constants.Intake.Arm.ARM_POS_RETRACTED;
     targetRollersRPS = 0;
 

@@ -40,9 +40,15 @@ public class ShooterSubsystem extends SubsystemBase {
   private DCMotorSim shooterMechanismSim;
 
   public ShooterSubsystem() {
-    warmUpMotor1 = new LoggedTalonFX(Constants.Shooter.WARMUP_1_ID);
-    warmUpMotor2 = new LoggedTalonFX(Constants.Shooter.WARMUP_2_ID);
-    warmUpMotor3 = new LoggedTalonFX(Constants.Shooter.WARMUP_3_ID);
+    warmUpMotor1 =
+        new LoggedTalonFX(
+            Constants.Shooter.WARMUP_1_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    warmUpMotor2 =
+        new LoggedTalonFX(
+            Constants.Shooter.WARMUP_2_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    warmUpMotor3 =
+        new LoggedTalonFX(
+            Constants.Shooter.WARMUP_3_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     shooter = warmUpMotor3;
 
     Slot0Configs s0c =
