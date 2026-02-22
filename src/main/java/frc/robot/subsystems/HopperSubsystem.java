@@ -12,6 +12,7 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -26,9 +27,9 @@ import frc.robot.util.LoggedTalonFX;
 
 public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
-  private double targetSurfaceSpeedMetersPerSecond = 0.0;
+  private double targetSurfaceSpeedMps = 0.0;
 
-  // Simulation objects
+  // Simulation Objects
   private TalonFXSimState hopperMotorSimState;
   private DCMotorSim hopperMechanismSim;
 
@@ -37,8 +38,8 @@ public class HopperSubsystem extends SubsystemBase {
   public HopperSubsystem() {
     CurrentLimitsConfigs currentLimitConfigs =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Hopper.HOPPER_STATOR_LIMIT_AMPS)
-            .withSupplyCurrentLimit(Constants.Hopper.HOPPER_SUPPLY_LIMIT_AMPS);
+            .withStatorCurrentLimit(Constants.Hopper.STATOR_LIMIT_AMPS)
+            .withSupplyCurrentLimit(Constants.Hopper.SUPPLY_LIMIT_AMPS);
 
     Slot0Configs s0c =
         new Slot0Configs()
@@ -79,26 +80,25 @@ public class HopperSubsystem extends SubsystemBase {
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
                 krakenGearboxModel,
-                Constants.Hopper.HOPPER_SIM_MECHANISM_MOI_KG_M2,
-                Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION),
-            krakenGearboxModel); // add stddevs later if it makes sense
+                Constants.Hopper.Simulation.MECHANISM_SIM_MOI_KG_M2,
+                Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION),
+            krakenGearboxModel);
   }
 
-  public void runHopper(double targetSurfaceSpeedMetersPerSecond) {
-    this.targetSurfaceSpeedMetersPerSecond = targetSurfaceSpeedMetersPerSecond;
+  public void runHopperMps(double targetSurfaceSpeedMps) {
+    this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
     hopperMotor.setControl(
         m_velocityRequest.withVelocity(
-            targetSurfaceSpeedMetersPerSecond
-                * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER));
+            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
   }
 
   public void stop() {
-    hopperMotor.setControl(m_velocityRequest.withVelocity(0));
+    runHopperMps(0.0);
   }
 
   public double getFloorSpeedMPS() {
     return hopperMotor.getVelocity().getValueAsDouble()
-        * Constants.Hopper.HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
+        * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
   }
 
   public double getAgitatorSpeedRPS() {
@@ -107,11 +107,8 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    double measuredMotorSpeedRotationsPerSecond = hopperMotor.getVelocity().getValueAsDouble();
-    double targetMotorSpeedRotationsPerSecond =
-        targetSurfaceSpeedMetersPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER;
-    return Math.abs(measuredMotorSpeedRotationsPerSecond - targetMotorSpeedRotationsPerSecond)
-        <= Constants.Hopper.HOPPER_VELOCITY_TOLERANCE_ROTATIONS_PER_SECOND;
+    return Math.abs(getFloorSpeedMPS() - targetSurfaceSpeedMps)
+        <= Constants.Hopper.FLOOR_SPEED_TOLERANCE_MPS;
   }
 
   public boolean isHopperSufficientlyEmpty(FuelGaugeDetection fuelGaugeDetection) {
@@ -121,64 +118,65 @@ public class HopperSubsystem extends SubsystemBase {
         : false);
   }
 
-  // Commands
+  // Does not stop the Hopper when interrupted
   public Command runHopperCommand() {
-    return startEnd(
-        () -> runHopper(Constants.Hopper.HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND), this::stop);
+    return runOnce(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
   }
 
-  // Commands
-  public Command runHopperCommand(double speedMetersPerSec) {
-    return startEnd(() -> runHopper(speedMetersPerSec), this::stop);
+  // Does not stop the Hopper when interrupted
+  public Command runHopperCommand(double targetSurfaceSpeedMps) {
+    return runOnce(() -> runHopperMps(targetSurfaceSpeedMps));
+  }
+
+  // Stops the Hopper when interrupted
+  public Command runHopperUntilInterruptedCommand() {
+    return startEnd(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
+  }
+
+  // Stops the Hopper when interrupted
+  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
+    return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Hopper/Target Speed", targetSurfaceSpeedMetersPerSecond);
-    DogLog.log("Subsystems/Hopper/At target speed", atTargetSpeed());
+    DogLog.log("Subsystems/Hopper/CurrentSurfaceSpeed (mps)", hopperMotor.getVelocity().getValueAsDouble() * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
+    DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
+    DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
-        "Subsystems/Hopper/TargetMotorSpeed(RPS)",
-        targetSurfaceSpeedMetersPerSecond * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_BELT_METER);
+        "Subsystems/Hopper/TargetMotorSpeed (rps)",
+        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
     DogLog.log(
-        "Subsystems/Hopper/CurrentMotorSpeed(RPS)", hopperMotor.getVelocity().getValueAsDouble());
-    DogLog.log("Subsystems/Hopper/AppliedVolts", hopperMotor.getMotorVoltage().getValueAsDouble());
-    DogLog.log(
-        "Subsystems/Hopper/Motor Current (stator)",
-        hopperMotor.getStatorCurrent().getValueAsDouble());
+        "Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getVelocity().getValueAsDouble());
   }
 
   @Override
   public void simulationPeriodic() {
     if (hopperMotorSimState == null || hopperMechanismSim == null) return;
 
-    // 1) Supply voltage to CTRE sim
+    // 1. How many volts applied to the motor?
     hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    // 2) Read applied motor voltage and step mechanism plant
-    double appliedMotorVoltageVolts =
-        hopperMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+    double appliedMotorVoltageVolts = hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
     hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
     hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-    // 3) Mechanism-side sim -> rotor-side sensor state
-    // DCMotorSim tracks the pulley/belt mechanism (after gear reduction)
+    // 2. What happens to the simulated mechanism?
     double hopperMechanismVelocityRotationsPerSecond =
         hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
     double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
 
-    // Convert mechanism rotations to motor rotor rotations
-    // Motor spins faster: 5 motor rotations = 1 pulley rotation
+    // 3. Updating the simulated motor based on the behavior of the simulated mechanism
     double motorRotorPositionRotations =
         hopperMechanismPositionRotations
-            * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
+            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
     double motorRotorVelocityRotationsPerSecond =
         hopperMechanismVelocityRotationsPerSecond
-            * Constants.Hopper.MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
-
+            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
     hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
     hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
 
-    // 4) Battery sag model
+    // 4. What happens to the battery (simulated)?
     double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
     double targetBatteryV =
         BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);

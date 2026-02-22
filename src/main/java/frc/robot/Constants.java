@@ -16,8 +16,8 @@ import edu.wpi.first.units.measure.*;
 
 public final class Constants {
   public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = false;
-  public static final boolean visionOnRobot = true;
+  public static final boolean intakeOnRobot = true;
+  public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = false;
   public static final boolean climberOnRobot = false;
 
@@ -34,132 +34,80 @@ public final class Constants {
     public static final double HAS_PIECE_CURRENT_AMPS = 35.0;
     public static final double HAS_PIECE_THRESHOLD_SEC = 0.15;
 
-    /** Constants for the intake deployment arm (four-bar linkage) */
     public static final class Arm {
-      public static final double ARM_LENGTH_METERS = 0.35;
-
-      public static final int CAN_ID = 14; // TODO: VERIFY
-      public static final int ENCODER_PORT = 16; // TODO: VERIFY
-
-      public static final double MOTOR_ROTS_PER_ARM_ROTS = (700.0 / 9.0);
-      public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
-
-      public static final double ARM_DEGREES_PER_MOTOR_ROTS = 360.0 / MOTOR_ROTS_PER_ARM_ROTS;
-      // = 360 / 77.777 = 4.629 degrees per motor rotation
-
-      public static final double MOTOR_ROTS_PER_ARM_DEGREES = MOTOR_ROTS_PER_ARM_ROTS / 360.0;
-
-      // = 77.777 / 360 = 0.216 motor rotations per degree
-      // public static final double MOTOR_ROTS_PER_ARM_DEGREES =
-      //     Units.degreesToRotations(ARM_ROTS_PER_MOTOR_ROTS);
-
-      // public static final double ARM_DEGREES_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_DEGREES;
-
-      /** Absolute encoder ratio: 2.666:1 between encoder and axle */
-      public static final double CANCODER_ROTS_PER_ARM_ROTS = (8.0 / 3.0);
-
-      public static final double ARM_ROTS_PER_CANCODER_ROTS = 1.0 / CANCODER_ROTS_PER_ARM_ROTS;
-      public static final double ENCODER_OFFSET = 0.0; // TODO: Calibrate on robot
-
-      // Control Constants (Position closed-loop and torque control)
-      // Note: MRD specifies <insert> for most values - these need characterization/tuning
-      public static final double KV = 0.01; // V*s/rot - TODO: Verify on new robot
-      public static final double KP = 80.0; // V/rot - TODO: Verify on new robot
-      public static final double KI = 0.0;
-      public static final double KD = 0.0; // V*s/rot - TODO: Verify on new robot
-      public static final double KG = 0.15; // TODO: verify
+      public static final int CAN_ID = 14;
+      public static final int ENCODER_PORT = 16;
 
       // Current Limits
-      public static final double STATOR_CURRENT_LIMIT = 40.0; // Amps - TODO: Verify with team
-      public static final double ARM_DEGREES_UPPER_LIMIT = 95.0;
       public static final double ARM_POS_RETRACTED = 90.0;
       public static final double ARM_POS_EXTENDED = 15.0;
       public static final double ARM_POS_MAX = 90.0;
       public static final double ARM_POS_MIN = 15.0;
-      public static final double SIM_ARM_POS_MIN = 10.0; // for the simulator
-      public static final double SIM_ARM_POS_MAX = 95.0;
-      public static final double ARM_POS_IDLE = 45.0; // subject to change
+      public static final double ARM_POS_IDLE = 45.0; // TODO: Verify & Test
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
-      public static final double POWER_RETRACT_TORQUE_CURRENT_FOC = 0f; // TODO: get val
+      public static final double POWER_RETRACT_TORQUE_CURRENT = 20.0; // TODO: Tune empirically
 
-      // Simulation
-      public static final double SIM_MOI_KG_M2 = 0.1;
+      // TODO: Tune
+      public static final double kV = 0.01;
+      public static final double kP = 80.0;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
+      public static final double kG = 0.15;
+
+      public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
+      public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
+
+      public static final double MOTOR_ROTS_PER_ARM_ROT =
+          (25.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
+      public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
+      public static final double ARM_DEGREES_PER_MOTOR_ROT = 360.0 / MOTOR_ROTS_PER_ARM_ROT;
+      public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
+      public static final double CANCODER_ROTS_PER_ARM_ROT = (8.0 / 3.0);
+      public static final double ARM_ROTS_PER_CANCODER_ROT = 1.0 / CANCODER_ROTS_PER_ARM_ROT;
+      public static final double ENCODER_OFFSET = 0.0; // TODO: Calibrate on robot
+
+      public static final class Simulation {
+        public static final double SIM_ARM_POS_MIN = 10.0;
+        public static final double SIM_ARM_POS_MAX = 95.0;
+        public static final double SIM_MOI_KG_M2 = 0.1;
+        public static final double ARM_LENGTH_METERS = 0.35;
+      }
     }
 
-    /** Constants for the intake roller wheels */
     public static final class Rollers {
-      // Hardware Configuration
-      public static final int CAN_ID = 11; // TODO: Get CAN ID from MRD table (currently blank)
+      public static final int CAN_ID = 15;
 
-      // Gear Ratios & Conversions
-      /**
-       * End-to-end reduction: 2.6667:1 Breakdown: Motor → 12t:32t pulley (9mm, 70t belt) → top
-       * rollers → 17t:17t pulley (9mm, 65t belt) → bottom rollers
-       */
-      public static final double MOTOR_ROTS_PER_ROLLERS_ROTS = 8.0 / 3.0;
+      public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: Tune
 
-      public static final double ROLLER_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROTS;
+      // TODO: Tune
+      public static final double kV = 0.124;
+      public static final double kP = 0.0;
+      public static final double kI = 0.0;
+      public static final double kD = 0.0;
 
-      // Wheel Specifications
-      /** Roller wheel diameter (inches) */
-      public static final double ROLLER_DIAMETER_INCHES = 3.0;
+      // Current Limits
+      public static final double STATOR_CURRENT_LIMIT = 80.0; // TODO: Verify
+      public static final double SUPPLY_CURRENT_LIMIT = 80.0; // TODO: Verify
 
-      public static final double ROLLER_CIRCUMFERENCE_INCHES = ROLLER_DIAMETER_INCHES * Math.PI;
-
-      /** Designed top speed: ~25 ft/s surface speed */
+      public static final double ROLLER_CIRCUMFERENCE_INCHES = 3.0 * Math.PI;
+      public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 8.0 / 3.0;
+      public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
-
       public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
-          Units.feetToMeters(DESIGNED_SURFACE_SPEED_FT_PER_SEC);
+          DESIGNED_SURFACE_SPEED_FT_PER_SEC * 0.3048;
       public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC =
           DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
 
-      /** Target roller RPM to achieve designed surface speed */
       public static final double TARGET_ROLLER_RPM =
           (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
-
-      /** Target roller RPS (rotations per second) */
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
+      public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
 
-      /** Target motor velocity (RPS) to achieve designed roller speed */
-      public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROTS;
-
-      // Control Constants (Kraken x60, velocity closed-loop)
-      public static final double KV = 0.14; // from MRDs
-      public static final double KP = 0.0; // TODO: MRD shows <insert>
-      public static final double KI = 0; // TODO: MRD shows <insert>
-      public static final double KD = 0; // TODO: MRD shows <insert>
-
-      // Current Limits
-      public static final double STATOR_CURRENT_LIMIT = 80.0; // Amps - TODO: Verify with team
-      public static final double SUPPLY_CURRENT_LIMIT = 80.0; // Amps - TODO: Verify with team
-
-      // Ball Detection (monitors roller current to estimate ball intake)
-      /** Current threshold indicating balls are being intaken */
-      public static final double BALL_DETECTION_CURRENT_THRESHOLD_AMPS =
-          15.0; // TODO: Tune empirically
-
-      /** Debounce time for ball detection to filter noise */
-      public static final double BALL_DETECTION_DEBOUNCE_SEC = 0.1; // TODO: Tune
-
-      public static final double SIM_MOI_KG_M2 =
-          0.0003; // TODO: BETTER ESTIMATION CAN BE MADE USING DESIGN
-
-      public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: OBSERVE BEHAVIOR
-    }
-
-    /**
-     * Constants for power retract behavior during shooting. WARNING: Per MRD, only use after balls
-     * have been partially emptied to avoid expelling balls from hopper.
-     */
-    public static final class PowerRetract {
-      /**
-       * Torque current for power retract mode (TorqueCurrentFOC). Applies constant force to help
-       * push balls from hopper into shooter to increase BPS.
-       */
-      public static final double TORQUE_CURRENT_AMPS = 20.0; // TODO: Tune empirically
+      public static final class Simulation {
+        public static final double SIM_MOI_KG_M2 = 0.0003;
+      }
     }
   }
 
@@ -561,56 +509,49 @@ public final class Constants {
   }
 
   public static class Hopper {
-    // --- Mechanical transmission ---
-    // Motor turns needed for one hopper pulley turn (5:1 reduction)
-    public static final double MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION = 5.0;
-    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
-        (20.0 / 24.0) * (60.0 / 12.0);
+    public static final int MOTOR_PORT = 34;
 
-    // Timing belt geometry
-    public static final double HOPPER_BELT_TOOTH_PITCH_METERS =
-        0.005; // length of belt movement per tooth moved on it
-    public static final double HOPPER_BELT_TOOTH_COUNT =
-        220.0; // number of teeth on the actual belt for full revolution
-    public static final double HOPPER_BELT_LOOP_LENGTH_METERS =
-        HOPPER_BELT_TOOTH_COUNT * HOPPER_BELT_TOOTH_PITCH_METERS; // total length of the belt
+    public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
+    public static final double TARGET_SURFACE_SPEED_MPS = TARGET_SURFACE_SPEED_FPS * 0.3048;
 
-    // Linear travel conversion
-    // meters of belt travel per motor rotation
-    public static final double HOPPER_BELT_METERS_PER_MOTOR_ROTATION =
-        HOPPER_BELT_LOOP_LENGTH_METERS / MOTOR_ROTATIONS_PER_HOPPER_PULLEY_ROTATION;
+    public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
-    // inverse conversion (sometimes convenient in control code)
-    // motor rotations per meter of belt travel
-    public static final double MOTOR_ROTATIONS_PER_HOPPER_BELT_METER =
-        1.0 / HOPPER_BELT_METERS_PER_MOTOR_ROTATION;
-
-    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
-        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
-
-    // --- Operating targets ---
-    public static final double HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND = 6.0;
-    public static final double HOPPER_BELT_TARGET_SPEED_METERS_PER_SECOND =
-        Units.feetToMeters(HOPPER_BELT_TARGET_SPEED_FEET_PER_SECOND);
-
-    // --- Hardware IDs ---
-    public static final int MOTOR_PORT = 9;
-
-    // --- Closed-loop velocity gains (Phoenix Slot0) ---
-    public static final double kP = 0.01;
+    // TODO: Tune
+    public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.124;
 
-    // --- Current limits ---
-    public static final double HOPPER_STATOR_LIMIT_AMPS = 30.0;
-    public static final double HOPPER_SUPPLY_LIMIT_AMPS = 30.0;
+    public static final double STATOR_LIMIT_AMPS = 30.0;
+    public static final double SUPPLY_LIMIT_AMPS = 30.0;
 
-    // --- Control tolerance ---
-    public static final double HOPPER_VELOCITY_TOLERANCE_ROTATIONS_PER_SECOND = 0.1;
+    public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
+    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
+        (20.0 / 24.0) * (60.0 / 12.0);
 
-    // --- Simulation ---
-    public static final double HOPPER_SIM_MECHANISM_MOI_KG_M2 = 0.0008;
+    public static final double BELT_TOOTH_PITCH_METERS =
+        0.005; // length of belt movement per tooth moved on it
+    public static final double FLOOR_PULLEY_TOOTH_COUNT = 24.0;
+    public static final double BELT_LOOP_TOOTH_COUNT =
+        220.0; // number of teeth on the actual belt for full revolution
+    public static final double BELT_LOOP_LENGTH_METERS =
+        BELT_LOOP_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+
+    public static final double BELT_TRAVEL_METERS_PER_PULLEY_ROTATION =
+        FLOOR_PULLEY_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+
+    public static final double BELT_TRAVEL_METERS_PER_MOTOR_ROTATION =
+        BELT_TRAVEL_METERS_PER_PULLEY_ROTATION / MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
+
+    public static final double MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER =
+        1.0 / BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
+
+    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
+        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
+
+    public static class Simulation {
+      public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
+    }
   }
 
   public static class Vision {
@@ -786,9 +727,48 @@ public final class Constants {
     }
   }
 
+  // public static final class Shooter {
+  //   public static final int WARMUP_1_ID = 18;
+  //   public static final int WARMUP_2_ID = 19;
+  //   public static final int WARMUP_3_ID = 24;
+
+  //   public static final double WHEEL_TOLERANCE_RPS = 2.0; // tolerance in rotations per second
+
+  //   // TODO: Tune
+  //   public static final double kP = 0.5;
+  //   public static final double kI = 0.0;
+  //   public static final double kD = 0.0;
+  //   public static final double kV = 0.12;
+  //   public static final double kA = 0.0;
+
+  //   public static final double STATOR_CURRENT_LIMIT = 30.0;
+  //   public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+
+  //   public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
+  //   public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
+  //   public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
+  //   public static final double SHOOT_FOR_AUTO = 66.7; //104.72 / 2.0;
+
+  //   public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
+
+  //   public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
+
+  //   public static final boolean SHOOTS_BACKWARDS = false;
+
+  //   public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
+
+  //   public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+  //   public static final double MIN_DIST_FT = 4d;
+  //   public static final double MAX_DIST_FT = 8d;
+
+  //   public static final class Simulation {
+  //     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
+  //   }
+  // }
   public static final class Shooter {
     public static final int WARMUP_1_ID = 35; // TODO
-    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_2_ID = 33; // TODO
     public static final int WARMUP_3_ID = 32; // TODO
 
     public static final double KP = 0.5; // TODO
