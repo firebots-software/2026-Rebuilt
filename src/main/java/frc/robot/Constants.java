@@ -36,7 +36,7 @@ public final class Constants {
 
     public static final class Arm {
       public static final int CAN_ID = 14;
-      public static final int ENCODER_PORT = 16;
+      public static final int ENCODER_PORT = 15;
 
       // Current Limits
       public static final double ARM_POS_RETRACTED = 90.0;
@@ -77,7 +77,8 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final int CAN_ID = 15;
+      // Hardware Configuration
+      public static final int CAN_ID = 16; // TODO: Get CAN ID from MRD table (currently blank)
 
       public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: Tune
 
@@ -768,8 +769,8 @@ public final class Constants {
   // }
   public static final class Shooter {
     public static final int WARMUP_1_ID = 35; // TODO
-    public static final int WARMUP_2_ID = 33; // TODO
-    public static final int WARMUP_3_ID = 32; // TODO
+    public static final int WARMUP_2_ID = 34; // TODO
+    public static final int WARMUP_3_ID = 33; // TODO
 
     public static final double KP = 0.5; // TODO
     public static final double KI = 0.0; // TODO
