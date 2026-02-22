@@ -142,7 +142,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    goatJoystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand(1.0));
+    goatJoystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand());
     // Swerve bindings - left joystick for translation, right joystick for rotation
     Trigger leftTrigger = joystick.leftTrigger();
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
