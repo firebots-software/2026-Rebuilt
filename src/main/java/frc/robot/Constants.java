@@ -66,7 +66,7 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
       public static final double CANCODER_ROTS_PER_ARM_ROT = (8.0 / 3.0);
       public static final double ARM_ROTS_PER_CANCODER_ROT = 1.0 / CANCODER_ROTS_PER_ARM_ROT;
-      public static final double ENCODER_OFFSET = 0.0; // TODO: Calibrate on robot
+      public static final double ENCODER_OFFSET = 0.1845;
 
       public static final class Simulation {
         public static final double SIM_ARM_POS_MIN = 10.0;
@@ -456,7 +456,7 @@ public final class Constants {
       public static final int MOTOR_PORT = 12;
       public static final int ENCODER_PORT = 13;
 
-      public static final int ENCODER_OFFSET = 0; // TODO: get vals
+      public static final double ENCODER_OFFSET = -0.3125; // TODO: get vals
 
       public static final double KP = 0.4;
       public static final double KI = 0;
