@@ -134,8 +134,8 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   // Stops the Hopper when interrupted
-  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeed_Mps) {
-    return startEnd(() -> runHopperMps(targetSurfaceSpeed_Mps), this::stop);
+  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
+    return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
   @Override
