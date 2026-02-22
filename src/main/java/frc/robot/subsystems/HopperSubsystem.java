@@ -47,7 +47,9 @@ public class HopperSubsystem extends SubsystemBase {
             .withKD(Constants.Hopper.kD)
             .withKV(Constants.Hopper.kV);
 
-    hopperMotor = new LoggedTalonFX(Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    hopperMotor =
+        new LoggedTalonFX(
+            Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
