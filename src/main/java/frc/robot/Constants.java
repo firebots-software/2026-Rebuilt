@@ -449,7 +449,7 @@ public final class Constants {
       public static final double L2_MUSCLE_UP_FORWARD = 95; // TODO: get vals
       public static final double L3_MUSCLE_UP_FORWARD = 95; // TODO: get vals
       public static final double MUSCLE_UP_BACK = 0;
-      public static final double MUSCLEUP_DOWN_VELOCITY = -1;
+      public static final double MUSCLEUP_DOWN_VELOCITY = -0.2;
 
       public static final double SUPPLY_CURRENT_LIMIT = 30;
       public static final double STATOR_CURRENT_LIMIT = 30;

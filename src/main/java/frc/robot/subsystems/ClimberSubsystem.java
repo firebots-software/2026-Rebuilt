@@ -199,8 +199,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void reduceMuscleUpCurrentLimits() {
-    // TODO: make sure these current limits are correct
-    muscleUpMotor.updateCurrentLimits(30, 10);
+    muscleUpMotor.updateCurrentLimits(6, 7);
   }
 
   public void movePullUpDown() {
