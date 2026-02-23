@@ -166,7 +166,7 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
-    // if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
+    // if (Constants.shooterOnRobot && Constants.xhopperOnRobot) {
     //   joystick
     //       .rightBumper()
     //       .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
@@ -252,7 +252,7 @@ public class RobotContainer {
     if (Constants.climberOnRobot) {
       // climberSubsystem.setDefaultCommand(climberSubsystem.stopPullUpCommand());
       // climberSubsystem.setDefaultCommand(Commands.run(climberSubsystem::stopPullUp, climberSubsystem));
-      climberSubsystem.setDefaultCommand(Commands.run(climberSubsystem::stopMuscleUp, climberSubsystem));
+      climberSubsystem.setDefaultCommand(climberSubsystem.brakeWithoutServoCommand());
 
       // y -> initiate climb
       // TODO: verify that command is correct
@@ -279,7 +279,8 @@ public class RobotContainer {
       // a -> zero climber
       debugJoystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
 
-      joystick.y().whileTrue(Commands.run(climberSubsystem::moveSitUpBack, climberSubsystem));
+      joystick.y().whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+      joystick.x().whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
     }
 
     if (Constants.shooterOnRobot) {
@@ -289,7 +290,7 @@ public class RobotContainer {
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
 
     if (Constants.hopperOnRobot) {
-      joystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand(1.0));
+      // joystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand(1.0));
     }
 
     debugJoystick

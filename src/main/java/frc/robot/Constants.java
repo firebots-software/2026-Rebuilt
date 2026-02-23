@@ -461,12 +461,14 @@ public final class Constants {
 
       public static final double ENCODER_OFFSET = -0.3125; // TODO: get vals
 
-      public static final double KP = 0.4;
+      public static final double KP = 30;
       public static final double KI = 0;
       public static final double KD = 0;
       public static final double KV = 0.12;
       public static final double KG = 0;
       public static final double KS = 0;
+      public static final double mmcV = 0.07;
+      public static final double mmcA = 0.14;
 
       public static final double SIT_UP_TOLERANCE = 0.1;
 
@@ -476,9 +478,11 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROTS / 360d;
       public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
           1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
-      public static final double ENCODER_ROTS_PER_ARM_ROTATIONS = 1.0;
-      public static final double SIT_UP_ANGLE_DEGREES = 90.0;
-      public static final double SIT_BACK_ANGLE_DEGREES = 65.0;
+      
+      public static final double MOTOR_ROTS_TO_ENCODER_ROTS = 54.4;
+      public static final double ENCODER_ROTS_PER_ARM_ROTS = 32f / 17f;
+      public static final double SIT_UP_ANGLE_DEGREES = 35.0;
+      public static final double SIT_BACK_ANGLE_DEGREES = 52.0;
 
       public static final double SUPPLY_CURRENT_LIMIT = 60.0;
       public static final double STATOR_CURRENT_LIMIT = 100.0;
