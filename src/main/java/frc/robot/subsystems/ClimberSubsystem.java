@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -196,7 +197,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command stopPullUpCommand() {
-    return runOnce(() -> this.stopPullUp());
+    return runOnce(this::stopPullUp);
   }
 
   public void stopMuscleUp() {
@@ -223,7 +224,6 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void reduceMuscleUpCurrentLimits() {
-    // TODO: make sure these current limits are correct
     muscleUpMotor.updateCurrentLimits(6, 10);
   }
 
@@ -252,6 +252,10 @@ public class ClimberSubsystem extends SubsystemBase {
     //     m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
     muscleUpMotor.setControl(
       m_outwardsvoltageOut);
+  }
+
+  public void moveSitUpBack() {
+    sitUpMotor.setControl(new DutyCycleOut(-1));
   }
 
   public boolean checkPullUpCurrent() {

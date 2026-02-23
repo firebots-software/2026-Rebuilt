@@ -272,12 +272,14 @@ public class RobotContainer {
         }
       }
       // joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
-      joystick.y().whileTrue(new ZeroPullUp(climberSubsystem));
+      // joystick.y().whileTrue(new ZeroPullUp(climberSubsystem));
       joystick.leftBumper().whileTrue(new ZeroMuscleUp(climberSubsystem));
       joystick.rightBumper().whileTrue(new MuscleUpDown(climberSubsystem));
 
       // a -> zero climber
       debugJoystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
+
+      joystick.y().whileTrue(Commands.run(climberSubsystem::moveSitUpBack, climberSubsystem));
     }
 
     if (Constants.shooterOnRobot) {
