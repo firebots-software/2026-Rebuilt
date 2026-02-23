@@ -28,6 +28,8 @@ import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
 import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.DriveToPose;
+import frc.robot.commands.ZeroMuscleUp;
+import frc.robot.commands.ZeroPullUp;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -38,6 +40,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
+
+import java.time.zone.ZoneRulesProvider;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -215,8 +219,8 @@ public class RobotContainer {
     // INTAKE COMMANDS (DEBUG)
     // left trigger -> run intake
     if (Constants.intakeOnRobot) {
-      debugJoystick
-          .leftTrigger()
+      joystick
+          .povUp()
           .whileTrue(
               intakeSubsystem.runRollersUntilInterruptedCommand(
                   Constants.Intake.Rollers.TARGET_ROLLER_RPS));
@@ -228,10 +232,13 @@ public class RobotContainer {
           .onTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
       // left trigger + a -> arm to extended pos (15)
-      debugJoystick
-          .leftTrigger()
-          .and(debugJoystick.a())
-          .onTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_EXTENDED));
+      joystick
+          .a()
+          .whileTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED));  //Constants.Intake.Arm.ARM_POS_EXTENDED, .and(debugJoystick.a())
+
+      joystick
+          .povRight()
+          .whileTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_EXTENDED));
 
       // left trigger + b -> arm to idle pos (45)
       debugJoystick
@@ -259,9 +266,10 @@ public class RobotContainer {
         }
       }
       joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
+      joystick.povLeft().whileTrue(new ZeroPullUp(climberSubsystem).andThen(climberSubsystem.resetPullUpPositionToZeroCommand()));
 
       // a -> zero climber
-      joystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
+      debugJoystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
     }
 
     if (Constants.shooterOnRobot) {

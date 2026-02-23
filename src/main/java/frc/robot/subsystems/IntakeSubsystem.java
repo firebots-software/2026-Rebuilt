@@ -6,14 +6,17 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -52,14 +55,14 @@ public class IntakeSubsystem extends SubsystemBase {
   private SingleJointedArmSim armMechanismSim;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
-  private final PositionVoltage m_positionRequest = new PositionVoltage(0);
+  private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
 
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX(Constants.Intake.Rollers.CAN_ID);
     armMotor =
         new LoggedTalonFX(
             Constants.Intake.Arm.CAN_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-    targetAngleDeg = Constants.Intake.Arm.ARM_POS_RETRACTED;
+    targetAngleDeg = 0;
     targetRollersRPS = 0;
 
     Slot0Configs rollersSlot0Configs =
@@ -75,7 +78,8 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKP(Constants.Intake.Arm.kP)
             .withKI(Constants.Intake.Arm.kI)
             .withKD(Constants.Intake.Arm.kD)
-            .withKG(Constants.Intake.Arm.kG);
+            .withKG(Constants.Intake.Arm.kG)
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
     CurrentLimitsConfigs rollersCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
@@ -86,14 +90,18 @@ public class IntakeSubsystem extends SubsystemBase {
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT);
 
+    MotionMagicConfigs mmc = new MotionMagicConfigs()
+      .withMotionMagicCruiseVelocity(Constants.Intake.Arm.mmcV)
+      .withMotionMagicAcceleration(Constants.Intake.Arm.mmcA);
+
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
-    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT);
+    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.toString());
     CANcoderConfiguration ccConfig = new CANcoderConfiguration();
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()
             .withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
-            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+            .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
             .withMagnetOffset(Rotations.of(Constants.Intake.Arm.ENCODER_OFFSET));
 
     cancoder.getConfigurator().apply(ccConfig);
@@ -126,6 +134,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();
 
     armMotorConfig.apply(armConfig);
+    armMotorConfig.apply(mmc);
     rollersMotorConfig.apply(rollersConfig);
 
     DogLog.log("Subsystems/Intake/Arm/Gains/kP", Constants.Intake.Arm.kP);
@@ -133,6 +142,9 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/Gains/kD", Constants.Intake.Arm.kD);
     DogLog.log("Subsystems/Intake/Arm/Gains/kV", Constants.Intake.Arm.kV);
     DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.kG);
+    DogLog.log("Subsystems/Intake/Arm/Gains/mmcV", Constants.Intake.Arm.mmcV);
+    DogLog.log("Subsystems/Intake/Arm/Gains/mmcA", Constants.Intake.Arm.mmcA);
+    
 
     DogLog.log("Subsystems/Intake/Rollers/Gains/kP", Constants.Intake.Rollers.kP);
     DogLog.log("Subsystems/Intake/Rollers/Gains/kI", Constants.Intake.Rollers.kI);
@@ -192,12 +204,17 @@ public class IntakeSubsystem extends SubsystemBase {
     rollersMotor.setControl(m_velocityRequest.withVelocity(0));
   }
 
+  public void stopArm() {
+    armMotor.stopMotor();
+  }
+
   public void setArmDegrees(double angleDeg) {
     targetAngleDeg =
         MathUtil.clamp(
-            angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_MAX);
+            angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_RETRACTED); //change to retracted, not max
     double targetArmRotations = targetAngleDeg / 360.0;
-    armMotor.setControl(m_positionRequest.withPosition(targetArmRotations));
+    armMotor.setControl(m_motionMagicRequest.withPosition(targetArmRotations));
+    DogLog.log("target rot", targetArmRotations);
   }
 
   public void setPowerRetract() {

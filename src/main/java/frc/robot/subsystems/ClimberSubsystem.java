@@ -208,6 +208,11 @@ public class ClimberSubsystem extends SubsystemBase {
         m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_DOWN_VELOCITY));
   }
 
+  public void movePullUpUp() {
+    pullUpMotorR.setControl(
+        m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
+  }
+
   public void moveMuscleUpDown() {
     muscleUpMotor.setControl(
         m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
@@ -241,6 +246,14 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void resetPullUpPositionToZero() {
     pullUpMotorR.setPosition(0);
+  }
+
+  public void resetPullUpPositionToTop() {
+    pullUpMotorR.setPosition(Constants.Climber.PullUp.PULL_DOWN_POS_METERS*Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS);
+  }
+
+  public Command resetPullUpPositionToZeroCommand() {
+    return runOnce(() -> this.resetPullUpPositionToZero());
   }
 
   public void resetMuscleUpPositionToZero() {

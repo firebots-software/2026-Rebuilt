@@ -26,14 +26,14 @@ public class ZeroPullUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.movePullUpDown();
+    climberSubsystem.movePullUpUp();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      climberSubsystem.resetPullUpPositionToZero();
+      climberSubsystem.resetPullUpPositionToTop();
     }
     climberSubsystem.resetPullUpCurrentLimits();
   }

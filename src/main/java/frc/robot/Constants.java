@@ -19,7 +19,7 @@ public final class Constants {
   public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
   public static final boolean shooterOnRobot = true;
-  public static final boolean climberOnRobot = false;
+  public static final boolean climberOnRobot = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -39,22 +39,25 @@ public final class Constants {
       public static final int ENCODER_PORT = 15;
 
       // Current Limits
-      public static final double ARM_POS_RETRACTED = 90.0;
-      public static final double ARM_POS_EXTENDED = 15.0;
-      public static final double ARM_POS_MAX = 90.0;
-      public static final double ARM_POS_MIN = 15.0;
-      public static final double ARM_POS_IDLE = 45.0; // TODO: Verify & Test
+      public static final double ARM_POS_RETRACTED = 118.0;
+      public static final double ARM_POS_EXTENDED = 25.0;
+      public static final double ARM_POS_MAX = 115.0;
+      public static final double ARM_POS_MIN = 0.0;
+      public static final double ARM_POS_IDLE = 60.0; // TODO: Verify & Test
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
       public static final double POWER_RETRACT_TORQUE_CURRENT = 20.0; // TODO: Tune empirically
 
       // TODO: Tune
-      public static final double kV = 0.01;
-      public static final double kP = 80.0;
+      public static final double kV = 0.12;
+      public static final double kP = 206.7;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
-      public static final double kG = 0.15;
+      public static final double kG = 0.0;
+
+      public static final double mmcV = 1.5;
+      public static final double mmcA = 3.0;
 
       public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
       public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
@@ -66,7 +69,7 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
       public static final double CANCODER_ROTS_PER_ARM_ROT = (8.0 / 3.0);
       public static final double ARM_ROTS_PER_CANCODER_ROT = 1.0 / CANCODER_ROTS_PER_ARM_ROT;
-      public static final double ENCODER_OFFSET = 0.1845;
+      public static final double ENCODER_OFFSET = 0.188;
 
       public static final class Simulation {
         public static final double SIM_ARM_POS_MIN = 10.0;
@@ -80,10 +83,10 @@ public final class Constants {
       // Hardware Configuration
       public static final int CAN_ID = 16; // TODO: Get CAN ID from MRD table (currently blank)
 
-      public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 0.3; // TODO: Tune
+      public static final double TOLERANCE_MOTOR_ROTS_PER_SEC = 2.0; // TODO: Tune
 
       // TODO: Tune
-      public static final double kV = 0.124;
+      public static final double kV = 0.1167;
       public static final double kP = 0.0;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
@@ -499,13 +502,17 @@ public final class Constants {
       public static final double L1_REACH_POS = 0;
       public static final double L2_REACH_POS = 0;
       public static final double L3_REACH_POS = 0;
-      public static final double PULL_DOWN_POS = -0.369885;
-      public static final double PULL_DOWN_POS_L1_AUTO = -0.192885;
+      public static final double PULL_DOWN_POS = 0;
+      public static final double PULL_DOWN_POS_L1_AUTO = -0.192885+0.369885;
+      public static final double PULL_DOWN_POS_METERS = 0.369885;
 
       public static final double SUPPLY_CURRENT_LIMIT = 30;
       public static final double STATOR_CURRENT_LIMIT = 30;
 
       public static final double PULL_DOWN_VELOCITY = -1f;
+      public static final double PULL_UP_VELOCITY = 1f;
+
+      
     }
   }
 
