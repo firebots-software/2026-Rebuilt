@@ -23,11 +23,13 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Climber.MuscleUp;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
 import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.DriveToPose;
+import frc.robot.commands.MuscleUpDown;
 import frc.robot.commands.ZeroMuscleUp;
 import frc.robot.commands.ZeroPullUp;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -174,7 +176,7 @@ public class RobotContainer {
 
     if (Constants.intakeOnRobot) {
       // // left bumper -> run intake
-      joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      // joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // intake default command - retract arm if hopper is empty, idle if not
       if (Constants.hopperOnRobot && Constants.visionOnRobot) {
@@ -248,6 +250,10 @@ public class RobotContainer {
     }
 
     if (Constants.climberOnRobot) {
+      // climberSubsystem.setDefaultCommand(climberSubsystem.stopPullUpCommand());
+      // climberSubsystem.setDefaultCommand(Commands.run(climberSubsystem::stopPullUp, climberSubsystem));
+      climberSubsystem.setDefaultCommand(Commands.run(climberSubsystem::stopMuscleUp, climberSubsystem));
+
       // y -> initiate climb
       // TODO: verify that command is correct
       BooleanSupplier leftside = () -> true; // TODO: get button
@@ -265,8 +271,10 @@ public class RobotContainer {
           poseToDriveTo = Constants.Landmarks.BLUE_TOWER_R;
         }
       }
-      joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
-      joystick.povLeft().whileTrue(new ZeroPullUp(climberSubsystem).andThen(climberSubsystem.resetPullUpPositionToZeroCommand()));
+      // joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
+      joystick.y().whileTrue(new ZeroPullUp(climberSubsystem));
+      joystick.leftBumper().whileTrue(new ZeroMuscleUp(climberSubsystem));
+      joystick.rightBumper().whileTrue(new MuscleUpDown(climberSubsystem));
 
       // a -> zero climber
       debugJoystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));

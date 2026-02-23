@@ -418,8 +418,8 @@ public final class Constants {
     public static final double KI = 0;
     public static final double KD = 0;
 
-    public static final double DEFAULT_SUPPLY_CURRENT = 30.0;
-    public static final double DEFAULT_STATOR_CURRENT = 30.0;
+    public static final double DEFAULT_SUPPLY_CURRENT = 12.0;
+    public static final double DEFAULT_STATOR_CURRENT = 6.0;
 
     public static final int BRAKE_PORT = 7; // TODO
     public static final double BRAKE_ANGLE = 24.838;
@@ -509,9 +509,8 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 30;
       public static final double STATOR_CURRENT_LIMIT = 30;
 
-      public static final double PULL_DOWN_VELOCITY = -1f;
-      public static final double PULL_UP_VELOCITY = 1f;
-
+      public static final double PULL_DOWN_VELOCITY = -1.0;
+      public static final double PULL_UP_VELOCITY = 5.0;
       
     }
   }
