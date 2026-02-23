@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 import edu.wpi.first.units.measure.Angle;
@@ -754,6 +755,21 @@ public final class Constants {
     public static final double MAX_DIST_FT = 8d;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
+
+    public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
+
+    static {
+      UPDATE_INTERMAP();
+    }
+
+    public static void UPDATE_INTERMAP() {
+      INTERMAP.clear();
+      // INTERMAP.put(); // TODO: put vals
+      // INTERMAP.put();
+      // INTERMAP.put();
+      // INTERMAP.put();
+      // INTERMAP.put();
+    }
   }
 
   public static class OI {

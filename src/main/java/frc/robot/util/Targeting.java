@@ -65,11 +65,12 @@ public class Targeting {
   }
 
   public static double speedForDist(double d) {
-    return Math.sqrt(
-        d
-            * 9.81
-            / Math.sin(
-                Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
+    return Constants.Shooter.INTERMAP.get(d);
+    // return Math.sqrt(
+    //     d
+    //         * 9.81
+    //         / Math.sin(
+    //             Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
   }
 
   public static Vector3 positionToTarget(
