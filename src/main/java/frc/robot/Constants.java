@@ -586,33 +586,33 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
     // TODO: SID: update all vals
-    public static final double FRONT_RIGHT_X = Units.inchesToMeters(6.70);
-    public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-4.125);
-    public static final double FRONT_RIGHT_Z = Units.inchesToMeters(40.875);
-    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(180); // 180
-    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(171.5); // 171.5
-    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(0.0);
+    public static final double FRONT_RIGHT_X = Units.inchesToMeters(6.70); // -4.775894 in
+    public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-4.125); // -7.880312 in
+    public static final double FRONT_RIGHT_Z = Units.inchesToMeters(40.875); // 27.024842 in
+    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(180); // 17.264474 degrees
+    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(171.5); // 355.256834 degrees
+    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(0.0); // 14.948185 degrees
 
-    public static final double FRONT_LEFT_X = Units.inchesToMeters(6.70);
-    public static final double FRONT_LEFT_Y = Units.inchesToMeters(4.125);
-    public static final double FRONT_LEFT_Z = Units.inchesToMeters(40.875);
-    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(180);
-    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(171.5);
-    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(0.0);
+    public static final double FRONT_LEFT_X = Units.inchesToMeters(6.70); // -4.757613 in
+    public static final double FRONT_LEFT_Y = Units.inchesToMeters(4.125); // 8.454156 in
+    public static final double FRONT_LEFT_Z = Units.inchesToMeters(40.875); // 27.046870 in
+    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(0.0); // 342.735526 degrees
+    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(171.5); // 355.256834 degrees
+    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(180.0); // 345.051815 degrees
 
-    public static final double REAR_RIGHT_X = Units.inchesToMeters(6.70);
-    public static final double REAR_RIGHT_Y = Units.inchesToMeters(-4.125);
-    public static final double REAR_RIGHT_Z = Units.inchesToMeters(40.875);
-    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0); // 180
-    public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(171.5); // 171.5
-    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(180.0);
+    public static final double REAR_RIGHT_X = Units.inchesToMeters(6.70); // -13.852572 in
+    public static final double REAR_RIGHT_Y = Units.inchesToMeters(-4.125); // -9.047180 in
+    public static final double REAR_RIGHT_Z = Units.inchesToMeters(40.875); // 17.891914 in
+    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0); // 46.780821 degrees
+    public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(171.5); // 338.827168 degrees
+    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(180.0); // 200.000000 degrees
 
-    public static final double REAR_LEFT_X = Units.inchesToMeters(6.70);
-    public static final double REAR_LEFT_Y = Units.inchesToMeters(4.125);
-    public static final double REAR_LEFT_Z = Units.inchesToMeters(40.875);
-    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(0.0);
-    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5);
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(180.0);
+    public static final double REAR_LEFT_X = Units.inchesToMeters(6.70); // -13.846460 in
+    public static final double REAR_LEFT_Y = Units.inchesToMeters(4.125); // -7.056897 in
+    public static final double REAR_LEFT_Z = Units.inchesToMeters(40.875); // 25.105416 in
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(180); // 286.894287 degrees
+    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(171.5); // 55.646896 degrees
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(0.0); // 23.957651 degrees
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
@@ -672,12 +672,12 @@ public final class Constants {
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
 
-    public static final double FUEL_GAUGE_X = Units.inchesToMeters(8.867);
-    public static final double FUEL_GAUGE_Y = Units.inchesToMeters(12.478);
-    public static final double FUEL_GAUGE_Z = Units.inchesToMeters(6.158);
-    public static final double FUEL_GAUGE_ROLL = Units.degreesToRadians(0.0);
-    public static final double FUEL_GAUGE_PITCH = Units.degreesToRadians(8.7);
-    public static final double FUEL_GAUGE_YAW = Units.degreesToRadians(0.0);
+    public static final double FUEL_GAUGE_X = Units.inchesToMeters(6.70); // -3.454827 in
+    public static final double FUEL_GAUGE_Y = Units.inchesToMeters(-4.125); // -7.056897 in
+    public static final double FUEL_GAUGE_Z = Units.inchesToMeters(40.875); // 25.105416 in
+    public static final double FUEL_GAUGE_ROLL = Units.degreesToRadians(180); // 286.894287 degrees
+    public static final double FUEL_GAUGE_PITCH = Units.degreesToRadians(171.5); // 55.646896 degrees
+    public static final double FUEL_GAUGE_YAW = Units.degreesToRadians(0.0); // 23.957651 degrees
 
     public static enum FuelGaugeCamera {
       FUEL_GAUGE_CAM(
