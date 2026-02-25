@@ -596,23 +596,23 @@ public final class Constants {
     public static final double FRONT_LEFT_X = Units.inchesToMeters(-4.757613);
     public static final double FRONT_LEFT_Y = Units.inchesToMeters(8.454156);
     public static final double FRONT_LEFT_Z = Units.inchesToMeters(27.046870);
-    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(342.735526);
+    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(162.735526);
     public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(355.256834);
     public static final double FRONT_LEFT_YAW = Units.degreesToRadians(345.051815);
 
     public static final double REAR_RIGHT_X = Units.inchesToMeters(-13.852572);
-    public static final double REAR_RIGHT_Y = Units.inchesToMeters(9.047180);
+    public static final double REAR_RIGHT_Y = Units.inchesToMeters(-9.047180);
     public static final double REAR_RIGHT_Z = Units.inchesToMeters(17.891914);
     public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(46.780821);
     public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(338.827168);
     public static final double REAR_RIGHT_YAW = Units.degreesToRadians(200.000000);
 
     public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
-    public static final double REAR_LEFT_Y = Units.inchesToMeters(-7.056897);
-    public static final double REAR_LEFT_Z = Units.inchesToMeters(25.105416);
-    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(286.894287);
-    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(55.646896);
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(23.957651);
+    public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
+    public static final double REAR_LEFT_Z = Units.inchesToMeters(17.903158);
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(133.219179);
+    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(338.827168);
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(120.000000000000);
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
