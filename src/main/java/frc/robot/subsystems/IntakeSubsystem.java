@@ -11,7 +11,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -90,13 +89,16 @@ public class IntakeSubsystem extends SubsystemBase {
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT);
 
-    MotionMagicConfigs mmc = new MotionMagicConfigs()
-      .withMotionMagicCruiseVelocity(Constants.Intake.Arm.mmcV)
-      .withMotionMagicAcceleration(Constants.Intake.Arm.mmcA);
+    MotionMagicConfigs mmc =
+        new MotionMagicConfigs()
+            .withMotionMagicCruiseVelocity(Constants.Intake.Arm.mmcV)
+            .withMotionMagicAcceleration(Constants.Intake.Arm.mmcA);
 
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
-    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.toString());
+    cancoder =
+        new CANcoder(
+            Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.toString());
     CANcoderConfiguration ccConfig = new CANcoderConfiguration();
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()
@@ -144,7 +146,6 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.kG);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcV", Constants.Intake.Arm.mmcV);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcA", Constants.Intake.Arm.mmcA);
-    
 
     DogLog.log("Subsystems/Intake/Rollers/Gains/kP", Constants.Intake.Rollers.kP);
     DogLog.log("Subsystems/Intake/Rollers/Gains/kI", Constants.Intake.Rollers.kI);
@@ -211,7 +212,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setArmDegrees(double angleDeg) {
     targetAngleDeg =
         MathUtil.clamp(
-            angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_RETRACTED); //change to retracted, not max
+            angleDeg,
+            Constants.Intake.Arm.ARM_POS_MIN,
+            Constants.Intake.Arm.ARM_POS_RETRACTED); // change to retracted, not max
     double targetArmRotations = targetAngleDeg / 360.0;
     armMotor.setControl(m_motionMagicRequest.withPosition(targetArmRotations));
     DogLog.log("target rot", targetArmRotations);
