@@ -89,12 +89,14 @@ public class RobotContainer {
       Constants.visionOnRobot
           ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM)
           : null;
-   public final VisionSubsystem visionRearRight =
-  Constants.visionOnRobot ? new
-   VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM) : null;
-   public final VisionSubsystem visionRearLeft =
-   Constants.visionOnRobot ? new
-   VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM) : null;
+  public final VisionSubsystem visionRearRight =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM)
+          : null;
+  public final VisionSubsystem visionRearLeft =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM)
+          : null;
 
   public final FuelGaugeDetection visionFuelGauge =
       Constants.visionOnRobot
@@ -333,9 +335,11 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot || visionFrontRight == null || visionFrontLeft == null
-    /*|| visionRearRight == null
-    || visionRearLeft == null */ ) return;
+    if (!Constants.visionOnRobot
+        || visionFrontRight == null
+        || visionFrontLeft == null
+        || visionRearRight == null
+        || visionRearLeft == null) return;
 
     VisionSubsystem visionFallback;
 
@@ -390,14 +394,12 @@ public class RobotContainer {
         preferredDistance = frontLeftDist;
       }
 
-      if (rearRightDist < preferredDistance &&
-      visionRearRight.hasValidMeasurement()) {
+      if (rearRightDist < preferredDistance && visionRearRight.hasValidMeasurement()) {
         preferredVision = visionRearRight;
         preferredDistance = rearRightDist;
       }
 
-      if (rearLeftDist < preferredDistance &&
-      visionRearLeft.hasValidMeasurement()) {
+      if (rearLeftDist < preferredDistance && visionRearLeft.hasValidMeasurement()) {
         preferredVision = visionRearLeft;
         preferredDistance = rearLeftDist;
       }
