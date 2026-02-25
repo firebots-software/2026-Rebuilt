@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -35,6 +36,7 @@ public class HopperSubsystem extends SubsystemBase {
   private DCMotorSim hopperMechanismSim;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
+  private final DutyCycleOut m_DutyCycleOutRequest = new DutyCycleOut(0);
 
   public HopperSubsystem() {
     CurrentLimitsConfigs currentLimitConfigs =
@@ -97,6 +99,10 @@ public class HopperSubsystem extends SubsystemBase {
             targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
   }
 
+  public void runHopperMpsFullDutyCycle() {
+    hopperMotor.setControl(m_DutyCycleOutRequest.withOutput(1));
+  }
+
   public void stop() {
     runHopperMps(0.0);
   }
@@ -141,6 +147,10 @@ public class HopperSubsystem extends SubsystemBase {
   // Stops the Hopper when interrupted
   public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
+  }
+
+  public Command runHopperUntilInterruptedCommandDutyCycle() {
+    return startEnd(() -> runHopperMpsFullDutyCycle(), this::stop);
   }
 
   @Override
