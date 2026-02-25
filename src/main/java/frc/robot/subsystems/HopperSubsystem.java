@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -48,20 +49,22 @@ public class HopperSubsystem extends SubsystemBase {
             .withKD(Constants.Hopper.kD)
             .withKV(Constants.Hopper.kV);
 
-    hopperMotor =
-        new LoggedTalonFX(
-            Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
 
-    TalonFXConfigurator hopperConfigurator = hopperMotor.getConfigurator();
+    hopperMotor =
+        new LoggedTalonFX(
+            Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
-    hopperConfigurator.apply(s0c);
-    hopperConfigurator.apply(currentLimitConfigs);
-    hopperConfigurator.apply(motorOutputConfigs);
+    TalonFXConfiguration hopperConfig = new TalonFXConfiguration();
+    hopperConfig.Slot0 = s0c;
+    hopperConfig.CurrentLimits = currentLimitConfigs;
+    hopperConfig.MotorOutput = motorOutputConfigs;
+
+    TalonFXConfigurator hopperMotorConfig = hopperMotor.getConfigurator();
+    hopperMotorConfig.apply(hopperConfig);
 
     DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
     DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
