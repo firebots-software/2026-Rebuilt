@@ -234,10 +234,7 @@ public class RobotContainer {
     // INTAKE COMMANDS (DEBUG)
     // left trigger -> run intake
     if (Constants.intakeOnRobot) {
-      ronaldoJoystick
-          .a()
-          .whileTrue(
-              intakeSubsystem.intakeUntilInterruptedCommand());
+      ronaldoJoystick.a().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // left trigger + x -> arm to retracted pos (90)
       debugJoystick
@@ -300,20 +297,31 @@ public class RobotContainer {
 
       // joystick
       //     .y()
-      //     .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+      //
+      // .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
       joystick
           .x()
           .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
     }
 
     if (Constants.shooterOnRobot) {
-      ronaldoJoystick.b().whileTrue((lebron.shootAtSpeedCommand(65)).alongWith(hopperSubsystem.runHopperUntilInterruptedCommand(Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+      ronaldoJoystick
+          .b()
+          .whileTrue(
+              (lebron.shootAtSpeedCommand(65))
+                  .alongWith(
+                      hopperSubsystem.runHopperUntilInterruptedCommand(
+                          Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
 
     if (Constants.hopperOnRobot) {
-      ronaldoJoystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
+      ronaldoJoystick
+          .x()
+          .whileTrue(
+              hopperSubsystem.runHopperUntilInterruptedCommand(
+                  Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
       // ronaldoJoystick.y().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommandDutyCycle());
 
       // ronaldoJoystick.a().whileTrue(swerveJoystickCommand)
