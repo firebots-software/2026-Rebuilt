@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ArcAroundAndShoot;
+import frc.robot.commandGroups.ShootWithWarning;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.MuscleUpDown;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -312,6 +314,8 @@ public class RobotContainer {
                   .alongWith(
                       hopperSubsystem.runHopperUntilInterruptedCommand(
                           Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+
+      ronaldoJoystick.leftBumper().whileTrue(new ShootWithWarning(drivetrain, lebron, intakeSubsystem, hopperSubsystem, Constants.Landmarks.RED_HUB, () -> true, ronaldoJoystick, frontBackFunction, leftRightFunction));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
