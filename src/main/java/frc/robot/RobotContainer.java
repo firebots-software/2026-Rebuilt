@@ -10,35 +10,22 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.Vision.VisionCamera;
-import frc.robot.commandGroups.ArcAroundAndShoot;
-import frc.robot.commandGroups.ShootBasic;
-import frc.robot.commands.DriveToPose;
-import frc.robot.commands.MuscleUpDown;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.ZeroMuscleUp;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -49,11 +36,12 @@ public class RobotContainer {
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1)
-      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(
-          DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(MaxSpeed * 0.1)
+          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+          .withDriveRequestType(
+              DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -62,16 +50,18 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  //private final CommandXboxController joystick = new CommandXboxController(0);
-  //private final CommandXboxController debugJoystick = new CommandXboxController(1);
+  // private final CommandXboxController joystick = new CommandXboxController(0);
+  // private final CommandXboxController debugJoystick = new CommandXboxController(1);
   private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   // public final ClimberSubsystem climberSubsystem =
   // Constants.climberOnRobot ? new ClimberSubsystem() : null;
-  public final HopperSubsystem hopperSubsystem = Constants.hopperOnRobot ? new HopperSubsystem() : null;
-  public final IntakeSubsystem intakeSubsystem = Constants.intakeOnRobot ? new IntakeSubsystem() : null;
+  public final HopperSubsystem hopperSubsystem =
+      Constants.hopperOnRobot ? new HopperSubsystem() : null;
+  public final IntakeSubsystem intakeSubsystem =
+      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
 
   private final AutoFactory autoFactory;
@@ -80,12 +70,14 @@ public class RobotContainer {
 
   private final AutoChooser autoChooser = new AutoChooser();
 
-  public final VisionSubsystem visionFrontRight = Constants.visionOnRobot
-      ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM)
-      : null;
-  public final VisionSubsystem visionFrontLeft = Constants.visionOnRobot
-      ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM)
-      : null;
+  public final VisionSubsystem visionFrontRight =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM)
+          : null;
+  public final VisionSubsystem visionFrontLeft =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM)
+          : null;
   // public final VisionSubsystem visionRearRight =
   // Constants.visionOnRobot ? new
   // VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
@@ -93,27 +85,32 @@ public class RobotContainer {
   // Constants.visionOnRobot ? new
   // VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
 
-  public final FuelGaugeDetection visionFuelGauge = Constants.visionOnRobot
-      ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
-      : null;
+  public final FuelGaugeDetection visionFuelGauge =
+      Constants.visionOnRobot
+          ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
+          : null;
 
   public RobotContainer() {
     // paths without marker
     autoFactory = drivetrain.createAutoFactory();
     autoRoutines = new AutoRoutines(autoFactory);
 
-    Command redClimb = autoFactory
-        .resetOdometry("RedClimb.traj")
-        .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redDepot = autoFactory
-        .resetOdometry("RedDepot.traj")
-        .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redOutpost = autoFactory
-        .resetOdometry("RedOutpost.traj")
-        .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command moveForward = autoFactory
-        .resetOdometry("MoveForward.traj")
-        .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command redClimb =
+        autoFactory
+            .resetOdometry("RedClimb.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command redDepot =
+        autoFactory
+            .resetOdometry("RedDepot.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command redOutpost =
+        autoFactory
+            .resetOdometry("RedOutpost.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
+    Command moveForward =
+        autoFactory
+            .resetOdometry("MoveForward.traj")
+            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
 
     autoChooser.addCmd("redClimb", () -> redClimb);
     autoChooser.addCmd("redDepot", () -> redDepot);
@@ -153,17 +150,20 @@ public class RobotContainer {
     DoubleSupplier frontBackFunction = () -> -ronaldoJoystick.getLeftY(),
         leftRightFunction = () -> -ronaldoJoystick.getLeftX(),
         rotationFunction = () -> -ronaldoJoystick.getRightX(),
-        speedFunction = () -> leftTrigger.getAsBoolean()
-            ? 0d
-            : 1d; // slowmode when left shoulder is pressed, otherwise fast
+        speedFunction =
+            () ->
+                leftTrigger.getAsBoolean()
+                    ? 0d
+                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
-    SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
-        frontBackFunction,
-        leftRightFunction,
-        rotationFunction,
-        speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-        () -> ronaldoJoystick.leftTrigger().getAsBoolean(),
-        drivetrain);
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> ronaldoJoystick.leftTrigger().getAsBoolean(),
+            drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
@@ -443,9 +443,10 @@ public class RobotContainer {
   // }
 
   public static void setAlliance() {
-    redAlliance = (DriverStation.getAlliance().isEmpty())
-        ? false
-        : (DriverStation.getAlliance().get() == Alliance.Red);
+    redAlliance =
+        (DriverStation.getAlliance().isEmpty())
+            ? false
+            : (DriverStation.getAlliance().get() == Alliance.Red);
   }
 
   public Command getAutonomousCommand() {

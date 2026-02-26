@@ -29,10 +29,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -96,9 +93,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
-    cancoder =
-        new CANcoder(
-            Constants.Intake.Arm.ENCODER_PORT, "Viper");
+    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, "Viper");
     CANcoderConfiguration ccConfig = new CANcoderConfiguration();
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()
@@ -322,7 +317,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   //   // 2. What happens to the simulated mechanism?
   //   double rollersMechPosRot = rollersMechanismSim.getAngularPositionRotations();
-  //   double rollersMechVelRps = rollersMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+  //   double rollersMechVelRps = rollersMechanismSim.getAngularVelocityRadPerSec() / (2.0 *
+  // Math.PI);
 
   //   double armMechAngleRad = armMechanismSim.getAngleRads();
   //   double armMechVelRps = armMechanismSim.getVelocityRadPerSec() / (2.0 * Math.PI);
@@ -346,13 +342,15 @@ public class IntakeSubsystem extends SubsystemBase {
   //   // 4. Keep CANcoder sim in sync with arm mechanism position/velocity
   //   armCancoderSimState.setRawPosition(
   //       armMechPosRot * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
-  //   armCancoderSimState.setVelocity(armMechVelRps * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+  //   armCancoderSimState.setVelocity(armMechVelRps *
+  // Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
 
   //   // 4. What happens to the battery (simulated)?
   //   double rollersSupplyCurrentAmps = rollersMotorSimState.getSupplyCurrent();
   //   double armSupplyCurrentAmps = armMotorSimState.getSupplyCurrent();
   //   double totalSupplyCurrentAmps = rollersSupplyCurrentAmps + armSupplyCurrentAmps;
-  //   double targetBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalSupplyCurrentAmps);
+  //   double targetBatteryV =
+  // BatterySim.calculateDefaultBatteryLoadedVoltage(totalSupplyCurrentAmps);
   //   RoboRioSim.setVInVoltage(targetBatteryV);
   // }
 }

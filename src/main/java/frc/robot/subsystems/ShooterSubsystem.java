@@ -20,10 +20,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -69,8 +66,6 @@ public class ShooterSubsystem extends SubsystemBase {
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
-    VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0);
-
     VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
     // Apply full TalonFXConfiguration to ensure factory defaults

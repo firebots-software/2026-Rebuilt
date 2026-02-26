@@ -14,12 +14,8 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -175,7 +171,8 @@ public class HopperSubsystem extends SubsystemBase {
   //   // 1. How many volts applied to the motor?
   //   hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-  //   double appliedMotorVoltageVolts = hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
+  //   double appliedMotorVoltageVolts =
+  // hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
   //   hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
   //   hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
