@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -24,7 +25,7 @@ public class LockOnCommand extends ParallelCommandGroup {
       DoubleSupplier frontBackFunction,
       DoubleSupplier leftRightFunction,
       Pose3d target,
-      Joystick joystick) {
+      CommandXboxController joystick) {
 
     addCommands(
         new SwerveJoystickCommandWithPointing(
