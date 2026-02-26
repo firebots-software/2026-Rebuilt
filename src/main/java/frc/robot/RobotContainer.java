@@ -201,7 +201,7 @@ public class RobotContainer {
             new ConditionalCommand(
                 intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
                 intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE),
-                () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
+                (BooleanSupplier) () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
       }
     }
 
@@ -312,7 +312,7 @@ public class RobotContainer {
       ronaldoJoystick
           .b()
           .whileTrue(
-              (lebron.shootAtSpeedCommand(65))
+              (lebron.shootAtSpeedCommand(71.2))
                   .alongWith(
                       hopperSubsystem.runHopperUntilInterruptedCommand(
                           Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
