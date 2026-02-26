@@ -478,7 +478,7 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROTS / 360d;
       public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
           1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
-      
+
       public static final double MOTOR_ROTS_TO_ENCODER_ROTS = 54.4;
       public static final double ENCODER_ROTS_PER_ARM_ROTS = 32f / 17f;
       public static final double SIT_UP_ANGLE_DEGREES = 35.0;
@@ -507,7 +507,7 @@ public final class Constants {
       public static final double L2_REACH_POS = 0;
       public static final double L3_REACH_POS = 0;
       public static final double PULL_DOWN_POS = 0;
-      public static final double PULL_DOWN_POS_L1_AUTO = -0.192885+0.369885;
+      public static final double PULL_DOWN_POS_L1_AUTO = -0.192885 + 0.369885;
       public static final double PULL_DOWN_POS_METERS = 0.369885;
 
       public static final double SUPPLY_CURRENT_LIMIT = 30;
@@ -515,7 +515,6 @@ public final class Constants {
 
       public static final double PULL_DOWN_VELOCITY = -1.0;
       public static final double PULL_UP_VELOCITY = 5.0;
-      
     }
   }
 
@@ -528,12 +527,12 @@ public final class Constants {
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
     // TODO: Tune
-    public static final double kP = 0.0;
+    public static final double kP = 5.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.124;
 
-    public static final double STATOR_LIMIT_AMPS = 30.0;
+    public static final double STATOR_LIMIT_AMPS = 80.0;
     public static final double SUPPLY_LIMIT_AMPS = 30.0;
 
     public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;

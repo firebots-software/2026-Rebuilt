@@ -23,16 +23,12 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.Climber.MuscleUp;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ArcAroundAndShoot;
-import frc.robot.commandGroups.ClimbCommands.L3Climb;
-import frc.robot.commandGroups.WarmUpAndShoot;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.MuscleUpDown;
-import frc.robot.commands.ZeroMuscleUp;
-import frc.robot.commands.ZeroPullUp;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.commands.ZeroMuscleUp;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -42,8 +38,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
-
-import java.time.zone.ZoneRulesProvider;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -70,6 +64,7 @@ public class RobotContainer {
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CommandXboxController debugJoystick = new CommandXboxController(1);
+  private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -146,9 +141,27 @@ public class RobotContainer {
   private void configureBindings() {
     // Swerve bindings - left joystick for translation, right joystick for rotation
     Trigger leftTrigger = joystick.leftTrigger();
-    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
-        leftRightFunction = () -> -joystick.getLeftX(),
-        rotationFunction = () -> -joystick.getRightX(),
+    // DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+    //     leftRightFunction = () -> -joystick.getLeftX(),
+    //     rotationFunction = () -> -joystick.getRightX(),
+    //     speedFunction =
+    //         () ->
+    //             leftTrigger.getAsBoolean()
+    //                 ? 0d
+    //                 : 1d; // slowmode when left shoulder is pressed, otherwise fast
+
+    // SwerveJoystickCommand swerveJoystickCommand =
+    //     new SwerveJoystickCommand(
+    //         frontBackFunction,
+    //         leftRightFunction,
+    //         rotationFunction,
+    //         speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+    //         () -> joystick.leftTrigger().getAsBoolean(),
+    //         drivetrain);
+
+    DoubleSupplier frontBackFunction = () -> -ronaldoJoystick.getLeftY(),
+        leftRightFunction = () -> -ronaldoJoystick.getLeftX(),
+        rotationFunction = () -> -ronaldoJoystick.getRightX(),
         speedFunction =
             () ->
                 leftTrigger.getAsBoolean()
@@ -161,7 +174,7 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            () -> joystick.leftTrigger().getAsBoolean(),
+            () -> ronaldoJoystick.leftTrigger().getAsBoolean(),
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
@@ -221,11 +234,7 @@ public class RobotContainer {
     // INTAKE COMMANDS (DEBUG)
     // left trigger -> run intake
     if (Constants.intakeOnRobot) {
-      joystick
-          .povUp()
-          .whileTrue(
-              intakeSubsystem.runRollersUntilInterruptedCommand(
-                  Constants.Intake.Rollers.TARGET_ROLLER_RPS));
+      ronaldoJoystick.a().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // left trigger + x -> arm to retracted pos (90)
       debugJoystick
@@ -236,7 +245,11 @@ public class RobotContainer {
       // left trigger + a -> arm to extended pos (15)
       joystick
           .a()
-          .whileTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED));  //Constants.Intake.Arm.ARM_POS_EXTENDED, .and(debugJoystick.a())
+          .whileTrue(
+              intakeSubsystem.setArmToDegreesCommand(
+                  Constants.Intake.Arm
+                      .ARM_POS_RETRACTED)); // Constants.Intake.Arm.ARM_POS_EXTENDED,
+      // .and(debugJoystick.a())
 
       joystick
           .povRight()
@@ -251,7 +264,8 @@ public class RobotContainer {
 
     if (Constants.climberOnRobot) {
       // climberSubsystem.setDefaultCommand(climberSubsystem.stopPullUpCommand());
-      // climberSubsystem.setDefaultCommand(Commands.run(climberSubsystem::stopPullUp, climberSubsystem));
+      // climberSubsystem.setDefaultCommand(Commands.run(climberSubsystem::stopPullUp,
+      // climberSubsystem));
       climberSubsystem.setDefaultCommand(climberSubsystem.brakeWithoutServoCommand());
 
       // y -> initiate climb
@@ -277,20 +291,40 @@ public class RobotContainer {
       joystick.rightBumper().whileTrue(new MuscleUpDown(climberSubsystem));
 
       // a -> zero climber
-      debugJoystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
+      debugJoystick
+          .a()
+          .onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
 
-      joystick.y().whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
-      joystick.x().whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+      // joystick
+      //     .y()
+      //
+      // .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+      joystick
+          .x()
+          .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
     }
 
     if (Constants.shooterOnRobot) {
-      joystick.povDown().whileTrue(lebron.shootAtSpeedCommand(71.2));
+      ronaldoJoystick
+          .b()
+          .whileTrue(
+              (lebron.shootAtSpeedCommand(65))
+                  .alongWith(
+                      hopperSubsystem.runHopperUntilInterruptedCommand(
+                          Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
 
     if (Constants.hopperOnRobot) {
-      // joystick.x().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommand(1.0));
+      ronaldoJoystick
+          .x()
+          .whileTrue(
+              hopperSubsystem.runHopperUntilInterruptedCommand(
+                  Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
+      // ronaldoJoystick.y().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommandDutyCycle());
+
+      // ronaldoJoystick.a().whileTrue(swerveJoystickCommand)
     }
 
     debugJoystick

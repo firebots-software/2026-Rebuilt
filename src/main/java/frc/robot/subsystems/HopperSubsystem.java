@@ -3,7 +3,9 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -34,6 +36,7 @@ public class HopperSubsystem extends SubsystemBase {
   private DCMotorSim hopperMechanismSim;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
+  private final DutyCycleOut m_DutyCycleOutRequest = new DutyCycleOut(0);
 
   public HopperSubsystem() {
     CurrentLimitsConfigs currentLimitConfigs =
@@ -48,20 +51,22 @@ public class HopperSubsystem extends SubsystemBase {
             .withKD(Constants.Hopper.kD)
             .withKV(Constants.Hopper.kV);
 
-    hopperMotor =
-        new LoggedTalonFX(
-            Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
 
-    TalonFXConfigurator hopperConfigurator = hopperMotor.getConfigurator();
+    hopperMotor =
+        new LoggedTalonFX(
+            Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
-    hopperConfigurator.apply(s0c);
-    hopperConfigurator.apply(currentLimitConfigs);
-    hopperConfigurator.apply(motorOutputConfigs);
+    TalonFXConfiguration hopperConfig = new TalonFXConfiguration();
+    hopperConfig.Slot0 = s0c;
+    hopperConfig.CurrentLimits = currentLimitConfigs;
+    hopperConfig.MotorOutput = motorOutputConfigs;
+
+    TalonFXConfigurator hopperMotorConfig = hopperMotor.getConfigurator();
+    hopperMotorConfig.apply(hopperConfig);
 
     DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
     DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
@@ -92,6 +97,10 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotor.setControl(
         m_velocityRequest.withVelocity(
             targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+  }
+
+  public void runHopperMpsFullDutyCycle() {
+    hopperMotor.setControl(m_DutyCycleOutRequest.withOutput(1));
   }
 
   public void stop() {
@@ -138,6 +147,10 @@ public class HopperSubsystem extends SubsystemBase {
   // Stops the Hopper when interrupted
   public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return startEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
+  }
+
+  public Command runHopperUntilInterruptedCommandDutyCycle() {
+    return startEnd(() -> runHopperMpsFullDutyCycle(), this::stop);
   }
 
   @Override
