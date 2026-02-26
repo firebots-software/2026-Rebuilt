@@ -71,6 +71,8 @@ public class ShooterSubsystem extends SubsystemBase {
             .withNeutralMode(NeutralModeValue.Coast);
     VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0);
 
+    VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
+
     // Apply full TalonFXConfiguration to ensure factory defaults
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0 = s0c;

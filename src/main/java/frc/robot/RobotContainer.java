@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ArcAroundAndShoot;
+import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.MuscleUpDown;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -48,6 +49,11 @@ public class RobotContainer {
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
   /* Setting up bindings for necessary control of the swerve drive platform */
+  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+      .withDeadband(MaxSpeed * 0.1)
+      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(
+          DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(MaxSpeed * 0.1)
       .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
@@ -141,13 +147,13 @@ public class RobotContainer {
     // : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
     // SwerveJoystickCommand swerveJoystickCommand =
-    // new SwerveJoystickCommand(
-    // frontBackFunction,
-    // leftRightFunction,
-    // rotationFunction,
-    // speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-    // () -> joystick.leftTrigger().getAsBoolean(),
-    // drivetrain);
+    //     new SwerveJoystickCommand(
+    //         frontBackFunction,
+    //         leftRightFunction,
+    //         rotationFunction,
+    //         speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+    //         () -> joystick.leftTrigger().getAsBoolean(),
+    //         drivetrain);
 
     // DoubleSupplier frontBackFunction = () -> -ronaldoJoystick.getLeftY(),
     //     leftRightFunction = () -> -ronaldoJoystick.getLeftX(),
@@ -172,7 +178,7 @@ public class RobotContainer {
     // .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
     // }
     // x -> zero swerve
-    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    ronaldoJoystick.rightBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     // // left bumper -> run intake
     // joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());

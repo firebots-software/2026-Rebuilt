@@ -532,7 +532,7 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kV = 0.124;
 
-    public static final double STATOR_LIMIT_AMPS = 80.0;
+    public static final double STATOR_LIMIT_AMPS = 70.0;
     public static final double SUPPLY_LIMIT_AMPS = 30.0;
 
     public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
