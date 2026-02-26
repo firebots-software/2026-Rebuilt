@@ -175,9 +175,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Shooter/TargetSpeed (ft per sec)", getTargetBallSpeedFtPS());
+    DogLog.log("Subsystems/Shooter/TargetSpeed (fps)", getTargetBallSpeedFtPS());
     DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
-    DogLog.log("Subsystems/Shooter/CurrentSpeed (ft per sec)", getCurrentBallSpeedFtPS());
+    DogLog.log("Subsystems/Shooter/CurrentSpeed (fps)", getCurrentBallSpeedFtPS());
   }
 
   @Override
