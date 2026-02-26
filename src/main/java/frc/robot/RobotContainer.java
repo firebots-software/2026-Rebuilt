@@ -54,11 +54,6 @@ public class RobotContainer {
       .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(
           DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1)
-      .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(
-          DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -136,7 +131,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Swerve bindings - left joystick for translation, right joystick for rotation
-    //Trigger leftTrigger = joystick.leftTrigger();
+    Trigger leftTrigger = ronaldoJoystick.leftTrigger();
     // DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
     // leftRightFunction = () -> -joystick.getLeftX(),
     // rotationFunction = () -> -joystick.getRightX(),
@@ -152,25 +147,25 @@ public class RobotContainer {
     //         leftRightFunction,
     //         rotationFunction,
     //         speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-    //         () -> joystick.leftTrigger().getAsBoolean(),
+    //         () -> ronaldoJoystick.leftTrigger().getAsBoolean(),
     //         drivetrain);
 
-    // DoubleSupplier frontBackFunction = () -> -ronaldoJoystick.getLeftY(),
-    //     leftRightFunction = () -> -ronaldoJoystick.getLeftX(),
-    //     rotationFunction = () -> -ronaldoJoystick.getRightX(),
-    //     speedFunction = () -> leftTrigger.getAsBoolean()
-    //         ? 0d
-    //         : 1d; // slowmode when left shoulder is pressed, otherwise fast
+    DoubleSupplier frontBackFunction = () -> -ronaldoJoystick.getLeftY(),
+        leftRightFunction = () -> -ronaldoJoystick.getLeftX(),
+        rotationFunction = () -> -ronaldoJoystick.getRightX(),
+        speedFunction = () -> leftTrigger.getAsBoolean()
+            ? 0d
+            : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
-    // SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
-    //     frontBackFunction,
-    //     leftRightFunction,
-    //     rotationFunction,
-    //     speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-    //     () -> ronaldoJoystick.leftTrigger().getAsBoolean(),
-    //     drivetrain);
+    SwerveJoystickCommand swerveJoystickCommand = new SwerveJoystickCommand(
+        frontBackFunction,
+        leftRightFunction,
+        rotationFunction,
+        speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+        () -> ronaldoJoystick.leftTrigger().getAsBoolean(),
+        drivetrain);
 
-    // drivetrain.setDefaultCommand(swerveJoystickCommand);
+    drivetrain.setDefaultCommand(swerveJoystickCommand);
 
     // if (Constants.shooterOnRobot && Constants.xhopperOnRobot) {
     // joystick

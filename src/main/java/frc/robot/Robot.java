@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
 
     CommandScheduler.getInstance().run();
 
-    //LoggedTalonFX.periodic_static();
+    LoggedTalonFX.periodic_static();
 
     //m_robotContainer.visionPeriodic();
   }
