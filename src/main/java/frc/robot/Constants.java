@@ -527,7 +527,7 @@ public final class Constants {
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
     // TODO: Tune
-    public static final double kP = 5.0;
+    public static final double kP = 0.5;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.124;
@@ -781,7 +781,7 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 33; // TODO
 
-    public static final double KP = 0.0; // TODO
+    public static final double KP = 0.5; // TODO
     public static final double KI = 0.0; // TODO
     public static final double KD = 0.0; // TODO
     public static final double KV = 0.124; // TODO

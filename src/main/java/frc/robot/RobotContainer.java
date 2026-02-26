@@ -68,8 +68,8 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  public final ClimberSubsystem climberSubsystem =
-      Constants.climberOnRobot ? new ClimberSubsystem() : null;
+  // public final ClimberSubsystem climberSubsystem =
+  //     Constants.climberOnRobot ? new ClimberSubsystem() : null;
   public final HopperSubsystem hopperSubsystem =
       Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
@@ -266,7 +266,7 @@ public class RobotContainer {
       // climberSubsystem.setDefaultCommand(climberSubsystem.stopPullUpCommand());
       // climberSubsystem.setDefaultCommand(Commands.run(climberSubsystem::stopPullUp,
       // climberSubsystem));
-      climberSubsystem.setDefaultCommand(climberSubsystem.brakeWithoutServoCommand());
+      // climberSubsystem.setDefaultCommand(climberSubsystem.brakeWithoutServoCommand());
 
       // y -> initiate climb
       // TODO: verify that command is correct
@@ -287,28 +287,28 @@ public class RobotContainer {
       }
       // joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
       // joystick.y().whileTrue(new ZeroPullUp(climberSubsystem));
-      joystick.leftBumper().whileTrue(new ZeroMuscleUp(climberSubsystem));
-      joystick.rightBumper().whileTrue(new MuscleUpDown(climberSubsystem));
+      // joystick.leftBumper().whileTrue(new ZeroMuscleUp(climberSubsystem));
+      // joystick.rightBumper().whileTrue(new MuscleUpDown(climberSubsystem));
 
       // a -> zero climber
-      debugJoystick
-          .a()
-          .onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
+      // debugJoystick
+      //     .a()
+      //     .onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
 
       // joystick
       //     .y()
       //
       // .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
-      joystick
-          .x()
-          .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+      // joystick
+      //     .x()
+      //     .whileTrue(climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
     }
 
     if (Constants.shooterOnRobot) {
       ronaldoJoystick
           .b()
           .whileTrue(
-              (lebron.shootAtSpeedCommand(65))
+              (lebron.shootAtSpeedCommand(80))
                   .alongWith(
                       hopperSubsystem.runHopperUntilInterruptedCommand(
                           Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));

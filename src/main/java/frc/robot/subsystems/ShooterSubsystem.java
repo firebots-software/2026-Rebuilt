@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -68,12 +69,14 @@ public class ShooterSubsystem extends SubsystemBase {
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
+    VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0);
 
     // Apply full TalonFXConfiguration to ensure factory defaults
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0 = s0c;
     config.CurrentLimits = clc;
     config.MotorOutput = motorOutputConfigs;
+    config.Voltage = vConfigs;
 
     TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
     TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
