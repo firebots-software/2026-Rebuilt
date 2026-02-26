@@ -12,7 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -201,7 +200,8 @@ public class RobotContainer {
             new ConditionalCommand(
                 intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
                 intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE),
-                (BooleanSupplier) () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
+                (BooleanSupplier)
+                    () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
       }
     }
 
@@ -317,7 +317,19 @@ public class RobotContainer {
                       hopperSubsystem.runHopperUntilInterruptedCommand(
                           Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
 
-      ronaldoJoystick.leftBumper().whileTrue(new ShootWithWarning(drivetrain, lebron, intakeSubsystem, hopperSubsystem, Constants.Landmarks.RED_HUB, () -> true, ronaldoJoystick, frontBackFunction, leftRightFunction));
+      ronaldoJoystick
+          .leftBumper()
+          .whileTrue(
+              new ShootWithWarning(
+                  drivetrain,
+                  lebron,
+                  intakeSubsystem,
+                  hopperSubsystem,
+                  Constants.Landmarks.RED_HUB,
+                  () -> true,
+                  ronaldoJoystick,
+                  frontBackFunction,
+                  leftRightFunction));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
@@ -328,7 +340,6 @@ public class RobotContainer {
           .whileTrue(
               hopperSubsystem.runHopperUntilInterruptedCommand(
                   Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
-
     }
 
     debugJoystick
