@@ -171,9 +171,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     currentState = getState();
 
-    if (Utils.isSimulation()) {
-      startSimThread();
-    }
+    // if (Utils.isSimulation()) {
+    //   startSimThread();
+    // }
 
     SmartDashboard.putData(field);
   }
@@ -195,9 +195,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(drivetrainConstants, odometryUpdateFrequency, modules);
 
-    if (Utils.isSimulation()) {
-      startSimThread();
-    }
+    // if (Utils.isSimulation()) {
+    //   startSimThread();
+    // }
 
     SmartDashboard.putData(field);
   }
@@ -230,9 +230,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         visionStandardDeviation,
         modules);
 
-    if (Utils.isSimulation()) {
-      startSimThread();
-    }
+    // if (Utils.isSimulation()) {
+    //   startSimThread();
+    // }
 
     SmartDashboard.putData(field);
   }
@@ -417,20 +417,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return omega;
   }
 
-  private void startSimThread() {
-    m_lastSimTime = Utils.getCurrentTimeSeconds();
+  // private void startSimThread() {
+  //   m_lastSimTime = Utils.getCurrentTimeSeconds();
 
-    /* Run simulation at a faster rate so PID gains behave more reasonably */
-    m_simNotifier =
-        new Notifier(
-            () -> {
-              final double currentTime = Utils.getCurrentTimeSeconds();
-              double deltaTime = currentTime - m_lastSimTime;
-              m_lastSimTime = currentTime;
+  //   /* Run simulation at a faster rate so PID gains behave more reasonably */
+  //   m_simNotifier =
+  //       new Notifier(
+  //           () -> {
+  //             final double currentTime = Utils.getCurrentTimeSeconds();
+  //             double deltaTime = currentTime - m_lastSimTime;
+  //             m_lastSimTime = currentTime;
 
-              /* use the measured time delta, get battery voltage from WPILib */
-              updateSimState(deltaTime, RobotController.getBatteryVoltage());
-            });
-    m_simNotifier.startPeriodic(kSimLoopPeriod);
-  }
+  //             /* use the measured time delta, get battery voltage from WPILib */
+  //             updateSimState(deltaTime, RobotController.getBatteryVoltage());
+  //           });
+  //   m_simNotifier.startPeriodic(kSimLoopPeriod);
+  // }
 }

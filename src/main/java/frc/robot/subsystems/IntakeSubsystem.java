@@ -295,64 +295,64 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
   }
 
-  @Override
-  public void simulationPeriodic() {
-    if (rollersMotorSimState == null
-        || armMotorSimState == null
-        || armCancoderSimState == null
-        || rollersMechanismSim == null
-        || armMechanismSim == null) {
-      return;
-    }
+  // @Override
+  // public void simulationPeriodic() {
+  //   if (rollersMotorSimState == null
+  //       || armMotorSimState == null
+  //       || armCancoderSimState == null
+  //       || rollersMechanismSim == null
+  //       || armMechanismSim == null) {
+  //     return;
+  //   }
 
-    // 1. How many volts applied to the motor?
-    double batteryV = RobotController.getBatteryVoltage();
-    rollersMotorSimState.setSupplyVoltage(batteryV);
-    armMotorSimState.setSupplyVoltage(batteryV);
+  //   // 1. How many volts applied to the motor?
+  //   double batteryV = RobotController.getBatteryVoltage();
+  //   rollersMotorSimState.setSupplyVoltage(batteryV);
+  //   armMotorSimState.setSupplyVoltage(batteryV);
 
-    double rollersAppliedVolts =
-        rollersMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
-    double armAppliedVolts =
-        armMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
-    rollersMechanismSim.setInputVoltage(rollersAppliedVolts);
-    armMechanismSim.setInputVoltage(armAppliedVolts);
+  //   double rollersAppliedVolts =
+  //       rollersMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+  //   double armAppliedVolts =
+  //       armMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+  //   rollersMechanismSim.setInputVoltage(rollersAppliedVolts);
+  //   armMechanismSim.setInputVoltage(armAppliedVolts);
 
-    rollersMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
-    armMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
+  //   rollersMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
+  //   armMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-    // 2. What happens to the simulated mechanism?
-    double rollersMechPosRot = rollersMechanismSim.getAngularPositionRotations();
-    double rollersMechVelRps = rollersMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+  //   // 2. What happens to the simulated mechanism?
+  //   double rollersMechPosRot = rollersMechanismSim.getAngularPositionRotations();
+  //   double rollersMechVelRps = rollersMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
 
-    double armMechAngleRad = armMechanismSim.getAngleRads();
-    double armMechVelRps = armMechanismSim.getVelocityRadPerSec() / (2.0 * Math.PI);
-    double armMechPosRot = armMechAngleRad / (2.0 * Math.PI);
+  //   double armMechAngleRad = armMechanismSim.getAngleRads();
+  //   double armMechVelRps = armMechanismSim.getVelocityRadPerSec() / (2.0 * Math.PI);
+  //   double armMechPosRot = armMechAngleRad / (2.0 * Math.PI);
 
-    // 3. Updating the simulated motor based on the behavior of the simulated mechanism
-    double rollersRotorPosRot =
-        rollersMechPosRot * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT;
-    double rollersRotorVelRps =
-        rollersMechVelRps * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT;
+  //   // 3. Updating the simulated motor based on the behavior of the simulated mechanism
+  //   double rollersRotorPosRot =
+  //       rollersMechPosRot * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT;
+  //   double rollersRotorVelRps =
+  //       rollersMechVelRps * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT;
 
-    double armRotorPosRot = armMechPosRot * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT;
-    double armRotorVelRps = armMechVelRps * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT;
+  //   double armRotorPosRot = armMechPosRot * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT;
+  //   double armRotorVelRps = armMechVelRps * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT;
 
-    rollersMotorSimState.setRawRotorPosition(rollersRotorPosRot);
-    rollersMotorSimState.setRotorVelocity(rollersRotorVelRps);
+  //   rollersMotorSimState.setRawRotorPosition(rollersRotorPosRot);
+  //   rollersMotorSimState.setRotorVelocity(rollersRotorVelRps);
 
-    armMotorSimState.setRawRotorPosition(armRotorPosRot);
-    armMotorSimState.setRotorVelocity(armRotorVelRps);
+  //   armMotorSimState.setRawRotorPosition(armRotorPosRot);
+  //   armMotorSimState.setRotorVelocity(armRotorVelRps);
 
-    // 4. Keep CANcoder sim in sync with arm mechanism position/velocity
-    armCancoderSimState.setRawPosition(
-        armMechPosRot * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
-    armCancoderSimState.setVelocity(armMechVelRps * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+  //   // 4. Keep CANcoder sim in sync with arm mechanism position/velocity
+  //   armCancoderSimState.setRawPosition(
+  //       armMechPosRot * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+  //   armCancoderSimState.setVelocity(armMechVelRps * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
 
-    // 4. What happens to the battery (simulated)?
-    double rollersSupplyCurrentAmps = rollersMotorSimState.getSupplyCurrent();
-    double armSupplyCurrentAmps = armMotorSimState.getSupplyCurrent();
-    double totalSupplyCurrentAmps = rollersSupplyCurrentAmps + armSupplyCurrentAmps;
-    double targetBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalSupplyCurrentAmps);
-    RoboRioSim.setVInVoltage(targetBatteryV);
-  }
+  //   // 4. What happens to the battery (simulated)?
+  //   double rollersSupplyCurrentAmps = rollersMotorSimState.getSupplyCurrent();
+  //   double armSupplyCurrentAmps = armMotorSimState.getSupplyCurrent();
+  //   double totalSupplyCurrentAmps = rollersSupplyCurrentAmps + armSupplyCurrentAmps;
+  //   double targetBatteryV = BatterySim.calculateDefaultBatteryLoadedVoltage(totalSupplyCurrentAmps);
+  //   RoboRioSim.setVInVoltage(targetBatteryV);
+  // }
 }

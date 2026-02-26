@@ -178,43 +178,43 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/motor3Volts", warmUpMotor3.getMotorVoltage().getValueAsDouble());
   }
 
-  @Override
-  public void simulationPeriodic() {
-    if (shooterSimState == null || shooterMechanismSim == null) {
-      return;
-    }
+  // @Override
+  // public void simulationPeriodic() {
+  //   if (shooterSimState == null || shooterMechanismSim == null) {
+  //     return;
+  //   }
 
-    // 1) Supply voltage to all three motor sims
-    double batteryV = RobotController.getBatteryVoltage();
-    shooterSimState.setSupplyVoltage(batteryV);
+  //   // 1) Supply voltage to all three motor sims
+  //   double batteryV = RobotController.getBatteryVoltage();
+  //   shooterSimState.setSupplyVoltage(batteryV);
 
-    // 2) Read applied motor voltage from leader (motor3) and step mechanism plant
-    // Since motor1 and motor2 follow motor3, we only read motor3's voltage
-    double appliedMotorVoltageVolts =
-        shooterSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
+  //   // 2) Read applied motor voltage from leader (motor3) and step mechanism plant
+  //   // Since motor1 and motor2 follow motor3, we only read motor3's voltage
+  //   double appliedMotorVoltageVolts =
+  //       shooterSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
 
-    shooterMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
-    shooterMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
+  //   shooterMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
+  //   shooterMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-    // 3) Mechanism-side sim -> rotor-side sensor state
-    // DCMotorSim tracks the shooter wheel mechanism (after gear reduction)
-    double shooterWheelVelocityRotationsPerSecond =
-        shooterMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
-    double shooterWheelPositionRotations = shooterMechanismSim.getAngularPositionRotations();
+  //   // 3) Mechanism-side sim -> rotor-side sensor state
+  //   // DCMotorSim tracks the shooter wheel mechanism (after gear reduction)
+  //   double shooterWheelVelocityRotationsPerSecond =
+  //       shooterMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+  //   double shooterWheelPositionRotations = shooterMechanismSim.getAngularPositionRotations();
 
-    // Convert mechanism rotations to motor rotor rotations
-    double motorRotorPositionRotations =
-        shooterWheelPositionRotations * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
-    double motorRotorVelocityRotationsPerSecond =
-        shooterWheelVelocityRotationsPerSecond * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
+  //   // Convert mechanism rotations to motor rotor rotations
+  //   double motorRotorPositionRotations =
+  //       shooterWheelPositionRotations * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
+  //   double motorRotorVelocityRotationsPerSecond =
+  //       shooterWheelVelocityRotationsPerSecond * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
 
-    shooterSimState.setRawRotorPosition(motorRotorPositionRotations);
-    shooterSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
+  //   shooterSimState.setRawRotorPosition(motorRotorPositionRotations);
+  //   shooterSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
 
-    // 4) Battery sag model
-    // Sum the supply current from all three motors
-    double loadedBatteryVoltageVolts =
-        BatterySim.calculateDefaultBatteryLoadedVoltage(shooterSimState.getSupplyCurrent() * 3);
-    RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
-  }
+  //   // 4) Battery sag model
+  //   // Sum the supply current from all three motors
+  //   double loadedBatteryVoltageVolts =
+  //       BatterySim.calculateDefaultBatteryLoadedVoltage(shooterSimState.getSupplyCurrent() * 3);
+  //   RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
+  // }
 }

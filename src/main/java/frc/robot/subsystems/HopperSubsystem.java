@@ -168,36 +168,36 @@ public class HopperSubsystem extends SubsystemBase {
         "Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getVelocity().getValueAsDouble());
   }
 
-  @Override
-  public void simulationPeriodic() {
-    if (hopperMotorSimState == null || hopperMechanismSim == null) return;
+  // @Override
+  // public void simulationPeriodic() {
+  //   if (hopperMotorSimState == null || hopperMechanismSim == null) return;
 
-    // 1. How many volts applied to the motor?
-    hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+  //   // 1. How many volts applied to the motor?
+  //   hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-    double appliedMotorVoltageVolts = hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
-    hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
-    hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
+  //   double appliedMotorVoltageVolts = hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
+  //   hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
+  //   hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-    // 2. What happens to the simulated mechanism?
-    double hopperMechanismVelocityRotationsPerSecond =
-        hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
-    double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
+  //   // 2. What happens to the simulated mechanism?
+  //   double hopperMechanismVelocityRotationsPerSecond =
+  //       hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+  //   double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
 
-    // 3. Updating the simulated motor based on the behavior of the simulated mechanism
-    double motorRotorPositionRotations =
-        hopperMechanismPositionRotations
-            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-    double motorRotorVelocityRotationsPerSecond =
-        hopperMechanismVelocityRotationsPerSecond
-            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-    hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
-    hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
+  //   // 3. Updating the simulated motor based on the behavior of the simulated mechanism
+  //   double motorRotorPositionRotations =
+  //       hopperMechanismPositionRotations
+  //           * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
+  //   double motorRotorVelocityRotationsPerSecond =
+  //       hopperMechanismVelocityRotationsPerSecond
+  //           * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
+  //   hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
+  //   hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
 
-    // 4. What happens to the battery (simulated)?
-    double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
-    double targetBatteryV =
-        BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
-    RoboRioSim.setVInVoltage(targetBatteryV);
-  }
+  //   // 4. What happens to the battery (simulated)?
+  //   double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
+  //   double targetBatteryV =
+  //       BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
+  //   RoboRioSim.setVInVoltage(targetBatteryV);
+  // }
 }
