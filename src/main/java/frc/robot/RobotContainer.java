@@ -194,15 +194,9 @@ public class RobotContainer {
       // // left bumper -> run intake
       // joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
-      // intake default command - retract arm if hopper is empty, idle if not
-      if (Constants.hopperOnRobot && Constants.visionOnRobot) {
-        intakeSubsystem.setDefaultCommand(
-            new ConditionalCommand(
-                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
-                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE),
-                (BooleanSupplier)
-                    () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
-      }
+      // intake default command - stop rollers
+      intakeSubsystem.setDefaultCommand(
+          Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
     }
 
     if (Constants.shooterOnRobot) {
