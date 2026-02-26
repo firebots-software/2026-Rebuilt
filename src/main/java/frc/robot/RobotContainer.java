@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +41,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
+
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -62,6 +65,12 @@ public class RobotContainer {
   private BooleanSupplier redside = () -> redAlliance;
   private static boolean redAlliance;
 
+  private final DoubleEntry shooterSpeedEntry =
+      edu.wpi.first.networktables.NetworkTableInstance.getDefault()
+          .getTable("Shooter")
+          .getDoubleTopic("TargetSpeed")
+          .getEntry(65.0);
+    
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
@@ -133,6 +142,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
+    shooterSpeedEntry.set(65.0); // publishes it so it shows in SmartDashboard
     configureBindings();
   }
 
@@ -314,8 +324,17 @@ public class RobotContainer {
                   .alongWith(
                       hopperSubsystem.runHopperUntilInterruptedCommand(
                           Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+    ronaldoJoystick
+        .b()
+        .whileTrue(
+            Commands.defer(
+                () -> lebron.shootAtSpeedCommand(shooterSpeedEntry.get(65.0))
+                    .alongWith(
+                        hopperSubsystem.runHopperUntilInterruptedCommand(
+                            Constants.Hopper.TARGET_SURFACE_SPEED_MPS)),
+                Set.of(lebron, hopperSubsystem)));
 
-      ronaldoJoystick.leftBumper().whileTrue(new ShootWithWarning(drivetrain, lebron, intakeSubsystem, hopperSubsystem, Constants.Landmarks.RED_HUB, () -> true, ronaldoJoystick, frontBackFunction, leftRightFunction));
+      // ronaldoJoystick.leftBumper().whileTrue(new ShootWithWarning(drivetrain, lebron, intakeSubsystem, hopperSubsystem, Constants.Landmarks.RED_HUB, () -> true, ronaldoJoystick, frontBackFunction, leftRightFunction));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
