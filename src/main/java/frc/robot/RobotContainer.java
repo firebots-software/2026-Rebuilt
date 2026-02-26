@@ -326,9 +326,7 @@ public class RobotContainer {
           .whileTrue(
               hopperSubsystem.runHopperUntilInterruptedCommand(
                   Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
-      // ronaldoJoystick.y().whileTrue(hopperSubsystem.runHopperUntilInterruptedCommandDutyCycle());
 
-      // ronaldoJoystick.a().whileTrue(swerveJoystickCommand)
     }
 
     debugJoystick
