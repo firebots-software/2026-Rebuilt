@@ -152,8 +152,12 @@ public class ShooterSubsystem extends SubsystemBase {
         <= TOLERANCE_RPS;
   }
 
-  public double getCurrentBallSpeed() {
+  public double getCurrentBallSpeedFtPS() {
     return calculateRPSToFtPS(shooter.getVelocity().getValueAsDouble()) * 2;
+  }
+
+  public double getTargetBallSpeedFtPS() {
+    return calculateFtPSToRPS(targetBallSpeed) * 2;
   }
 
   // Commands
@@ -171,12 +175,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Shooter/targetSpeed", targetBallSpeed);
-    DogLog.log("Subsystems/Shooter/isAtSpeed", isAtSpeed());
-    DogLog.log("Subsystems/Shooter/currentSpeed", getCurrentBallSpeed());
-    DogLog.log(
-        "Subsystems/Shooter/motor3VelocityRPS", warmUpMotor3.getVelocity().getValueAsDouble());
-    DogLog.log("Subsystems/Shooter/motor3Volts", warmUpMotor3.getMotorVoltage().getValueAsDouble());
+    DogLog.log("Subsystems/Shooter/TargetSpeed (ft per sec)", getTargetBallSpeedFtPS());
+    DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
+    DogLog.log("Subsystems/Shooter/CurrentSpeed (ft per sec)", getCurrentBallSpeedFtPS());
   }
 
   @Override
