@@ -317,13 +317,13 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
-      ronaldoJoystick
-          .b()
-          .whileTrue(
-              (lebron.shootAtSpeedCommand(65))
-                  .alongWith(
-                      hopperSubsystem.runHopperUntilInterruptedCommand(
-                          Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+      // ronaldoJoystick
+      //     .b()
+      //     .whileTrue(
+      //         (lebron.shootAtSpeedCommand(65))
+      //             .alongWith(
+      //                 hopperSubsystem.runHopperUntilInterruptedCommand(
+      //                     Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
     ronaldoJoystick
         .b()
         .whileTrue(
