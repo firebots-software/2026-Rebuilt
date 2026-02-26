@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ArcAroundAndShoot;
+import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.MuscleUpDown;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -185,7 +186,7 @@ public class RobotContainer {
     //       .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
     // }
     // x -> zero swerve
-    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    ronaldoJoystick.rightBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     if (Constants.intakeOnRobot) {
       // // left bumper -> run intake
@@ -305,13 +306,15 @@ public class RobotContainer {
     }
 
     if (Constants.shooterOnRobot) {
-      ronaldoJoystick
+      // ronaldoJoystick
+      //     .b()
+      //     .whileTrue(
+      //         (lebron.shootAtSpeedCommand(80))
+      //             .alongWith(
+      //                 hopperSubsystem.runHopperUntilInterruptedCommand(
+     ronaldoJoystick
           .b()
-          .whileTrue(
-              (lebron.shootAtSpeedCommand(65))
-                  .alongWith(
-                      hopperSubsystem.runHopperUntilInterruptedCommand(
-                          Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+          .whileTrue(new ShootBasic(() -> 80.0, (BooleanSupplier) (() -> true), lebron, intakeSubsystem, hopperSubsystem));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
