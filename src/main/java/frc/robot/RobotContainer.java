@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commandGroups.ClimbCommands.L3Climb;
 import frc.robot.commandGroups.WarmUpAndShoot;
@@ -79,18 +80,25 @@ public class RobotContainer {
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
 
-  public final VisionSubsystem visionRight =
-      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.RIGHT_CAM) : null;
-  public final VisionSubsystem visionLeft =
-      Constants.visionOnRobot ? new VisionSubsystem(Constants.Vision.Cameras.LEFT_CAM) : null;
+  public final VisionSubsystem visionFrontRight =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM)
+          : null;
+  public final VisionSubsystem visionFrontLeft =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM)
+          : null;
   // public final VisionSubsystem visionRearRight =
   // Constants.visionOnRobot ? new
   // VisionSubsystem(Constants.Vision.Cameras.REAR_RIGHT_CAM) : null;
   // public final VisionSubsystem visionRearLeft =
   // Constants.visionOnRobot ? new
   // VisionSubsystem(Constants.Vision.Cameras.REAR_LEFT_CAM) : null;
+
   public final FuelGaugeDetection visionFuelGauge =
-      Constants.visionOnRobot ? new FuelGaugeDetection(Constants.Vision.Cameras.COLOR_CAM) : null;
+      Constants.visionOnRobot
+          ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
+          : null;
 
   public RobotContainer() {
     autoRoutines =
@@ -210,7 +218,22 @@ public class RobotContainer {
     if (Constants.climberOnRobot) {
       // y -> initiate climb
       // TODO: verify that command is correct
-      joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain));
+      BooleanSupplier leftside = () -> true; // TODO: get button
+      Pose2d poseToDriveTo = new Pose2d();
+      if (redside.getAsBoolean()) {
+        if (leftside.getAsBoolean()) {
+          poseToDriveTo = Constants.Landmarks.RED_TOWER_L;
+        } else {
+          poseToDriveTo = Constants.Landmarks.RED_TOWER_R;
+        }
+      } else {
+        if (leftside.getAsBoolean()) {
+          poseToDriveTo = Constants.Landmarks.BLUE_TOWER_L;
+        } else {
+          poseToDriveTo = Constants.Landmarks.BLUE_TOWER_R;
+        }
+      }
+      joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
 
       // a -> zero climber
       joystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
@@ -285,14 +308,83 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot || visionRight == null || visionLeft == null /*
-         * || visionRearRight == null
-         * || visionRearLeft == null
-         */) return;
-    visionRight.addFilteredPose(drivetrain);
-    visionLeft.addFilteredPose(drivetrain);
-    // visionRearRight.addFilteredPose(drivetrain);
-    // visionRearLeft.addFilteredPose(drivetrain);
+    if (!Constants.visionOnRobot || visionFrontRight == null || visionFrontLeft == null
+    /*|| visionRearRight == null
+    || visionRearLeft == null */ ) return;
+
+    VisionSubsystem visionFallback;
+
+    VisionCamera fallbackCamera = Constants.Vision.FALLBACK_CAMERA;
+
+    if (fallbackCamera == VisionCamera.FRONT_RIGHT_CAM) visionFallback = visionFrontRight;
+    else visionFallback = visionFrontLeft;
+    // if (fallbackCamera == VisionCamera.REAR_RIGHT_CAM) visionFallback = visionRearRight;
+    // if (fallbackCamera == VisionCamera.REAR_LEFT_CAM) visionFallback = visionRearLeft;
+
+    visionFrontRight.calculateFilteredPose(drivetrain);
+    visionFrontLeft.calculateFilteredPose(drivetrain);
+    // visionRearRight.calculateFilteredPose(drivetrain);
+    // visionRearLeft.calculateFilteredPose(drivetrain);
+
+    VisionSubsystem preferredVision = visionFallback;
+
+    if (!Constants.Vision.SKIP_TO_FALLBACK) {
+
+      double preferredDistance = Double.MAX_VALUE;
+      double frontRightDist, frontLeftDist /*, rearRightDist, rearLeftDist */;
+
+      switch (Constants.Vision.CAMERA_SELECTION_METHOD) {
+        case MIN:
+        default:
+          frontRightDist = visionFrontRight.getMinDistance();
+          frontLeftDist = visionFrontLeft.getMinDistance();
+          // rearRightDist = visionRearRight.getMinDistance();
+          // rearLeftDist = visionRearLeft.getMinDistance();
+          break;
+        case AVG:
+          frontRightDist = visionFrontRight.getAverageDistance();
+          frontLeftDist = visionFrontLeft.getAverageDistance();
+          // rearRightDist = visionRearRight.getAverageDistance();
+          // rearLeftDist = visionRearLeft.getAverageDistance();
+          break;
+        case MAX:
+          frontRightDist = visionFrontRight.getMaxDistance();
+          frontLeftDist = visionFrontLeft.getMaxDistance();
+          // rearRightDist = visionRearRight.getMaxDistance();
+          // rearLeftDist = visionRearLeft.getMaxDistance();
+          break;
+      }
+
+      if (frontRightDist < preferredDistance && visionFrontRight.hasValidMeasurement()) {
+        preferredVision = visionFrontRight;
+        preferredDistance = frontRightDist;
+      }
+
+      if (frontLeftDist < preferredDistance && visionFrontLeft.hasValidMeasurement()) {
+        preferredVision = visionFrontLeft;
+        preferredDistance = frontLeftDist;
+      }
+
+      // if (rearRightDist < preferredDistance &&
+      // visionRearRight.hasValidMeasurement()) {
+      //   preferredVision = visionRearRight;
+      //   preferredDistance = rearRightDist;
+      // }
+
+      // if (rearLeftDist < preferredDistance &&
+      // visionRearLeft.hasValidMeasurement()) {
+      //   preferredVision = visionRearLeft;
+      //   preferredDistance = rearLeftDist;
+      // }
+    }
+
+    if (preferredVision == null) return;
+
+    DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
+
+    preferredVision.addFilteredPose(drivetrain);
+
+    DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
   }
 
   public static void setAlliance() {

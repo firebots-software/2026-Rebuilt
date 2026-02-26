@@ -60,6 +60,11 @@ public class HopperSubsystem extends SubsystemBase {
     hopperConfigurator.apply(currentLimitConfigs);
     hopperConfigurator.apply(motorOutputConfigs);
 
+    DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
+    DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
+    DogLog.log("Subsystems/Hopper/Gains/kD", Constants.Hopper.kD);
+    DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
+
     if (RobotBase.isSimulation()) setupSimulation();
   }
 
@@ -137,7 +142,6 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Hopper/CurrentMotorSpeed(RPS)", hopperMotor.getVelocity().getValueAsDouble());
     DogLog.log("Subsystems/Hopper/AppliedVolts", hopperMotor.getMotorVoltage().getValueAsDouble());
-    hopperMotor.getVelocity().getValueAsDouble();
     DogLog.log(
         "Subsystems/Hopper/Motor Current (stator)",
         hopperMotor.getStatorCurrent().getValueAsDouble());
@@ -175,16 +179,9 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
 
     // 4) Battery sag model
-    double loadedBatteryVoltageVolts =
-        BatterySim.calculateDefaultBatteryLoadedVoltage(hopperMechanismSim.getCurrentDrawAmps());
-    RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
-
     double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
-
-    // Calculate what the battery voltage should be with this load
     double targetBatteryV =
         BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
-
     RoboRioSim.setVInVoltage(targetBatteryV);
   }
 }

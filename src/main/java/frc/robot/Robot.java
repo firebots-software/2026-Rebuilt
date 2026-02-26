@@ -54,8 +54,9 @@ public class Robot extends TimedRobot {
 
     CommandScheduler.getInstance().run();
 
-    m_robotContainer.visionPeriodic();
     LoggedTalonFX.periodic_static();
+
+    m_robotContainer.visionPeriodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

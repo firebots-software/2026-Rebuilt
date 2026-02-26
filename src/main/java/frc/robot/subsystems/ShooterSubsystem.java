@@ -47,11 +47,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Slot0Configs s0c =
         new Slot0Configs()
-            .withKP(Constants.Shooter.SHOOTER_KP)
-            .withKI(Constants.Shooter.SHOOTER_KI)
-            .withKD(Constants.Shooter.SHOOTER_KD)
-            .withKV(Constants.Shooter.SHOOTER_KV)
-            .withKA(Constants.Shooter.SHOOTER_KA);
+            .withKP(Constants.Shooter.KP)
+            .withKI(Constants.Shooter.KI)
+            .withKD(Constants.Shooter.KD)
+            .withKV(Constants.Shooter.KV)
+            .withKA(Constants.Shooter.KA);
 
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
@@ -81,6 +81,12 @@ public class ShooterSubsystem extends SubsystemBase {
     Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
     warmUpMotor1.setControl(follower);
     warmUpMotor2.setControl(follower);
+
+    DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.KP);
+    DogLog.log("Subsystems/Shooter/Gains/kI", Constants.Shooter.KI);
+    DogLog.log("Subsystems/Shooter/Gains/kD", Constants.Shooter.KD);
+    DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.KV);
+    DogLog.log("Subsystems/Shooter/Gains/kA", Constants.Shooter.KA);
 
     if (RobotBase.isSimulation()) setupSimulation();
   }

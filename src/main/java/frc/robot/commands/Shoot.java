@@ -90,12 +90,13 @@ public class Shoot extends Command {
 
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/targetAngle", targetAngle);
 
-    Pose3d gunOffset =
+    Pose3d shooterOffset =
         MiscMath.RotatedPosAroundVertical(
             Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
             drivetrain.getState().Pose.getRotation().getRadians());
-    Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(gunOffset));
-    Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
+    Vector3 shooterPos =
+        Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(shooterOffset));
+    Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/distanceToTarget", relativePos.magnitude());
   }
 
@@ -146,12 +147,13 @@ public class Shoot extends Command {
                 0),
             -1);
 
-    Pose3d gunOffset =
+    Pose3d shooterOffset =
         MiscMath.RotatedPosAroundVertical(
             Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
             drivetrain.getState().Pose.getRotation().getRadians());
-    Vector3 gunPos = Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(gunOffset));
-    Vector3 relativePos = Vector3.subtract(new Vector3(target), gunPos);
+    Vector3 shooterPos =
+        Vector3.add(new Vector3(drivetrain.getState().Pose), new Vector3(shooterOffset));
+    Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
 
     Vector3 correctedPos = new Vector3(target);
     double correctedSpeed = speedForDist(relativePos.magnitude());
@@ -163,7 +165,7 @@ public class Shoot extends Command {
               * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
               / 9.81;
       correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
-      correctedSpeed = speedForDist(Vector3.subtract(correctedPos, gunPos).magnitude());
+      correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
       prevTof = tof;
     }
 
