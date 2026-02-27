@@ -99,7 +99,7 @@ public class RobotContainer {
           : null;
 
   public final FuelGaugeDetection visionFuelGauge =
-      Constants.visionOnRobot
+      Constants.fuelGaugeOnRobot
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
@@ -175,7 +175,7 @@ public class RobotContainer {
       joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // intake default command - retract arm if hopper is empty, idle if not
-      if (Constants.hopperOnRobot && Constants.visionOnRobot) {
+      if (Constants.hopperOnRobot && Constants.fuelGaugeOnRobot) {
         intakeSubsystem.setDefaultCommand(
             new ConditionalCommand(
                 intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
