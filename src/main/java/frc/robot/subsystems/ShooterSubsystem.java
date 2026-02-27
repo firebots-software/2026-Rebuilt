@@ -35,28 +35,34 @@ public class ShooterSubsystem extends SubsystemBase {
   private DCMotorSim shooterMechanismSim;
 
   public ShooterSubsystem() {
-    warmUpMotor1 = new LoggedTalonFX(
-        Constants.Shooter.WARMUP_1_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-    warmUpMotor2 = new LoggedTalonFX(
-        Constants.Shooter.WARMUP_2_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-    warmUpMotor3 = new LoggedTalonFX(
-        Constants.Shooter.WARMUP_3_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    warmUpMotor1 =
+        new LoggedTalonFX(
+            Constants.Shooter.WARMUP_1_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    warmUpMotor2 =
+        new LoggedTalonFX(
+            Constants.Shooter.WARMUP_2_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    warmUpMotor3 =
+        new LoggedTalonFX(
+            Constants.Shooter.WARMUP_3_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     shooter = warmUpMotor3;
 
-    Slot0Configs s0c = new Slot0Configs()
-        .withKP(Constants.Shooter.KP)
-        .withKI(Constants.Shooter.KI)
-        .withKD(Constants.Shooter.KD)
-        .withKV(Constants.Shooter.KV)
-        .withKA(Constants.Shooter.KA);
+    Slot0Configs s0c =
+        new Slot0Configs()
+            .withKP(Constants.Shooter.KP)
+            .withKI(Constants.Shooter.KI)
+            .withKD(Constants.Shooter.KD)
+            .withKV(Constants.Shooter.KV)
+            .withKA(Constants.Shooter.KA);
 
-    CurrentLimitsConfigs clc = new CurrentLimitsConfigs()
-        .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
-        .withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
+    CurrentLimitsConfigs clc =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
+            .withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
 
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
-        .withInverted(InvertedValue.CounterClockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast);
+    MotorOutputConfigs motorOutputConfigs =
+        new MotorOutputConfigs()
+            .withInverted(InvertedValue.CounterClockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Coast);
 
     VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
@@ -116,7 +122,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // from motor rps to linear speed in ft/sec
   public double calculateRPSToFtPS(double rps) {
-    return (rps / Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS) * Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI
+    return (rps / Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS)
+        * Constants.Shooter.SHOOTER_WHEEL_DIAMETER
+        * Math.PI
         / 12;
     // return rps / 12
     // * (Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI)
@@ -132,7 +140,8 @@ public class ShooterSubsystem extends SubsystemBase {
   // so now max is 104.72 and min is 71.2
   public void setBallSpeed(double ballSpeed) {
     targetBallSpeed = ballSpeed;
-    shooter.setControl(m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0 * coefficient)));
+    shooter.setControl(
+        m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0 * coefficient)));
   }
 
   public void stopShooter() {
@@ -140,10 +149,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    if (shooter.getCachedVelocityRps() == 0){
+    if (shooter.getCachedVelocityRps() == 0) {
       return false;
     }
-    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - (shooter.getCachedVelocityRps() * 2)) <= TOLERANCE_RPS;
+    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - (shooter.getCachedVelocityRps() * 2))
+        <= TOLERANCE_RPS;
   }
 
   public double getCurrentBallSpeedFtPS() {

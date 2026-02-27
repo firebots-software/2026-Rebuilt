@@ -7,9 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-import choreo.auto.AutoFactory;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -18,11 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Vision.VisionCamera;
-import frc.robot.commandGroups.ArcAroundAndShoot;
 import frc.robot.commandGroups.BumpDTP;
-import frc.robot.commandGroups.ClimbCommands.L3Climb;
-import frc.robot.commandGroups.WarmUpAndShoot;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -138,10 +131,23 @@ public class RobotContainer {
     // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
-    joystick.rightBumper().whileTrue(new ShootBasic(() -> 85.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick.b().whileTrue(new ShootBasic(() -> 105.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick.y().whileTrue(new ShootBasic(() -> 100.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootBasic(
+                () -> 85.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
+    // intakeSubsystem, hopperSubsystem));
+    joystick
+        .b()
+        .whileTrue(
+            new ShootBasic(
+                () -> 105.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick
+        .y()
+        .whileTrue(
+            new ShootBasic(
+                () -> 100.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
 
     // joystick
     //     .rightTrigger()
