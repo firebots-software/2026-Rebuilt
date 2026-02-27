@@ -295,7 +295,7 @@ public class RobotContainer {
                 drivetrain,
                 () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
 
-    joystick.a().whileTrue(new BumpDTP(drivetrain, ()-> true));
+    joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
 
     // TODO: left trigger -> run LockOnCommand (not yet defined)
     // joystick.leftTrigger().whileTrue(new LockOnCommand(....));

@@ -1,8 +1,5 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -36,6 +33,7 @@ public class AutoRoutines {
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
+
   // private final ClimberSubsystem climberSubsystem;
 
   // i will figure out alliance side and add supplier to this
@@ -59,8 +57,7 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory maneuver(AutoRoutine routine, Maneuver type) {
-    if (type == null)
-      return null;
+    if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -68,8 +65,7 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory intake(AutoRoutine routine, Intake type) {
-    if (type == null)
-      return null;
+    if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -82,8 +78,7 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
-    if (type == null)
-      return null;
+    if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -91,8 +86,7 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory climb(AutoRoutine routine, ClimbPos type) {
-    if (type == null)
-      return null;
+    if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -100,8 +94,7 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory depot(AutoRoutine routine, Depot type) {
-    if (type == null)
-      return null;
+    if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -114,8 +107,7 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory outpost(AutoRoutine routine, Outpost type) {
-    if (type == null)
-      return null;
+    if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -123,8 +115,7 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory miscPaths(AutoRoutine routine, MiscPaths type) {
-    if (type == null)
-      return null;
+    if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -325,8 +316,7 @@ public class AutoRoutines {
                 .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(depotIntake))
                 .andThen(getPathCommandSafely(depotShoot))
-                .andThen(returnBasicShoot())
-                );
+                .andThen(returnBasicShoot()));
 
     return routine.cmd();
   }
@@ -377,8 +367,7 @@ public class AutoRoutines {
                 .andThen(getPathCommandSafely(outpostIntake))
                 .andThen(new WaitCommand(3))
                 .andThen(getPathCommandSafely(outpostShoot))
-                .andThen(returnBasicShoot())
-                );
+                .andThen(returnBasicShoot()));
 
     return routine.cmd();
   }
@@ -404,8 +393,7 @@ public class AutoRoutines {
                 .andThen(getPathCommandSafely(outpostIntake))
                 .andThen(new WaitCommand(3))
                 .andThen(getPathCommandSafely(outpostShoot))
-                .andThen(returnBasicShoot())
-                );
+                .andThen(returnBasicShoot()));
 
     return routine.cmd();
   }
@@ -425,8 +413,7 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
-                .andThen(returnBasicShoot())
-                );
+                .andThen(returnBasicShoot()));
 
     return routine.cmd();
   }
@@ -446,8 +433,7 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
-                .andThen(returnBasicShoot())
-                );
+                .andThen(returnBasicShoot()));
 
     return routine.cmd();
   }
@@ -472,8 +458,7 @@ public class AutoRoutines {
                 .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(depotIntake))
                 .andThen(getPathCommandSafely(depotShoot))
-                .andThen(returnBasicShoot())
-                );
+                .andThen(returnBasicShoot()));
 
     return routine.cmd();
   }
@@ -509,9 +494,7 @@ public class AutoRoutines {
     AutoTrajectory intake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostR);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
 
-    routine.active().onTrue(
-        getPathCommandSafely(intake)
-            .andThen(getPathCommandSafely(shoot)));
+    routine.active().onTrue(getPathCommandSafely(intake).andThen(getPathCommandSafely(shoot)));
 
     return routine.cmd();
   }
@@ -524,12 +507,14 @@ public class AutoRoutines {
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotR);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
 
-    routine.active().onTrue(
-        getPathCommandSafely(outpostIntake)
-            .andThen(getPathCommandSafely(outpostShoot))
+    routine
+        .active()
+        .onTrue(
+            getPathCommandSafely(outpostIntake)
+                .andThen(getPathCommandSafely(outpostShoot))
                 .andThen(returnBasicShoot())
-            .andThen(getPathCommandSafely(depotIntake))
-            .andThen(getPathCommandSafely(depotShoot)));
+                .andThen(getPathCommandSafely(depotIntake))
+                .andThen(getPathCommandSafely(depotShoot)));
     return routine.cmd();
   }
 
@@ -539,9 +524,9 @@ public class AutoRoutines {
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotRDrake);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
 
-    routine.active().onTrue(
-        getPathCommandSafely(depotIntake)
-            .andThen(getPathCommandSafely(depotShoot)));
+    routine
+        .active()
+        .onTrue(getPathCommandSafely(depotIntake).andThen(getPathCommandSafely(depotShoot)));
 
     return routine.cmd();
   }
@@ -552,32 +537,34 @@ public class AutoRoutines {
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotRDrake);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostL);
-    AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShootShort);
+    AutoTrajectory outpostShoot =
+        shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShootShort);
 
-    routine.active().onTrue(
-        getPathCommandSafely(depotIntake)
-            .andThen(getPathCommandSafely(depotShoot))
-            .andThen(getPathCommandSafely(outpostIntake))
-            .andThen(getPathCommandSafely(outpostShoot)));
+    routine
+        .active()
+        .onTrue(
+            getPathCommandSafely(depotIntake)
+                .andThen(getPathCommandSafely(depotShoot))
+                .andThen(getPathCommandSafely(outpostIntake))
+                .andThen(getPathCommandSafely(outpostShoot)));
 
     return routine.cmd();
   }
 
   public Command returnBasicShoot() {
     return (new ShootBasic(
-                        () ->
-                            Units.metersToFeet(
-                                Targeting.shootingSpeed(
-                                    Constants.Landmarks.RED_HUB,
-                                    swerveSubsystem,
-                                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-                        () ->
-                            (Targeting.pointingAtTarget(
-                                    Constants.Landmarks.RED_HUB, swerveSubsystem)
-                                && lebronShooterSubsystem.isAtSpeed()),
-                        lebronShooterSubsystem,
-                        intakeSubsystem,
-                        hopperSubsystem));
+        () ->
+            Units.metersToFeet(
+                Targeting.shootingSpeed(
+                    Constants.Landmarks.RED_HUB,
+                    swerveSubsystem,
+                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+        () ->
+            (Targeting.pointingAtTarget(Constants.Landmarks.RED_HUB, swerveSubsystem)
+                && lebronShooterSubsystem.isAtSpeed()),
+        lebronShooterSubsystem,
+        intakeSubsystem,
+        hopperSubsystem));
   }
 
   // this may not be needed, but is good to have
@@ -627,9 +614,6 @@ public class AutoRoutines {
     //     "Trial Path Two",
     //     () -> trialPathTwo(Constants.Swerve.Auto.Maneuver.RedRightManeuverR, null, null, null));
 
-
-
-    
     autoChooser.addCmd("Red Pedri - depot (right)", () -> RedPedriDepotR());
     // autoChooser.addCmd("Red Pedri - depot (left)", () -> RedPedriDepotL());
     // autoChooser.addCmd("Red Pedri - outpost (right)", () -> RedPedriOutpostR());
