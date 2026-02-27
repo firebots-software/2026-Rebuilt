@@ -601,7 +601,7 @@ public final class Constants {
     public static final double FRONT_RIGHT_Z = Units.inchesToMeters(27.024842);
     public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(0.00000000);
     public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(355.256834);
-    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(14.948185);
+    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(14.899273);
 
     public static final double FRONT_LEFT_X = Units.inchesToMeters(-4.757613);
     public static final double FRONT_LEFT_Y = Units.inchesToMeters(8.454156);
