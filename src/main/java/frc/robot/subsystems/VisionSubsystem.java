@@ -259,6 +259,17 @@ public class VisionSubsystem extends SubsystemBase {
     return maxDist;
   }
 
+  public double getPoseAmbiguity() {
+    double poseAmbiguity =
+      (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+      ? Double.MAX_VALUE
+      : latestVisionResult.getTargets().stream().mapToDouble(PhotonTrackedTarget::getPoseAmbiguity).average().orElse(Double.NaN);
+
+      DogLog.log("Subsystems/Vision/" + cameraTitle + "/PoseAmbiguity", poseAmbiguity);
+      return poseAmbiguity;
+  }
+
+
   public boolean hasValidMeasurement() {
     return hasValidMeasurement;
   }

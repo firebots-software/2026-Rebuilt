@@ -223,6 +223,12 @@ public class RobotContainer {
           rearRightDist = visionRearRight.getMaxDistance();
           rearLeftDist = visionRearLeft.getMaxDistance();
           break;
+        case POSE_AMBIGUITY:
+          frontRightDist = visionFrontRight.getPoseAmbiguity();
+          frontLeftDist = visionFrontLeft.getPoseAmbiguity();
+          rearRightDist = visionRearRight.getPoseAmbiguity();
+          rearLeftDist = visionRearLeft.getPoseAmbiguity();
+          break;
       }
 
       if (frontRightDist < preferredDistance && visionFrontRight.hasValidMeasurement()) {

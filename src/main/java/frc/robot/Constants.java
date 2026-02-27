@@ -672,7 +672,8 @@ public final class Constants {
     public static enum CameraSelectionMethod {
       MIN(),
       AVG(),
-      MAX();
+      MAX(),
+      POSE_AMBIGUITY();
     }
   }
 
