@@ -16,10 +16,10 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = false;
+  public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = false;
-  public static final boolean shooterOnRobot = false;
+  public static final boolean shooterOnRobot = true;
   public static final boolean climberOnRobot = false;
 
   public static class OperatorConstants {
@@ -116,7 +116,7 @@ public final class Constants {
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
     // the distance over the bump in meters
-    public static final double DISTANCE_OVER_BUMP = 2.0;
+    public static final double DISTANCE_OVER_BUMP = 2.5; // correct distance is 3 meters
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;

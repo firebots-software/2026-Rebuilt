@@ -35,6 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private double targetBallSpeed = 0; // this needs to be consistent
   private static final double TOLERANCE_RPS = 2.0; // tolerance in rotations per second
 
+  private final double coefficient = 1;
+
   // Simulation objects
   private TalonFXSimState shooterSimState;
   private DCMotorSim shooterMechanismSim;
@@ -135,7 +137,7 @@ public class ShooterSubsystem extends SubsystemBase {
   // so now max is 104.72 and min is 71.2
   public void setBallSpeed(double ballSpeed) {
     targetBallSpeed = ballSpeed;
-    shooter.setControl(m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0)));
+    shooter.setControl(m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0 * coefficient)));
   }
 
   public void stopShooter() {
