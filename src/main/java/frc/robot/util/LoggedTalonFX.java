@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -31,9 +33,114 @@ public class LoggedTalonFX extends TalonFX {
       torqueCurrent,
       motorVoltage,
       supplyVoltage,
-      error,
-      reference,
       rotorPosition;
+
+  private StatusSignal<?> deviceTempSignal;
+  private StatusSignal<?> closedLoopErrorSignal;
+  private StatusSignal<?> closedLoopReferenceSignal;
+  private StatusSignal<?> rotorPositionSignal;
+  private StatusSignal<?> positionSignal;
+  private StatusSignal<?> velocitySignal;
+  private StatusSignal<?> accelerationSignal;
+  private StatusSignal<?> supplyCurrentSignal;
+  private StatusSignal<?> statorCurrentSignal;
+  private StatusSignal<?> torqueCurrentSignal;
+  private StatusSignal<?> motorVoltageSignal;
+  private StatusSignal<?> supplyVoltageSignal;
+
+  private double deviceTempC;
+  private double closedLoopErrorVal;
+  private double closedLoopReferenceVal;
+  private double rotorPositionVal;
+  private double positionRotations;
+  private double velocityRps;
+  private double accelerationRps2;
+  private double supplyCurrentA;
+  private double statorCurrentA;
+  private double torqueCurrentA;
+  private double motorVoltageV;
+  private double supplyVoltageV;
+
+  private BaseStatusSignal[] cachedSignals;
+
+  public double getCachedDeviceTempC() {
+    return deviceTempC;
+  }
+
+  public double getCachedClosedLoopError() {
+    return closedLoopErrorVal;
+  }
+
+  public double getCachedClosedLoopReference() {
+    return closedLoopReferenceVal;
+  }
+
+  public double getCachedRotorPosition() {
+    return rotorPositionVal;
+  }
+
+  public double getCachedPositionRotations() {
+    return positionRotations;
+  }
+
+  public double getCachedVelocityRps() {
+    return velocityRps;
+  }
+
+  public double getCachedAccelerationRps2() {
+    return accelerationRps2;
+  }
+
+  public double getCachedSupplyCurrentA() {
+    return supplyCurrentA;
+  }
+
+  public double getCachedStatorCurrentA() {
+    return statorCurrentA;
+  }
+
+  public double getCachedTorqueCurrentA() {
+    return torqueCurrentA;
+  }
+
+  public double getCachedMotorVoltageV() {
+    return motorVoltageV;
+  }
+
+  public double getCachedSupplyVoltageV() {
+    return supplyVoltageV;
+  }
+
+  private void cacheSignals() {
+    deviceTempSignal = this.getDeviceTemp(false);
+    closedLoopErrorSignal = this.getClosedLoopError(false);
+    closedLoopReferenceSignal = this.getClosedLoopReference(false);
+    rotorPositionSignal = this.getRotorPosition(false);
+    positionSignal = this.getPosition(false);
+    velocitySignal = this.getVelocity(false);
+    accelerationSignal = this.getAcceleration(false);
+    supplyCurrentSignal = this.getSupplyCurrent(false);
+    statorCurrentSignal = this.getStatorCurrent(false);
+    torqueCurrentSignal = this.getTorqueCurrent(false);
+    motorVoltageSignal = this.getMotorVoltage(false);
+    supplyVoltageSignal = this.getSupplyVoltage(false);
+
+    cachedSignals =
+        new BaseStatusSignal[] {
+          deviceTempSignal,
+          closedLoopErrorSignal,
+          closedLoopReferenceSignal,
+          rotorPositionSignal,
+          positionSignal,
+          velocitySignal,
+          accelerationSignal,
+          supplyCurrentSignal,
+          statorCurrentSignal,
+          torqueCurrentSignal,
+          motorVoltageSignal,
+          supplyVoltageSignal
+        };
+  }
 
   /**
    * @param deviceName Designated name of this LoggedTalonFX
@@ -92,8 +199,6 @@ public class LoggedTalonFX extends TalonFX {
     this.torqueCurrent = name + "/current/torque(A)";
     this.motorVoltage = name + "/voltage/motor(V)";
     this.supplyVoltage = name + "/voltage/supply(V)";
-    this.error = name + "/closedloop/error";
-    this.reference = name + "/closedloop/reference";
     this.rotorPosition = name + "/closedloop/rotorPosition";
 
     // Applying current limits
@@ -107,6 +212,7 @@ public class LoggedTalonFX extends TalonFX {
 
     motorConfiguration.CurrentLimits = clc;
     this.getConfigurator().apply(motorConfiguration);
+    cacheSignals();
   }
 
   public void updateCurrentLimits(double statorCurrentLimit, double supplyCurrentLimit) {
@@ -121,13 +227,6 @@ public class LoggedTalonFX extends TalonFX {
     this.getConfigurator().apply(motorConfiguration);
   }
 
-  // For some reason Robot.java doesn't recognize the static method here
-  // when there is another method with the same name
-  /**
-   * This method will run the periodic() method for each of the motors and take care of the logging.
-   * You must call LoggedTalonFX.periodic_static() in a periodic method in the code in order for
-   * this to work.
-   */
   public static void periodic_static() {
     for (LoggedTalonFX l : motors) {
       l.periodic();
@@ -135,25 +234,43 @@ public class LoggedTalonFX extends TalonFX {
   }
 
   public void periodic() {
-    DogLog.log(temperature, this.getDeviceTemp().getValueAsDouble());
-    DogLog.log(closedLoopError, this.getClosedLoopError().getValueAsDouble());
-    DogLog.log(closedLoopReference, this.getClosedLoopReference().getValueAsDouble());
+    BaseStatusSignal.refreshAll(cachedSignals);
 
-    DogLog.log(error, this.getClosedLoopError().getValueAsDouble());
-    DogLog.log(reference, this.getClosedLoopReference().getValueAsDouble());
-    DogLog.log(rotorPosition, this.getRotorPosition().getValueAsDouble());
+    // Cache values (read each signal once per loop)
+    deviceTempC = deviceTempSignal.getValueAsDouble();
+    closedLoopErrorVal = closedLoopErrorSignal.getValueAsDouble();
+    closedLoopReferenceVal = closedLoopReferenceSignal.getValueAsDouble();
+    rotorPositionVal = rotorPositionSignal.getValueAsDouble();
 
-    DogLog.log(position, this.getPosition().getValueAsDouble());
-    DogLog.log(velocity, this.getVelocity().getValueAsDouble());
-    DogLog.log(acceleration, this.getAcceleration().getValueAsDouble());
+    positionRotations = positionSignal.getValueAsDouble();
+    velocityRps = velocitySignal.getValueAsDouble();
+    accelerationRps2 = accelerationSignal.getValueAsDouble();
+
+    supplyCurrentA = supplyCurrentSignal.getValueAsDouble();
+    statorCurrentA = statorCurrentSignal.getValueAsDouble();
+    torqueCurrentA = torqueCurrentSignal.getValueAsDouble();
+
+    motorVoltageV = motorVoltageSignal.getValueAsDouble();
+    supplyVoltageV = supplyVoltageSignal.getValueAsDouble();
+
+    // Log cached values (no direct signal reads here)
+    DogLog.log(temperature, getCachedDeviceTempC());
+    DogLog.log(closedLoopError, getCachedClosedLoopError());
+    DogLog.log(closedLoopReference, getCachedClosedLoopReference());
+
+    DogLog.log(rotorPosition, getCachedRotorPosition());
+
+    DogLog.log(position, getCachedPositionRotations());
+    DogLog.log(velocity, getCachedVelocityRps());
+    DogLog.log(acceleration, getCachedAccelerationRps2());
 
     // Current
-    DogLog.log(supplyCurrent, this.getSupplyCurrent().getValueAsDouble());
-    DogLog.log(statorCurrent, this.getStatorCurrent().getValueAsDouble());
-    DogLog.log(torqueCurrent, this.getTorqueCurrent().getValueAsDouble());
+    DogLog.log(supplyCurrent, getCachedSupplyCurrentA());
+    DogLog.log(statorCurrent, getCachedStatorCurrentA());
+    DogLog.log(torqueCurrent, getCachedTorqueCurrentA());
 
     // Voltage
-    DogLog.log(motorVoltage, this.getMotorVoltage().getValueAsDouble());
-    DogLog.log(supplyVoltage, this.getSupplyVoltage().getValueAsDouble());
+    DogLog.log(motorVoltage, getCachedMotorVoltageV());
+    DogLog.log(supplyVoltage, getCachedSupplyVoltageV());
   }
 }

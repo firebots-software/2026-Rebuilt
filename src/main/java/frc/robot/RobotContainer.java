@@ -8,26 +8,15 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Vision.VisionCamera;
-import frc.robot.commandGroups.ArcAroundAndShoot;
-import frc.robot.commandGroups.ClimbCommands.L3Climb;
-import frc.robot.commandGroups.WarmUpAndShoot;
-import frc.robot.commands.DriveToPose;
+import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -37,33 +26,26 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
-  // kSpeedAt12Volts desired top speed
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-  // 3/4 of a rotation per second max angular velocity
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-
-  /* Setting up bindings for necessary control of the swerve drive platform */
-  private final SwerveRequest.FieldCentric drive =
-      new SwerveRequest.FieldCentric()
-          .withDeadband(MaxSpeed * 0.1)
-          .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-          .withDriveRequestType(
-              DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  // /* Setting up bindings for necessary control of the swerve drive platform */
+  // private final SwerveRequest.FieldCentric drive =
+  //     new SwerveRequest.FieldCentric()
+  //         .withDeadband(MaxSpeed * 0.1)
+  //         .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+  //         .withDriveRequestType(
+  //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
 
   private BooleanSupplier redside = () -> redAlliance;
   private static boolean redAlliance;
 
-  private final Telemetry logger = new Telemetry(MaxSpeed);
+  // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CommandXboxController debugJoystick = new CommandXboxController(1);
+  //private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -140,14 +122,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Swerve bindings - left joystick for translation, right joystick for rotation
-    Trigger leftTrigger = joystick.leftTrigger();
+    // SWERVE COMMANDS
+    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
         rotationFunction = () -> -joystick.getRightX(),
         speedFunction =
             () ->
-                leftTrigger.getAsBoolean()
+                joystick.rightTrigger().getAsBoolean()
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
@@ -157,181 +139,37 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            () -> joystick.leftTrigger().getAsBoolean(),
+            () -> false,
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
+    hopperSubsystem.setDefaultCommand(Commands.run(hopperSubsystem::stop, hopperSubsystem));
 
-    if (Constants.shooterOnRobot && Constants.hopperOnRobot) {
-      joystick
-          .rightBumper()
-          .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
-    }
-    // x -> zero swerve
-    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
-    if (Constants.intakeOnRobot) {
+    // INTAKE COMMANDS
+    
       // // left bumper -> run intake
       joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
-      // intake default command - retract arm if hopper is empty, idle if not
-      if (Constants.hopperOnRobot && Constants.fuelGaugeOnRobot) {
-        intakeSubsystem.setDefaultCommand(
-            new ConditionalCommand(
-                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
-                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE),
-                () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
-      }
-    }
+      // intake default command - stop rollers
+      intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
+          // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
-    if (Constants.shooterOnRobot) {
       lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
-      joystick
-          .rightTrigger()
-          .whileTrue(
-              new ArcAroundAndShoot(
-                  drivetrain,
-                  lebron,
-                  intakeSubsystem,
-                  hopperSubsystem,
-                  leftRightFunction,
-                  redside,
-                  joystick));
-    }
+      joystick.leftTrigger().whileTrue(new ShootBasic(() -> 70.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    joystick
-        .b()
-        .whileTrue(
-            drivetrain.applyRequest(
-                () ->
-                    point.withModuleDirection(
-                        new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+      // joystick
+      //     .rightTrigger()
+      //     .whileTrue(
+      //         new ArcAroundAndShoot(
+      //             drivetrain,
+      //             lebron,
+      //             intakeSubsystem,
+      //             hopperSubsystem,
+      //             leftRightFunction,
+      //             redside,
+      //             joystick));
 
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
-    // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-    // INTAKE COMMANDS (DEBUG)
-    // left trigger -> run intake
-    if (Constants.intakeOnRobot) {
-      debugJoystick
-          .leftTrigger()
-          .whileTrue(
-              intakeSubsystem.runRollersUntilInterruptedCommand(
-                  Constants.Intake.Rollers.TARGET_ROLLER_RPS));
-
-      // left trigger + x -> arm to retracted pos (90)
-      debugJoystick
-          .leftTrigger()
-          .and(debugJoystick.x())
-          .onTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED));
-
-      // left trigger + a -> arm to extended pos (15)
-      debugJoystick
-          .leftTrigger()
-          .and(debugJoystick.a())
-          .onTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_EXTENDED));
-
-      // left trigger + b -> arm to idle pos (45)
-      debugJoystick
-          .leftTrigger()
-          .and(debugJoystick.b())
-          .onTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE));
-    }
-
-    if (Constants.climberOnRobot) {
-      // y -> initiate climb
-      // TODO: verify that command is correct
-      BooleanSupplier leftside = () -> true; // TODO: get button
-      Pose2d poseToDriveTo = new Pose2d();
-      if (redside.getAsBoolean()) {
-        if (leftside.getAsBoolean()) {
-          poseToDriveTo = Constants.Landmarks.RED_TOWER_L;
-        } else {
-          poseToDriveTo = Constants.Landmarks.RED_TOWER_R;
-        }
-      } else {
-        if (leftside.getAsBoolean()) {
-          poseToDriveTo = Constants.Landmarks.BLUE_TOWER_L;
-        } else {
-          poseToDriveTo = Constants.Landmarks.BLUE_TOWER_R;
-        }
-      }
-      joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
-
-      // a -> zero climber
-      joystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
-    }
-
-    // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
-
-    // if (Constants.hopperOnRobot) {
-    //   // joystick.x().whileTrue(hopperSubsystem.runHopperCommand(4.0));
-    // }
-
-    debugJoystick
-        .povUp()
-        .whileTrue(
-            new DriveToPose(
-                    drivetrain,
-                    () ->
-                        MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0)))
-                .andThen(new InstantCommand(() -> DogLog.log("first dtp done", true)))
-                .andThen(
-                    new DriveToPose(
-                        drivetrain,
-                        () ->
-                            MiscUtils.plus(
-                                drivetrain.getCurrentState().Pose, new Translation2d(0, -2)))));
-
-    debugJoystick
-        .povDown()
-        .whileTrue(
-            new DriveToPose(
-                    drivetrain,
-                    () ->
-                        MiscUtils.plusWithRotation(
-                            drivetrain.getCurrentState().Pose,
-                            new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708))))
-                .andThen(
-                    new DriveToPose(
-                        drivetrain,
-                        () ->
-                            MiscUtils.plusWithRotation(
-                                drivetrain.getCurrentState().Pose,
-                                new Pose2d(new Translation2d(0, -2), new Rotation2d(1.5708))))));
-
-    debugJoystick
-        .povRight()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                () ->
-                    MiscUtils.plusWithRotation(
-                        drivetrain.getCurrentState().Pose,
-                        new Pose2d(new Translation2d(2, 0), new Rotation2d(1.5708)))));
-
-    debugJoystick
-        .povLeft()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
-
-    // TODO: left trigger -> run LockOnCommand (not yet defined)
-    // joystick.leftTrigger().whileTrue(new LockOnCommand(....));
-
-    // TODO: right trigger -> shoot + arc lock (arc lock not yet defined)
-    // verify command is correct and that sequential is correct type of commandgroup
-    // joystick.rightTrigger().whileTrue(new SequentialCommandGroup(
-    // new Shoot(drivetrain, lebron, hopperSubsystem, redside),
-    // new ArcLock(.....)
-    // ));
-
-    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public void visionPeriodic() {

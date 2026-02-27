@@ -4,15 +4,15 @@
 
 package frc.robot.commands;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimberSubsystem;
 
-// temp drivetoPos so I can do auton L1 Climb
-public class ZeroPullUp extends Command {
+public class MuscleUpDown extends Command {
   private final ClimberSubsystem climberSubsystem;
   private double timesExceededCurrent = 0;
 
-  public ZeroPullUp(ClimberSubsystem climberSubsystem) {
+  public MuscleUpDown(ClimberSubsystem climberSubsystem) {
     this.climberSubsystem = climberSubsystem;
     addRequirements(climberSubsystem);
   }
@@ -20,32 +20,33 @@ public class ZeroPullUp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climberSubsystem.reducePullUpCurrentLimits();
+    climberSubsystem.reduceMuscleUpCurrentLimits();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.movePullUpUp();
+    climberSubsystem.moveMuscleUpUp();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      climberSubsystem.resetPullUpPositionToTop();
+      climberSubsystem.resetMuscleUpPositionToZero();
     }
-    climberSubsystem.resetPullUpCurrentLimits();
+    climberSubsystem.resetMuscleUpCurrentLimits();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (climberSubsystem.checkPullUpCurrent()) {
+    if (climberSubsystem.checkMuscleUpCurrent()) {
       timesExceededCurrent++;
     } else {
       timesExceededCurrent = 0;
     }
+    DogLog.log("time exceeded current", timesExceededCurrent);
     return timesExceededCurrent >= 10;
   }
 }
