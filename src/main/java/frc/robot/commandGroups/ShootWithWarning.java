@@ -3,9 +3,9 @@ package frc.robot.commandGroups;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -22,10 +22,9 @@ public class ShootWithWarning extends ParallelCommandGroup {
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       HopperSubsystem hopper,
-      DoubleSupplier tangentialVel,
       Pose3d target,
       BooleanSupplier redside,
-      Joystick joystick,
+      CommandXboxController joystick,
       DoubleSupplier frontBackFunction,
       DoubleSupplier leftRightFunction) {
 

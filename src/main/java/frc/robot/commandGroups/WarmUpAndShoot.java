@@ -16,7 +16,7 @@ public class WarmUpAndShoot extends SequentialCommandGroup {
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(speed),
         hopperSubsystem
-            .runHopperUntilInterruptedCommand(Constants.Hopper.TARGET_SURFACE_SPEED_MPS)
-            .onlyIf(readyToShoot));
+            .runHopperUntilInterruptedCommand(Constants.Hopper.TARGET_SURFACE_SPEED_MPS, () -> false)
+            );
   }
 }
