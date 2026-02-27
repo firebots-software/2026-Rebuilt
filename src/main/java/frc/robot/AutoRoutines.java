@@ -7,6 +7,7 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Depot;
@@ -295,6 +296,29 @@ public class AutoRoutines {
 
   // return routine.cmd();
   // }
+
+  public void week0Auto() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
+    AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
+
+    routine
+        .active()
+        .onTrue(
+            moveLeft
+                .resetOdometry()
+                .andThen(
+                    new ParallelCommandGroup(
+                        moveLeft.cmd(), intakeSubsystem.intakeUntilInterruptedCommand()))
+                .andThen(
+                    new ParallelCommandGroup(
+                        moveRight.cmd(),
+                        intakeSubsystem.setArmToDegreesCommand(
+                            Constants.Intake.Arm.ARM_POS_RETRACTED))));
+
+    routine.cmd();
+  }
 
   public Command RedPedriDepotR() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
