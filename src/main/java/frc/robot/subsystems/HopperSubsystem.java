@@ -22,7 +22,7 @@ public class HopperSubsystem extends SubsystemBase {
   private double targetSurfaceSpeedMps = 0.0;
 
   // private TalonFXSimState hopperMotorSimState;
-  private DCMotorSim hopperMechanismSim;
+  // private DCMotorSim hopperMechanismSim;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
