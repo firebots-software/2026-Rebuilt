@@ -36,7 +36,7 @@ public class AutoRoutines {
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
-  private final ClimberSubsystem climberSubsystem;
+  // private final ClimberSubsystem climberSubsystem;
 
   // i will figure out alliance side and add supplier to this
 
@@ -50,7 +50,7 @@ public class AutoRoutines {
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
-    this.climberSubsystem = climber;
+    // this.climberSubsystem = climber;
 
     autoFactory = swerveSubsystem.createAutoFactory();
 
