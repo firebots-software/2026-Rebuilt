@@ -308,7 +308,7 @@ public class AutoRoutines {
   public Command RedPedriDepotR() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeR);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeSweep);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedLeftShoot);
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotL);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
