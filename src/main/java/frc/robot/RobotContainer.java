@@ -246,7 +246,7 @@ public class RobotContainer {
       }
     }
 
-    if (preferredVision == null) return;
+    if (preferredVision == null || !preferredVision.hasValidMeasurement()) return;
 
     DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
 
