@@ -46,7 +46,8 @@
 //   private final StructArrayPublisher<SwerveModuleState> driveModuleTargets =
 //       driveStateTable.getStructArrayTopic("ModuleTargets", SwerveModuleState.struct).publish();
 //   private final StructArrayPublisher<SwerveModulePosition> driveModulePositions =
-//       driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
+//       driveStateTable.getStructArrayTopic("ModulePositions",
+// SwerveModulePosition.struct).publish();
 //   private final DoublePublisher driveTimestamp =
 //       driveStateTable.getDoubleTopic("Timestamp").publish();
 //   private final DoublePublisher driveOdometryFrequency =
@@ -60,7 +61,8 @@
 //   /* Mechanisms to represent the swerve module states */
 //   private final Mechanism2d[] m_moduleMechanisms =
 //       new Mechanism2d[] {
-//         new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1),
+//         new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1, 1), new Mechanism2d(1,
+// 1),
 //       };
 //   /* A direction and length changing ligament for speed representation */
 //   private final MechanismLigament2d[] m_moduleSpeeds =
@@ -83,16 +85,20 @@
 //       new MechanismLigament2d[] {
 //         m_moduleMechanisms[0]
 //             .getRoot("RootDirection", 0.5, 0.5)
-//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new
+// Color8Bit(Color.kWhite))),
 //         m_moduleMechanisms[1]
 //             .getRoot("RootDirection", 0.5, 0.5)
-//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new
+// Color8Bit(Color.kWhite))),
 //         m_moduleMechanisms[2]
 //             .getRoot("RootDirection", 0.5, 0.5)
-//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new
+// Color8Bit(Color.kWhite))),
 //         m_moduleMechanisms[3]
 //             .getRoot("RootDirection", 0.5, 0.5)
-//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+//             .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new
+// Color8Bit(Color.kWhite))),
 //       };
 
 //   private final double[] m_poseArray = new double[3];

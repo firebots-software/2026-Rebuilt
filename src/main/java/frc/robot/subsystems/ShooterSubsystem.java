@@ -14,16 +14,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.sim.ChassisReference;
-import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -147,8 +139,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    return Math.abs(
-            calculateFtPSToRPS(targetBallSpeed) - (shooter.getCachedVelocityRps() * 2))
+    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - (shooter.getCachedVelocityRps() * 2))
         <= TOLERANCE_RPS;
   }
 

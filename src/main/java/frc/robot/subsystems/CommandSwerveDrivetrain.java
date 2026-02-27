@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
@@ -21,17 +20,12 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Notifier;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import java.util.function.Supplier;
@@ -41,7 +35,8 @@ import java.util.function.Supplier;
  * be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-  // private static final double kSimLoopPeriod = Constants.Simulation.SIM_LOOP_PERIOD_SECONDS; // 5 ms
+  // private static final double kSimLoopPeriod = Constants.Simulation.SIM_LOOP_PERIOD_SECONDS; // 5
+  // ms
   // private Notifier m_simNotifier = null;
   // private double m_lastSimTime;
 
@@ -109,7 +104,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //             // Log state with SignalLogger class
   //             state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
   //         new SysIdRoutine.Mechanism(
-  //             output -> setControl(m_translationCharacterization.withVolts(output)), null, this));
+  //             output -> setControl(m_translationCharacterization.withVolts(output)), null,
+  // this));
 
   // /*
   //  * SysId routine for characterizing steer. This is used to find PID gains for
@@ -375,7 +371,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log("Subsystems/Swerve/CurrPoseX", getCurrentState().Pose.getX());
     DogLog.log("Subsystems/Swerve/CurrPoseY", getCurrentState().Pose.getY());
     DogLog.log("Subsystems/Swerve/CurrPoseRotRads", getCurrentState().Pose.getRotation());
-    DogLog.log("Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
+    DogLog.log(
+        "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
   }
 
   @Override

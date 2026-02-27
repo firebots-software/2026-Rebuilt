@@ -5,21 +5,11 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.ctre.phoenix6.sim.ChassisReference;
-import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -102,12 +92,12 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public double getFloorSpeedMPS() {
-    return hopperMotor.getCachedVelocityRps() 
+    return hopperMotor.getCachedVelocityRps()
         * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
   }
 
   public double getAgitatorSpeedRPS() {
-    return hopperMotor.getCachedVelocityRps() 
+    return hopperMotor.getCachedVelocityRps()
         * Constants.Hopper.AGITATOR_ROTATIONS_PER_MOTOR_ROTATION;
   }
 
@@ -147,15 +137,14 @@ public class HopperSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log(
         "Subsystems/Hopper/CurrentSurfaceSpeed (mps)",
-        hopperMotor.getCachedVelocityRps() 
+        hopperMotor.getCachedVelocityRps()
             * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
         targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
-    DogLog.log(
-        "Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getCachedVelocityRps());
+    DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getCachedVelocityRps());
   }
 
   // @Override
@@ -165,7 +154,8 @@ public class HopperSubsystem extends SubsystemBase {
   //   // 1. How many volts applied to the motor?
   //   hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-  //   double appliedMotorVoltageVolts = hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
+  //   double appliedMotorVoltageVolts =
+  // hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
   //   hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
   //   hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
