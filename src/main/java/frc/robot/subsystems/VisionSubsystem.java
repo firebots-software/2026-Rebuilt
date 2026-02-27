@@ -284,6 +284,8 @@ public class VisionSubsystem extends SubsystemBase {
     latestNoiseVector = noiseVector;
   }
 
+  public Pose2d getFilteredPose() { return latestMeasuredPose; }
+
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
