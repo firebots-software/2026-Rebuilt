@@ -8,8 +8,18 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+
 import dev.doglog.DogLog;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,8 +31,8 @@ public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
   private double targetSurfaceSpeedMps = 0.0;
 
-  // private TalonFXSimState hopperMotorSimState;
-  // private DCMotorSim hopperMechanismSim;
+  private TalonFXSimState hopperMotorSimState;
+  private DCMotorSim hopperMechanismSim;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
@@ -61,24 +71,24 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Hopper/Gains/kD", Constants.Hopper.kD);
     DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
 
-    // if (RobotBase.isSimulation()) setupSimulation();
+    if (RobotBase.isSimulation()) setupSimulation();
   }
 
-  // private void setupSimulation() {
-  //   hopperMotorSimState = hopperMotor.getSimState();
-  //   hopperMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
-  //   hopperMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
+  private void setupSimulation() {
+    hopperMotorSimState = hopperMotor.getSimState();
+    hopperMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
+    hopperMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
 
-  //   DCMotor krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
+    DCMotor krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
 
-  //   hopperMechanismSim =
-  //       new DCMotorSim(
-  //           LinearSystemId.createDCMotorSystem(
-  //               krakenGearboxModel,
-  //               Constants.Hopper.Simulation.MECHANISM_SIM_MOI_KG_M2,
-  //               Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION),
-  //           krakenGearboxModel);
-  // }
+    hopperMechanismSim =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(
+                krakenGearboxModel,
+                Constants.Hopper.Simulation.MECHANISM_SIM_MOI_KG_M2,
+                Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION),
+            krakenGearboxModel);
+  }
 
   public void runHopperMps(double targetSurfaceSpeedMps) {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
@@ -147,37 +157,37 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getCachedVelocityRps());
   }
 
-  // @Override
-  // public void simulationPeriodic() {
-  //   if (hopperMotorSimState == null || hopperMechanismSim == null) return;
+  @Override
+  public void simulationPeriodic() {
+    if (hopperMotorSimState == null || hopperMechanismSim == null) return;
 
-  //   // 1. How many volts applied to the motor?
-  //   hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
+    // 1. How many volts applied to the motor?
+    hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
 
-  //   double appliedMotorVoltageVolts =
-  // hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
-  //   hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
-  //   hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
+    double appliedMotorVoltageVolts =
+  hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
+    hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
+    hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
 
-  //   // 2. What happens to the simulated mechanism?
-  //   double hopperMechanismVelocityRotationsPerSecond =
-  //       hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
-  //   double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
+    // 2. What happens to the simulated mechanism?
+    double hopperMechanismVelocityRotationsPerSecond =
+        hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
+    double hopperMechanismPositionRotations = hopperMechanismSim.getAngularPositionRotations();
 
-  //   // 3. Updating the simulated motor based on the behavior of the simulated mechanism
-  //   double motorRotorPositionRotations =
-  //       hopperMechanismPositionRotations
-  //           * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-  //   double motorRotorVelocityRotationsPerSecond =
-  //       hopperMechanismVelocityRotationsPerSecond
-  //           * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-  //   hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
-  //   hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
+    // 3. Updating the simulated motor based on the behavior of the simulated mechanism
+    double motorRotorPositionRotations =
+        hopperMechanismPositionRotations
+            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
+    double motorRotorVelocityRotationsPerSecond =
+        hopperMechanismVelocityRotationsPerSecond
+            * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
+    hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
+    hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
 
-  //   // 4. What happens to the battery (simulated)?
-  //   double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
-  //   double targetBatteryV =
-  //       BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
-  //   RoboRioSim.setVInVoltage(targetBatteryV);
-  // }
+    // 4. What happens to the battery (simulated)?
+    double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
+    double targetBatteryV =
+        BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
+    RoboRioSim.setVInVoltage(targetBatteryV);
+  }
 }
