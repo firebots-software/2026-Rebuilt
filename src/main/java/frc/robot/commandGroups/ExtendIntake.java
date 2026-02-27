@@ -7,6 +7,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class ExtendIntake extends ParallelCommandGroup {
   public ExtendIntake(IntakeSubsystem intake) {
     addCommands(
-        intake.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED), intake.runRollersCommand());
+        intake.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_EXTENDED), intake.runRollersUntilInterruptedCommand());
   }
 }

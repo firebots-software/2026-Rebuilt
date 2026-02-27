@@ -6,6 +6,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class RetractIntake extends ParallelCommandGroup {
   public RetractIntake(IntakeSubsystem intake) {
-    addCommands(intake.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+    addCommands(intake.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED));
   }
 }
