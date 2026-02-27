@@ -1,11 +1,16 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
@@ -16,11 +21,13 @@ import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
+import frc.robot.commandGroups.ShootBasic;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.util.Targeting;
 
 public class AutoRoutines {
   private final AutoFactory autoFactory;
@@ -306,8 +313,10 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(depotIntake))
                 .andThen(getPathCommandSafely(depotShoot))
+                .andThen(returnBasicShoot())
                 );
 
     return routine.cmd();
@@ -330,9 +339,10 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(depotIntake))
                 .andThen(getPathCommandSafely(depotShoot))
-                );
+                .andThen(returnBasicShoot()));
 
     return routine.cmd();
   }
@@ -354,8 +364,11 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(outpostIntake))
+                .andThen(new WaitCommand(3))
                 .andThen(getPathCommandSafely(outpostShoot))
+                .andThen(returnBasicShoot())
                 );
 
     return routine.cmd();
@@ -378,8 +391,11 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(outpostIntake))
+                .andThen(new WaitCommand(3))
                 .andThen(getPathCommandSafely(outpostShoot))
+                .andThen(returnBasicShoot())
                 );
 
     return routine.cmd();
@@ -400,6 +416,7 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 );
 
     return routine.cmd();
@@ -420,6 +437,7 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 );
 
     return routine.cmd();
@@ -442,8 +460,10 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(depotIntake))
                 .andThen(getPathCommandSafely(depotShoot))
+                .andThen(returnBasicShoot())
                 );
 
     return routine.cmd();
@@ -466,11 +486,31 @@ public class AutoRoutines {
                 .andThen(new BumpDTP(swerveSubsystem, () -> false))
                 .andThen(resetPathOdometrySafely(shoot))
                 .andThen(getPathCommandSafely(shoot))
+                .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(outpostIntake))
+                .andThen(new WaitCommand(3))
                 .andThen(getPathCommandSafely(outpostShoot))
+                .andThen(returnBasicShoot())
                 );
 
     return routine.cmd();
+  }
+
+  public Command returnBasicShoot() {
+    return (new ShootBasic(
+                        () ->
+                            Units.metersToFeet(
+                                Targeting.shootingSpeed(
+                                    Constants.Landmarks.RED_HUB,
+                                    swerveSubsystem,
+                                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                        () ->
+                            (Targeting.pointingAtTarget(
+                                    Constants.Landmarks.RED_HUB, swerveSubsystem)
+                                && lebronShooterSubsystem.isAtSpeed()),
+                        lebronShooterSubsystem,
+                        intakeSubsystem,
+                        hopperSubsystem));
   }
 
   // this may not be needed, but is good to have
@@ -518,6 +558,20 @@ public class AutoRoutines {
     // autoChooser.addCmd(
     //     "Trial Path Two",
     //     () -> trialPathTwo(Constants.Swerve.Auto.Maneuver.RedRightManeuverR, null, null, null));
+
+    autoChooser.addCmd("Red Pedri - depot (right)", () -> RedPedriDepotR());
+    autoChooser.addCmd("Red Pedri - depot (left)", () -> RedPedriDepotL());
+    autoChooser.addCmd("Red Pedri - outpost (right)", () -> RedPedriOutpostR());
+    autoChooser.addCmd("Red Pedri - outpost (left)", () -> RedPedriOutpostL());
+    autoChooser.addCmd("Red Pedri - short (right)", () -> RedPedriShortR());
+    autoChooser.addCmd("Red Pedri - short (left)", () -> RedPedriShortL());
+    autoChooser.addCmd("Red Pedri - mid (right)", () -> RedPedriMidR());
+    autoChooser.addCmd("Red Pedri - mid (left)", () -> RedPedriMidL());
+    // autoChooser.addCmd("Red Drake - depot (long)", () -> RedDrakeDepotLong());
+    // autoChooser.addCmd("Red Drake - depot (short)", () -> RedDrakeDepotShort());
+    // autoChooser.addCmd("Red Drake - outpost (long)", () -> RedDrakeOutpostLong());
+    // autoChooser.addCmd("Red Drake - outpost (short)", () -> RedDrakeOutpostShort());
+    // autoChooser.addCmd("Nike", () -> Nike());
   }
 
   public AutoChooser getAutoChooser() {
