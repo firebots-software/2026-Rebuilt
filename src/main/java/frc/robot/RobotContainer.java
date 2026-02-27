@@ -42,11 +42,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
-  // kSpeedAt12Volts desired top speed
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
-  // 3/4 of a rotation per second max angular velocity
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
-
   // /* Setting up bindings for necessary control of the swerve drive platform */
   // private final SwerveRequest.FieldCentric drive =
   //     new SwerveRequest.FieldCentric()
@@ -55,7 +50,6 @@ public class RobotContainer {
   //         .withDriveRequestType(
   //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   private BooleanSupplier redside = () -> redAlliance;
   private static boolean redAlliance;
@@ -63,7 +57,6 @@ public class RobotContainer {
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CommandXboxController debugJoystick = new CommandXboxController(1);
   private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -141,32 +134,14 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Swerve bindings - left joystick for translation, right joystick for rotation
-    // Trigger leftTrigger = joystick.leftTrigger();
-    // DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
-    //     leftRightFunction = () -> -joystick.getLeftX(),
-    //     rotationFunction = () -> -joystick.getRightX(),
-    //     speedFunction =
-    //         () ->
-    //             leftTrigger.getAsBoolean()
-    //                 ? 0d
-    //                 : 1d; // slowmode when left shoulder is pressed, otherwise fast
-
-    // SwerveJoystickCommand swerveJoystickCommand =
-    //     new SwerveJoystickCommand(
-    //         frontBackFunction,
-    //         leftRightFunction,
-    //         rotationFunction,
-    //         speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-    //         () -> joystick.leftTrigger().getAsBoolean(),
-    //         drivetrain);
-
-    DoubleSupplier frontBackFunction = () -> -ronaldoJoystick.getLeftY(),
-        leftRightFunction = () -> -ronaldoJoystick.getLeftX(),
-        rotationFunction = () -> -ronaldoJoystick.getRightX(),
+    // SWERVE COMMANDS
+    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+        leftRightFunction = () -> -joystick.getLeftX(),
+        rotationFunction = () -> -joystick.getRightX(),
         speedFunction =
             () ->
-                ronaldoJoystick.leftTrigger().getAsBoolean()
+                joystick.rightTrigger().getAsBoolean()
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
@@ -181,17 +156,10 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
 
-    // if (Constants.shooterOnRobot && Constants.xhopperOnRobot) {
-    //   joystick
-    //       .rightBumper()
-    //       .onTrue(new WarmUpAndShoot(() -> 10d, () -> true, lebron, hopperSubsystem));
-    // }
-    // x -> zero swerve
-    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
+    // INTAKE COMMANDS
     if (Constants.intakeOnRobot) {
       // // left bumper -> run intake
-      // joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // intake default command - stop rollers
       intakeSubsystem.setDefaultCommand(
@@ -200,17 +168,17 @@ public class RobotContainer {
 
     if (Constants.shooterOnRobot) {
       lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
-      joystick
-          .rightTrigger()
-          .whileTrue(
-              new ArcAroundAndShoot(
-                  drivetrain,
-                  lebron,
-                  intakeSubsystem,
-                  hopperSubsystem,
-                  leftRightFunction,
-                  redside,
-                  joystick));
+      // joystick
+      //     .rightTrigger()
+      //     .whileTrue(
+      //         new ArcAroundAndShoot(
+      //             drivetrain,
+      //             lebron,
+      //             intakeSubsystem,
+      //             hopperSubsystem,
+      //             leftRightFunction,
+      //             redside,
+      //             joystick));
     }
 
     // drivetrain.registerTelemetry(logger::telemeterize);
