@@ -16,7 +16,9 @@ public class ShootBasic extends ParallelCommandGroup {
       IntakeSubsystem intakeSubsystem,
       HopperSubsystem hopperSubsystem) {
     addCommands(
-        new WarmUpAndShoot(speed, readyToShoot, shooterSubsystem, hopperSubsystem),
+        shooterSubsystem.shootAtSpeedCommand(speed),
+        hopperSubsystem
+            .runHopperUntilInterruptedCommand(Constants.Hopper.TARGET_SURFACE_SPEED_MPS).onlyIf(readyToShoot),
         intakeSubsystem.runRollersUntilInterruptedCommand(
             Constants.Intake.Rollers.TARGET_ROLLER_RPS));
   }
