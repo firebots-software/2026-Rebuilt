@@ -83,8 +83,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   private final Field2d field = new Field2d();
 
-  private final StructPublisher<Pose2d> posePublisher =
-      NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
+  // private final StructPublisher<Pose2d> posePublisher =
+  //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
 
   private ProfiledPIDController headingProfiledPIDController =
       new ProfiledPIDController(
