@@ -503,8 +503,8 @@ public final class Constants {
         RedLeftIntakeSweep,
         BlueRightIntakeSweep,
         BlueLeftIntakeSweep,
-        RedRightIntakeHalf,
-        RedLeftIntakeHalf
+        RedRightIntakeShort,
+        RedLeftIntakeShort
       }
 
       public static enum ShootPos {
@@ -515,7 +515,8 @@ public final class Constants {
         RedDepotToShoot,
         BlueDepotToShoot,
         RedOutpostToShoot,
-        BlueOutpostToShoot
+        BlueOutpostToShoot,
+        RedOutpostToShootShort
       }
 
       public static enum ClimbPos {
@@ -536,18 +537,21 @@ public final class Constants {
         BlueDepotL,
         BlueDepotM,
         BlueDepotR,
+        RedDepotRDrake
       }
 
       public static enum Outpost {
         RedOutpostL,
         RedOutpostM,
         RedOutpostR,
+        RedOutpostRDrake,
         BlueOutpostL,
         BlueOutpostM,
-        BlueOutpostR,
+        BlueOutpostR
       }
 
-      public static enum MiscPaths {
+      public static enum MiscPaths{
+
       }
     }
   }

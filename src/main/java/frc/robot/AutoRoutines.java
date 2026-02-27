@@ -59,7 +59,8 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory maneuver(AutoRoutine routine, Maneuver type) {
-    if (type == null) return null;
+    if (type == null)
+      return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -67,7 +68,8 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory intake(AutoRoutine routine, Intake type) {
-    if (type == null) return null;
+    if (type == null)
+      return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -80,7 +82,8 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
-    if (type == null) return null;
+    if (type == null)
+      return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -88,7 +91,8 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory climb(AutoRoutine routine, ClimbPos type) {
-    if (type == null) return null;
+    if (type == null)
+      return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -96,7 +100,8 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory depot(AutoRoutine routine, Depot type) {
-    if (type == null) return null;
+    if (type == null)
+      return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -109,7 +114,8 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory outpost(AutoRoutine routine, Outpost type) {
-    if (type == null) return null;
+    if (type == null)
+      return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -117,7 +123,8 @@ public class AutoRoutines {
   }
 
   private AutoTrajectory miscPaths(AutoRoutine routine, MiscPaths type) {
-    if (type == null) return null;
+    if (type == null)
+      return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
@@ -125,175 +132,177 @@ public class AutoRoutines {
   }
 
   // public Command RedPedriLeft(
-  //     Maneuver maneuverType, Intake intakeType, ShootPos shootPosType, ClimbPos climbPosType) {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  // Maneuver maneuverType, Intake intakeType, ShootPos shootPosType, ClimbPos
+  // climbPosType) {
+  // AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-  //   AutoTrajectory maneuver = maneuver(routine, maneuverType);
-  //   AutoTrajectory intake = intake(routine, intakeType);
-  //   AutoTrajectory shootPos = shoot(routine, shootPosType);
-  //   AutoTrajectory climbPos = climb(routine, climbPosType);
+  // AutoTrajectory maneuver = maneuver(routine, maneuverType);
+  // AutoTrajectory intake = intake(routine, intakeType);
+  // AutoTrajectory shootPos = shoot(routine, shootPosType);
+  // AutoTrajectory climbPos = climb(routine, climbPosType);
 
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           resetPathOdometrySafely(maneuver)
-  //               .andThen(getPathCommandSafely(maneuver))
-  //               .andThen(new BumpDTP(swerveSubsystem, () -> true))
-  //               .andThen(resetPathOdometrySafely(intake))
-  //               .andThen(getPathCommandSafely(intake))
-  //               .andThen(new BumpDTP(swerveSubsystem, () -> false))
-  //               .andThen(resetPathOdometrySafely(shootPos))
-  //               .andThen(getPathCommandSafely(shootPos))
-  //               .andThen(
-  //                   new ShootBasic(
-  //                       () ->
-  //                           Units.metersToFeet(
-  //                               Targeting.shootingSpeed(
-  //                                   Constants.Landmarks.RED_HUB,
-  //                                   swerveSubsystem,
-  //                                   Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-  //                       () ->
-  //                           (Targeting.pointingAtTarget(
-  //                                   Constants.Landmarks.RED_HUB, swerveSubsystem)
-  //                               && lebronShooterSubsystem.isAtSpeed()),
-  //                       lebronShooterSubsystem,
-  //                       intakeSubsystem,
-  //                       hopperSubsystem))
-  //               .andThen(getPathCommandSafely(climbPos))
-  //               .andThen(
-  //                   new L1Climb(
-  //                       climberSubsystem, swerveSubsystem, Constants.Landmarks.RED_TOWER_L)));
+  // routine
+  // .active()
+  // .onTrue(
+  // resetPathOdometrySafely(maneuver)
+  // .andThen(getPathCommandSafely(maneuver))
+  // .andThen(new BumpDTP(swerveSubsystem, () -> true))
+  // .andThen(resetPathOdometrySafely(intake))
+  // .andThen(getPathCommandSafely(intake))
+  // .andThen(new BumpDTP(swerveSubsystem, () -> false))
+  // .andThen(resetPathOdometrySafely(shootPos))
+  // .andThen(getPathCommandSafely(shootPos))
+  // .andThen(
+  // new ShootBasic(
+  // () ->
+  // Units.metersToFeet(
+  // Targeting.shootingSpeed(
+  // Constants.Landmarks.RED_HUB,
+  // swerveSubsystem,
+  // Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+  // () ->
+  // (Targeting.pointingAtTarget(
+  // Constants.Landmarks.RED_HUB, swerveSubsystem)
+  // && lebronShooterSubsystem.isAtSpeed()),
+  // lebronShooterSubsystem,
+  // intakeSubsystem,
+  // hopperSubsystem))
+  // .andThen(getPathCommandSafely(climbPos))
+  // .andThen(
+  // new L1Climb(
+  // climberSubsystem, swerveSubsystem, Constants.Landmarks.RED_TOWER_L)));
 
-  //   return routine.cmd();
+  // return routine.cmd();
   // }
 
   // public Command RedFerminLeft(
-  //     Maneuver maneuverType,
-  //     Intake intakeType,
-  //     MiscPaths miscPathsType,
-  //     Outpost outpostType,
-  //     ShootPos shootPosType,
-  //     ClimbPos climbPosType) {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  // Maneuver maneuverType,
+  // Intake intakeType,
+  // MiscPaths miscPathsType,
+  // Outpost outpostType,
+  // ShootPos shootPosType,
+  // ClimbPos climbPosType) {
+  // AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-  //   AutoTrajectory maneuver = maneuver(routine, maneuverType);
-  //   AutoTrajectory intake = intake(routine, intakeType);
-  //   AutoTrajectory miscPaths = miscPaths(routine, miscPathsType);
-  //   AutoTrajectory outpost = outpost(routine, outpostType);
-  //   AutoTrajectory shoot = shoot(routine, shootPosType);
-  //   AutoTrajectory climb = climb(routine, climbPosType);
+  // AutoTrajectory maneuver = maneuver(routine, maneuverType);
+  // AutoTrajectory intake = intake(routine, intakeType);
+  // AutoTrajectory miscPaths = miscPaths(routine, miscPathsType);
+  // AutoTrajectory outpost = outpost(routine, outpostType);
+  // AutoTrajectory shoot = shoot(routine, shootPosType);
+  // AutoTrajectory climb = climb(routine, climbPosType);
 
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           resetPathOdometrySafely(maneuver)
-  //               .andThen(getPathCommandSafely(maneuver))
-  //               .andThen(new BumpDTP(swerveSubsystem, () -> true))
-  //               .andThen(resetPathOdometrySafely(intake))
-  //               .andThen(getPathCommandSafely(intake))
-  //               .andThen(getPathCommandSafely(miscPaths))
-  //               .andThen(new BumpDTP(swerveSubsystem, () -> false))
-  //               .andThen(resetPathOdometrySafely(outpost))
-  //               .andThen(getPathCommandSafely(outpost))
-  //               .andThen(
-  //                   new WaitCommand(
-  //                       3)) // correct, or is there smth else to do when intaking from outpost?
-  //               .andThen(getPathCommandSafely(shoot))
-  //               .andThen(
-  //                   new ShootBasic(
-  //                       () ->
-  //                           Units.metersToFeet(
-  //                               Targeting.shootingSpeed(
-  //                                   Constants.Landmarks.RED_HUB,
-  //                                   swerveSubsystem,
-  //                                   Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-  //                       () ->
-  //                           (Targeting.pointingAtTarget(
-  //                                   Constants.Landmarks.RED_HUB, swerveSubsystem)
-  //                               && lebronShooterSubsystem.isAtSpeed()),
-  //                       lebronShooterSubsystem,
-  //                       intakeSubsystem,
-  //                       hopperSubsystem))
-  //               .andThen(getPathCommandSafely(climb)));
+  // routine
+  // .active()
+  // .onTrue(
+  // resetPathOdometrySafely(maneuver)
+  // .andThen(getPathCommandSafely(maneuver))
+  // .andThen(new BumpDTP(swerveSubsystem, () -> true))
+  // .andThen(resetPathOdometrySafely(intake))
+  // .andThen(getPathCommandSafely(intake))
+  // .andThen(getPathCommandSafely(miscPaths))
+  // .andThen(new BumpDTP(swerveSubsystem, () -> false))
+  // .andThen(resetPathOdometrySafely(outpost))
+  // .andThen(getPathCommandSafely(outpost))
+  // .andThen(
+  // new WaitCommand(
+  // 3)) // correct, or is there smth else to do when intaking from outpost?
+  // .andThen(getPathCommandSafely(shoot))
+  // .andThen(
+  // new ShootBasic(
+  // () ->
+  // Units.metersToFeet(
+  // Targeting.shootingSpeed(
+  // Constants.Landmarks.RED_HUB,
+  // swerveSubsystem,
+  // Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+  // () ->
+  // (Targeting.pointingAtTarget(
+  // Constants.Landmarks.RED_HUB, swerveSubsystem)
+  // && lebronShooterSubsystem.isAtSpeed()),
+  // lebronShooterSubsystem,
+  // intakeSubsystem,
+  // hopperSubsystem))
+  // .andThen(getPathCommandSafely(climb)));
 
-  //   return routine.cmd();
+  // return routine.cmd();
   // }
 
-  // public Command RedDrakeRight(Outpost outpostType, ShootPos shootType, ClimbPos climbType) {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  // public Command RedDrakeRight(Outpost outpostType, ShootPos shootType,
+  // ClimbPos climbType) {
+  // AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-  //   AutoTrajectory outpost = outpost(routine, outpostType);
-  //   AutoTrajectory shootPos = shoot(routine, shootType);
-  //   AutoTrajectory climbPos = climb(routine, climbType);
+  // AutoTrajectory outpost = outpost(routine, outpostType);
+  // AutoTrajectory shootPos = shoot(routine, shootType);
+  // AutoTrajectory climbPos = climb(routine, climbType);
 
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           resetPathOdometrySafely(outpost)
-  //               .andThen(getPathCommandSafely(outpost))
-  //               .andThen(
-  //                   new WaitCommand(
-  //                       3)) // correct, or is there smth else to do when intaking from outpost?
-  //               .andThen(getPathCommandSafely(shootPos))
-  //               .andThen(
-  //                   new ShootBasic(
-  //                       () ->
-  //                           Units.metersToFeet(
-  //                               Targeting.shootingSpeed(
-  //                                   Constants.Landmarks.RED_HUB,
-  //                                   swerveSubsystem,
-  //                                   Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-  //                       () ->
-  //                           (Targeting.pointingAtTarget(
-  //                                   Constants.Landmarks.RED_HUB, swerveSubsystem)
-  //                               && lebronShooterSubsystem.isAtSpeed()),
-  //                       lebronShooterSubsystem,
-  //                       intakeSubsystem,
-  //                       hopperSubsystem))
-  //               .andThen(getPathCommandSafely(climbPos))
-  //               .andThen(
-  //                   new L1Climb(
-  //                       climberSubsystem, swerveSubsystem, Constants.Landmarks.RED_TOWER_R)));
+  // routine
+  // .active()
+  // .onTrue(
+  // resetPathOdometrySafely(outpost)
+  // .andThen(getPathCommandSafely(outpost))
+  // .andThen(
+  // new WaitCommand(
+  // 3)) // correct, or is there smth else to do when intaking from outpost?
+  // .andThen(getPathCommandSafely(shootPos))
+  // .andThen(
+  // new ShootBasic(
+  // () ->
+  // Units.metersToFeet(
+  // Targeting.shootingSpeed(
+  // Constants.Landmarks.RED_HUB,
+  // swerveSubsystem,
+  // Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+  // () ->
+  // (Targeting.pointingAtTarget(
+  // Constants.Landmarks.RED_HUB, swerveSubsystem)
+  // && lebronShooterSubsystem.isAtSpeed()),
+  // lebronShooterSubsystem,
+  // intakeSubsystem,
+  // hopperSubsystem))
+  // .andThen(getPathCommandSafely(climbPos))
+  // .andThen(
+  // new L1Climb(
+  // climberSubsystem, swerveSubsystem, Constants.Landmarks.RED_TOWER_R)));
 
-  //   return routine.cmd();
+  // return routine.cmd();
   // }
 
   // // keep this for testing
   // public Command trialPath() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-  //   AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
-  //   AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
+  // AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  // AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
+  // AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
 
-  //   routine
-  //       .active()
-  //       .onTrue(moveLeft.resetOdometry().andThen(moveLeft.cmd()).andThen(moveRight.cmd()));
+  // routine
+  // .active()
+  // .onTrue(moveLeft.resetOdometry().andThen(moveLeft.cmd()).andThen(moveRight.cmd()));
 
-  //   return routine.cmd();
+  // return routine.cmd();
   // }
 
   // // keep this for testing
   // public Command trialPathTwo(
-  //     Maneuver selectedManeuver,
-  //     Intake selectedIntake,
-  //     ShootPos selectedShootPos,
-  //     ClimbPos selectedClimbPos) {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  // Maneuver selectedManeuver,
+  // Intake selectedIntake,
+  // ShootPos selectedShootPos,
+  // ClimbPos selectedClimbPos) {
+  // AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-  //   AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
-  //   AutoTrajectory intake = intake(routine, selectedIntake);
-  //   AutoTrajectory shootPos = shoot(routine, selectedShootPos);
-  //   AutoTrajectory climbPos = climb(routine, selectedClimbPos);
+  // AutoTrajectory maneuver = maneuver(routine, selectedManeuver);
+  // AutoTrajectory intake = intake(routine, selectedIntake);
+  // AutoTrajectory shootPos = shoot(routine, selectedShootPos);
+  // AutoTrajectory climbPos = climb(routine, selectedClimbPos);
 
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           resetPathOdometrySafely(maneuver)
-  //               .andThen(getPathCommandSafely(maneuver))
-  //               .andThen(getPathCommandSafely(intake))
-  //               .andThen(getPathCommandSafely(shootPos))
-  //               .andThen(getPathCommandSafely(climbPos)));
+  // routine
+  // .active()
+  // .onTrue(
+  // resetPathOdometrySafely(maneuver)
+  // .andThen(getPathCommandSafely(maneuver))
+  // .andThen(getPathCommandSafely(intake))
+  // .andThen(getPathCommandSafely(shootPos))
+  // .andThen(getPathCommandSafely(climbPos)));
 
-  //   return routine.cmd();
+  // return routine.cmd();
   // }
 
   public Command RedPedriDepotR() {
@@ -322,7 +331,7 @@ public class AutoRoutines {
     return routine.cmd();
   }
 
-   public Command RedPedriDepotL() {
+  public Command RedPedriDepotL() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedLeftIntakeSweep);
@@ -446,7 +455,7 @@ public class AutoRoutines {
   public Command RedPedriShortL() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedLeftIntakeHalf);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedLeftIntakeShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedLeftShoot);
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotL);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
@@ -472,7 +481,7 @@ public class AutoRoutines {
   public Command RedPedriShortR() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeHalf);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedRightShoot);
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostR);
     AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
@@ -489,9 +498,67 @@ public class AutoRoutines {
                 .andThen(returnBasicShoot())
                 .andThen(getPathCommandSafely(outpostIntake))
                 .andThen(new WaitCommand(3))
-                .andThen(getPathCommandSafely(outpostShoot))
+                .andThen(getPathCommandSafely(outpostShoot)));
+
+    return routine.cmd();
+  }
+
+  public Command RedDrakeOutpostShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostR);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
+
+    routine.active().onTrue(
+        getPathCommandSafely(intake)
+            .andThen(getPathCommandSafely(shoot)));
+
+    return routine.cmd();
+  }
+
+  public Command RedDrakeOutpostLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostRDrake);
+    AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotR);
+    AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
+
+    routine.active().onTrue(
+        getPathCommandSafely(outpostIntake)
+            .andThen(getPathCommandSafely(outpostShoot))
                 .andThen(returnBasicShoot())
-                );
+            .andThen(getPathCommandSafely(depotIntake))
+            .andThen(getPathCommandSafely(depotShoot)));
+    return routine.cmd();
+  }
+
+  public Command RedDrakeDepotShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotRDrake);
+    AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
+
+    routine.active().onTrue(
+        getPathCommandSafely(depotIntake)
+            .andThen(getPathCommandSafely(depotShoot)));
+
+    return routine.cmd();
+  }
+
+  public Command RedDrakeDepotLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotRDrake);
+    AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostL);
+    AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShootShort);
+
+    routine.active().onTrue(
+        getPathCommandSafely(depotIntake)
+            .andThen(getPathCommandSafely(depotShoot))
+            .andThen(getPathCommandSafely(outpostIntake))
+            .andThen(getPathCommandSafely(outpostShoot)));
 
     return routine.cmd();
   }
@@ -523,35 +590,36 @@ public class AutoRoutines {
     return traj != null ? traj.resetOdometry() : Commands.none();
   }
 
-  // if first path is null and odo is not reset, should i add smth to reset next path or is that OD
+  // if first path is null and odo is not reset, should i add smth to reset next
+  // path or is that OD
   public void addCommandstoAutoChooser() {
     // autoChooser.addCmd(
-    //     "Red Pedri - Left Side",
-    //     () ->
-    //         RedPedriLeft(
-    //             Constants.Swerve.Auto.Maneuver.RedLeftManeuverL,
-    //             Constants.Swerve.Auto.Intake.RedLeftIntakeL,
-    //             Constants.Swerve.Auto.ShootPos.RedLeftShoot,
-    //             Constants.Swerve.Auto.ClimbPos.RedLeftClimbL));
+    // "Red Pedri - Left Side",
+    // () ->
+    // RedPedriLeft(
+    // Constants.Swerve.Auto.Maneuver.RedLeftManeuverL,
+    // Constants.Swerve.Auto.Intake.RedLeftIntakeL,
+    // Constants.Swerve.Auto.ShootPos.RedLeftShoot,
+    // Constants.Swerve.Auto.ClimbPos.RedLeftClimbL));
 
     // autoChooser.addCmd(
-    //     "Red Fermin - Left Side",
-    //     () ->
-    //         RedFerminLeft(
-    //             Constants.Swerve.Auto.Maneuver.RedLeftManeuverL,
-    //             Constants.Swerve.Auto.Intake.RedLeftIntakeMR,
-    //             Constants.Swerve.Auto.MiscPaths.RedSweepRight,
-    //             Constants.Swerve.Auto.Outpost.RedOutpostM,
-    //             Constants.Swerve.Auto.ShootPos.RedOutpostToShoot,
-    //             Constants.Swerve.Auto.ClimbPos.RedRightClimbR));
+    // "Red Fermin - Left Side",
+    // () ->
+    // RedFerminLeft(
+    // Constants.Swerve.Auto.Maneuver.RedLeftManeuverL,
+    // Constants.Swerve.Auto.Intake.RedLeftIntakeMR,
+    // Constants.Swerve.Auto.MiscPaths.RedSweepRight,
+    // Constants.Swerve.Auto.Outpost.RedOutpostM,
+    // Constants.Swerve.Auto.ShootPos.RedOutpostToShoot,
+    // Constants.Swerve.Auto.ClimbPos.RedRightClimbR));
 
     // autoChooser.addCmd(
-    //     "Red Drake - Right Side",
-    //     () ->
-    //         RedDrakeRight(
-    //             Constants.Swerve.Auto.Outpost.RedOutpostR,
-    //             Constants.Swerve.Auto.ShootPos.RedRightShoot,
-    //             Constants.Swerve.Auto.ClimbPos.RedRightClimbR));
+    // "Red Drake - Right Side",
+    // () ->
+    // RedDrakeRight(
+    // Constants.Swerve.Auto.Outpost.RedOutpostR,
+    // Constants.Swerve.Auto.ShootPos.RedRightShoot,
+    // Constants.Swerve.Auto.ClimbPos.RedRightClimbR));
 
     // autoChooser.addCmd("Trial Path", () -> trialPath());
 
