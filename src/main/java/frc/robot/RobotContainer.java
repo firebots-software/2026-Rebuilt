@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Vision.VisionCamera;
+import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -150,12 +151,12 @@ public class RobotContainer {
       joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // intake default command - stop rollers
-      intakeSubsystem.setDefaultCommand(
-          Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
+      intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
+          // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
-
-    
       lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+      joystick.leftTrigger().whileTrue(new ShootBasic(() -> 70.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
       // joystick
       //     .rightTrigger()
       //     .whileTrue(

@@ -265,8 +265,15 @@ public class IntakeSubsystem extends SubsystemBase {
         this::stopRollers);
   }
 
-  public Command powerRetractCommand() {
-    return runOnce(this::setPowerRetract);
+  // public Command powerRetractCommand() {
+  //   return runOnce(this::setPowerRetract);
+  // }
+
+  public Command intakeDefault() {
+    return runOnce(() -> {
+        stopRollers();
+        setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED);
+    });
   }
 
   @Override
