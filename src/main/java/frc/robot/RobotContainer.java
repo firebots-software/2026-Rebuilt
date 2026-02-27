@@ -45,7 +45,7 @@ public class RobotContainer {
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
-  //private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
+  // private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -81,7 +81,7 @@ public class RobotContainer {
           : null;
 
   public final FuelGaugeDetection visionFuelGauge =
-      Constants.visionOnRobot
+      Constants.fuelGaugeOnRobot
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
@@ -146,28 +146,31 @@ public class RobotContainer {
     hopperSubsystem.setDefaultCommand(Commands.run(hopperSubsystem::stop, hopperSubsystem));
 
     // INTAKE COMMANDS
-    
-      // // left bumper -> run intake
-      joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
-      // intake default command - stop rollers
-      intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
-          // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
+    // // left bumper -> run intake
+    joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
-      lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
-      joystick.leftTrigger().whileTrue(new ShootBasic(() -> 70.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    // intake default command - stop rollers
+    intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
+    // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
-      // joystick
-      //     .rightTrigger()
-      //     .whileTrue(
-      //         new ArcAroundAndShoot(
-      //             drivetrain,
-      //             lebron,
-      //             intakeSubsystem,
-      //             hopperSubsystem,
-      //             leftRightFunction,
-      //             redside,
-      //             joystick));
+    lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+    joystick
+        .leftTrigger()
+        .whileTrue(
+            new ShootBasic(() -> 70.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
+    // joystick
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         new ArcAroundAndShoot(
+    //             drivetrain,
+    //             lebron,
+    //             intakeSubsystem,
+    //             hopperSubsystem,
+    //             leftRightFunction,
+    //             redside,
+    //             joystick));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
   }
