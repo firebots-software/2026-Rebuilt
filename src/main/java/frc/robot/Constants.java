@@ -568,8 +568,8 @@ public final class Constants {
   public static class Vision {
 
     // TODO: be able to set this at the start of the match
-    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
-    public static boolean SKIP_TO_FALLBACK = false;
+    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_RIGHT_CAM;
+    public static boolean SKIP_TO_FALLBACK = true;
 
     // TODO: move this somewhere else
     public static void updateFallbackCamera(VisionCamera cam) {
@@ -599,7 +599,7 @@ public final class Constants {
     public static final double FRONT_RIGHT_X = Units.inchesToMeters(-4.775894);
     public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-7.880312);
     public static final double FRONT_RIGHT_Z = Units.inchesToMeters(27.024842);
-    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(17.264474);
+    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(0.00000000);
     public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(355.256834);
     public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(14.948185);
 
