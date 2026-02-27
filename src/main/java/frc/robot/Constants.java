@@ -548,10 +548,6 @@ public final class Constants {
       }
 
       public static enum MiscPaths {
-        RedSweepRight,
-        RedSweepLeft,
-        BlueSweepRight,
-        BlueSweepLeft
       }
     }
   }
