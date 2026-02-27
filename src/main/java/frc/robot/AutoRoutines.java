@@ -635,10 +635,10 @@ public class AutoRoutines {
     autoChooser.addCmd("Red Pedri - short (left)", () -> RedPedriShortL());
     autoChooser.addCmd("Red Pedri - mid (right)", () -> RedPedriMidR());
     autoChooser.addCmd("Red Pedri - mid (left)", () -> RedPedriMidL());
-    // autoChooser.addCmd("Red Drake - depot (long)", () -> RedDrakeDepotLong());
-    // autoChooser.addCmd("Red Drake - depot (short)", () -> RedDrakeDepotShort());
-    // autoChooser.addCmd("Red Drake - outpost (long)", () -> RedDrakeOutpostLong());
-    // autoChooser.addCmd("Red Drake - outpost (short)", () -> RedDrakeOutpostShort());
+    autoChooser.addCmd("Red Drake - depot (long)", () -> RedDrakeDepotLong());
+    autoChooser.addCmd("Red Drake - depot (short)", () -> RedDrakeDepotShort());
+    autoChooser.addCmd("Red Drake - outpost (long)", () -> RedDrakeOutpostLong());
+    autoChooser.addCmd("Red Drake - outpost (short)", () -> RedDrakeOutpostShort());
     // autoChooser.addCmd("Nike", () -> Nike());
   }
 
