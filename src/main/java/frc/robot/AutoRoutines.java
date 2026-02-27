@@ -627,18 +627,21 @@ public class AutoRoutines {
     //     "Trial Path Two",
     //     () -> trialPathTwo(Constants.Swerve.Auto.Maneuver.RedRightManeuverR, null, null, null));
 
+
+
+    
     autoChooser.addCmd("Red Pedri - depot (right)", () -> RedPedriDepotR());
-    autoChooser.addCmd("Red Pedri - depot (left)", () -> RedPedriDepotL());
-    autoChooser.addCmd("Red Pedri - outpost (right)", () -> RedPedriOutpostR());
-    autoChooser.addCmd("Red Pedri - outpost (left)", () -> RedPedriOutpostL());
-    autoChooser.addCmd("Red Pedri - short (right)", () -> RedPedriShortR());
-    autoChooser.addCmd("Red Pedri - short (left)", () -> RedPedriShortL());
-    autoChooser.addCmd("Red Pedri - mid (right)", () -> RedPedriMidR());
-    autoChooser.addCmd("Red Pedri - mid (left)", () -> RedPedriMidL());
-    autoChooser.addCmd("Red Drake - depot (long)", () -> RedDrakeDepotLong());
-    autoChooser.addCmd("Red Drake - depot (short)", () -> RedDrakeDepotShort());
-    autoChooser.addCmd("Red Drake - outpost (long)", () -> RedDrakeOutpostLong());
-    autoChooser.addCmd("Red Drake - outpost (short)", () -> RedDrakeOutpostShort());
+    // autoChooser.addCmd("Red Pedri - depot (left)", () -> RedPedriDepotL());
+    // autoChooser.addCmd("Red Pedri - outpost (right)", () -> RedPedriOutpostR());
+    // autoChooser.addCmd("Red Pedri - outpost (left)", () -> RedPedriOutpostL());
+    // autoChooser.addCmd("Red Pedri - short (right)", () -> RedPedriShortR());
+    // autoChooser.addCmd("Red Pedri - short (left)", () -> RedPedriShortL());
+    // autoChooser.addCmd("Red Pedri - mid (right)", () -> RedPedriMidR());
+    // autoChooser.addCmd("Red Pedri - mid (left)", () -> RedPedriMidL());
+    // autoChooser.addCmd("Red Drake - depot (long)", () -> RedDrakeDepotLong());
+    // autoChooser.addCmd("Red Drake - depot (short)", () -> RedDrakeDepotShort());
+    // autoChooser.addCmd("Red Drake - outpost (long)", () -> RedDrakeOutpostLong());
+    // autoChooser.addCmd("Red Drake - outpost (short)", () -> RedDrakeOutpostShort());
     // autoChooser.addCmd("Nike", () -> Nike());
   }
 
