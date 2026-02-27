@@ -44,7 +44,7 @@ public class RobotContainer {
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
+  //private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -145,16 +145,16 @@ public class RobotContainer {
     hopperSubsystem.setDefaultCommand(Commands.run(hopperSubsystem::stop, hopperSubsystem));
 
     // INTAKE COMMANDS
-    if (Constants.intakeOnRobot) {
+    
       // // left bumper -> run intake
       joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // intake default command - stop rollers
       intakeSubsystem.setDefaultCommand(
           Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
-    }
 
-    if (Constants.shooterOnRobot) {
+
+    
       lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
       // joystick
       //     .rightTrigger()
@@ -167,7 +167,6 @@ public class RobotContainer {
       //             leftRightFunction,
       //             redside,
       //             joystick));
-    }
 
     // drivetrain.registerTelemetry(logger::telemeterize);
   }

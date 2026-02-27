@@ -103,7 +103,7 @@ public class ClimberSubsystem extends SubsystemBase {
     brake = new Servo(Constants.Climber.BRAKE_PORT);
 
     // create fusedcancoder
-    sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT);
+    sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     MagnetSensorConfigs canCoderConfig =
         new CANcoderConfiguration()
             .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
