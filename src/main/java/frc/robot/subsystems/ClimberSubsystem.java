@@ -14,6 +14,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -52,12 +53,20 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKI(Constants.Climber.KI)
             .withKD(Constants.Climber.KD);
 
-    muscleUpMotor = new LoggedTalonFX(Constants.Climber.MuscleUp.MOTOR_PORT);
+    muscleUpMotor =
+        new LoggedTalonFX(
+            Constants.Climber.MuscleUp.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
-    sitUpMotor = new LoggedTalonFX(Constants.Climber.SitUp.MOTOR_PORT);
+    sitUpMotor =
+        new LoggedTalonFX(
+            Constants.Climber.SitUp.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
-    pullUpMotorR = new LoggedTalonFX(Constants.Climber.PullUp.MOTOR_R_PORT);
-    pullUpMotorL = new LoggedTalonFX(Constants.Climber.PullUp.MOTOR_L_PORT);
+    pullUpMotorR =
+        new LoggedTalonFX(
+            Constants.Climber.PullUp.MOTOR_R_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    pullUpMotorL =
+        new LoggedTalonFX(
+            Constants.Climber.PullUp.MOTOR_L_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Opposed));
 
     brake = new Servo(Constants.Climber.BRAKE_PORT);
@@ -68,6 +77,10 @@ public class ClimberSubsystem extends SubsystemBase {
     TalonFXConfigurator pullUpRightConfigurator = pullUpMotorR.getConfigurator();
 
     MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
+    MotorOutputConfigs mocReversed =
+        new MotorOutputConfigs()
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInverted(InvertedValue.Clockwise_Positive);
 
     muscleUpConfigurator.apply(s0c);
     sitUpConfigurator.apply(s0c);
@@ -79,10 +92,10 @@ public class ClimberSubsystem extends SubsystemBase {
     pullUpRightConfigurator.apply(regClc);
     pullUpLeftConfigurator.apply(regClc);
 
-    muscleUpConfigurator.apply(moc);
+    muscleUpConfigurator.apply(mocReversed);
     sitUpConfigurator.apply(moc);
     pullUpRightConfigurator.apply(moc);
-    pullUpLeftConfigurator.apply(moc);
+    pullUpLeftConfigurator.apply(mocReversed);
 
     // create fusedcancoder
     sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT);

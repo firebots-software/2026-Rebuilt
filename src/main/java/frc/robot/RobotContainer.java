@@ -75,9 +75,6 @@ public class RobotContainer {
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
-  public final ShooterSubsystem shooter = new ShooterSubsystem();
-  public final HopperSubsystem hopper = new HopperSubsystem();
-  public final IntakeSubsystem intake = new IntakeSubsystem();
 
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
@@ -148,15 +145,15 @@ public class RobotContainer {
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
 
     if (Constants.intakeOnRobot) {
-      // left bumper -> run intake
-      joystick.leftBumper().whileTrue(intakeSubsystem.extendArmAndRunRollers());
+      // // left bumper -> run intake
+      joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
       // intake default command - retract arm if hopper is empty, idle if not
       if (Constants.hopperOnRobot && Constants.visionOnRobot) {
         intakeSubsystem.setDefaultCommand(
             new ConditionalCommand(
-                intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED),
-                intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE),
+                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED),
+                intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE),
                 () -> hopperSubsystem.isHopperSufficientlyEmpty(visionFuelGauge)));
       }
     }
@@ -196,13 +193,15 @@ public class RobotContainer {
     if (Constants.intakeOnRobot) {
       debugJoystick
           .leftTrigger()
-          .whileTrue(intakeSubsystem.runRollersCommand(Constants.Intake.Rollers.TARGET_ROLLER_RPS));
+          .whileTrue(
+              intakeSubsystem.runRollersUntilInterruptedCommand(
+                  Constants.Intake.Rollers.TARGET_ROLLER_RPS));
 
       // left trigger + x -> arm to retracted pos (90)
       debugJoystick
           .leftTrigger()
           .and(debugJoystick.x())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
+          .onTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
       // left trigger + a -> arm to extended pos (15)
       // debugJoystick
@@ -214,7 +213,7 @@ public class RobotContainer {
       debugJoystick
           .leftTrigger()
           .and(debugJoystick.b())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_IDLE));
+          .onTrue(intakeSubsystem.setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE));
     }
 
     if (Constants.climberOnRobot) {
