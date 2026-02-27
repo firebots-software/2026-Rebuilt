@@ -98,7 +98,7 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void stop() {
-    runHopperMps(0.0);
+    hopperMotor.stopMotor();
   }
 
   public double getFloorSpeedMPS() {

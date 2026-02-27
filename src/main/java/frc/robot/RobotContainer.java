@@ -155,6 +155,7 @@ public class RobotContainer {
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
+    hopperSubsystem.setDefaultCommand(Commands.run(hopperSubsystem::stop, hopperSubsystem));
 
     // INTAKE COMMANDS
     if (Constants.intakeOnRobot) {
