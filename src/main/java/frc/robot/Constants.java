@@ -167,7 +167,7 @@ public final class Constants {
   }
 
   public static class Swerve {
-    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.SERRANO;
+    public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
     // the distance over the bump in meters
     public static final double DISTANCE_OVER_BUMP = 2.0;
 

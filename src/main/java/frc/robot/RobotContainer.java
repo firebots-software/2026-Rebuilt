@@ -205,10 +205,10 @@ public class RobotContainer {
           .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED));
 
       // left trigger + a -> arm to extended pos (15)
-      debugJoystick
-          .leftTrigger()
-          .and(debugJoystick.a())
-          .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
+      // debugJoystick
+      //     .leftTrigger()
+      //     .and(debugJoystick.a())
+      //     .onTrue(intakeSubsystem.armToDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED));
 
       // left trigger + b -> arm to idle pos (45)
       debugJoystick
@@ -238,7 +238,7 @@ public class RobotContainer {
       joystick.y().whileTrue(new L3Climb(climberSubsystem, drivetrain, poseToDriveTo));
 
       // a -> zero climber
-      joystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
+      // joystick.a().onTrue(climberSubsystem.runOnce(climberSubsystem::resetPullUpPositionToZero));
     }
 
     // TODO: TURN THESE INTO DEBUG COMMANDS IN THE FUTURE
@@ -296,7 +296,7 @@ public class RobotContainer {
                 drivetrain,
                 () -> MiscUtils.plus(drivetrain.getCurrentState().Pose, new Translation2d(2, 0))));
 
-    ronaldoJoystick.a().whileTrue(new BumpDTP(drivetrain, ()-> true));
+    joystick.a().whileTrue(new BumpDTP(drivetrain, ()-> true));
 
     // TODO: left trigger -> run LockOnCommand (not yet defined)
     // joystick.leftTrigger().whileTrue(new LockOnCommand(....));
