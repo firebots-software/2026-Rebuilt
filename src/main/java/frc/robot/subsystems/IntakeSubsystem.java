@@ -27,6 +27,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -305,6 +306,8 @@ public class IntakeSubsystem extends SubsystemBase {
         "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)",
         getArmUnfusedPosition().getDegrees());
     DogLog.log("Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
+    
+    SmartDashboard.putNumber("Arm Angle", getArmPosition().getDegrees());
   }
 
   // @Override

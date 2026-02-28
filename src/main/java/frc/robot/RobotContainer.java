@@ -139,22 +139,22 @@ public class RobotContainer {
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
 
     joystick
-        .rightTrigger()
+        .a()
         .whileTrue(
             new ShootBasic(
                 () -> 85.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
     joystick
-        .a()
+        .b()
         .whileTrue(
             new ShootBasic(
                 () -> 90.00, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
     joystick
-        .b()
+        .y()
         .whileTrue(
             new ShootBasic(
                 () -> 105.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
     joystick
-        .y()
+        .rightTrigger()
         .whileTrue(
             new ShootBasic(
                 () ->

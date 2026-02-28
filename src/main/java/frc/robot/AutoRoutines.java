@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -23,6 +25,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
 
 public class AutoRoutines {
@@ -649,19 +652,12 @@ public class AutoRoutines {
   public Command returnBasicShoot() {
     Command shoot =
         new ShootBasic(
-                () ->
-                    Units.metersToFeet(
-                        Targeting.shootingSpeed(
-                            Constants.Landmarks.RED_HUB,
-                            swerveSubsystem,
-                            Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-                () ->
-                    (Targeting.pointingAtTarget(Constants.Landmarks.RED_HUB, swerveSubsystem)
-                        && lebronShooterSubsystem.isAtSpeed()),
+               () -> MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(() -> false, swerveSubsystem)),
+                () -> lebronShooterSubsystem.isAtSpeed(),
                 lebronShooterSubsystem,
                 intakeSubsystem,
                 hopperSubsystem)
-            .withTimeout(7);
+            .withTimeout(4);
 
     return Commands.sequence(shoot.asProxy());
   }
