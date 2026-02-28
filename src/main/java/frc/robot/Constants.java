@@ -917,7 +917,7 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 33; // TODO
 
-    public static final double KP = 0.5; // TODO
+    public static final double KP = 0.8; // TODO
     public static final double KI = 0.0; // TODO
     public static final double KD = 0.0; // TODO
     public static final double KV = 0.124; // TODO
