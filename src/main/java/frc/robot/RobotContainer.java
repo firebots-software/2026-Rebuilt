@@ -133,7 +133,7 @@ public class RobotContainer {
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
 
     joystick
-        .leftTrigger()
+        .rightBumper()
         .whileTrue(
             new ShootBasic(
                 () ->
