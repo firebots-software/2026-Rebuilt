@@ -297,6 +297,52 @@ public class AutoRoutines {
   // return routine.cmd();
   // }
 
+  public Command doneWeek0Auto() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory moveLeft = routine.trajectory("MoveLeftWithMarker");
+    AutoTrajectory moveRight = routine.trajectory("MoveRightWithMarker");
+ 
+    routine.active().onTrue(
+        Commands.sequence(
+            moveLeft.resetOdometry(),
+            moveLeft.cmd()
+        )
+    );
+
+    moveLeft.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    moveRight.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+   
+    // When the trajectory is done, start the next trajectory
+    moveLeft.done().onTrue(moveRight.cmd());
+
+    return routine.cmd();
+  }
+  
+  public Command doneWeek0AutoWithShoot() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory moveLeft = routine.trajectory("MoveLeftWithMarker");
+    AutoTrajectory moveRight = routine.trajectory("MoveRightWithMarker");
+ 
+    routine.active().onTrue(
+        Commands.sequence(
+            moveLeft.resetOdometry(),
+            moveLeft.cmd()
+        )
+    );
+
+    moveLeft.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    moveRight.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+   
+    // When the trajectory is done, start the next trajectory
+    moveLeft.done().onTrue(moveRight.cmd());
+
+    moveRight.done().onTrue(returnBasicShoot());
+
+    return routine.cmd();
+  }
+
   public Command week0Auto() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -598,7 +644,7 @@ public class AutoRoutines {
   }
 
   public Command returnBasicShoot() {
-    return (new ShootBasic(
+    Command shoot = new ShootBasic(
         () ->
             Units.metersToFeet(
                 Targeting.shootingSpeed(
@@ -610,7 +656,22 @@ public class AutoRoutines {
                 && lebronShooterSubsystem.isAtSpeed()),
         lebronShooterSubsystem,
         intakeSubsystem,
-        hopperSubsystem));
+        hopperSubsystem);
+
+    return Commands.sequence(shoot.asProxy());
+    // return (new ShootBasic(
+    //     () ->
+    //         Units.metersToFeet(
+    //             Targeting.shootingSpeed(
+    //                 Constants.Landmarks.RED_HUB,
+    //                 swerveSubsystem,
+    //                 Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+    //     () ->
+    //         (Targeting.pointingAtTarget(Constants.Landmarks.RED_HUB, swerveSubsystem)
+    //             && lebronShooterSubsystem.isAtSpeed()),
+    //     lebronShooterSubsystem,
+    //     intakeSubsystem,
+    //     hopperSubsystem));
   }
 
   // this may not be needed, but is good to have
@@ -660,8 +721,8 @@ public class AutoRoutines {
     //     "Trial Path Two",
     //     () -> trialPathTwo(Constants.Swerve.Auto.Maneuver.RedRightManeuverR, null, null, null));
 
-    autoChooser.addCmd("week0Path", () -> week0Auto());
-    autoChooser.addCmd("week0PathWithCommands", () -> week0AutoWithCommands());
+    // autoChooser.addCmd("week0Path", () -> week0Auto());
+    // autoChooser.addCmd("week0PathWithCommands", () -> week0AutoWithCommands());
 
     // autoChooser.addCmd("Red Pedri - depot (right)", () -> RedPedriDepotR());
     // autoChooser.addCmd("Red Pedri - depot (left)", () -> RedPedriDepotL());

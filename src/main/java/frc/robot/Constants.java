@@ -113,7 +113,7 @@ public final class Constants {
 
       public static final class Simulation {
         public static final double SIM_MOI_KG_M2 = 0.0003;
-      }
+    }
     }
   }
 
@@ -502,7 +502,12 @@ public final class Constants {
         BlueOutpostR
       }
 
-      public static enum MiscPaths {}
+      public static enum MiscPaths {
+        MoveLeft,
+        MoveRight,
+        MoveLeftWithMarker,
+        MoveRightWithMarker
+      }
     }
   }
 
