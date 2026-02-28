@@ -145,6 +145,38 @@ public class RobotContainer {
                 intakeSubsystem,
                 hopperSubsystem));
 
+    joystick
+        .a()
+        .whileTrue(
+            new ShootBasic(
+                () ->
+                    71.0,
+                () -> true,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem));
+
+    joystick
+        .b()
+        .whileTrue(
+            new ShootBasic(
+                () ->
+                    85.0,
+                () -> true,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem));
+
+    joystick
+        .y()
+        .whileTrue(
+            new ShootBasic(
+                () ->
+                    100.0,
+                () -> true,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem));
     // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
     // intakeSubsystem, hopperSubsystem));
 
