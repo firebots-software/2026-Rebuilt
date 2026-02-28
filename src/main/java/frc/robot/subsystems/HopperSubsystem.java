@@ -15,7 +15,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
 import frc.robot.util.LoggedTalonFX;
-import java.util.function.BooleanSupplier;
 
 public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
@@ -91,10 +90,10 @@ public class HopperSubsystem extends SubsystemBase {
   // }
 
   public void runHopperMps(double targetSurfaceSpeedMps) {
-      this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
-      hopperMotor.setControl(
-          m_velocityRequest.withVelocity(
-              targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+    this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
+    hopperMotor.setControl(
+        m_velocityRequest.withVelocity(
+            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
   }
 
   public void stop() {
@@ -139,14 +138,13 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   // Stops the Hopper when interrupted
-  //Ruth's Version
+  // Ruth's Version
   // public Command runHopperUntilInterruptedCommand(
   //     double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
   //   return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
   // }
 
-  public Command runHopperUntilInterruptedCommand(
-      double targetSurfaceSpeedMps) {
+  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 

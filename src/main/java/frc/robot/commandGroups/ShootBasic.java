@@ -2,7 +2,6 @@ package frc.robot.commandGroups;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -17,12 +16,9 @@ public class ShootBasic extends ParallelCommandGroup {
       IntakeSubsystem intakeSubsystem,
       HopperSubsystem hopperSubsystem) {
     addCommands(
-    (shooterSubsystem.shootAtSpeedCommand()),
-    Commands.waitUntil(
-        () -> (shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean())
-    ).andThen(
-        hopperSubsystem.runHopperUntilInterruptedCommand()
-    ));
+        (shooterSubsystem.shootAtSpeedCommand()),
+        Commands.waitUntil(() -> (shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()))
+            .andThen(hopperSubsystem.runHopperUntilInterruptedCommand()));
 
     // addCommands(
     //     shooterSubsystem.shootAtSpeedCommand(speed),
