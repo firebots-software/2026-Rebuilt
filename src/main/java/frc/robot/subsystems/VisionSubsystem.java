@@ -13,6 +13,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Vision.FieldTags;
 import frc.robot.Constants.Vision.VisionCamera;
 import java.util.List;
 import java.util.Optional;
@@ -55,14 +56,14 @@ public class VisionSubsystem extends SubsystemBase {
   Matrix<N3, N1> latestNoiseVector;
 
   // constructor for VisionSubsystem
-  public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
+  public VisionSubsystem(Constants.Vision.VisionCamera cameraID, FieldTags layout) {
 
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
 
     // load field layout
-    this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    this.fieldLayout = layout.getField();
 
     // initialize poseEstimator
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
