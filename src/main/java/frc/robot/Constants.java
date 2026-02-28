@@ -593,14 +593,14 @@ public final class Constants {
     public static final double FRONT_RIGHT_X = Units.inchesToMeters(-4.775894);
     public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-7.880312);
     public static final double FRONT_RIGHT_Z = Units.inchesToMeters(27.024842);
-    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(1.218265);
-    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(355.256834);
+    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(1.26);
+    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(256.257);
     public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(14.899273);
 
     public static final double FRONT_LEFT_X = Units.inchesToMeters(-4.757613);
-    public static final double FRONT_LEFT_Y = Units.inchesToMeters(8.454156);
+    public static final double FRONT_LEFT_Y = Units.inchesToMeters(7.938785);
     public static final double FRONT_LEFT_Z = Units.inchesToMeters(27.046870);
-    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(162.735526);
+    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(358.781735);
     public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(355.256834);
     public static final double FRONT_LEFT_YAW = Units.degreesToRadians(345.051815);
 
