@@ -3,6 +3,7 @@ package frc.robot.commands.SwerveCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -15,7 +16,7 @@ public class SwerveJoystickCommand extends Command {
       turningSpdFunction,
       speedControlFunction;
 
-  protected final BooleanSupplier fieldRelativeFunction;
+  protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
@@ -31,6 +32,8 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       BooleanSupplier fieldRelativeFunction,
+      BooleanSupplier doPointing,
+      BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
@@ -39,6 +42,8 @@ public class SwerveJoystickCommand extends Command {
     this.fieldRelativeFunction = fieldRelativeFunction;
     this.squaredTurn = true;
     this.swerveDrivetrain = swerveSubsystem;
+    this.doPointing = doPointing;
+    this.redsideIfPointing = redSideIfPointing;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -57,6 +62,8 @@ public class SwerveJoystickCommand extends Command {
         leftRightFunction,
         turningSpdFunction,
         speedControlFunction,
+        () -> false,
+        () -> false,
         () -> false,
         swerveSubsystem);
   }
@@ -125,7 +132,8 @@ public class SwerveJoystickCommand extends Command {
     // Final values to apply to drivetrain
     final double x = xSpeed;
     final double y = ySpeed;
-    final double turn = turningSpeed;
+
+    final double turn = (doPointing.getAsBoolean()) ? (swerveDrivetrain.calculateRequiredRotationalRate(swerveDrivetrain.travelAngleTo(((redsideIfPointing.getAsBoolean()) ? (Constants.Landmarks.RED_HUB_2D) : (Constants.Landmarks.BLUE_HUB_2D))))) : (turningSpeed);
 
     DogLog.log("joystickCommand/xSpeed", xSpeed);
     DogLog.log("joystickCommand/ySpeed", ySpeed);

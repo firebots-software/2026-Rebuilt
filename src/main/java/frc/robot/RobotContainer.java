@@ -116,6 +116,8 @@ public class RobotContainer {
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             () -> false,
+            (() -> joystick.leftTrigger().getAsBoolean()),
+            redside,
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
