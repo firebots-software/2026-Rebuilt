@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Vision.VisionCamera;
+// import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -140,21 +141,6 @@ public class RobotContainer {
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
 
     joystick
-        .a()
-        .whileTrue(
-            new ShootBasic(
-                () -> 85.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick
-        .b()
-        .whileTrue(
-            new ShootBasic(
-                () -> 90.00, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick
-        .y()
-        .whileTrue(
-            new ShootBasic(
-                () -> 105.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick
         .rightTrigger()
         .whileTrue(
             new ShootBasic(
@@ -179,6 +165,10 @@ public class RobotContainer {
         .y()
         .whileTrue(
             new ShootBasic(() -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
+    // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
+
+
     // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
     // intakeSubsystem, hopperSubsystem));
 
