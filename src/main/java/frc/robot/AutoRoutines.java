@@ -458,7 +458,7 @@ public class AutoRoutines {
                 new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-    intake.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+    intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
 
     intake
         .done()
@@ -488,7 +488,7 @@ public class AutoRoutines {
                 new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-    intake.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+    intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
 
     intake
         .done()
