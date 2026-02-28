@@ -5,7 +5,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 public class MiscUtils {
   public static Pose2d plus(Pose2d a, Translation2d b) {
@@ -59,5 +62,18 @@ public class MiscUtils {
     else if (currentMatchTime > 55) return shift1Active;
     else if (currentMatchTime > 30) return !shift1Active;
     else return true;
+  }
+
+  public static double getDistanceToHub(BooleanSupplier redSide, CommandSwerveDrivetrain swerve) {
+    Pose2d robotPose = swerve.getCurrentState().Pose;
+
+    Translation2d hubTranslation =
+        redSide.getAsBoolean()
+            ? new Translation2d(
+                Constants.Landmarks.RED_HUB.getX(), Constants.Landmarks.RED_HUB.getY())
+            : new Translation2d(
+                Constants.Landmarks.BLUE_HUB.getX(), Constants.Landmarks.BLUE_HUB.getY());
+
+    return robotPose.getTranslation().getDistance(hubTranslation);
   }
 }

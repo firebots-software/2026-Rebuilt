@@ -302,39 +302,29 @@ public class AutoRoutines {
 
     AutoTrajectory moveLeft = routine.trajectory("MoveLeftWithMarker");
     AutoTrajectory moveRight = routine.trajectory("MoveRightWithMarker");
- 
-    routine.active().onTrue(
-        Commands.sequence(
-            moveLeft.resetOdometry(),
-            moveLeft.cmd()
-        )
-    );
+
+    routine.active().onTrue(Commands.sequence(moveLeft.resetOdometry(), moveLeft.cmd()));
 
     moveLeft.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     moveRight.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
-   
+
     // When the trajectory is done, start the next trajectory
     moveLeft.done().onTrue(moveRight.cmd());
 
     return routine.cmd();
   }
-  
+
   public Command doneWeek0AutoWithShoot() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory moveLeft = routine.trajectory("MoveLeftWithMarker");
     AutoTrajectory moveRight = routine.trajectory("MoveRightWithMarker");
- 
-    routine.active().onTrue(
-        Commands.sequence(
-            moveLeft.resetOdometry(),
-            moveLeft.cmd()
-        )
-    );
+
+    routine.active().onTrue(Commands.sequence(moveLeft.resetOdometry(), moveLeft.cmd()));
 
     moveLeft.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     moveRight.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
-   
+
     // When the trajectory is done, start the next trajectory
     moveLeft.done().onTrue(moveRight.cmd());
 
@@ -378,12 +368,9 @@ public class AutoRoutines {
             moveLeft
                 .resetOdometry()
                 .andThen(
-                    new ParallelCommandGroup(
-                        moveLeft.cmd(), new ExtendIntake(intakeSubsystem)))
+                    new ParallelCommandGroup(moveLeft.cmd(), new ExtendIntake(intakeSubsystem)))
                 .andThen(
-                    new ParallelCommandGroup(
-                        moveRight.cmd(),
-                        new RetractIntake(intakeSubsystem))));
+                    new ParallelCommandGroup(moveRight.cmd(), new RetractIntake(intakeSubsystem))));
 
     return routine.cmd();
   }
@@ -644,19 +631,20 @@ public class AutoRoutines {
   }
 
   public Command returnBasicShoot() {
-    Command shoot = new ShootBasic(
-        () ->
-            Units.metersToFeet(
-                Targeting.shootingSpeed(
-                    Constants.Landmarks.RED_HUB,
-                    swerveSubsystem,
-                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-        () ->
-            (Targeting.pointingAtTarget(Constants.Landmarks.RED_HUB, swerveSubsystem)
-                && lebronShooterSubsystem.isAtSpeed()),
-        lebronShooterSubsystem,
-        intakeSubsystem,
-        hopperSubsystem);
+    Command shoot =
+        new ShootBasic(
+            () ->
+                Units.metersToFeet(
+                    Targeting.shootingSpeed(
+                        Constants.Landmarks.RED_HUB,
+                        swerveSubsystem,
+                        Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+            () ->
+                (Targeting.pointingAtTarget(Constants.Landmarks.RED_HUB, swerveSubsystem)
+                    && lebronShooterSubsystem.isAtSpeed()),
+            lebronShooterSubsystem,
+            intakeSubsystem,
+            hopperSubsystem);
 
     return Commands.sequence(shoot.asProxy());
     // return (new ShootBasic(
