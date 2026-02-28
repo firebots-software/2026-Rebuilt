@@ -333,48 +333,6 @@ public class AutoRoutines {
     return routine.cmd();
   }
 
-  public Command week0Auto() {
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-    AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
-    AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
-
-    routine
-        .active()
-        .onTrue(
-            moveLeft
-                .resetOdometry()
-                .andThen(
-                    new ParallelCommandGroup(
-                        moveLeft.cmd(), intakeSubsystem.intakeUntilInterruptedCommand()))
-                .andThen(
-                    new ParallelCommandGroup(
-                        moveRight.cmd(),
-                        intakeSubsystem.setArmToDegreesCommand(
-                            Constants.Intake.Arm.ARM_POS_RETRACTED))));
-
-    return routine.cmd();
-  }
-
-  public Command week0AutoWithCommands() {
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-    AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
-    AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
-
-    routine
-        .active()
-        .onTrue(
-            moveLeft
-                .resetOdometry()
-                .andThen(
-                    new ParallelCommandGroup(moveLeft.cmd(), new ExtendIntake(intakeSubsystem)))
-                .andThen(
-                    new ParallelCommandGroup(moveRight.cmd(), new RetractIntake(intakeSubsystem))));
-
-    return routine.cmd();
-  }
-
   public Command RedPedriDepotR() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -382,6 +340,8 @@ public class AutoRoutines {
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedLeftShoot);
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotL);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
+
+    
 
     routine
         .active()

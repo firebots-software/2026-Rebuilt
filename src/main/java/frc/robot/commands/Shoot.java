@@ -57,7 +57,7 @@ public class Shoot extends Command {
             shootingSpeed(target, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
     if (shooter.isAtSpeed() && pointingAtTarget()) {
       hopper.runHopperUntilInterruptedCommand(
-          Constants.Hopper.TARGET_SURFACE_SPEED_MPS, () -> shooter.isAtSpeed());
+          Constants.Hopper.TARGET_SURFACE_SPEED_MPS);
     } else {
       hopper.stop();
     }

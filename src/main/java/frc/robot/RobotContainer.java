@@ -137,7 +137,7 @@ public class RobotContainer {
         .whileTrue(
             new ShootBasic(
                 () -> interMapSpeed,
-                () -> lebron.isAtSpeed(),
+                () -> true,
                 lebron,
                 intakeSubsystem,
                 hopperSubsystem));
