@@ -80,13 +80,21 @@ public class HopperSubsystem extends SubsystemBase {
   // krakenGearboxModel);
   // }
 
-  public void runHopperMps(double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
-    if (readyToRun.getAsBoolean()) {
-      this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
-      hopperMotor.setControl(
-          m_velocityRequest.withVelocity(
-              targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
-    }
+  // Ruth's version
+  // public void runHopperMps(double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+  //   if (readyToRun.getAsBoolean()) {
+  //     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
+  //     hopperMotor.setControl(
+  //         m_velocityRequest.withVelocity(
+  //             targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+  //   }
+  // }
+
+  public void runHopperMps(double targetSurfaceSpeedMps) {
+    this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
+    hopperMotor.setControl(
+        m_velocityRequest.withVelocity(
+            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
   }
 
   public void stop() {
@@ -116,24 +124,29 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   // Does not stop the Hopper when interrupted
-  // public Command runHopperCommand() {
-  //   return runOnce(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
-  // }
+  public Command runHopperCommand() {
+    return runOnce(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
+  }
 
   // Does not stop the Hopper when interrupted
-  // public Command runHopperCommand(double targetSurfaceSpeedMps) {
-  //   return runOnce(() -> runHopperMps(targetSurfaceSpeedMps));
-  // }
+  public Command runHopperCommand(double targetSurfaceSpeedMps) {
+    return runOnce(() -> runHopperMps(targetSurfaceSpeedMps));
+  }
 
   // Stops the Hopper when interrupted
-  // public Command runHopperUntilInterruptedCommand() {
-  //   return startEnd(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
-  // }
+  public Command runHopperUntilInterruptedCommand() {
+    return startEnd(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS), this::stop);
+  }
 
   // Stops the Hopper when interrupted
-  public Command runHopperUntilInterruptedCommand(
-      double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
-    return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
+  // Ruth's Version
+  // public Command runHopperUntilInterruptedCommand(
+  //     double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+  //   return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
+  // }
+
+  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
+    return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
   @Override

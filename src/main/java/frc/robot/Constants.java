@@ -13,7 +13,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = true;
@@ -119,6 +120,8 @@ public final class Constants {
 
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    // the distance over the bump in meters
+    public static final double DISTANCE_OVER_BUMP = 3.0; // correct distance is 3 meters
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
@@ -415,6 +418,101 @@ public final class Constants {
     public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
     public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
         26.971;
+
+    public static class Auto {
+      public static enum Maneuver {
+        RedLeftManeuverL,
+        RedLeftManeuverR,
+        RedRightManeuverL,
+        RedRightManeuverR,
+        BlueLeftManeuverL,
+        BlueLeftManeuverR,
+        BlueRightManeuverL,
+        BlueRightManeuverR
+      }
+
+      public static enum Intake {
+        RedLeftIntakeL,
+        RedLeftIntakeM,
+        RedLeftIntakeR,
+        RedLeftIntakeML,
+        RedLeftIntakeMR,
+        RedRightIntakeL,
+        RedRightIntakeM,
+        RedRightIntakeR,
+        RedRightIntakeML,
+        RedRightIntakeMR,
+        BlueLeftIntakeL,
+        BlueLeftIntakeM,
+        BlueLeftIntakeR,
+        BlueLeftIntakeML,
+        BlueLeftIntakeMR,
+        BlueRightIntakeL,
+        BlueRightIntakeM,
+        BlueRightIntakeR,
+        BlueRightIntakeML,
+        BlueRightIntakeMR,
+        RedRightIntakeSweep,
+        RedLeftIntakeSweep,
+        BlueRightIntakeSweep,
+        BlueLeftIntakeSweep,
+        RedRightIntakeSweepShort,
+        RedLeftIntakeSweepShort,
+        BlueRightIntakeSweepShort,
+        BlueLeftIntakeSweepShort,
+        gameTwoIntake
+      }
+
+      public static enum ShootPos {
+        RedLeftShoot,
+        RedRightShoot,
+        BlueLeftShoot,
+        BlueRightShoot,
+        RedDepotToShoot,
+        BlueDepotToShoot,
+        RedOutpostToShoot,
+        BlueOutpostToShoot,
+        RedOutpostToShootShort
+      }
+
+      public static enum ClimbPos {
+        RedLeftClimbL,
+        RedLeftClimbR,
+        RedRightClimbL,
+        RedRightClimbR,
+        BlueLeftClimbL,
+        BlueLeftClimbR,
+        BlueRightClimbL,
+        BlueRightClimbR
+      }
+
+      public static enum Depot {
+        RedDepotL,
+        RedDepotM,
+        RedDepotR,
+        BlueDepotL,
+        BlueDepotM,
+        BlueDepotR,
+        RedDepotRDrake
+      }
+
+      public static enum Outpost {
+        RedOutpostL,
+        RedOutpostM,
+        RedOutpostR,
+        RedOutpostRDrake,
+        BlueOutpostL,
+        BlueOutpostM,
+        BlueOutpostR
+      }
+
+      public static enum MiscPaths {
+        MoveLeft,
+        MoveRight,
+        MoveLeftWithMarker,
+        MoveRightWithMarker
+      }
+    }
   }
 
   public static class Climber {
@@ -899,6 +997,11 @@ public final class Constants {
         new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
     public static Pose3d RED_HUB =
         new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
+
+    public static Pose2d BLUE_HUB_2D =
+        new Pose2d(4.621390342712402, 4.032095909118652, new Rotation2d());
+    public static Pose2d RED_HUB_2D =
+        new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
 
     public static Pose2d RED_TOWER_R =
         new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));

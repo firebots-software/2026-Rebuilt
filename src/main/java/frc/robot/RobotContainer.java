@@ -7,7 +7,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
-import choreo.auto.AutoFactory;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -26,6 +25,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -38,14 +38,15 @@ public class RobotContainer {
   //         .withDriveRequestType(
   //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-
+  public double interMapSpeed = 71.0;
   private BooleanSupplier redside = () -> redAlliance;
   private static boolean redAlliance;
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
-  // private final CommandXboxController ronaldoJoystick = new CommandXboxController(4);
+  private final CommandXboxController debugJoystick = new CommandXboxController(1);
+  private final CommandXboxController ronaldoJoystick = new CommandXboxController(3);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -57,11 +58,8 @@ public class RobotContainer {
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
   public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
 
-  private final AutoFactory autoFactory;
-
   private final AutoRoutines autoRoutines;
-
-  private final AutoChooser autoChooser = new AutoChooser();
+  private final AutoChooser autoChooser;
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
@@ -90,31 +88,9 @@ public class RobotContainer {
           : null;
 
   public RobotContainer() {
-    // paths without marker
-    autoFactory = drivetrain.createAutoFactory();
-    autoRoutines = new AutoRoutines(autoFactory);
-
-    Command redClimb =
-        autoFactory
-            .resetOdometry("RedClimb.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redDepot =
-        autoFactory
-            .resetOdometry("RedDepot.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command redOutpost =
-        autoFactory
-            .resetOdometry("RedOutpost.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-    Command moveForward =
-        autoFactory
-            .resetOdometry("MoveForward.traj")
-            .andThen(autoFactory.trajectoryCmd("RedClimb.traj"));
-
-    autoChooser.addCmd("redClimb", () -> redClimb);
-    autoChooser.addCmd("redDepot", () -> redDepot);
-    autoChooser.addCmd("redOutpost", () -> redOutpost);
-    autoChooser.addCmd("moveForward", () -> moveForward);
+    autoRoutines =
+        new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, climberSubsystem);
+    autoChooser = autoRoutines.getAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -144,6 +120,8 @@ public class RobotContainer {
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             () -> false,
+            (() -> joystick.leftTrigger().getAsBoolean()),
+            redside,
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
@@ -159,6 +137,7 @@ public class RobotContainer {
     // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+
     joystick
         .rightBumper()
         .whileTrue(
@@ -178,7 +157,15 @@ public class RobotContainer {
         .y()
         .whileTrue(
             new ShootBasic(
-                () -> 100.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+                () ->
+                    MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
+                () -> true,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem));
+
+    // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
+    // intakeSubsystem, hopperSubsystem));
 
     // joystick
     //     .rightTrigger()
@@ -193,6 +180,7 @@ public class RobotContainer {
     //             joystick));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
+    // joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
   }
 
   public void visionPeriodic() {

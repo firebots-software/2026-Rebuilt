@@ -57,6 +57,8 @@ public class Robot extends TimedRobot {
     LoggedTalonFX.periodic_static();
 
     m_robotContainer.visionPeriodic();
+
+    // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
