@@ -683,15 +683,24 @@ public final class Constants {
 
     public static final FieldTags FIELD_LAYOUT = FieldTags.ALL;
 
-    private static final String RED_RESOURCE_FILE = "";
-    private static final String BLUE_RESOURCE_FILE = "";
+    private static final String WELDED_RESOURCE = "/vision/k2026RebuiltWelded.json";
+    private static final String RED_RESOURCE_FILE = "/vision/k2026RebuiltWeldedRedSide.json";
+    private static final String BLUE_RESOURCE_FILE = "/vision/k2026RebuiltWeldedBlueSide.json";
+
+    private static AprilTagFieldLayout loadLayout(String resource) {
+      try {
+        return AprilTagFieldLayout.loadFromResource(resource);
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to load AprilTag layout: " + resource, e);
+      }
+    }
 
     public static enum FieldTags {
-      ALL(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded));
-      // RED(AprilTagFieldLayout.loadFromResource(RED_RESOURCE_FILE)),
-      // BLUE(AprilTagFieldLayout.loadFromResource(BLUE_RESOURCE_FILE));
+      ALL(loadLayout(WELDED_RESOURCE)),
+      RED(loadLayout(RED_RESOURCE_FILE)),
+      BLUE(loadLayout(BLUE_RESOURCE_FILE));
 
-      private AprilTagFieldLayout fieldLayout;
+      private final AprilTagFieldLayout fieldLayout;
 
       FieldTags(AprilTagFieldLayout field) {
         fieldLayout = field;

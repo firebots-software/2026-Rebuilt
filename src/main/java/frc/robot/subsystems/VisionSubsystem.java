@@ -67,6 +67,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     // initialize poseEstimator
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
+    poseEstimator.setFieldTags(fieldLayout);
 
     cameraTitle = cameraID.getLoggingName();
     loggingPath = "Subsystems/Vision/" + cameraTitle;
