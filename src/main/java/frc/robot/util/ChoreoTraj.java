@@ -1,3 +1,4 @@
+
 // package frc.robot.util;
 
 // import edu.wpi.first.math.geometry.Pose2d;
@@ -387,8 +388,8 @@
 // 	    new Pose2d(10.87, 5.533, Rotation2d.fromRadians(3.14)),
 // 	    new Pose2d(10.87, 5.523, Rotation2d.fromRadians(0))
 // 	);
-// 	public static final ChoreoTraj RedRightIntakeShort = new ChoreoTraj(
-// 	    "RedRightIntakeShort",
+// 	public static final ChoreoTraj RedRightIntakeSweepShort = new ChoreoTraj(
+// 	    "RedRightIntakeSweepShort",
 // 	    OptionalInt.empty(),
 // 	    3.24379,
 // 	    new Pose2d(10.887, 5.429, Rotation2d.fromRadians(3.142)),
@@ -408,8 +409,8 @@
 // 	    new Pose2d(3.555, 4.227, Rotation2d.fromRadians(3.142)),
 // 	    new Pose2d(1.888, 5.955, Rotation2d.fromRadians(-1.589))
 // 	);
-// 	public static final ChoreoTraj BlueLeftIntakeSweep = new ChoreoTraj(
-// 	    "BlueLeftIntakeSweep",
+// 	public static final ChoreoTraj BlueLeftIntakeSweepShort = new ChoreoTraj(
+// 	    "BlueLeftIntakeSweepShort",
 // 	    OptionalInt.empty(),
 // 	    3.22147,
 // 	    new Pose2d(5.673, 5.51, Rotation2d.fromRadians(0)),
@@ -422,8 +423,8 @@
 // 	    new Pose2d(10.87, 2.542, Rotation2d.fromRadians(3.142)),
 // 	    new Pose2d(10.88, 2.523, Rotation2d.fromRadians(0))
 // 	);
-// 	public static final ChoreoTraj BlueRightIntakeSweep = new ChoreoTraj(
-// 	    "BlueRightIntakeSweep",
+// 	public static final ChoreoTraj BlueRightIntakeSweepShort = new ChoreoTraj(
+// 	    "BlueRightIntakeSweepShort",
 // 	    OptionalInt.empty(),
 // 	    2.86132,
 // 	    new Pose2d(5.671, 2.587, Rotation2d.fromRadians(0)),
@@ -464,8 +465,8 @@
 // 	    new Pose2d(14.626, 4.87, Rotation2d.fromRadians(0)),
 // 	    new Pose2d(14.634, 3.899, Rotation2d.fromRadians(-0.032))
 // 	);
-// 	public static final ChoreoTraj RedLeftIntakeShort = new ChoreoTraj(
-// 	    "RedLeftIntakeShort",
+// 	public static final ChoreoTraj RedLeftIntakeSweepShort = new ChoreoTraj(
+// 	    "RedLeftIntakeSweepShort",
 // 	    OptionalInt.empty(),
 // 	    3.03201,
 // 	    new Pose2d(10.899, 2.43, Rotation2d.fromRadians(-3.137)),
@@ -505,6 +506,20 @@
 // 	    2.94281,
 // 	    new Pose2d(14.634, 3.899, Rotation2d.fromRadians(-0.032)),
 // 	    new Pose2d(14.626, 4.87, Rotation2d.fromRadians(0))
+// 	);
+// 	public static final ChoreoTraj BlueRightIntakeSweep = new ChoreoTraj(
+// 	    "BlueRightIntakeSweep",
+// 	    OptionalInt.empty(),
+// 	    4.15748,
+// 	    new Pose2d(5.671, 2.587, Rotation2d.fromRadians(0)),
+// 	    new Pose2d(5.685, 2.591, Rotation2d.fromRadians(-3.14))
+// 	);
+// 	public static final ChoreoTraj BlueLeftIntakeSweep = new ChoreoTraj(
+// 	    "BlueLeftIntakeSweep",
+// 	    OptionalInt.empty(),
+// 	    4.09199,
+// 	    new Pose2d(5.673, 5.51, Rotation2d.fromRadians(0)),
+// 	    new Pose2d(5.696, 5.518, Rotation2d.fromRadians(3.142))
 // 	);
 
 //     /**
@@ -564,23 +579,25 @@
 // 		Map.entry("RedRightIntakeSweep", RedRightIntakeSweep),
 // 		Map.entry("BlueOutpostToShoot", BlueOutpostToShoot),
 // 		Map.entry("RedRightIntakeM", RedRightIntakeM),
-// 		Map.entry("RedRightIntakeShort", RedRightIntakeShort),
+// 		Map.entry("RedRightIntakeSweepShort", RedRightIntakeSweepShort),
 // 		Map.entry("RedRightManeuverL", RedRightManeuverL),
 // 		Map.entry("BlueDepotR", BlueDepotR),
-// 		Map.entry("BlueLeftIntakeSweep", BlueLeftIntakeSweep),
+// 		Map.entry("BlueLeftIntakeSweepShort", BlueLeftIntakeSweepShort),
 // 		Map.entry("RedLeftIntakeML", RedLeftIntakeML),
-// 		Map.entry("BlueRightIntakeSweep", BlueRightIntakeSweep),
+// 		Map.entry("BlueRightIntakeSweepShort", BlueRightIntakeSweepShort),
 // 		Map.entry("RedOutpostR", RedOutpostR),
 // 		Map.entry("BlueLeftManeuverL", BlueLeftManeuverL),
 // 		Map.entry("RedDepotToShoot", RedDepotToShoot),
 // 		Map.entry("RedRightIntakeR", RedRightIntakeR),
 // 		Map.entry("MoveRight", MoveRight),
-// 		Map.entry("RedLeftIntakeShort", RedLeftIntakeShort),
+// 		Map.entry("RedLeftIntakeSweepShort", RedLeftIntakeSweepShort),
 // 		Map.entry("RedLeftManeuverL", RedLeftManeuverL),
 // 		Map.entry("RedRightClimbR", RedRightClimbR),
 // 		Map.entry("BlueRightClimbR", BlueRightClimbR),
 // 		Map.entry("MoveLeftWithMarker", MoveLeftWithMarker),
-// 		Map.entry("MoveRightWithMarker", MoveRightWithMarker)
+// 		Map.entry("MoveRightWithMarker", MoveRightWithMarker),
+// 		Map.entry("BlueRightIntakeSweep", BlueRightIntakeSweep),
+// 		Map.entry("BlueLeftIntakeSweep", BlueLeftIntakeSweep)
 //     );
 
 //     /**
@@ -590,17 +607,15 @@
 //     public ChoreoTraj segment(int segment) {
 //         var traj = ChoreoTraj.ALL_TRAJECTORIES.get(this.name + "$" + segment);
 //         if (traj == null) {
-//             throw new NullPointerException("Trajectory " + this.name + " does not have segment #"
-// + segment + ".");
+//             throw new NullPointerException("Trajectory " + this.name + " does not have segment #" + segment + ".");
 //         }
 //         return traj;
 //     }
-
+    
 //     // If these methods cause errors because you're not using ChoreoLib,
 //     // turn off "Include ChoreoLib-specific Helpers" in Choreo's codegen settings.
 //     /**
-//      * Load an AutoTrajectory directly from a ChoreoTraj, which may be a segment of a larger
-// trajectory.
+//      * Load an AutoTrajectory directly from a ChoreoTraj, which may be a segment of a larger trajectory.
 //      */
 //     public AutoTrajectory asAutoTraj(AutoRoutine routine) {
 //         if (this.segment.isPresent()) {
