@@ -342,8 +342,8 @@ public record ChoreoTraj(
 	public static final ChoreoTraj BlueDepotL = new ChoreoTraj(
 	    "BlueDepotL",
 	    OptionalInt.empty(),
-	    5.0462,
-	    new Pose2d(3.536, 5.498, Rotation2d.fromRadians(3.142)),
+	    5.13068,
+	    new Pose2d(3.084, 4.966, Rotation2d.fromRadians(-0.838)),
 	    new Pose2d(1.878, 5.932, Rotation2d.fromRadians(-1.571))
 	);
 	public static final ChoreoTraj RedRightManeuverR = new ChoreoTraj(
@@ -405,8 +405,8 @@ public record ChoreoTraj(
 	public static final ChoreoTraj BlueDepotR = new ChoreoTraj(
 	    "BlueDepotR",
 	    OptionalInt.empty(),
-	    5.06876,
-	    new Pose2d(3.561, 2.581, Rotation2d.fromRadians(3.142)),
+	    4.93201,
+	    new Pose2d(2.924, 3.015, Rotation2d.fromRadians(0.606)),
 	    new Pose2d(1.888, 5.955, Rotation2d.fromRadians(-1.589))
 	);
 	public static final ChoreoTraj BlueLeftIntakeSweepShort = new ChoreoTraj(
