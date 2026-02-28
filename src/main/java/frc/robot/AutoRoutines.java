@@ -441,6 +441,67 @@ public class AutoRoutines {
   //   return routine.cmd();
   // }
 
+  public AutoRoutine gameTwoPath() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.gameTwoIntake);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueRightShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotR);
+    AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+
+    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
+    depotIntake.done().onTrue(depotShoot.cmd());
+    depotShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+  public AutoRoutine BluePedriDepotL() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.BlueLeftIntakeSweep);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueRightShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotR);
+    AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+
+    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
+
+    depotIntake.done().onTrue(depotShoot.cmd());
+    depotShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
   public AutoRoutine BluePedriMidR() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -528,8 +589,8 @@ public class AutoRoutines {
     // autoChooser.addCmd("doneWeek0Path", () -> doneWeek0Auto());
     // autoChooser.addCmd("doneWeek0PathWithShoot", () -> doneWeek0AutoWithShoot());
 
-    // autoChooser.addRoutine("Red Pedri - depot (right)", () -> RedPedriDepotR());
-    // autoChooser.addRoutine("Red Pedri - depot (left)", () -> RedPedriDepotL());
+    autoChooser.addRoutine("Red Pedri - depot (right)", () -> RedPedriDepotR());
+    autoChooser.addRoutine("Red Pedri - depot (left)", () -> RedPedriDepotL());
     // autoChooser.addCmd("Red Pedri - outpost (right)", () -> RedPedriOutpostR());
     // autoChooser.addCmd("Red Pedri - outpost (left)", () -> RedPedriOutpostL());
     // autoChooser.addCmd("Red Pedri - short (right)", () -> RedPedriShortR());
@@ -541,6 +602,8 @@ public class AutoRoutines {
     // autoChooser.addCmd("Red Drake - outpost (long)", () -> RedDrakeOutpostLong());
     // autoChooser.addCmd("Red Drake - outpost (short)", () -> RedDrakeOutpostShort());
     // autoChooser.addCmd("Nike", () -> Nike());
+
+    autoChooser.addRoutine("gameTwoPath", () -> gameTwoPath());
 
     autoChooser.addRoutine("Blue Pedri - mid (right)", () -> BluePedriMidR());
     autoChooser.addRoutine("Blue Pedri - mid (left)", () -> BluePedriMidL());
