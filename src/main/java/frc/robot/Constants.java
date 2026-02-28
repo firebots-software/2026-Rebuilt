@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -681,7 +680,7 @@ public final class Constants {
       POSE_AMBIGUITY();
     }
 
-    public static final FieldTags FIELD_LAYOUT = FieldTags.ALL;
+    public static final FieldTags FIELD_LAYOUT = FieldTags.BLUE;
 
     private static final String WELDED_RESOURCE = "/vision/k2026RebuiltWelded.json";
     private static final String RED_RESOURCE_FILE = "/vision/k2026RebuiltWeldedRedSide.json";
