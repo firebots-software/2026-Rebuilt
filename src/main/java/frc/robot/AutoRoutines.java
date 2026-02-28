@@ -570,7 +570,7 @@ public class AutoRoutines {
                     && lebronShooterSubsystem.isAtSpeed()),
             lebronShooterSubsystem,
             intakeSubsystem,
-            hopperSubsystem);
+            hopperSubsystem).withTimeout(7);
 
     return Commands.sequence(shoot.asProxy());
   }
