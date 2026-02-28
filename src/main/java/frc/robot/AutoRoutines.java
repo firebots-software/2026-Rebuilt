@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.function.BooleanSupplier;
+import java.util.stream.DoubleStream;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -35,6 +36,7 @@ public class AutoRoutines {
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
+  private final BooleanSupplier redSide;
 
   // private final ClimberSubsystem climberSubsystem;
 
@@ -45,12 +47,14 @@ public class AutoRoutines {
       ShooterSubsystem lebron,
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
-      ClimberSubsystem climber) {
+      ClimberSubsystem climber,
+      BooleanSupplier redSide) {
     this.intakeSubsystem = intake;
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
     // this.climberSubsystem = climber;
+    this.redSide = redSide;
 
     autoFactory = swerveSubsystem.createAutoFactory();
 
@@ -652,7 +656,7 @@ public class AutoRoutines {
   public Command returnBasicShoot() {
     Command shoot =
         new ShootBasic(
-               () -> MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(() -> false, swerveSubsystem)),
+               () -> MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
                 () -> lebronShooterSubsystem.isAtSpeed(),
                 lebronShooterSubsystem,
                 intakeSubsystem,
