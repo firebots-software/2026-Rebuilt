@@ -3,7 +3,6 @@ package frc.robot.commands.SwerveCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -15,7 +14,6 @@ public class SwerveJoystickCommand extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
-
   protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
@@ -133,7 +131,14 @@ public class SwerveJoystickCommand extends Command {
     final double x = xSpeed;
     final double y = ySpeed;
 
-    final double turn = (doPointing.getAsBoolean()) ? (swerveDrivetrain.calculateRequiredRotationalRate(swerveDrivetrain.travelAngleTo(((redsideIfPointing.getAsBoolean()) ? (Constants.Landmarks.RED_HUB_2D) : (Constants.Landmarks.BLUE_HUB_2D))))) : (turningSpeed);
+    final double turn =
+        (doPointing.getAsBoolean())
+            ? (swerveDrivetrain.calculateRequiredRotationalRate(
+                swerveDrivetrain.travelAngleTo(
+                    ((redsideIfPointing.getAsBoolean())
+                        ? (Constants.Landmarks.RED_HUB_2D)
+                        : (Constants.Landmarks.BLUE_HUB_2D)))))
+            : (turningSpeed);
 
     DogLog.log("joystickCommand/xSpeed", xSpeed);
     DogLog.log("joystickCommand/ySpeed", ySpeed);
