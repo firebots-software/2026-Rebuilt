@@ -297,7 +297,7 @@ public class AutoRoutines {
   // return routine.cmd();
   // }
 
-  public void week0Auto() {
+  public Command week0Auto() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
@@ -317,7 +317,29 @@ public class AutoRoutines {
                         intakeSubsystem.setArmToDegreesCommand(
                             Constants.Intake.Arm.ARM_POS_RETRACTED))));
 
-    routine.cmd();
+    return routine.cmd();
+  }
+
+  public Command week0AutoWithCommands() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory moveLeft = routine.trajectory("MoveLeft.traj");
+    AutoTrajectory moveRight = routine.trajectory("MoveRight.traj");
+
+    routine
+        .active()
+        .onTrue(
+            moveLeft
+                .resetOdometry()
+                .andThen(
+                    new ParallelCommandGroup(
+                        moveLeft.cmd(), new ExtendIntake(intakeSubsystem)))
+                .andThen(
+                    new ParallelCommandGroup(
+                        moveRight.cmd(),
+                        new RetractIntake(intakeSubsystem))));
+
+    return routine.cmd();
   }
 
   public Command RedPedriDepotR() {
@@ -638,7 +660,10 @@ public class AutoRoutines {
     //     "Trial Path Two",
     //     () -> trialPathTwo(Constants.Swerve.Auto.Maneuver.RedRightManeuverR, null, null, null));
 
-    autoChooser.addCmd("Red Pedri - depot (right)", () -> RedPedriDepotR());
+    autoChooser.addCmd("week0Path", () -> week0Auto());
+    autoChooser.addCmd("week0PathWithCommands", () -> week0AutoWithCommands());
+
+    // autoChooser.addCmd("Red Pedri - depot (right)", () -> RedPedriDepotR());
     // autoChooser.addCmd("Red Pedri - depot (left)", () -> RedPedriDepotL());
     // autoChooser.addCmd("Red Pedri - outpost (right)", () -> RedPedriOutpostR());
     // autoChooser.addCmd("Red Pedri - outpost (left)", () -> RedPedriOutpostL());
