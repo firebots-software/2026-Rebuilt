@@ -138,6 +138,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
+    if (shooter.getCachedVelocityRps() == 0){
+      return false;
+    }
     return Math.abs(calculateFtPSToRPS(targetBallSpeed) - (shooter.getCachedVelocityRps() * 2)) <= TOLERANCE_RPS;
   }
 

@@ -155,13 +155,16 @@ public class RobotContainer {
     // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
-    joystick.leftTrigger().whileTrue(new ShootBasic(() -> 63.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    joystick.rightBumper().whileTrue(new ShootBasic(() -> 85.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick.b().whileTrue(new ShootBasic(() -> 105.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick.y().whileTrue(new ShootBasic(() -> 100.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
 
     // joystick
     //     .rightTrigger()
     //     .whileTrue(
     //         new ArcAroundAndShoot(
-    //             drivetrain,
+    //             drivetrain,`
     //             lebron,
     //             intakeSubsystem,
     //             hopperSubsystem,
