@@ -671,7 +671,7 @@ public final class Constants {
 
     // TODO: be able to set this at the start of the match
     public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
-    public static boolean SKIP_TO_FALLBACK = true;
+    public static boolean SKIP_TO_FALLBACK = false;
 
     // TODO: move this somewhere else
     public static void updateFallbackCamera(VisionCamera cam) {
@@ -708,16 +708,16 @@ public final class Constants {
     public static final double FRONT_LEFT_X = Units.inchesToMeters(-4.757613);
     public static final double FRONT_LEFT_Y = Units.inchesToMeters(7.938785);
     public static final double FRONT_LEFT_Z = Units.inchesToMeters(27.046870);
-    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(1.26);
-    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(355.256834);
-    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(344.380258);
+    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(7.096);
+    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(288.882);
+    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(170.0);
 
     public static final double REAR_RIGHT_X = Units.inchesToMeters(-13.852572);
     public static final double REAR_RIGHT_Y = Units.inchesToMeters(-9.047180);
     public static final double REAR_RIGHT_Z = Units.inchesToMeters(17.891914);
-    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(46.780821);
-    public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(338.827168);
-    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(200.000000);
+    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(352.904);
+    public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(288.882);
+    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(190.0);
 
     public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
     public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
