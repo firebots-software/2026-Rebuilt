@@ -7,6 +7,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
@@ -231,6 +232,16 @@ public class IntakeSubsystem extends SubsystemBase {
   // TODO: Verify this is the same used w/ the feedback
   public Rotation2d getArmPosition() {
     return new Rotation2d(Units.rotationsToRadians(armMotor.getCachedPositionRotations()));
+  }
+
+  public void applyCoastConfigArm() {
+    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast).withInverted(InvertedValue.Clockwise_Positive);
+    armMotor.getConfigurator().apply(moc);
+  }
+
+  public void applyBrakeConfigArm() {
+        MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake).withInverted(InvertedValue.Clockwise_Positive);
+         armMotor.getConfigurator().apply(moc);
   }
 
   public double getCancoderPositionRaw() {
