@@ -708,9 +708,9 @@ public final class Constants {
     public static final double FRONT_LEFT_X = Units.inchesToMeters(-4.757613);
     public static final double FRONT_LEFT_Y = Units.inchesToMeters(7.938785);
     public static final double FRONT_LEFT_Z = Units.inchesToMeters(27.046870);
-    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(7.096);
-    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(288.882);
-    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(170.0);
+    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(1.26);
+    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(355.256834);
+    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(344.380258);
 
     public static final double REAR_RIGHT_X = Units.inchesToMeters(-13.852572);
     public static final double REAR_RIGHT_Y = Units.inchesToMeters(-9.047180);
@@ -722,9 +722,9 @@ public final class Constants {
     public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
     public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
     public static final double REAR_LEFT_Z = Units.inchesToMeters(17.903158);
-    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(133.219179);
-    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(338.827168);
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(120.000000000000);
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(7.096);
+    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(288.882);
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(170.0);
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
