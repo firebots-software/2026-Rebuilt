@@ -15,13 +15,4 @@ public class MiscMath {
         pose.getRotation());
   }
 
-  public static double computeShootingSpeed(double distToHubCenter) {
-  // Constants (meters)
-  final double a = edu.wpi.first.math.util.Units.inchesToMeters(5.67405);
-  final double b = edu.wpi.first.math.util.Units.inchesToMeters(36.60021);
-
-  double y = (a * Math.sqrt(distToHubCenter)) + b;
-
-  return clamp(y, 71.0, 107.0);
-}
 }
