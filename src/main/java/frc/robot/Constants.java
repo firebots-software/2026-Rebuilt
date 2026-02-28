@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -669,8 +670,8 @@ public final class Constants {
   public static class Vision {
 
     // TODO: be able to set this at the start of the match
-    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
-    public static boolean SKIP_TO_FALLBACK = false;
+    public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_RIGHT_CAM;
+    public static boolean SKIP_TO_FALLBACK = true;
 
     // TODO: move this somewhere else
     public static void updateFallbackCamera(VisionCamera cam) {
@@ -700,14 +701,14 @@ public final class Constants {
     public static final double FRONT_RIGHT_X = Units.inchesToMeters(-4.775894);
     public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-7.880312);
     public static final double FRONT_RIGHT_Z = Units.inchesToMeters(27.024842);
-    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(17.264474);
-    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(355.256834);
-    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(14.948185);
+    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(1.26);
+    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(256.257);
+    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(14.899273);
 
     public static final double FRONT_LEFT_X = Units.inchesToMeters(-4.757613);
-    public static final double FRONT_LEFT_Y = Units.inchesToMeters(8.454156);
+    public static final double FRONT_LEFT_Y = Units.inchesToMeters(7.938785);
     public static final double FRONT_LEFT_Z = Units.inchesToMeters(27.046870);
-    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(162.735526);
+    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(358.781735);
     public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(355.256834);
     public static final double FRONT_LEFT_YAW = Units.degreesToRadians(345.051815);
 
@@ -773,7 +774,38 @@ public final class Constants {
     public static enum CameraSelectionMethod {
       MIN(),
       AVG(),
-      MAX();
+      MAX(),
+      POSE_AMBIGUITY();
+    }
+
+    public static final FieldTags FIELD_LAYOUT = FieldTags.BLUE;
+
+    private static final String WELDED_RESOURCE = "/vision/k2026RebuiltWelded.json";
+    private static final String RED_RESOURCE_FILE = "/vision/k2026RebuiltWeldedRedSide.json";
+    private static final String BLUE_RESOURCE_FILE = "/vision/k2026RebuiltWeldedBlueSide.json";
+
+    private static AprilTagFieldLayout loadLayout(String resource) {
+      try {
+        return AprilTagFieldLayout.loadFromResource(resource);
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to load AprilTag layout: " + resource, e);
+      }
+    }
+
+    public static enum FieldTags {
+      ALL(loadLayout(WELDED_RESOURCE)),
+      RED(loadLayout(RED_RESOURCE_FILE)),
+      BLUE(loadLayout(BLUE_RESOURCE_FILE));
+
+      private final AprilTagFieldLayout fieldLayout;
+
+      FieldTags(AprilTagFieldLayout field) {
+        fieldLayout = field;
+      }
+
+      public AprilTagFieldLayout getField() {
+        return fieldLayout;
+      }
     }
   }
 

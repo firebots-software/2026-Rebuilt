@@ -503,7 +503,6 @@ public class AutoRoutines {
     return routine;
   }
 
-
   public AutoRoutine BluePedriDepotL() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -590,18 +589,19 @@ public class AutoRoutines {
   public Command returnBasicShoot() {
     Command shoot =
         new ShootBasic(
-            () ->
-                Units.metersToFeet(
-                    Targeting.shootingSpeed(
-                        Constants.Landmarks.RED_HUB,
-                        swerveSubsystem,
-                        Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-            () ->
-                (Targeting.pointingAtTarget(Constants.Landmarks.RED_HUB, swerveSubsystem)
-                    && lebronShooterSubsystem.isAtSpeed()),
-            lebronShooterSubsystem,
-            intakeSubsystem,
-            hopperSubsystem).withTimeout(7);
+                () ->
+                    Units.metersToFeet(
+                        Targeting.shootingSpeed(
+                            Constants.Landmarks.RED_HUB,
+                            swerveSubsystem,
+                            Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                () ->
+                    (Targeting.pointingAtTarget(Constants.Landmarks.RED_HUB, swerveSubsystem)
+                        && lebronShooterSubsystem.isAtSpeed()),
+                lebronShooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem)
+            .withTimeout(7);
 
     return Commands.sequence(shoot.asProxy());
   }
