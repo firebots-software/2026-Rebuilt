@@ -723,6 +723,8 @@ public class AutoRoutines {
 
     // autoChooser.addCmd("week0Path", () -> week0Auto());
     // autoChooser.addCmd("week0PathWithCommands", () -> week0AutoWithCommands());
+    autoChooser.addCmd("doneWeek0Path", () -> doneWeek0Auto());
+    autoChooser.addCmd("doneWeek0PathWithShoot", () -> doneWeek0AutoWithShoot());
 
     // autoChooser.addCmd("Red Pedri - depot (right)", () -> RedPedriDepotR());
     // autoChooser.addCmd("Red Pedri - depot (left)", () -> RedPedriDepotL());
