@@ -443,10 +443,10 @@ public class AutoRoutines {
   //   return routine.cmd();
   // }
 
-  public AutoRoutine gameTwoPathSimple() {
+  public AutoRoutine scrimOutpostSimple() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.gameTwoIntake);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.BlueRightIntakeSweepShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueRightShoot);
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotR);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
@@ -473,12 +473,72 @@ public class AutoRoutines {
     return routine;
   }
 
-  public AutoRoutine gameTwoPathHard() {
+  public AutoRoutine scrimOutpostHard() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.BlueRightIntakeSweep);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueLeftShoot);
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotL);
+    AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+
+    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
+    depotIntake.done().onTrue(depotShoot.cmd());
+    depotShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+  public AutoRoutine scrimDepotSimple() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.BlueLeftIntakeSweepShort);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueLeftShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotL);
+    AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+
+    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
+    depotIntake.done().onTrue(depotShoot.cmd());
+    depotShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+  public AutoRoutine scrimDepotHard() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.BlueLeftIntakeSweep);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueRightShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotR);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
 
     routine
@@ -643,8 +703,11 @@ public class AutoRoutines {
     // autoChooser.addRoutine("Blue Pedri - mid (right)", () -> BluePedriMidR());
     // autoChooser.addRoutine("Blue Pedri - mid (left)", () -> BluePedriMidL());
 
-    autoChooser.addRoutine("gameTwoPathSimple", () -> gameTwoPathSimple());
-    autoChooser.addRoutine("gameTwoPathHard", () -> gameTwoPathHard());
+    autoChooser.addRoutine("Outpost Side Simple", () -> scrimOutpostSimple());
+    autoChooser.addRoutine("Outpost Side Hard", () -> scrimOutpostHard());
+
+    autoChooser.addRoutine("Depot Side Simple", () -> scrimDepotSimple());
+    autoChooser.addRoutine("Depot Side Hard", () -> scrimDepotHard());
   }
 
   public AutoChooser getAutoChooser() {
