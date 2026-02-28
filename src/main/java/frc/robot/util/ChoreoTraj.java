@@ -391,7 +391,7 @@ public record ChoreoTraj(
 	public static final ChoreoTraj RedRightIntakeSweepShort = new ChoreoTraj(
 	    "RedRightIntakeSweepShort",
 	    OptionalInt.empty(),
-	    3.24379,
+	    2.96788,
 	    new Pose2d(10.887, 5.429, Rotation2d.fromRadians(3.142)),
 	    new Pose2d(10.879, 5.421, Rotation2d.fromRadians(0))
 	);
@@ -412,7 +412,7 @@ public record ChoreoTraj(
 	public static final ChoreoTraj BlueLeftIntakeSweepShort = new ChoreoTraj(
 	    "BlueLeftIntakeSweepShort",
 	    OptionalInt.empty(),
-	    3.22147,
+	    3.12101,
 	    new Pose2d(5.673, 5.51, Rotation2d.fromRadians(0)),
 	    new Pose2d(5.662, 5.51, Rotation2d.fromRadians(3.142))
 	);
@@ -426,7 +426,7 @@ public record ChoreoTraj(
 	public static final ChoreoTraj BlueRightIntakeSweepShort = new ChoreoTraj(
 	    "BlueRightIntakeSweepShort",
 	    OptionalInt.empty(),
-	    2.86132,
+	    2.78601,
 	    new Pose2d(5.671, 2.587, Rotation2d.fromRadians(0)),
 	    new Pose2d(5.671, 2.587, Rotation2d.fromRadians(3.142))
 	);
@@ -468,7 +468,7 @@ public record ChoreoTraj(
 	public static final ChoreoTraj RedLeftIntakeSweepShort = new ChoreoTraj(
 	    "RedLeftIntakeSweepShort",
 	    OptionalInt.empty(),
-	    3.03201,
+	    3.1127,
 	    new Pose2d(10.899, 2.43, Rotation2d.fromRadians(-3.137)),
 	    new Pose2d(10.892, 2.431, Rotation2d.fromRadians(0))
 	);
@@ -510,16 +510,16 @@ public record ChoreoTraj(
 	public static final ChoreoTraj BlueRightIntakeSweep = new ChoreoTraj(
 	    "BlueRightIntakeSweep",
 	    OptionalInt.empty(),
-	    4.15748,
+	    3.70191,
 	    new Pose2d(5.671, 2.587, Rotation2d.fromRadians(0)),
-	    new Pose2d(5.685, 2.591, Rotation2d.fromRadians(-3.14))
+	    new Pose2d(5.666, 5.575, Rotation2d.fromRadians(-3.14))
 	);
 	public static final ChoreoTraj BlueLeftIntakeSweep = new ChoreoTraj(
 	    "BlueLeftIntakeSweep",
 	    OptionalInt.empty(),
-	    4.09199,
+	    3.63065,
 	    new Pose2d(5.673, 5.51, Rotation2d.fromRadians(0)),
-	    new Pose2d(5.696, 5.518, Rotation2d.fromRadians(3.142))
+	    new Pose2d(5.666, 2.519, Rotation2d.fromRadians(3.142))
 	);
 
     /**
