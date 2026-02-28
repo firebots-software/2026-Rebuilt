@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.logging.FileHandler;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -9,7 +7,6 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
@@ -230,7 +227,8 @@ public class AutoRoutines {
   //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedLeftIntakeSweep);
   //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedRightShoot);
   //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostR);
-  //   AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
+  //   AutoTrajectory outpostShoot = shoot(routine,
+  // Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
 
   //   routine
   //       .active()
@@ -256,7 +254,8 @@ public class AutoRoutines {
   //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeSweep);
   //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedLeftShoot);
   //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostL);
-  //   AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
+  //   AutoTrajectory outpostShoot = shoot(routine,
+  // Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
 
   //   routine
   //       .active()
@@ -359,7 +358,8 @@ public class AutoRoutines {
   //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeShort);
   //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedRightShoot);
   //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostR);
-  //   AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
+  //   AutoTrajectory outpostShoot = shoot(routine,
+  // Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
 
   //   routine
   //       .active()
@@ -392,8 +392,10 @@ public class AutoRoutines {
   // public Command RedDrakeOutpostLong() {
   //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostRDrake);
-  //   AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
+  //   AutoTrajectory outpostIntake = outpost(routine,
+  // Constants.Swerve.Auto.Outpost.RedOutpostRDrake);
+  //   AutoTrajectory outpostShoot = shoot(routine,
+  // Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
   //   AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotR);
   //   AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
 

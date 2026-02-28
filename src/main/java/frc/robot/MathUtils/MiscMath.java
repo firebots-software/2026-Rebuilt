@@ -14,5 +14,4 @@ public class MiscMath {
         pose.getZ(),
         pose.getRotation());
   }
-
 }

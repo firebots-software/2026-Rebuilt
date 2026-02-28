@@ -1,4 +1,3 @@
-
 // package frc.robot.util;
 
 // import edu.wpi.first.math.geometry.Pose2d;
@@ -607,15 +606,17 @@
 //     public ChoreoTraj segment(int segment) {
 //         var traj = ChoreoTraj.ALL_TRAJECTORIES.get(this.name + "$" + segment);
 //         if (traj == null) {
-//             throw new NullPointerException("Trajectory " + this.name + " does not have segment #" + segment + ".");
+//             throw new NullPointerException("Trajectory " + this.name + " does not have segment #"
+// + segment + ".");
 //         }
 //         return traj;
 //     }
-    
+
 //     // If these methods cause errors because you're not using ChoreoLib,
 //     // turn off "Include ChoreoLib-specific Helpers" in Choreo's codegen settings.
 //     /**
-//      * Load an AutoTrajectory directly from a ChoreoTraj, which may be a segment of a larger trajectory.
+//      * Load an AutoTrajectory directly from a ChoreoTraj, which may be a segment of a larger
+// trajectory.
 //      */
 //     public AutoTrajectory asAutoTraj(AutoRoutine routine) {
 //         if (this.segment.isPresent()) {

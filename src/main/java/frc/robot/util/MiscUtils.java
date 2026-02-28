@@ -78,14 +78,13 @@ public class MiscUtils {
     return robotPose.getTranslation().getDistance(hubTranslation);
   }
 
-
   public static double computeShootingSpeed(double distToHubCenter) {
-  // Constants (meters)
-  final double a = edu.wpi.first.math.util.Units.inchesToMeters(5.67405);
-  final double b = edu.wpi.first.math.util.Units.inchesToMeters(36.60021);
+    // Constants (meters)
+    final double a = edu.wpi.first.math.util.Units.inchesToMeters(5.67405);
+    final double b = edu.wpi.first.math.util.Units.inchesToMeters(36.60021);
 
-  double y = (a * Math.sqrt(distToHubCenter)) + b;
+    double y = (a * Math.sqrt(distToHubCenter)) + b;
 
-  return MiscMath.clamp(y, 71.0, 107.0);
+    return MiscMath.clamp(y, 71.0, 107.0);
   }
 }

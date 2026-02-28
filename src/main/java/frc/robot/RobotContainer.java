@@ -13,10 +13,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Vision.VisionCamera;
-import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -27,6 +25,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -132,31 +131,20 @@ public class RobotContainer {
     // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+
     joystick
-        .rightBumper()
+        .leftTrigger()
         .whileTrue(
             new ShootBasic(
-                () -> interMapSpeed,
+                () ->
+                    MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
                 () -> true,
                 lebron,
                 intakeSubsystem,
                 hopperSubsystem));
+
     // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
     // intakeSubsystem, hopperSubsystem));
-    joystick
-        .b()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  interMapSpeed -= 1.0;
-                }));
-    joystick
-        .y()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  interMapSpeed += 1.0;
-                }));
 
     // joystick
     //     .rightTrigger()
@@ -171,7 +159,7 @@ public class RobotContainer {
     //             joystick));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
-    joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
+    // joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
   }
 
   public void visionPeriodic() {
