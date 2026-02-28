@@ -235,13 +235,19 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void applyCoastConfigArm() {
-    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast).withInverted(InvertedValue.Clockwise_Positive);
+    MotorOutputConfigs moc =
+        new MotorOutputConfigs()
+            .withNeutralMode(NeutralModeValue.Coast)
+            .withInverted(InvertedValue.Clockwise_Positive);
     armMotor.getConfigurator().apply(moc);
   }
 
   public void applyBrakeConfigArm() {
-        MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake).withInverted(InvertedValue.Clockwise_Positive);
-         armMotor.getConfigurator().apply(moc);
+    MotorOutputConfigs moc =
+        new MotorOutputConfigs()
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInverted(InvertedValue.Clockwise_Positive);
+    armMotor.getConfigurator().apply(moc);
   }
 
   public double getCancoderPositionRaw() {
@@ -317,7 +323,7 @@ public class IntakeSubsystem extends SubsystemBase {
         "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)",
         getArmUnfusedPosition().getDegrees());
     DogLog.log("Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
-    
+
     SmartDashboard.putNumber("Arm Angle", getArmPosition().getDegrees());
   }
 

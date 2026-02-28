@@ -1,13 +1,9 @@
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-import java.util.stream.DoubleStream;
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.Swerve.Auto.ClimbPos;
@@ -27,7 +23,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.MiscUtils;
-import frc.robot.util.Targeting;
+import java.util.function.BooleanSupplier;
 
 public class AutoRoutines {
   private final AutoFactory autoFactory;
@@ -656,7 +652,9 @@ public class AutoRoutines {
   public Command returnBasicShoot() {
     Command shoot =
         new ShootBasic(
-               () -> MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
+                () ->
+                    MiscUtils.computeShootingSpeed(
+                        MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
                 () -> lebronShooterSubsystem.isAtSpeed(),
                 lebronShooterSubsystem,
                 intakeSubsystem,
