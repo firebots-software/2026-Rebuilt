@@ -65,19 +65,23 @@ public class RobotContainer {
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(
+              Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
           : null;
   public final VisionSubsystem visionFrontLeft =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(
+              Constants.Vision.VisionCamera.FRONT_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
           : null;
   public final VisionSubsystem visionRearRight =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(
+              Constants.Vision.VisionCamera.REAR_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
           : null;
   public final VisionSubsystem visionRearLeft =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(
+              Constants.Vision.VisionCamera.REAR_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
           : null;
 
   public final FuelGaugeDetection visionFuelGauge =
@@ -155,10 +159,26 @@ public class RobotContainer {
     // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
-    joystick.rightBumper().whileTrue(new ShootBasic(() -> 85.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick.b().whileTrue(new ShootBasic(() -> 105.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
-    joystick.y().whileTrue(new ShootBasic(() -> 100.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootBasic(
+                () -> 85.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick
+        .a()
+        .whileTrue(
+            new ShootBasic(
+                () -> 90.00, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick
+        .b()
+        .whileTrue(
+            new ShootBasic(
+                () -> 105.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
+    joystick
+        .y()
+        .whileTrue(
+            new ShootBasic(
+                () -> 100.0, () -> lebron.isAtSpeed(), lebron, intakeSubsystem, hopperSubsystem));
 
     // joystick
     //     .rightTrigger()
@@ -257,8 +277,6 @@ public class RobotContainer {
     DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
 
     preferredVision.addFilteredPose(drivetrain);
-
-
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());

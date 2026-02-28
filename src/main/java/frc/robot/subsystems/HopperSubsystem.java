@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -18,6 +15,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
 import frc.robot.util.LoggedTalonFX;
+import java.util.function.BooleanSupplier;
 
 public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
@@ -29,22 +27,26 @@ public class HopperSubsystem extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
   public HopperSubsystem() {
-    CurrentLimitsConfigs currentLimitConfigs = new CurrentLimitsConfigs()
-        .withStatorCurrentLimit(Constants.Hopper.STATOR_LIMIT_AMPS)
-        .withSupplyCurrentLimit(Constants.Hopper.SUPPLY_LIMIT_AMPS);
+    CurrentLimitsConfigs currentLimitConfigs =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Hopper.STATOR_LIMIT_AMPS)
+            .withSupplyCurrentLimit(Constants.Hopper.SUPPLY_LIMIT_AMPS);
 
-    Slot0Configs s0c = new Slot0Configs()
-        .withKP(Constants.Hopper.kP)
-        .withKI(Constants.Hopper.kI)
-        .withKD(Constants.Hopper.kD)
-        .withKV(Constants.Hopper.kV);
+    Slot0Configs s0c =
+        new Slot0Configs()
+            .withKP(Constants.Hopper.kP)
+            .withKI(Constants.Hopper.kI)
+            .withKD(Constants.Hopper.kD)
+            .withKV(Constants.Hopper.kV);
 
-    MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs()
-        .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Brake);
+    MotorOutputConfigs motorOutputConfigs =
+        new MotorOutputConfigs()
+            .withInverted(InvertedValue.Clockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Brake);
 
-    hopperMotor = new LoggedTalonFX(
-        Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    hopperMotor =
+        new LoggedTalonFX(
+            Constants.Hopper.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
     TalonFXConfiguration hopperConfig = new TalonFXConfiguration();
     hopperConfig.Slot0 = s0c;
@@ -102,7 +104,8 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public boolean atTargetSpeed() {
-    return Math.abs(getFloorSpeedMPS() - targetSurfaceSpeedMps) <= Constants.Hopper.FLOOR_SPEED_TOLERANCE_MPS;
+    return Math.abs(getFloorSpeedMPS() - targetSurfaceSpeedMps)
+        <= Constants.Hopper.FLOOR_SPEED_TOLERANCE_MPS;
   }
 
   public boolean isHopperSufficientlyEmpty(FuelGaugeDetection fuelGaugeDetection) {
@@ -128,7 +131,8 @@ public class HopperSubsystem extends SubsystemBase {
   // }
 
   // Stops the Hopper when interrupted
-  public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+  public Command runHopperUntilInterruptedCommand(
+      double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
   }
 

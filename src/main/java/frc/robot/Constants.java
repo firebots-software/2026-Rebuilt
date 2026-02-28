@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,7 +29,8 @@ public final class Constants {
   }
 
   public static final class Simulation {
-    public static final double SIM_LOOP_PERIOD_SECONDS = 0.020; // time between updating the simulator
+    public static final double SIM_LOOP_PERIOD_SECONDS =
+        0.020; // time between updating the simulator
   }
 
   public static final class Intake {
@@ -65,7 +65,8 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
       public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
 
-      public static final double MOTOR_ROTS_PER_ARM_ROT = (25.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
+      public static final double MOTOR_ROTS_PER_ARM_ROT =
+          (25.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
       public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
       public static final double ARM_DEGREES_PER_MOTOR_ROT = 360.0 / MOTOR_ROTS_PER_ARM_ROT;
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
@@ -101,11 +102,13 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 8.0 / 3.0;
       public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
-      public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC = DESIGNED_SURFACE_SPEED_FT_PER_SEC * 0.3048;
-      public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC = DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
+      public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
+          DESIGNED_SURFACE_SPEED_FT_PER_SEC * 0.3048;
+      public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC =
+          DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
 
-      public static final double TARGET_ROLLER_RPM = (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0)
-          / ROLLER_CIRCUMFERENCE_INCHES;
+      public static final double TARGET_ROLLER_RPM =
+          (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
 
@@ -125,7 +128,6 @@ public final class Constants {
       L2(6.75, 21.428571428571427),
       L3(6.12, 21.428571428571427),
       FIVEN_L3(5.2734375, 26.09090909091);
-
       public final double DRIVE_GEAR_RATIO, STEER_GEAR_RATIO;
 
       SwerveLevel(double drive, double steer) {
@@ -141,7 +143,6 @@ public final class Constants {
       // //0.12301
       JAMES_HARDEN(0.36, 0d, 0d, 0.2425, 0.11560693641, 0), // 0.041539 //0.12301
       COBRA(0.1, 0d, 0d, 0d, 0.124, 0d); // 0.041539 //0.12301
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveDrivePIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -159,7 +160,6 @@ public final class Constants {
       PROTO(20d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(38.982d, 2.4768d, 0d, 0.23791d, 0d, 0.1151d),
       COBRA(100d, 0d, 0.5, 0.1, 2.49, 0d);
-
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveSteerPIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -215,7 +215,6 @@ public final class Constants {
       PROTO(0.5, 0.5, 0.2, 0.2),
       JAMES_HARDEN(0.5, 0.5, 0.2, 0.2),
       COBRA(0.5, 0.5, 0.5, 0.5); // 5.67, 8.67, 1.9, 1.9
-
       public final double maxVelocityLinear,
           maxAccelerationLinear,
           maxVelocityAngular,
@@ -238,7 +237,6 @@ public final class Constants {
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       COBRA(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d);
-
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -268,7 +266,6 @@ public final class Constants {
       PROTO(Inches.of(22.52), Inches.of(22.834)), // length, width
       JAMES_HARDEN(Inches.of(26.75), Inches.of(22.75)), // length, width
       COBRA(Inches.of(29.0), Inches.of(26.0)); // length, width
-
       public final Distance length, width;
 
       RobotDimensions(Distance length, Distance width) {
@@ -355,7 +352,6 @@ public final class Constants {
           BumperThickness.COBRA,
           3.5714285714285716,
           false);
-
       public final Angle FRONT_LEFT_ENCODER_OFFSET,
           FRONT_RIGHT_ENCODER_OFFSET,
           BACK_LEFT_ENCODER_OFFSET,
@@ -415,10 +411,11 @@ public final class Constants {
     public static final double TELE_DRIVE_FAST_MODE_SPEED_PERCENT = 0.7;
     public static final double TELE_DRIVE_SLOW_MODE_SPEED_PERCENT = 0.3;
     public static final double TELE_DRIVE_MAX_ACCELERATION_METERS_PER_SECOND_PER_SECOND = 8;
-    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE = (TELE_DRIVE_FAST_MODE_SPEED_PERCENT
-        - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
+    public static final double TELE_DRIVE_PERCENT_SPEED_RANGE =
+        (TELE_DRIVE_FAST_MODE_SPEED_PERCENT - TELE_DRIVE_SLOW_MODE_SPEED_PERCENT);
     public static final double TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND = 10.917;
-    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND = 26.971;
+    public static final double TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND =
+        26.971;
   }
 
   public static class Climber {
@@ -445,14 +442,16 @@ public final class Constants {
 
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_PER_ARM_ROTS = (1.0 / 20.0) * (16.0 / 46.0) * (24.0 / 52.0) * (1.0 / 2.0);
+      public static final double MOTOR_ROTS_PER_ARM_ROTS =
+          (1.0 / 20.0) * (16.0 / 46.0) * (24.0 / 52.0) * (1.0 / 2.0);
       public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
       public static final double MOTOR_ROTS_PER_ARM_DEGREES = ARM_ROTS_PER_MOTOR_ROTS / 360d;
       public static final double ARM_DEGREES_PER_MOTOR_ROTS = 1 / MOTOR_ROTS_PER_ARM_DEGREES;
 
       // As I understand it, resting postion would probably always be consistent
-      public static final double L1_MUSCLE_UP_FORWARD = 95; // TODO: get vals, true val is 96.927 for all, 95 for
-                                                            // testing
+      public static final double L1_MUSCLE_UP_FORWARD =
+          95; // TODO: get vals, true val is 96.927 for all, 95 for
+      // testing
       public static final double L2_MUSCLE_UP_FORWARD = 95; // TODO: get vals
       public static final double L3_MUSCLE_UP_FORWARD = 95; // TODO: get vals
       public static final double MUSCLE_UP_BACK = 0;
@@ -479,10 +478,12 @@ public final class Constants {
 
       public static final double SIT_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_PER_ARM_ROTS = (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
+      public static final double MOTOR_ROTS_PER_ARM_ROTS =
+          (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
       public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
       public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROTS / 360d;
-      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS = 1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
+      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
+          1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
 
       public static final double MOTOR_ROTS_TO_ENCODER_ROTS = 54.4;
       public static final double ENCODER_ROTS_PER_ARM_ROTS = 32f / 17f;
@@ -541,22 +542,28 @@ public final class Constants {
     public static final double SUPPLY_LIMIT_AMPS = 30.0;
 
     public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
-    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION = (20.0 / 24.0) * (60.0 / 12.0);
+    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
+        (20.0 / 24.0) * (60.0 / 12.0);
 
-    public static final double BELT_TOOTH_PITCH_METERS = 0.005; // length of belt movement per tooth moved on it
+    public static final double BELT_TOOTH_PITCH_METERS =
+        0.005; // length of belt movement per tooth moved on it
     public static final double FLOOR_PULLEY_TOOTH_COUNT = 24.0;
-    public static final double BELT_LOOP_TOOTH_COUNT = 220.0; // number of teeth on the actual belt for full revolution
-    public static final double BELT_LOOP_LENGTH_METERS = BELT_LOOP_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+    public static final double BELT_LOOP_TOOTH_COUNT =
+        220.0; // number of teeth on the actual belt for full revolution
+    public static final double BELT_LOOP_LENGTH_METERS =
+        BELT_LOOP_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
 
-    public static final double BELT_TRAVEL_METERS_PER_PULLEY_ROTATION = FLOOR_PULLEY_TOOTH_COUNT
-        * BELT_TOOTH_PITCH_METERS;
+    public static final double BELT_TRAVEL_METERS_PER_PULLEY_ROTATION =
+        FLOOR_PULLEY_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
 
-    public static final double BELT_TRAVEL_METERS_PER_MOTOR_ROTATION = BELT_TRAVEL_METERS_PER_PULLEY_ROTATION
-        / MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
+    public static final double BELT_TRAVEL_METERS_PER_MOTOR_ROTATION =
+        BELT_TRAVEL_METERS_PER_PULLEY_ROTATION / MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
 
-    public static final double MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER = 1.0 / BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
+    public static final double MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER =
+        1.0 / BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
 
-    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION = 1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
+    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
+        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
 
     public static class Simulation {
       public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
@@ -584,7 +591,8 @@ public final class Constants {
 
     public static final double DISTANCE_COEFFICIENT_THETA = 0.9;
 
-    public static final double ANGLE_COEFFICIENT_X = 0.5; // noise growth per radian of viewing angle
+    public static final double ANGLE_COEFFICIENT_X =
+        0.5; // noise growth per radian of viewing angle
     public static final double ANGLE_COEFFICIENT_Y = 0.5;
     public static final double ANGLE_COEFFICIENT_THETA = 0.5;
 
@@ -680,15 +688,15 @@ public final class Constants {
 
     public static enum FieldTags {
       ALL(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded));
-      //RED(AprilTagFieldLayout.loadFromResource(RED_RESOURCE_FILE)),
-      //BLUE(AprilTagFieldLayout.loadFromResource(BLUE_RESOURCE_FILE));
+      // RED(AprilTagFieldLayout.loadFromResource(RED_RESOURCE_FILE)),
+      // BLUE(AprilTagFieldLayout.loadFromResource(BLUE_RESOURCE_FILE));
 
       private AprilTagFieldLayout fieldLayout;
 
       FieldTags(AprilTagFieldLayout field) {
         fieldLayout = field;
       }
-      
+
       public AprilTagFieldLayout getField() {
         return fieldLayout;
       }
@@ -879,12 +887,18 @@ public final class Constants {
   }
 
   public static class Landmarks {
-    public static Pose3d BLUE_HUB = new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
-    public static Pose3d RED_HUB = new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
+    public static Pose3d BLUE_HUB =
+        new Pose3d(4.621390342712402, 4.032095909118652, 0, new Rotation3d());
+    public static Pose3d RED_HUB =
+        new Pose3d(11.917659759521484, 4.032095909118652, 0, new Rotation3d());
 
-    public static Pose2d RED_TOWER_R = new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));
-    public static Pose2d RED_TOWER_L = new Pose2d(14.871597290039062, 3.892498254776001, new Rotation2d(0));
-    public static Pose2d BLUE_TOWER_R = new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
-    public static Pose2d BLUE_TOWER_L = new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
+    public static Pose2d RED_TOWER_R =
+        new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));
+    public static Pose2d RED_TOWER_L =
+        new Pose2d(14.871597290039062, 3.892498254776001, new Rotation2d(0));
+    public static Pose2d BLUE_TOWER_R =
+        new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
+    public static Pose2d BLUE_TOWER_L =
+        new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
   }
 }

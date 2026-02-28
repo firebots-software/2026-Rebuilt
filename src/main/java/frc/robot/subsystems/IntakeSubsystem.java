@@ -270,10 +270,11 @@ public class IntakeSubsystem extends SubsystemBase {
   // }
 
   public Command intakeDefault() {
-    return runOnce(() -> {
-        stopRollers();
-        setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
-    });
+    return runOnce(
+        () -> {
+          stopRollers();
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
+        });
   }
 
   @Override
