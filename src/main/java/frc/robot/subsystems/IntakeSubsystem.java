@@ -261,6 +261,14 @@ public class IntakeSubsystem extends SubsystemBase {
     return runOnce(() -> this.setArmDegrees(degrees));
   }
 
+  public Command retractIntakeCommand() {
+    return runOnce(
+        () -> {
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED);
+          stopRollers();
+        });
+  }
+
   public Command intakeUntilInterruptedCommand() {
     return runEnd(
         () -> {
