@@ -198,6 +198,11 @@ public class IntakeSubsystem extends SubsystemBase {
     rollersMotor.setControl(m_velocityRequest.withVelocity(0));
   }
 
+  public Command stopRollersCommand() {
+    targetRollersRPS = 0;
+    return runOnce(() -> rollersMotor.setControl(m_velocityRequest.withVelocity(0)));
+  }
+
   public void stopArm() {
     armMotor.stopMotor();
   }
