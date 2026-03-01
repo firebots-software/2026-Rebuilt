@@ -33,6 +33,8 @@ public class AutoRoutines {
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
   private final BooleanSupplier redSide;
+  private final BooleanSupplier forwardDTP;
+  private final BooleanSupplier backDTP;
 
   // private final ClimberSubsystem climberSubsystem;
 
@@ -51,6 +53,9 @@ public class AutoRoutines {
     this.swerveSubsystem = swerve;
     // this.climberSubsystem = climber;
     this.redSide = redSide;
+
+    forwardDTP = redSide.getAsBoolean() ? () -> false : () -> true;
+    backDTP = redSide.getAsBoolean() ? () -> true : () -> false;
 
     autoFactory = swerveSubsystem.createAutoFactory();
 
@@ -454,16 +459,14 @@ public class AutoRoutines {
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotR);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
 
-    BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
-    BooleanSupplier backSupplier = redSide.getAsBoolean() ? () -> true : () -> false;
-
-
-
     routine
         .active()
         .onTrue(
-            Commands.sequence(intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forwardSupplier), intake.resetOdometry(), intake.cmd()));
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardDTP),
+                intake.resetOdometry(),
+                intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -471,8 +474,11 @@ public class AutoRoutines {
     intake
         .done()
         .onTrue(
-            Commands.sequence(shoot.resetOdometry(),
-                new BumpDTP(swerveSubsystem, backSupplier), shoot.resetOdometry(), shoot.cmd()));
+            Commands.sequence(
+                shoot.resetOdometry(),
+                new BumpDTP(swerveSubsystem, backDTP),
+                shoot.resetOdometry(),
+                shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
@@ -489,14 +495,14 @@ public class AutoRoutines {
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotL);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
 
-    BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
-    BooleanSupplier backSupplier = redSide.getAsBoolean() ? () -> true : () -> false;
-
     routine
         .active()
         .onTrue(
-            Commands.sequence(intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forwardSupplier), intake.resetOdometry(), intake.cmd()));
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardDTP),
+                intake.resetOdometry(),
+                intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -504,8 +510,11 @@ public class AutoRoutines {
     intake
         .done()
         .onTrue(
-            Commands.sequence(shoot.resetOdometry(),
-                new BumpDTP(swerveSubsystem, backSupplier), shoot.resetOdometry(), shoot.cmd()));
+            Commands.sequence(
+                shoot.resetOdometry(),
+                new BumpDTP(swerveSubsystem, backDTP),
+                shoot.resetOdometry(),
+                shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
@@ -522,14 +531,14 @@ public class AutoRoutines {
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotL);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
 
-    BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
-    BooleanSupplier backSupplier = redSide.getAsBoolean() ? () -> true : () -> false;
-
     routine
         .active()
         .onTrue(
-            Commands.sequence(intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forwardSupplier), intake.resetOdometry(), intake.cmd()));
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardDTP),
+                intake.resetOdometry(),
+                intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -537,8 +546,11 @@ public class AutoRoutines {
     intake
         .done()
         .onTrue(
-            Commands.sequence(shoot.resetOdometry(),
-                new BumpDTP(swerveSubsystem, backSupplier), shoot.resetOdometry(), shoot.cmd()));
+            Commands.sequence(
+                shoot.resetOdometry(),
+                new BumpDTP(swerveSubsystem, backDTP),
+                shoot.resetOdometry(),
+                shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
@@ -555,14 +567,14 @@ public class AutoRoutines {
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.BlueDepotR);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.BlueDepotToShoot);
 
-    BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
-    BooleanSupplier backSupplier = redSide.getAsBoolean() ? () -> true : () -> false;
-
     routine
         .active()
         .onTrue(
-            Commands.sequence(intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forwardSupplier), intake.resetOdometry(), intake.cmd()));
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardDTP),
+                intake.resetOdometry(),
+                intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -570,8 +582,11 @@ public class AutoRoutines {
     intake
         .done()
         .onTrue(
-            Commands.sequence(shoot.resetOdometry(),
-                new BumpDTP(swerveSubsystem, backSupplier), shoot.resetOdometry(), shoot.cmd()));
+            Commands.sequence(
+                shoot.resetOdometry(),
+                new BumpDTP(swerveSubsystem, backDTP),
+                shoot.resetOdometry(),
+                shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
@@ -595,7 +610,14 @@ public class AutoRoutines {
 
     BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
 
-    routine.active().onTrue(Commands.sequence(right.resetOdometry(), new BumpDTP(swerveSubsystem, forwardSupplier), right.resetOdometry(), right.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                right.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardSupplier),
+                right.resetOdometry(),
+                right.cmd()));
 
     return routine;
   }
@@ -740,7 +762,6 @@ public class AutoRoutines {
 
     autoChooser.addRoutine("Depot Side Simple", () -> scrimDepotSimple());
     autoChooser.addRoutine("Depot Side Hard", () -> scrimDepotHard());
-
 
     autoChooser.addRoutine("go right", () -> test());
     autoChooser.addRoutine("dtp then right", () -> testDTP());
