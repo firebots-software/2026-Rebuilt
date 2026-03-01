@@ -13,6 +13,9 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public class MiscUtils {
+
+  public static int shiftIndicatorSum = 0;
+
   public static Pose2d plus(Pose2d a, Translation2d b) {
     return new Pose2d(
         a.getX() + b.getX(), a.getY() + b.getY(), new Rotation2d(a.getRotation().getRadians()));
@@ -68,8 +71,8 @@ public class MiscUtils {
   }
 
   public static double countdownTillNextShift(double currentTime) {
-    // double currentMatchTime = currentTime;
-    double currentMatchTime = DriverStation.getMatchTime();
+    double currentMatchTime = currentTime;
+    // double currentMatchTime = DriverStation.getMatchTime();
     if (currentMatchTime > 140) return currentMatchTime - 140;
     else if (currentMatchTime > 130) return currentMatchTime - 130;
     else if (currentMatchTime > 105) return currentMatchTime - 105;
@@ -89,6 +92,17 @@ public class MiscUtils {
     else if (currentMatchTime > 55) return "ALS 3";
     else if (currentMatchTime > 30) return "ALS 4";
     else return "Endgame";
+  }
+
+  public static boolean shiftSwitchIndicator(double currentTime) {
+    // double currentTimes = currentTime;
+    double currentTimes = DriverStation.getMatchTime();
+    double timeUntilNextShift = countdownTillNextShift(currentTimes);
+    if (timeUntilNextShift < 5 && !currentShiftName(currentTimes).equals("Endgame")) {
+      shiftIndicatorSum++;
+      return shiftIndicatorSum % 5 == 0;
+    }
+    return false;
   }
 
   public static double getDistanceToHub(BooleanSupplier redSide, CommandSwerveDrivetrain swerve) {

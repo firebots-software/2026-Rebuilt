@@ -62,6 +62,7 @@ public class Robot extends TimedRobot {
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
+    DogLog.log("Elastic/shiftSwitchIndicator", MiscUtils.shiftSwitchIndicator(134));
     if (MiscUtils.isFlashDriveConnected()) {
       DogLog.log("Elastic/FlashDriveConnected", true);
     } else {
