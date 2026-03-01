@@ -74,7 +74,7 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
       public static final double CANCODER_ROTS_PER_ARM_ROT = (8.0 / 3.0);
       public static final double ARM_ROTS_PER_CANCODER_ROT = 1.0 / CANCODER_ROTS_PER_ARM_ROT;
-      public static final double ENCODER_OFFSET = 0.61512;
+      public static final double ENCODER_OFFSET = -0.27123;
 
       public static final class Simulation {
         public static final double SIM_ARM_POS_MIN = 10.0;
