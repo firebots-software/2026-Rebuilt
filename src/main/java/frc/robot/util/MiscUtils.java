@@ -37,7 +37,7 @@ public class MiscUtils {
     }
   }
 
-  public static boolean areWeActive() {
+  public static boolean areWeActive(double currentTime) {
     Optional<Alliance> alliance = DriverStation.getAlliance();
 
     if (alliance.isEmpty()) return false;
@@ -45,7 +45,8 @@ public class MiscUtils {
     if (!DriverStation.isTeleopEnabled()) return false;
 
     // teleop is enabled
-    double currentMatchTime = DriverStation.getMatchTime();
+    double currentMatchTime = currentTime;
+    // double currentMatchTime = DriverStation.getMatchTime();
     String allianceChar = DriverStation.getGameSpecificMessage();
 
     if (allianceChar.isEmpty()) return true;
@@ -67,6 +68,7 @@ public class MiscUtils {
 
   public static double countdownTillNextShift(double currentTime) {
     double currentMatchTime = currentTime;
+    // double currentMatchTime = DriverStation.getMatchTime();
     if (currentMatchTime > 130) return 130 - currentMatchTime;
     else if (currentMatchTime > 105) return 105 - currentMatchTime;
     else if (currentMatchTime > 80) return 80 - currentMatchTime;
