@@ -8,6 +8,9 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import dev.doglog.DogLog;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -90,6 +93,9 @@ public class RobotContainer {
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
+  private DoubleEntry shooterSpeedEntry;
+  private DoubleTopic shooterSpeedTopic;
+
   public RobotContainer() {
     autoRoutines =
         new AutoRoutines(
@@ -97,6 +103,11 @@ public class RobotContainer {
     autoChooser = autoRoutines.getAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    var table = NetworkTableInstance.getDefault().getTable("Shooter");
+    shooterSpeedTopic = table.getDoubleTopic("TargetSpeed");
+    shooterSpeedEntry = shooterSpeedTopic.getEntry(60.0);
+    shooterSpeedTopic.setPersistent(true);
 
     configureBindings();
   }
@@ -153,21 +164,30 @@ public class RobotContainer {
                 intakeSubsystem,
                 hopperSubsystem));
 
+    // joystick
+    //     .a()
+    //     .whileTrue(
+    //         new ShootBasic(() -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
+    // joystick
+    //     .b()
+    //     .whileTrue(
+    //         new ShootBasic(() -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
+    // joystick
+    //     .y()
+    //     .whileTrue(
+    //         new ShootBasic(() -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
     joystick
         .a()
         .whileTrue(
-            new ShootBasicRetract(
-                () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-
-    joystick
-        .b()
-        .whileTrue(
-            new ShootBasic(() -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-
-    joystick
-        .y()
-        .whileTrue(
-            new ShootBasic(() -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+            new ShootBasic(
+                () -> shooterSpeedEntry.get(),
+                () -> true,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem));
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
 
