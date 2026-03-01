@@ -14,8 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.Vision.VisionCamera;
+import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
+import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -188,9 +189,11 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot || visionFrontRight == null || visionFrontLeft == null
-    || visionRearRight == null
-    || visionRearLeft == null) return;
+    if (!Constants.visionOnRobot
+        || visionFrontRight == null
+        || visionFrontLeft == null
+        || visionRearRight == null
+        || visionRearLeft == null) return;
 
     VisionSubsystem visionFallback;
 
@@ -205,6 +208,16 @@ public class RobotContainer {
     visionFrontLeft.calculateFilteredPose(drivetrain);
     visionRearRight.calculateFilteredPose(drivetrain);
     visionRearLeft.calculateFilteredPose(drivetrain);
+
+    // Log fuel gauge state if enabled
+    if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
+      FuelGauge gaugeState = visionFuelGauge.getCurrentFuelGaugeState();
+      DogLog.log("Elastic/FuelGauge", gaugeState.toString());
+      DogLog.log("Elastic/FuelGauge/CameraConnected", true);
+    } else {
+      DogLog.log("Elastic/FuelGauge", "N/A");
+      DogLog.log("Elastic/FuelGauge/CameraConnected", false);
+    }
 
     VisionSubsystem preferredVision = visionFallback;
 

@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.RobotController;
 import java.util.ArrayList;
 
 /**
@@ -272,5 +273,6 @@ public class LoggedTalonFX extends TalonFX {
     // Voltage
     DogLog.log(motorVoltage, getCachedMotorVoltageV());
     DogLog.log(supplyVoltage, getCachedSupplyVoltageV());
+    DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
   }
 }

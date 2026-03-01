@@ -34,12 +34,24 @@ public class FuelGaugeDetection extends SubsystemBase {
     photonCamera = new PhotonCamera(cameraID.toString());
   }
 
+  @Override
   public void periodic() {
+    // Check camera connection status
+    boolean cameraConnected = photonCamera.isConnected();
+    if (cameraConnected) {
+      DogLog.log("FuelGauge/CameraStatus", true);
+    } else {
+      DogLog.log("FuelGauge/CameraStatus", false);
+      return;
+    }
+
+    // Get latest vision results
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) latestVisionResult = result;
+    for (PhotonPipelineResult result : results) {
+      latestVisionResult = result;
+    }
 
     if (latestVisionResult == null) {
-      DogLog.log("Subsystems/FuelGauge/BallPresent", false);
       return;
     }
 
@@ -194,5 +206,19 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   public Optional<Double> getSkewToBall() {
     return getLargestBall().map(PhotonTrackedTarget::getSkew);
+  }
+
+  public FuelGauge getCurrentFuelGaugeState() {
+    double currentMeasurement = latestRawArea; // or whichever measurement we use
+
+    if (currentMeasurement >= FuelGauge.FULL.getThreshold()) {
+      return FuelGauge.FULL;
+    } else if (currentMeasurement >= FuelGauge.MEDIUM.getThreshold()) {
+      return FuelGauge.MEDIUM;
+    } else if (currentMeasurement >= FuelGauge.LOW.getThreshold()) {
+      return FuelGauge.LOW;
+    } else {
+      return FuelGauge.EMPTY;
+    }
   }
 }
