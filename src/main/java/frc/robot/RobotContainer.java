@@ -30,6 +30,8 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.DoubleEntry;
 
 public class RobotContainer {
   // /* Setting up bindings for necessary control of the swerve drive platform */
@@ -89,6 +91,8 @@ public class RobotContainer {
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
+  private DoubleEntry shooterSpeedEntry;
+
   public RobotContainer() {
     autoRoutines =
         new AutoRoutines(
@@ -96,6 +100,9 @@ public class RobotContainer {
     autoChooser = autoRoutines.getAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    var table = NetworkTableInstance.getDefault().getTable("Shooter");
+    shooterSpeedEntry = table.getDoubleTopic("TargetSpeed").getEntry(60.0);
 
     configureBindings();
   }
