@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.MathUtils.MiscMath;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import java.io.File;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
@@ -45,8 +46,8 @@ public class MiscUtils {
     if (!DriverStation.isTeleopEnabled()) return false;
 
     // teleop is enabled
-    double currentMatchTime = currentTime;
-    // double currentMatchTime = DriverStation.getMatchTime();
+    // double currentMatchTime = currentTime;
+    double currentMatchTime = DriverStation.getMatchTime();
     String allianceChar = DriverStation.getGameSpecificMessage();
 
     if (allianceChar.isEmpty()) return true;
@@ -67,14 +68,27 @@ public class MiscUtils {
   }
 
   public static double countdownTillNextShift(double currentTime) {
+    // double currentMatchTime = currentTime;
+    double currentMatchTime = DriverStation.getMatchTime();
+    if (currentMatchTime > 140) return currentMatchTime - 140;
+    else if (currentMatchTime > 130) return currentMatchTime - 130;
+    else if (currentMatchTime > 105) return currentMatchTime - 105;
+    else if (currentMatchTime > 80) return currentMatchTime - 80;
+    else if (currentMatchTime > 55) return currentMatchTime - 55;
+    else if (currentMatchTime > 30) return currentMatchTime - 30;
+    else return 30 - currentMatchTime;
+  }
+
+  public static String currentShiftName(double currentTime) {
     double currentMatchTime = currentTime;
     // double currentMatchTime = DriverStation.getMatchTime();
-    if (currentMatchTime > 130) return 130 - currentMatchTime;
-    else if (currentMatchTime > 105) return 105 - currentMatchTime;
-    else if (currentMatchTime > 80) return 80 - currentMatchTime;
-    else if (currentMatchTime > 55) return 55 - currentMatchTime;
-    else if (currentMatchTime > 30) return 30 - currentMatchTime;
-    else return 30 - currentMatchTime;
+    if (currentMatchTime > 140) return "Auto";
+    else if (currentMatchTime > 130) return "Transition";
+    else if (currentMatchTime > 105) return "ALS 1";
+    else if (currentMatchTime > 80) return "ALS 2";
+    else if (currentMatchTime > 55) return "ALS 3";
+    else if (currentMatchTime > 30) return "ALS 4";
+    else return "Endgame";
   }
 
   public static double getDistanceToHub(BooleanSupplier redSide, CommandSwerveDrivetrain swerve) {
@@ -98,5 +112,29 @@ public class MiscUtils {
     double y = (a * Math.sqrt(distToHubCenter)) + b;
 
     return MiscMath.clamp(y, 71.0, 107.0);
+  }
+
+  public static boolean isFlashDriveConnected() {
+    String[] possiblePaths = {"/u"};
+
+    for (String path : possiblePaths) {
+      File usbDrive = new File(path);
+      if (usbDrive.exists() && usbDrive.isDirectory() && usbDrive.canRead()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static File getFlashDriveDirectory() {
+    String[] possiblePaths = {"/u"};
+
+    for (String path : possiblePaths) {
+      File usbDrive = new File(path);
+      if (usbDrive.exists() && usbDrive.isDirectory()) {
+        return usbDrive;
+      }
+    }
+    return null;
   }
 }
