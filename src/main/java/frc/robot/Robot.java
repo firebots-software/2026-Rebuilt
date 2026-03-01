@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.io.File;
-
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;

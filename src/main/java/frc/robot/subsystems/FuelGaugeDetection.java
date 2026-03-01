@@ -38,7 +38,7 @@ public class FuelGaugeDetection extends SubsystemBase {
   public void periodic() {
     // Check camera connection status
     boolean cameraConnected = photonCamera.isConnected();
-    if(cameraConnected) {
+    if (cameraConnected) {
       DogLog.log("FuelGauge/CameraStatus", true);
     } else {
       DogLog.log("FuelGauge/CameraStatus", false);
@@ -210,7 +210,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   public FuelGauge getCurrentFuelGaugeState() {
     double currentMeasurement = latestRawArea; // or whichever measurement we use
-    
+
     if (currentMeasurement >= FuelGauge.FULL.getThreshold()) {
       return FuelGauge.FULL;
     } else if (currentMeasurement >= FuelGauge.MEDIUM.getThreshold()) {

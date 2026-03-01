@@ -81,7 +81,7 @@ public class MiscUtils {
 
   public static String currentShiftName(double currentTime) {
     double currentMatchTime = currentTime;
-    //double currentMatchTime = DriverStation.getMatchTime();
+    // double currentMatchTime = DriverStation.getMatchTime();
     if (currentMatchTime > 140) return "Auto";
     else if (currentMatchTime > 130) return "Transition";
     else if (currentMatchTime > 105) return "ALS 1";
@@ -115,9 +115,7 @@ public class MiscUtils {
   }
 
   public static boolean isFlashDriveConnected() {
-    String[] possiblePaths = {
-      "/u"
-    };
+    String[] possiblePaths = {"/u"};
 
     for (String path : possiblePaths) {
       File usbDrive = new File(path);
@@ -130,7 +128,7 @@ public class MiscUtils {
 
   public static File getFlashDriveDirectory() {
     String[] possiblePaths = {"/u"};
-    
+
     for (String path : possiblePaths) {
       File usbDrive = new File(path);
       if (usbDrive.exists() && usbDrive.isDirectory()) {
