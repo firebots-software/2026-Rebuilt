@@ -458,7 +458,7 @@ public class AutoRoutines {
         .active()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+                new BumpDTP(swerveSubsystem, () -> !redSide.getAsBoolean()), intake.resetOdometry(), intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -467,7 +467,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+                new BumpDTP(swerveSubsystem, redSide), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
@@ -488,7 +488,7 @@ public class AutoRoutines {
         .active()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+                new BumpDTP(swerveSubsystem, () -> !redSide.getAsBoolean()), intake.resetOdometry(), intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -497,7 +497,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+                new BumpDTP(swerveSubsystem, () -> redSide.getAsBoolean()), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
@@ -518,7 +518,7 @@ public class AutoRoutines {
         .active()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+                new BumpDTP(swerveSubsystem, () -> !redSide.getAsBoolean()), intake.resetOdometry(), intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -527,7 +527,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+                new BumpDTP(swerveSubsystem, () -> redSide.getAsBoolean()), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
@@ -548,7 +548,7 @@ public class AutoRoutines {
         .active()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> true), intake.resetOdometry(), intake.cmd()));
+                new BumpDTP(swerveSubsystem, () -> !redSide.getAsBoolean()), intake.resetOdometry(), intake.cmd()));
 
     intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
@@ -557,7 +557,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, () -> false), shoot.resetOdometry(), shoot.cmd()));
+                new BumpDTP(swerveSubsystem, () -> redSide.getAsBoolean()), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotShoot.cmd());
