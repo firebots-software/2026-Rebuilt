@@ -164,15 +164,26 @@ public class RobotContainer {
                 intakeSubsystem,
                 hopperSubsystem));
 
-  
     joystick
         .a()
         .whileTrue(
-            new ShootBasicRetract(() -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+            new ShootBasicRetract(
+                () -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    joystick.b().onTrue(new InstantCommand(() -> {interMapSpeed+=1;}));
-    joystick.y().onTrue(new InstantCommand(() -> {interMapSpeed+=0.5;}));
-
+    joystick
+        .b()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  interMapSpeed += 1;
+                }));
+    joystick
+        .y()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  interMapSpeed += 0.5;
+                }));
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
 
