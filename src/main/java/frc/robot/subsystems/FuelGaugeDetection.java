@@ -34,12 +34,24 @@ public class FuelGaugeDetection extends SubsystemBase {
     photonCamera = new PhotonCamera(cameraID.toString());
   }
 
+  @Override
   public void periodic() {
+    // Check camera connection status
+    boolean cameraConnected = photonCamera.isConnected();
+    if(cameraConnected) {
+      DogLog.log("FuelGauge/CameraStatus", true);
+    } else {
+      DogLog.log("FuelGauge/CameraStatus", false);
+      return;
+    }
+
+    // Get latest vision results
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) latestVisionResult = result;
+    for (PhotonPipelineResult result : results) {
+      latestVisionResult = result;
+    }
 
     if (latestVisionResult == null) {
-      DogLog.log("Subsystems/FuelGauge/BallPresent", false);
       return;
     }
 
@@ -197,9 +209,8 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   public FuelGauge getCurrentFuelGaugeState() {
-    // Get the current fuel measurement (area percentage or whatever metric you use)
-    double currentMeasurement = getCurrentMeasurement(); // replace with your actual measurement logic
-
+    double currentMeasurement = latestRawArea; // or whichever measurement we use
+    
     if (currentMeasurement >= FuelGauge.FULL.getThreshold()) {
       return FuelGauge.FULL;
     } else if (currentMeasurement >= FuelGauge.MEDIUM.getThreshold()) {
@@ -209,11 +220,5 @@ public class FuelGaugeDetection extends SubsystemBase {
     } else {
       return FuelGauge.EMPTY;
     }
-  }
-
-  private double getCurrentMeasurement() {
-    // TODO: Replace with actual fuel gauge measurement logic
-    // This could be area percentage, ball count, or whatever your system uses
-    return 0.0;
   }
 }

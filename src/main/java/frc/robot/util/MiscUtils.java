@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
 import frc.robot.MathUtils.MiscMath;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import java.io.File;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
@@ -111,5 +112,31 @@ public class MiscUtils {
     double y = (a * Math.sqrt(distToHubCenter)) + b;
 
     return MiscMath.clamp(y, 71.0, 107.0);
+  }
+
+  public static boolean isFlashDriveConnected() {
+    String[] possiblePaths = {
+      "/u"
+    };
+
+    for (String path : possiblePaths) {
+      File usbDrive = new File(path);
+      if (usbDrive.exists() && usbDrive.isDirectory() && usbDrive.canRead()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static File getFlashDriveDirectory() {
+    String[] possiblePaths = {"/u"};
+    
+    for (String path : possiblePaths) {
+      File usbDrive = new File(path);
+      if (usbDrive.exists() && usbDrive.isDirectory()) {
+        return usbDrive;
+      }
+    }
+    return null;
   }
 }

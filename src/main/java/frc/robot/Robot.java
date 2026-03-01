@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.io.File;
+
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -62,6 +64,11 @@ public class Robot extends TimedRobot {
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
+    if (MiscUtils.isFlashDriveConnected()) {
+      DogLog.log("Elastic/FlashDriveConnected", true);
+    } else {
+      DogLog.log("Elastic/FlashDriveConnected", false);
+    }
 
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }

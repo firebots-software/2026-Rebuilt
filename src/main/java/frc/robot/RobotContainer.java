@@ -209,9 +209,11 @@ public class RobotContainer {
     if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
       FuelGauge gaugeState = visionFuelGauge.getCurrentFuelGaugeState();
       DogLog.log("Elastic/FuelGauge", gaugeState.toString());
+      DogLog.log("Elastic/FuelGauge/CameraConnected", true);
     }
     else {
       DogLog.log("Elastic/FuelGauge", "N/A");
+      DogLog.log("Elastic/FuelGauge/CameraConnected", false);
     }
 
     VisionSubsystem preferredVision = visionFallback;
