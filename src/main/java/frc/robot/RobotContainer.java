@@ -156,7 +156,8 @@ public class RobotContainer {
     joystick
         .a()
         .whileTrue(
-            new ShootBasicRetract(() -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+            new ShootBasicRetract(
+                () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
     joystick
         .b()

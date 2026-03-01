@@ -287,6 +287,10 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  public Command torqueRetractCommand() {
+    return runOnce(() -> setPowerRetract());
+  }
+
   public Command intakeUntilInterruptedCommand() {
     return runEnd(
         () -> {
