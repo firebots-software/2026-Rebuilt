@@ -254,7 +254,7 @@ public class VisionSubsystem extends SubsystemBase {
                 .max()
                 .orElse(Double.NaN);
 
-    DogLog.log(loggingPath + "/AverageTagDistance", maxDist);
+    DogLog.log(loggingPath + "/MaxTagDistance", maxDist);
     return maxDist;
   }
 
