@@ -18,6 +18,7 @@ import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ShootBasic;
+import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -166,6 +167,12 @@ public class RobotContainer {
         .y()
         .whileTrue(
             new ShootBasic(() -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
+    joystick
+        .povDown()
+        .whileTrue(
+            new ShootBasicRetract(
+                () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
 
