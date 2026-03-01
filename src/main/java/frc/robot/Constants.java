@@ -21,7 +21,7 @@ public final class Constants {
   public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = true;
-  public static final boolean fuelGaugeOnRobot = false;
+  public static final boolean fuelGaugeOnRobot = true;
   public static final boolean shooterOnRobot = true;
   public static final boolean climberOnRobot = true;
 
