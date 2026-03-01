@@ -16,7 +16,7 @@ import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
-import frc.robot.commandGroups.ShootBasic;
+import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -707,7 +707,7 @@ public class AutoRoutines {
 
   public Command returnBasicShoot() {
     Command shoot =
-        new ShootBasic(
+        new ShootBasicRetract(
                 () ->
                     MiscUtils.computeShootingSpeed(
                         MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),

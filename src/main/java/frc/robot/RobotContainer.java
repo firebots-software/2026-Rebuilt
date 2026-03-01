@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.Constants.Vision.VisionCamera;
-import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -156,7 +155,7 @@ public class RobotContainer {
     joystick
         .rightTrigger()
         .whileTrue(
-            new ShootBasic(
+            new ShootBasicRetract(
                 () ->
                     MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
                 () -> true,
@@ -182,7 +181,7 @@ public class RobotContainer {
     joystick
         .a()
         .whileTrue(
-            new ShootBasic(
+            new ShootBasicRetract(
                 () -> shooterSpeedEntry.get(),
                 () -> true,
                 lebron,
