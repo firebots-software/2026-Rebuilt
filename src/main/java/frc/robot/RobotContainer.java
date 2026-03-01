@@ -156,7 +156,7 @@ public class RobotContainer {
     joystick
         .a()
         .whileTrue(
-            new ShootBasic(() -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+            new ShootBasicRetract(() -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
     joystick
         .b()
@@ -167,12 +167,6 @@ public class RobotContainer {
         .y()
         .whileTrue(
             new ShootBasic(() -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-
-    joystick
-        .povDown()
-        .whileTrue(
-            new ShootBasicRetract(
-                () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
 
