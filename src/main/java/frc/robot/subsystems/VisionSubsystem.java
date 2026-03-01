@@ -102,6 +102,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
       DogLog.log(loggingPath + "/HasResult", false);
+      DogLog.log(loggingPath + "/VisibleTagIds", new int[0]);
       return;
     }
     DogLog.log(loggingPath + "/HasResult", true);
@@ -123,7 +124,11 @@ public class VisionSubsystem extends SubsystemBase {
       DogLog.log(loggingPath + "/Tags", false);
       return;
     }
-    DogLog.log(loggingPath + "/Tags", true);
+    DogLog.log(loggingPath + "/Tags", true);    
+
+    // create an array to show all the currently visible tags
+    int[] visibleTagsID = tags.stream().mapToInt(PhotonTrackedTarget::getFiducialId).toArray();
+    DogLog.log(loggingPath + "VisibleTagsID", visibleTagsID);
 
     // log area and yaw for all detected april tags
     for (PhotonTrackedTarget tag : tags) {
