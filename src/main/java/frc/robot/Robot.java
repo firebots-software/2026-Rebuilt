@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.LoggedTalonFX;
+import frc.robot.util.MiscUtils;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -57,6 +58,9 @@ public class Robot extends TimedRobot {
     LoggedTalonFX.periodic_static();
 
     m_robotContainer.visionPeriodic();
+
+    DogLog.log("areWeActive", MiscUtils.areWeActive());
+    DogLog.log("timeUntilNextShift", MiscUtils.countdownTillNextShift());
 
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
@@ -107,7 +111,8 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
   @Override
   public void testInit() {

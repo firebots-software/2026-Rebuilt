@@ -65,6 +65,16 @@ public class MiscUtils {
     else return true;
   }
 
+  public static double countdownTillNextShift() {
+    double currentMatchTime = DriverStation.getMatchTime();
+    if (currentMatchTime > 130) return 130 - currentMatchTime;
+    else if (currentMatchTime > 105) return 105 - currentMatchTime;
+    else if (currentMatchTime > 80) return 80 - currentMatchTime;
+    else if (currentMatchTime > 55) return 55 - currentMatchTime;
+    else if (currentMatchTime > 30) return 30 - currentMatchTime;
+    else return 30 - currentMatchTime;
+  }
+
   public static double getDistanceToHub(BooleanSupplier redSide, CommandSwerveDrivetrain swerve) {
     Pose2d robotPose = swerve.getCurrentState().Pose;
 
