@@ -59,6 +59,9 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.visionPeriodic();
 
+    DogLog.log("areWeActive", MiscUtils.areWeActive());
+    DogLog.log("timeUntilNextShift", MiscUtils.countdownTillNextShift());
+
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
@@ -107,8 +110,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    DogLog.log("areWeActive", MiscUtils.areWeActive());
-    DogLog.log("timeUntilNextShift", MiscUtils.countdownTillNextShift());
   }
 
   @Override
