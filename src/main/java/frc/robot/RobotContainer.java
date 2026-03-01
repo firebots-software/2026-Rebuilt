@@ -168,7 +168,6 @@ public class RobotContainer {
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
 
-
     // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
     // intakeSubsystem, hopperSubsystem));
 
