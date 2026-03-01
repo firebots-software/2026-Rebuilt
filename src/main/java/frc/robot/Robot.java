@@ -59,8 +59,8 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.visionPeriodic();
 
-    DogLog.log("areWeActive", MiscUtils.areWeActive());
-    DogLog.log("timeUntilNextShift", MiscUtils.countdownTillNextShift());
+    DogLog.log("areWeActive", MiscUtils.areWeActive(120));
+    DogLog.log("timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
 
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
@@ -77,6 +77,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    RobotContainer.setAlliance();
+
     m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
