@@ -65,8 +65,8 @@ public class MiscUtils {
     else return true;
   }
 
-  public static double countdownTillNextShift() {
-    double currentMatchTime = DriverStation.getMatchTime();
+  public static double countdownTillNextShift(double currentTime) {
+    double currentMatchTime = currentTime;
     if (currentMatchTime > 130) return 130 - currentMatchTime;
     else if (currentMatchTime > 105) return 105 - currentMatchTime;
     else if (currentMatchTime > 80) return 80 - currentMatchTime;

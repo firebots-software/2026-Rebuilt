@@ -126,7 +126,6 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/Tags", true);
 
     // log area and yaw for all detected april tags
-
     for (PhotonTrackedTarget tag : tags) {
       DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
       DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
@@ -254,7 +253,7 @@ public class VisionSubsystem extends SubsystemBase {
                 .max()
                 .orElse(Double.NaN);
 
-    DogLog.log(loggingPath + "/AverageTagDistance", maxDist);
+    DogLog.log(loggingPath + "/MaxTagDistance", maxDist);
     return maxDist;
   }
 
