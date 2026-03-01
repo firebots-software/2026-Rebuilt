@@ -287,6 +287,14 @@ public class IntakeSubsystem extends SubsystemBase {
         });
   }
 
+  public Command powerRetractRollersCommand() {
+    return runOnce(
+        () -> {
+          setPowerRetract();
+          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+        });
+  }
+
   public Command torqueRetractCommand() {
     return runOnce(() -> setPowerRetract());
   }
@@ -299,10 +307,6 @@ public class IntakeSubsystem extends SubsystemBase {
         },
         this::stopRollers);
   }
-
-  // public Command powerRetractCommand() {
-  //   return runOnce(this::setPowerRetract);
-  // }
 
   public Command intakeDefault() {
     return runOnce(
