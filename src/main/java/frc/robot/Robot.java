@@ -59,8 +59,9 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.visionPeriodic();
 
-    DogLog.log("areWeActive", MiscUtils.areWeActive(120));
-    DogLog.log("timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
+    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
+    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
+    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
 
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }

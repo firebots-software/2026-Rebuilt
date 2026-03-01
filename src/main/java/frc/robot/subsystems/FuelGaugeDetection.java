@@ -195,4 +195,25 @@ public class FuelGaugeDetection extends SubsystemBase {
   public Optional<Double> getSkewToBall() {
     return getLargestBall().map(PhotonTrackedTarget::getSkew);
   }
+
+  public FuelGauge getCurrentFuelGaugeState() {
+    // Get the current fuel measurement (area percentage or whatever metric you use)
+    double currentMeasurement = getCurrentMeasurement(); // replace with your actual measurement logic
+
+    if (currentMeasurement >= FuelGauge.FULL.getThreshold()) {
+      return FuelGauge.FULL;
+    } else if (currentMeasurement >= FuelGauge.MEDIUM.getThreshold()) {
+      return FuelGauge.MEDIUM;
+    } else if (currentMeasurement >= FuelGauge.LOW.getThreshold()) {
+      return FuelGauge.LOW;
+    } else {
+      return FuelGauge.EMPTY;
+    }
+  }
+
+  private double getCurrentMeasurement() {
+    // TODO: Replace with actual fuel gauge measurement logic
+    // This could be area percentage, ball count, or whatever your system uses
+    return 0.0;
+  }
 }

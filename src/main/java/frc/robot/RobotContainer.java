@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Vision.VisionCamera;
+import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -72,16 +73,16 @@ public class RobotContainer {
           ? new VisionSubsystem(
               Constants.Vision.VisionCamera.FRONT_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
           : null;
-  // public final VisionSubsystem visionRearRight =
-  //     Constants.visionOnRobot
-  //         ? new VisionSubsystem(
-  //             Constants.Vision.VisionCamera.REAR_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
-  //         : null;
-  // public final VisionSubsystem visionRearLeft =
-  //     Constants.visionOnRobot
-  //         ? new VisionSubsystem(
-  //             Constants.Vision.VisionCamera.REAR_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
-  //         : null;
+  public final VisionSubsystem visionRearRight =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(
+              Constants.Vision.VisionCamera.REAR_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
+          : null;
+  public final VisionSubsystem visionRearLeft =
+      Constants.visionOnRobot
+          ? new VisionSubsystem(
+              Constants.Vision.VisionCamera.REAR_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
+          : null;
 
   public final FuelGaugeDetection visionFuelGauge =
       Constants.fuelGaugeOnRobot
@@ -187,25 +188,32 @@ public class RobotContainer {
     // drivetrain.registerTelemetry(logger::telemeterize);
     // joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
   }
-
+  
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot || visionFrontRight == null || visionFrontLeft == null) return;
-    // || visionRearRight == null
-    // || visionRearLeft == null) return;
+    if (!Constants.visionOnRobot || visionFrontRight == null || visionFrontLeft == null || visionRearRight == null || visionRearLeft == null) return;
 
     VisionSubsystem visionFallback;
 
     VisionCamera fallbackCamera = Constants.Vision.FALLBACK_CAMERA;
 
     if (fallbackCamera == VisionCamera.FRONT_RIGHT_CAM) visionFallback = visionFrontRight;
-    // else if (fallbackCamera == VisionCamera.REAR_RIGHT_CAM) visionFallback = visionRearRight;
-    // else if (fallbackCamera == VisionCamera.REAR_LEFT_CAM) visionFallback = visionRearLeft;
+    else if (fallbackCamera == VisionCamera.REAR_RIGHT_CAM) visionFallback = visionRearRight;
+    else if (fallbackCamera == VisionCamera.REAR_LEFT_CAM) visionFallback = visionRearLeft;
     else visionFallback = visionFrontLeft;
 
     visionFrontRight.calculateFilteredPose(drivetrain);
     visionFrontLeft.calculateFilteredPose(drivetrain);
-    // visionRearRight.calculateFilteredPose(drivetrain);
-    // visionRearLeft.calculateFilteredPose(drivetrain);
+    visionRearRight.calculateFilteredPose(drivetrain);
+    visionRearLeft.calculateFilteredPose(drivetrain);
+
+    // Log fuel gauge state if enabled
+    if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
+      FuelGauge gaugeState = visionFuelGauge.getCurrentFuelGaugeState();
+      DogLog.log("Elastic/FuelGauge", gaugeState.toString());
+    }
+    else {
+      DogLog.log("Elastic/FuelGauge", "N/A");
+    }
 
     VisionSubsystem preferredVision = visionFallback;
 
@@ -219,26 +227,26 @@ public class RobotContainer {
         default:
           frontRightDist = visionFrontRight.getMinDistance();
           frontLeftDist = visionFrontLeft.getMinDistance();
-          // rearRightDist = visionRearRight.getMinDistance();
-          // rearLeftDist = visionRearLeft.getMinDistance();
+          rearRightDist = visionRearRight.getMinDistance();
+          rearLeftDist = visionRearLeft.getMinDistance();
           break;
         case AVG:
           frontRightDist = visionFrontRight.getAverageDistance();
           frontLeftDist = visionFrontLeft.getAverageDistance();
-          // rearRightDist = visionRearRight.getAverageDistance();
-          // rearLeftDist = visionRearLeft.getAverageDistance();
+          rearRightDist = visionRearRight.getAverageDistance();
+          rearLeftDist = visionRearLeft.getAverageDistance();
           break;
         case MAX:
           frontRightDist = visionFrontRight.getMaxDistance();
           frontLeftDist = visionFrontLeft.getMaxDistance();
-          // rearRightDist = visionRearRight.getMaxDistance();
-          // rearLeftDist = visionRearLeft.getMaxDistance();
+          rearRightDist = visionRearRight.getMaxDistance();
+          rearLeftDist = visionRearLeft.getMaxDistance();
           break;
         case POSE_AMBIGUITY:
           frontRightDist = visionFrontRight.getPoseAmbiguity();
           frontLeftDist = visionFrontLeft.getPoseAmbiguity();
-          // rearRightDist = visionRearRight.getPoseAmbiguity();
-          // rearLeftDist = visionRearLeft.getPoseAmbiguity();
+          rearRightDist = visionRearRight.getPoseAmbiguity();
+          rearLeftDist = visionRearLeft.getPoseAmbiguity();
           break;
       }
 
@@ -252,15 +260,15 @@ public class RobotContainer {
         preferredDistance = frontLeftDist;
       }
 
-      // if (rearRightDist < preferredDistance && visionRearRight.hasValidMeasurement()) {
-      //   preferredVision = visionRearRight;
-      //   preferredDistance = rearRightDist;
-      // }
+      if (rearRightDist < preferredDistance && visionRearRight.hasValidMeasurement()) {
+        preferredVision = visionRearRight;
+        preferredDistance = rearRightDist;
+      }
 
-      // if (rearLeftDist < preferredDistance && visionRearLeft.hasValidMeasurement()) {
-      //   preferredVision = visionRearLeft;
-      //   preferredDistance = rearLeftDist;
-      // }
+      if (rearLeftDist < preferredDistance && visionRearLeft.hasValidMeasurement()) {
+        preferredVision = visionRearLeft;
+        preferredDistance = rearLeftDist;
+      }
     }
 
     if (preferredVision == null || !preferredVision.hasValidMeasurement()) return;
