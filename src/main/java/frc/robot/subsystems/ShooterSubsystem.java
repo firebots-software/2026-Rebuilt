@@ -174,6 +174,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command shootAtSpeedCommand(DoubleSupplier ballSpeed) {
+    DogLog.log("ShootingSpeedRN", ballSpeed.getAsDouble());
     return runEnd(() -> this.setBallSpeed(ballSpeed.getAsDouble()), this::stopShooter);
   }
 
