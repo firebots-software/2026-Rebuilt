@@ -209,16 +209,16 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   public FuelGauge getCurrentFuelGaugeState() {
-    double currentMeasurement = latestRawArea; // or whichever measurement we use
+    double currentMeasurement = latestSmoothedMultipleBallsArea; // or whichever measurement we use
 
-    if (currentMeasurement >= FuelGauge.FULL.getThreshold()) {
-      return FuelGauge.FULL;
-    } else if (currentMeasurement >= FuelGauge.MEDIUM.getThreshold()) {
-      return FuelGauge.MEDIUM;
-    } else if (currentMeasurement >= FuelGauge.LOW.getThreshold()) {
-      return FuelGauge.LOW;
-    } else {
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
       return FuelGauge.EMPTY;
+    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
+      return FuelGauge.LOW;
+    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
+      return FuelGauge.MEDIUM;
+    } else {
+      return FuelGauge.FULL;
     }
   }
 }
