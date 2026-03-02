@@ -313,4 +313,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     return autoChooser.selectedCommand();
   }
+
+  public static boolean getAlliance() {
+    return redAlliance;
+  }
 }
