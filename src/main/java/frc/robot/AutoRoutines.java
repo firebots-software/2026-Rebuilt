@@ -54,8 +54,8 @@ public class AutoRoutines {
     // this.climberSubsystem = climber;
     this.redSide = redSide;
 
-    forwardDTP = redSide.getAsBoolean() ? () -> false : () -> true;
-    backDTP = redSide.getAsBoolean() ? () -> true : () -> false;
+    forwardDTP = () -> !redSide.getAsBoolean();
+    backDTP = () -> redSide.getAsBoolean();
 
     autoFactory = swerveSubsystem.createAutoFactory();
 

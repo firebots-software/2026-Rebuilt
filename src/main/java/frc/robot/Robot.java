@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
       DogLog.log("Elastic/FlashDriveConnected", false);
     }
 
+    DogLog.log("Red Side", RobotContainer.getAlliance());
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
