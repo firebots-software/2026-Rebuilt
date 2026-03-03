@@ -611,8 +611,10 @@ public class AutoRoutines {
 
   public AutoRoutine testDTP() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    BooleanSupplier forwardDTP = () -> !redSide.getAsBoolean();
-    // AutoTrajectory right = routine.trajectory("GoRight.traj");
+
+    BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
+
+    AutoTrajectory right = routine.trajectory("GoRight.traj");
 
     // routine
     //     .active()
@@ -622,7 +624,7 @@ public class AutoRoutines {
     //             new BumpDTP(swerveSubsystem, forwardSupplier),
     //             right.resetOdometry(),
     //             right.cmd()));
-    routine.active().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, forwardDTP)));
+    routine.active().onTrue(Commands.sequence(right.resetOdometry(), new BumpDTP(swerveSubsystem, forwardSupplier)));
 
     return routine;
   }

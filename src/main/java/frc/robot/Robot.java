@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
       DogLog.log("Elastic/FlashDriveConnected", false);
     }
 
+    RobotContainer.setAlliance();
     DogLog.log("Red Side", RobotContainer.setAlliance());
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
@@ -99,7 +100,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    RobotContainer.setAlliance();
   }
 
   @Override

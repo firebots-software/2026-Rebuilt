@@ -20,7 +20,7 @@ import edu.wpi.first.units.measure.Distance;
 public final class Constants {
   public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = true;
-  public static final boolean visionOnRobot = true;
+  public static final boolean visionOnRobot = false;
   public static final boolean fuelGaugeOnRobot = true;
   public static final boolean shooterOnRobot = true;
   public static final boolean climberOnRobot = true;
