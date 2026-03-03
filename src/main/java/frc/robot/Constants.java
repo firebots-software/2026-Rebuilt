@@ -123,7 +123,7 @@ public final class Constants {
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
     // the distance over the bump in meters
-    public static final double DISTANCE_OVER_BUMP = 3.0; // correct distance is 3 meters
+    public static final double DISTANCE_OVER_BUMP = 0.2; // correct distance is 3 meters
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
@@ -462,6 +462,7 @@ public final class Constants {
         RedLeftIntakeSweepShort,
         BlueRightIntakeSweepShort,
         BlueLeftIntakeSweepShort,
+        p2Intake
       }
 
       public static enum ShootPos {
@@ -718,14 +719,14 @@ public final class Constants {
     public static final double REAR_RIGHT_Z = Units.inchesToMeters(17.891914);
     public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(352.904);
     public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(288.882);
-    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(190.0);
+    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(170.0); // TODO: verify swapped yaws
 
     public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
     public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
     public static final double REAR_LEFT_Z = Units.inchesToMeters(17.903158);
     public static final double REAR_LEFT_ROLL = Units.degreesToRadians(7.096);
     public static final double REAR_LEFT_PITCH = Units.degreesToRadians(288.882);
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(170.0);
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(190.0);
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
@@ -914,6 +915,9 @@ public final class Constants {
   // }
   // }
   public static final class Shooter {
+
+    public static final boolean INTERMAP_TESTING = false;
+
     public static final int WARMUP_1_ID = 35; // TODO
     public static final int WARMUP_2_ID = 34; // TODO
     public static final int WARMUP_3_ID = 33; // TODO
