@@ -326,7 +326,6 @@ public class RobotContainer {
   }
 
   public static boolean setAlliance() {
-
     return (DriverStation.getAlliance().isEmpty())
         ? false
         : (DriverStation.getAlliance().get() == Alliance.Red);

@@ -53,7 +53,6 @@ public class AutoRoutines {
     this.swerveSubsystem = swerve;
     // this.climberSubsystem = climber;
     this.redSide = redSide;
-
     forwardDTP = () -> !redSide.getAsBoolean();
     backDTP = () -> redSide.getAsBoolean();
 
@@ -612,6 +611,7 @@ public class AutoRoutines {
 
   public AutoRoutine testDTP() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+    BooleanSupplier forwardDTP = () -> !redSide.getAsBoolean();
     // AutoTrajectory right = routine.trajectory("GoRight.traj");
 
     // routine

@@ -11,6 +11,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
 
 public class MiscUtils {
 
@@ -132,8 +134,12 @@ public class MiscUtils {
     String[] possiblePaths = {"/u"};
 
     for (String path : possiblePaths) {
-      File usbDrive = new File(path);
-      if (usbDrive.exists() && usbDrive.isDirectory() && usbDrive.canRead()) {
+      // Check if /u/logs exists and is writable (indicates USB is actually mounted)
+      File logsDir = new File(path + "/logs");
+      DogLog.log("Elastic/logsDirExists", logsDir.exists());
+      DogLog.log("Elastic/logsDirIsDirectory", logsDir.isDirectory());
+      DogLog.log("Elastic/logsDirCanWrite", logsDir.canWrite());
+      if (logsDir.exists() && logsDir.isDirectory() && logsDir.canWrite()) {
         return true;
       }
     }
