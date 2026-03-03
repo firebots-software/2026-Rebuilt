@@ -598,13 +598,16 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
 
+    BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
+    BooleanSupplier backSupplier = () -> RobotContainer.setAlliance();
+
     routine
         .active()
         .onTrue(
-            Commands.sequence(
-                new BumpDTP(swerveSubsystem, forwardDTP), intake.resetOdometry(), intake.cmd()));
+            Commands.sequence(intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardSupplier), intake.resetOdometry(), intake.cmd()));
 
-    intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backDTP)));
+    intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backSupplier)));
 
     return routine;
   }

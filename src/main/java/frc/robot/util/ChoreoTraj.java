@@ -419,7 +419,7 @@ public record ChoreoTraj(
 	public static final ChoreoTraj p2Intake = new ChoreoTraj(
 	    "p2Intake",
 	    OptionalInt.empty(),
-	    2.74785,
+	    2.60279,
 	    new Pose2d(5.674, 2.945, Rotation2d.fromRadians(0)),
 	    new Pose2d(5.664, 2.945, Rotation2d.fromRadians(3.136))
 	);
