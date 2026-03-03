@@ -67,7 +67,7 @@ public class Targeting {
   }
 
   public static double speedForDist(double d) {
-    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.get(d);
+    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(d);
     // return Math.sqrt(
     //     d
     //         * 9.81

@@ -756,8 +756,13 @@ public final class Constants {
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
 
-    public static final InterpolatingDoubleTreeMap MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP =
-        new InterpolatingDoubleTreeMap();
+    public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
+    public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
+    public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
+
+    public static final InterpolatingDoubleTreeMap
+        MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
+            new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap TOF_FOR_MOTOR_SPEED_INTERMAP =
         new InterpolatingDoubleTreeMap();
 
@@ -766,14 +771,44 @@ public final class Constants {
     }
 
     public static void UPDATE_INTERMAPS() {
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.clear();
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(8d + 5d / 16d), 71d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(24d + 1d / 16d), 73d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(41d + 1d / 4d), 80d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(55.5d), 83d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(70d + 3d / 4d), 87d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(84d), 90d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(144d), 96d);
+      // ROBOT EDGE TO HUB EDGE, motor speed
+      // 8 5/16 in, 71
+      // 2 ft 1/16 in, 73
+      // 41 1/4 in, 80
+      // 55.5 in, 83
+      // 70 3/4 in, 87
+      // 84 in, 90
+      // 12 feet, 96
+      
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              8d + 5d / 16d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          71d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              24d + 1d / 16d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          73d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              41d + 1d / 4d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          80d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              55.5d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          83d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              70d + 3d / 4d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          87d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              84d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          90d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              144d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          96d);
 
       TOF_FOR_MOTOR_SPEED_INTERMAP.clear();
       // TOF_FOR_MOTOR_SPEED_INTERMAP.put(); TODO: GET VALS
