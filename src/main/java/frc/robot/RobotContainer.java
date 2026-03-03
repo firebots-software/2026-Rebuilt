@@ -38,12 +38,13 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   // /* Setting up bindings for necessary control of the swerve drive platform */
   // private final SwerveRequest.FieldCentric drive =
-  //     new SwerveRequest.FieldCentric()
-  //         .withDeadband(MaxSpeed * 0.1)
-  //         .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-  //         .withDriveRequestType(
-  //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  // new SwerveRequest.FieldCentric()
+  // .withDeadband(MaxSpeed * 0.1)
+  // .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+  // .withDriveRequestType(
+  // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  // private final SwerveRequest.SwerveDriveBrake brake = new
+  // SwerveRequest.SwerveDriveBrake();
   public double interMapSpeed = 71.0;
   private BooleanSupplier redside = () -> redAlliance;
   private static boolean redAlliance;
@@ -164,43 +165,65 @@ public class RobotContainer {
                 intakeSubsystem,
                 hopperSubsystem));
 
-    joystick
-        .a()
-        .whileTrue(
-            new ShootBasicRetract(
-                () -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    if (Constants.Shooter.INTERMAP_TESTING) {
+      joystick
+          .a()
+          .whileTrue(
+              new ShootBasicRetract(
+                  () -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    joystick
-        .b()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  interMapSpeed += 1;
-                }));
-    joystick
-        .y()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  interMapSpeed += 0.5;
-                }));
+      joystick
+          .b()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    interMapSpeed += 1;
+                  }));
+      joystick
+          .y()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    interMapSpeed += 0.5;
+                  }));
+    } else {
+      joystick
+          .a()
+          .whileTrue(
+              new ShootBasicRetract(
+                  () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
+      joystick
+          .b()
+          .whileTrue(
+              new ShootBasicRetract(
+                  () -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
+      joystick
+          .y()
+          .whileTrue(
+              new ShootBasicRetract(
+                  () -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    }
+
+    // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
+    // hopperSubsystem));
+
+    // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(),
+    // lebron,
     // intakeSubsystem, hopperSubsystem));
 
     // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new ArcAroundAndShoot(
-    //             drivetrain,`
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem,
-    //             leftRightFunction,
-    //             redside,
-    //             joystick));
+    // .rightTrigger()
+    // .whileTrue(
+    // new ArcAroundAndShoot(
+    // drivetrain,`
+    // lebron,
+    // intakeSubsystem,
+    // hopperSubsystem,
+    // leftRightFunction,
+    // redside,
+    // joystick));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
     // joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
