@@ -1,7 +1,6 @@
 package frc.robot.commandGroups;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -45,9 +44,8 @@ public class ArcAroundAndShoot extends ParallelCommandGroup {
             () -> joystick.setRumble(RumbleType.kBothRumble, (0d))),
         new ShootBasic(
             () ->
-                Units.metersToFeet(
-                    Targeting.shootingSpeed(
-                        target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                Targeting.shootingSpeed(
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION),
             () -> (Targeting.pointingAtTarget(target, drivetrain) && shooter.isAtSpeed()),
             shooter,
             intake,

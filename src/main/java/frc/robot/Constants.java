@@ -756,19 +756,33 @@ public final class Constants {
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
 
-    public static final InterpolatingDoubleTreeMap INTERMAP = new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap TOF_FOR_MOTOR_SPEED_INTERMAP =
+        new InterpolatingDoubleTreeMap();
 
     static {
-      UPDATE_INTERMAP();
+      UPDATE_INTERMAPS();
     }
 
-    public static void UPDATE_INTERMAP() {
-      INTERMAP.clear();
-      // INTERMAP.put(); // TODO: put vals
-      // INTERMAP.put();
-      // INTERMAP.put();
-      // INTERMAP.put();
-      // INTERMAP.put();
+    public static void UPDATE_INTERMAPS() {
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.clear();
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(8d + 5d / 16d), 71d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(24d + 1d / 16d), 73d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(41d + 1d / 4d), 80d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(55.5d), 83d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(70d + 3d / 4d), 87d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(84d), 90d);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_INTERMAP.put(Units.inchesToMeters(144d), 96d);
+
+      TOF_FOR_MOTOR_SPEED_INTERMAP.clear();
+      // TOF_FOR_MOTOR_SPEED_INTERMAP.put(); TODO: GET VALS
+      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
+      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
+      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
+      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
+      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
+      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
     }
   }
 
