@@ -597,9 +597,11 @@ public class AutoRoutines {
 
   public AutoRoutine test() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory right = routine.trajectory("GoRight.traj");
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
 
-    routine.active().onTrue(Commands.sequence(right.resetOdometry(), right.cmd()));
+    routine.active().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, forwardDTP), intake.resetOdometry(), intake.cmd()));
+
+    intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backDTP)));
 
     return routine;
   }
