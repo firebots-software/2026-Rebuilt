@@ -122,13 +122,13 @@ public class FuelGaugeDetection extends SubsystemBase {
         "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
     if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.EMPTY.toString())) {
-      SmartDashboard.putString("Elastic/Black", blackColor.toHexString());
+      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#000000");
     } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.LOW.toString())) {
-      SmartDashboard.putString("Elastic/Red", redColor.toHexString());
+      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FF0000");
     } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.MEDIUM.toString())) {
-      SmartDashboard.putString("Elastic/Yellow", yellowColor.toHexString());
+      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FFFF00");
     } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.FULL.toString())) {
-      SmartDashboard.putString("Elastic/Green", greenColor.toHexString());
+      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#00FF00");
     }
   }
 
