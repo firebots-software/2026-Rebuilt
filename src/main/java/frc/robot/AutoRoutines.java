@@ -599,7 +599,11 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
 
-    routine.active().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, forwardDTP), intake.resetOdometry(), intake.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, forwardDTP), intake.resetOdometry(), intake.cmd()));
 
     intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backDTP)));
 
@@ -608,9 +612,7 @@ public class AutoRoutines {
 
   public AutoRoutine testDTP() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory right = routine.trajectory("GoRight.traj");
-
-    BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
+    // AutoTrajectory right = routine.trajectory("GoRight.traj");
 
     // routine
     //     .active()
@@ -620,11 +622,7 @@ public class AutoRoutines {
     //             new BumpDTP(swerveSubsystem, forwardSupplier),
     //             right.resetOdometry(),
     //             right.cmd()));
-    routine
-        .active()
-        .onTrue(
-            Commands.sequence(
-                right.resetOdometry(), new BumpDTP(swerveSubsystem, forwardSupplier)));
+    routine.active().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, forwardDTP)));
 
     return routine;
   }
