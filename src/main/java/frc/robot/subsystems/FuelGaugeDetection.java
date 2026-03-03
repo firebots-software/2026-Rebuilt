@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
@@ -103,7 +105,10 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   private void fuelGaugeStateSetAndLog(
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
-
+    Color greenColor = new Color(0, 255, 0);
+    Color redColor = new Color(255, 0, 0);
+    Color yellowColor = new Color(255, 255, 0);
+    Color blackColor = new Color(0, 0, 0);
     latestRawGauge = setFuelGauge(rawArea);
     latestSmoothedGauge = setFuelGauge(smoothedArea);
     latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);
@@ -116,6 +121,15 @@ public class FuelGaugeDetection extends SubsystemBase {
     DogLog.log(
         "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
+    if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.EMPTY.toString())) {
+      SmartDashboard.putString("Elastic/Black", blackColor.toHexString());
+    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.LOW.toString())) {
+      SmartDashboard.putString("Elastic/Red", redColor.toHexString());
+    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.MEDIUM.toString())) {
+      SmartDashboard.putString("Elastic/Yellow", yellowColor.toHexString());
+    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.FULL.toString())) {
+      SmartDashboard.putString("Elastic/Green", greenColor.toHexString());
+    }
   }
 
   private FuelGauge setFuelGauge(double area) {
