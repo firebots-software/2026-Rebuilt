@@ -718,14 +718,14 @@ public final class Constants {
     public static final double REAR_RIGHT_Z = Units.inchesToMeters(17.891914);
     public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(352.904);
     public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(288.882);
-    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(190.0);
+    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(170.0); // TODO: verify swapped yaws
 
     public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
     public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
     public static final double REAR_LEFT_Z = Units.inchesToMeters(17.903158);
     public static final double REAR_LEFT_ROLL = Units.degreesToRadians(7.096);
     public static final double REAR_LEFT_PITCH = Units.degreesToRadians(288.882);
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(170.0);
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(190.0);
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
