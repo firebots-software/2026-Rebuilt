@@ -319,7 +319,7 @@ public class RobotContainer {
 
     DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
 
-    // preferredVision.addFilteredPose(drivetrain);
+    preferredVision.addFilteredPose(drivetrain);
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
