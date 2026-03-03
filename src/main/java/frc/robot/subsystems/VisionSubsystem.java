@@ -22,6 +22,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import java.util.ArrayList;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -273,6 +274,17 @@ public class VisionSubsystem extends SubsystemBase {
 
     DogLog.log(loggingPath + "/PoseAmbiguity", poseAmbiguity);
     return poseAmbiguity;
+  }
+
+  public List<Integer> getVisibleTagIds() {
+    List<Integer> tagIds = new ArrayList<>();
+
+    if (latestVisionResult != null && latestVisionResult.hasTargets()) {
+      for (var target : latestVisionResult.getTargets()) {
+        tagIds.add(target.getFiducialId());
+      }
+    }
+    return tagIds;
   }
 
   public boolean hasValidMeasurement() {
