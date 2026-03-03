@@ -45,8 +45,7 @@ public class RobotContainer {
   //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   public double interMapSpeed = 71.0;
-  private BooleanSupplier redside = () -> getAlliance();
-  // private static boolean redAlliance;
+  private BooleanSupplier redside = () -> setAlliance();
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -304,6 +303,7 @@ public class RobotContainer {
   }
 
   public static boolean setAlliance() {
+
     return (DriverStation.getAlliance().isEmpty())
         ? false
         : (DriverStation.getAlliance().get() == Alliance.Red);
@@ -311,9 +311,5 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.selectedCommand();
-  }
-
-  public static boolean getAlliance() {
-    return setAlliance();
   }
 }
