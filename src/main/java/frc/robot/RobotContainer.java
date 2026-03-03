@@ -319,14 +319,13 @@ public class RobotContainer {
 
     DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
 
-    preferredVision.addFilteredPose(drivetrain);
+    // preferredVision.addFilteredPose(drivetrain);
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
   }
 
   public static boolean setAlliance() {
-
     return (DriverStation.getAlliance().isEmpty())
         ? false
         : (DriverStation.getAlliance().get() == Alliance.Red);
