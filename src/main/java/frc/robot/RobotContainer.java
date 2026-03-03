@@ -46,8 +46,7 @@ public class RobotContainer {
   // private final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
   public double interMapSpeed = 71.0;
-  private BooleanSupplier redside = () -> redAlliance;
-  private static boolean redAlliance;
+  private BooleanSupplier redside = () -> setAlliance();
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -326,18 +325,14 @@ public class RobotContainer {
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
   }
 
-  public static void setAlliance() {
-    redAlliance =
-        (DriverStation.getAlliance().isEmpty())
-            ? false
-            : (DriverStation.getAlliance().get() == Alliance.Red);
+  public static boolean setAlliance() {
+
+    return (DriverStation.getAlliance().isEmpty())
+        ? false
+        : (DriverStation.getAlliance().get() == Alliance.Red);
   }
 
   public Command getAutonomousCommand() {
     return autoChooser.selectedCommand();
-  }
-
-  public static boolean getAlliance() {
-    return redAlliance;
   }
 }

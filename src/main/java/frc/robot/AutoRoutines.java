@@ -610,14 +610,19 @@ public class AutoRoutines {
 
     BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
 
+    // routine
+    //     .active()
+    //     .onTrue(
+    //         Commands.sequence(
+    //             right.resetOdometry(),
+    //             new BumpDTP(swerveSubsystem, forwardSupplier),
+    //             right.resetOdometry(),
+    //             right.cmd()));
     routine
         .active()
         .onTrue(
             Commands.sequence(
-                right.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forwardSupplier),
-                right.resetOdometry(),
-                right.cmd()));
+                right.resetOdometry(), new BumpDTP(swerveSubsystem, forwardSupplier)));
 
     return routine;
   }

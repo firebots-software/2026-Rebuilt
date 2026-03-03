@@ -123,7 +123,7 @@ public final class Constants {
   public static class Swerve {
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
     // the distance over the bump in meters
-    public static final double DISTANCE_OVER_BUMP = 3.0; // correct distance is 3 meters
+    public static final double DISTANCE_OVER_BUMP = 0.2; // correct distance is 3 meters
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
