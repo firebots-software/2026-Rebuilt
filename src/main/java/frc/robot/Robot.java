@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.LoggedTalonFX;
+import frc.robot.util.MiscUtils;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -57,11 +58,24 @@ public class Robot extends TimedRobot {
     LoggedTalonFX.periodic_static();
 
     m_robotContainer.visionPeriodic();
+
+    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
+    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
+    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
+    if (MiscUtils.isFlashDriveConnected()) {
+      DogLog.log("Elastic/FlashDriveConnected", true);
+    } else {
+      DogLog.log("Elastic/FlashDriveConnected", false);
+    }
+
+    // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.intakeSubsystem.applyCoastConfigArm();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -69,6 +83,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    RobotContainer.setAlliance();
+
+    m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -83,6 +100,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

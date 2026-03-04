@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,6 +12,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Vision.FieldTags;
 import frc.robot.Constants.Vision.VisionCamera;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +28,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final Constants.Vision.VisionCamera cameraID;
 
   private String cameraTitle;
+  private String loggingPath;
 
   // normalization maximums
   private double maximumRobotSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
@@ -55,19 +56,21 @@ public class VisionSubsystem extends SubsystemBase {
   Matrix<N3, N1> latestNoiseVector;
 
   // constructor for VisionSubsystem
-  public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
+  public VisionSubsystem(Constants.Vision.VisionCamera cameraID, FieldTags layout) {
 
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
 
     // load field layout
-    this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    this.fieldLayout = layout.getField();
 
     // initialize poseEstimator
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
+    poseEstimator.setFieldTags(fieldLayout);
 
     cameraTitle = cameraID.getLoggingName();
+    loggingPath = "Subsystems/Vision/" + cameraTitle;
     latestVisionResult = null;
   }
 
@@ -85,7 +88,7 @@ public class VisionSubsystem extends SubsystemBase {
       if (visionEst.isEmpty()) visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
     }
 
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/CameraConnected", true);
+    DogLog.log(loggingPath + "/CameraConnected", true);
   }
 
   public VisionCamera getCamera() {
@@ -95,20 +98,20 @@ public class VisionSubsystem extends SubsystemBase {
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
     hasValidMeasurement = false;
 
-    DogLog.log("Subsystems/Vision/addFilteredPoseworking", true);
+    DogLog.log(loggingPath + "/addFilteredPoseworking", true);
 
     if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasResult", false);
+      DogLog.log(loggingPath + "/HasResult", false);
       return;
     }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasResult", true);
+    DogLog.log(loggingPath + "/HasResult", true);
 
     // Ensure we have a valid pose estimate and vision result from periodic()
     if (visionEst.isEmpty()) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", false);
+      DogLog.log(loggingPath + "/HasEstimate", false);
       return;
     }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/HasEstimate", true);
+    DogLog.log(loggingPath + "/HasEstimate", true);
 
     // creates a list of all detected tags and logs for debugging
     List<PhotonTrackedTarget> tags =
@@ -117,26 +120,21 @@ public class VisionSubsystem extends SubsystemBase {
     // Get detected tags
     tags = latestVisionResult.getTargets();
     if (tags.isEmpty()) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags", false);
+      DogLog.log(loggingPath + "/Tags", false);
       return;
     }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/Tags", true);
+    DogLog.log(loggingPath + "/Tags", true);
 
     // log area and yaw for all detected april tags
-
     for (PhotonTrackedTarget tag : tags) {
-      DogLog.log(
-          "Subsystems/Vision/" + cameraTitle + "/Tags/" + tag.getFiducialId() + "/Area",
-          tag.getArea());
-      DogLog.log(
-          "Subsystems/Vision/" + cameraTitle + "/Tags/" + tag.getFiducialId() + "/Yaw",
-          tag.getYaw());
+      DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
+      DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
     }
 
     // Extract pose estimate
     EstimatedRobotPose estimatedPose = visionEst.get();
     Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/MeasuredPose", measuredPose);
+    DogLog.log(loggingPath + "/MeasuredPose", measuredPose);
 
     // distance to closest april tag
     double minDistance = getMinDistance();
@@ -146,15 +144,15 @@ public class VisionSubsystem extends SubsystemBase {
 
     // Reject invalid or distant measurements
     if (Double.isNaN(minDistance) || minDistance > Constants.Vision.MAX_TAG_DISTANCE) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/ThrownOutDistance", true);
+      DogLog.log(loggingPath + "/ThrownOutDistance", true);
       return;
     }
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/ThrownOutDistance", false);
+    DogLog.log(loggingPath + "/ThrownOutDistance", false);
 
     // Log yaw + area for debugging
     for (PhotonTrackedTarget tag : tags) {
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/TagYaw", tag.getYaw());
-      DogLog.log("Subsystems/Vision/" + cameraTitle + "/TagArea", tag.getArea());
+      DogLog.log(loggingPath + "/TagYaw", tag.getYaw());
+      DogLog.log(loggingPath + "/TagArea", tag.getArea());
     }
 
     int tagCount = tags.size();
@@ -229,7 +227,7 @@ public class VisionSubsystem extends SubsystemBase {
                 .min()
                 .orElse(Double.NaN);
 
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/ClosestTagDistance", minDist);
+    DogLog.log(loggingPath + "/ClosestTagDistance", minDist);
     return minDist;
   }
 
@@ -242,7 +240,7 @@ public class VisionSubsystem extends SubsystemBase {
                 .average()
                 .orElse(Double.NaN);
 
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/AverageTagDistance", avgDist);
+    DogLog.log(loggingPath + "/AverageTagDistance", avgDist);
     return avgDist;
   }
 
@@ -255,8 +253,21 @@ public class VisionSubsystem extends SubsystemBase {
                 .max()
                 .orElse(Double.NaN);
 
-    DogLog.log("Subsystems/Vision/" + cameraTitle + "/AverageTagDistance", maxDist);
+    DogLog.log(loggingPath + "/MaxTagDistance", maxDist);
     return maxDist;
+  }
+
+  public double getPoseAmbiguity() {
+    double poseAmbiguity =
+        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+            ? Double.MAX_VALUE
+            : latestVisionResult.getTargets().stream()
+                .mapToDouble(PhotonTrackedTarget::getPoseAmbiguity)
+                .average()
+                .orElse(Double.NaN);
+
+    DogLog.log(loggingPath + "/PoseAmbiguity", poseAmbiguity);
+    return poseAmbiguity;
   }
 
   public boolean hasValidMeasurement() {
@@ -282,6 +293,10 @@ public class VisionSubsystem extends SubsystemBase {
     latestMeasuredPose = measuredPose;
     latestFinalTimestamp = finalTimestamp;
     latestNoiseVector = noiseVector;
+  }
+
+  public Pose2d getFilteredPose() {
+    return latestMeasuredPose;
   }
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {

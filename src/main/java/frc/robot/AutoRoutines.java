@@ -440,7 +440,7 @@ public class AutoRoutines {
   public Command RedPedriShortL() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedLeftIntakeShort);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedLeftIntakeSweepShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedLeftShoot);
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.RedDepotL);
     AutoTrajectory depotShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedDepotToShoot);
@@ -465,7 +465,7 @@ public class AutoRoutines {
   public Command RedPedriShortR() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeShort);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RedRightIntakeSweepShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedRightShoot);
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.RedOutpostR);
     AutoTrajectory outpostShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RedOutpostToShoot);
