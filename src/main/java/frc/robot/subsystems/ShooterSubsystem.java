@@ -164,6 +164,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetBallSpeed;
   }
 
+  public double grabTargetShootingSpeed(double distanceToTarget) {
+    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distanceToTarget);
+  }
+  
   // Commands
   public Command shootAtSpeedCommand() {
     return runEnd(() -> setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter);

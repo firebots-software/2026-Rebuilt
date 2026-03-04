@@ -158,7 +158,8 @@ public class RobotContainer {
         .whileTrue(
             new ShootBasicRetract(
                 () ->
-                    MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
+                    // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
+                    lebron.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
                 () -> true,
                 lebron,
                 intakeSubsystem,
