@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,8 +12,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
-import dev.doglog.DogLog;
-import dev.doglog.DogLogOptions;
 
 public class MiscUtils {
 

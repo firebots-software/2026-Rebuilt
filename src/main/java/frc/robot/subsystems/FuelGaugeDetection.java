@@ -129,8 +129,7 @@ public class FuelGaugeDetection extends SubsystemBase {
       SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FFFF00");
     } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.FULL.toString())) {
       SmartDashboard.putString("Elastic/FuelGaugeLevel", "#00FF00");
-    }
-    else {
+    } else {
       SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FFFFFF");
     }
   }
