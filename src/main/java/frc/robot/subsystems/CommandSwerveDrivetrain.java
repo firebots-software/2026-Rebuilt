@@ -31,7 +31,6 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
-
 import java.util.function.Supplier;
 
 /**
@@ -379,7 +378,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log(
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
 
-    DogLog.log("CriticalInformation/DistanceToHub", MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
+    DogLog.log(
+        "CriticalInformation/DistanceToHub",
+        MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
   }
 
   @Override
