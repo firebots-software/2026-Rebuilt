@@ -71,7 +71,7 @@ public record ChoreoTraj(
 	    OptionalInt.empty(),
 	    3.33047,
 	    new Pose2d(5.645, 2.555, Rotation2d.fromRadians(0)),
-	    new Pose2d(5.66, 2.551, Rotation2d.fromRadians(3.142))
+	    new Pose2d(5.66, 2.551, Rotation2d.fromRadians(-3.142))
 	);
 	public static final ChoreoTraj BlueLeftClimbR = new ChoreoTraj(
 	    "BlueLeftClimbR",
