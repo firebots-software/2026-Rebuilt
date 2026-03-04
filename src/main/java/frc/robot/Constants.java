@@ -704,40 +704,40 @@ public final class Constants {
     // TODO: SID: update all vals
 
     private class FrontRight {
-    private static final double X = Units.inchesToMeters(-4.775894);
-    private static final double Y = Units.inchesToMeters(-7.880312);
-    private static final double Z = Units.inchesToMeters(27.024842);
-    private static final double ROLL = Units.degreesToRadians(358.781735);
-    private static final double PITCH = Units.degreesToRadians(355.256834);
-    private static final double YAW = Units.degreesToRadians(15.619742);
+      private static final double X = Units.inchesToMeters(-4.775894);
+      private static final double Y = Units.inchesToMeters(-7.880312);
+      private static final double Z = Units.inchesToMeters(27.024842);
+      private static final double ROLL = Units.degreesToRadians(358.781735);
+      private static final double PITCH = Units.degreesToRadians(355.256834);
+      private static final double YAW = Units.degreesToRadians(15.619742);
     }
 
     private class FrontLeft {
-    private static final double X = Units.inchesToMeters(-4.757613);
-    private static final double Y = Units.inchesToMeters(7.938785);
-    private static final double Z = Units.inchesToMeters(27.046870);
-    private static final double ROLL = Units.degreesToRadians(1.26);
-    private static final double PITCH = Units.degreesToRadians(355.256834);
-    private static final double YAW = Units.degreesToRadians(344.380258);
+      private static final double X = Units.inchesToMeters(-4.757613);
+      private static final double Y = Units.inchesToMeters(7.938785);
+      private static final double Z = Units.inchesToMeters(27.046870);
+      private static final double ROLL = Units.degreesToRadians(1.26);
+      private static final double PITCH = Units.degreesToRadians(355.256834);
+      private static final double YAW = Units.degreesToRadians(344.380258);
     }
 
     private class RearRight {
-    private static final double X = Units.inchesToMeters(-13.852572);
-    private static final double Y = Units.inchesToMeters(-9.047180);
-    private static final double Z = Units.inchesToMeters(17.891914);
-    private static final double ROLL = Units.degreesToRadians(0.0); // 352.904
-    private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
-    private static final double YAW =
-        Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
+      private static final double X = Units.inchesToMeters(-13.852572);
+      private static final double Y = Units.inchesToMeters(-9.047180);
+      private static final double Z = Units.inchesToMeters(17.891914);
+      private static final double ROLL = Units.degreesToRadians(0.0); // 352.904
+      private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
+      private static final double YAW =
+          Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
     }
 
     private class RearLeft {
-    private static final double X = Units.inchesToMeters(-13.846460);
-    private static final double Y = Units.inchesToMeters(9.052008);
-    private static final double Z = Units.inchesToMeters(17.903158);
-    private static final double ROLL = Units.degreesToRadians(0.0); // 7.096
-    private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
-    private static final double YAW = Units.degreesToRadians(160.0); // 170
+      private static final double X = Units.inchesToMeters(-13.846460);
+      private static final double Y = Units.inchesToMeters(9.052008);
+      private static final double Z = Units.inchesToMeters(17.903158);
+      private static final double ROLL = Units.degreesToRadians(0.0); // 7.096
+      private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
+      private static final double YAW = Units.degreesToRadians(160.0); // 170
     }
 
     // initializes cameras for use in VisionSubsystem
@@ -795,7 +795,8 @@ public final class Constants {
       JITTER();
     }
 
-    public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    public static final AprilTagFieldLayout FIELD_LAYOUT =
+        AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
   }
 
   public static class FuelGaugeDetection {

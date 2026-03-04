@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
+import frc.robot.util.MiscUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -127,10 +128,16 @@ public class VisionSubsystem extends SubsystemBase {
     }
     DogLog.log(loggingPath + "/Tags", true);
 
+    DogLog.log(loggingPath + "/TagList", tags.toString());
     // log area and yaw for all detected april tags
     for (PhotonTrackedTarget tag : tags) {
       DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
       DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
+      DogLog.log(
+          loggingPath + "/Tags/" + tag.getFiducialId() + "/Distance",
+          MiscUtils.get3dDistance(tag.bestCameraToTarget));
+      DogLog.log(
+          loggingPath + "/Tags/" + tag.getFiducialId() + "/Transform", tag.bestCameraToTarget);
     }
 
     // Extract pose estimate
