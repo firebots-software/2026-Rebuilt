@@ -102,7 +102,7 @@ public class MiscUtils {
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     if (timeUntilNextShift < 5 && !currentShiftName(currentTimes).equals("Endgame")) {
       shiftIndicatorSum++;
-      return shiftIndicatorSum % 7 == 0;
+      return (shiftIndicatorSum / 10) % 2 == 1;
     }
     return false;
   }
