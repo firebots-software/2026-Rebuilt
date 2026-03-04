@@ -1006,13 +1006,8 @@ public final class Constants {
           96d);
 
       TOF_FOR_MOTOR_SPEED_INTERMAP.clear();
-      // TOF_FOR_MOTOR_SPEED_INTERMAP.put(); TODO: GET VALS
-      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
-      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
-      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
-      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
-      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
-      // TOF_FOR_MOTOR_SPEED_INTERMAP.put();
+      TOF_FOR_MOTOR_SPEED_INTERMAP.put(0d, 0d);
+      TOF_FOR_MOTOR_SPEED_INTERMAP.put(71d, 5d / 4d);
     }
   }
 
