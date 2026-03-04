@@ -774,7 +774,7 @@ public final class Constants {
       }
     }
 
-    public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
+    public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.POSE_AMBIGUITY;
 
     public static int MAX_JITTER_MEASUREMENTS = 16;
 
