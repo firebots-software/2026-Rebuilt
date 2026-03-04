@@ -139,7 +139,7 @@ public class RobotContainer {
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             () -> false,
-            (() -> joystick.leftTrigger().getAsBoolean()),
+            (() -> joystick.a().getAsBoolean()),
             redside,
             drivetrain);
 
@@ -149,7 +149,7 @@ public class RobotContainer {
     // INTAKE COMMANDS
 
     // // left bumper -> run intake (changed to a cause mahesh wanted to)
-    joystick.a().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+    joystick.leftTrigger().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     // intake default command - stop rollers
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
