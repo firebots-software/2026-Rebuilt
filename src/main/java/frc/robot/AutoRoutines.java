@@ -596,7 +596,7 @@ public class AutoRoutines {
 
   public AutoRoutine test() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSide);
 
     BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
     BooleanSupplier backSupplier = () -> RobotContainer.setAlliance();
