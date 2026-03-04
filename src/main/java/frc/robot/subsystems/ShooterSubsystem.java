@@ -235,7 +235,11 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
 
-    DogLog.log("Subsystems/Shooter/Targeting/TimeOfFlight", Constants.Shooter.TOF_FOR_MOTOR_SPEED_INTERMAP.get(Targeting.shootingSpeed(target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/TimeOfFlight",
+        Constants.Shooter.TOF_FOR_MOTOR_SPEED_INTERMAP.get(
+            Targeting.shootingSpeed(
+                target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
   }
 
   // @Override
