@@ -1,7 +1,6 @@
 package frc.robot.commandGroups;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -43,9 +42,8 @@ public class ArcLock extends ParallelCommandGroup {
             () -> joystick.setRumble(RumbleType.kBothRumble, (0d))),
         shooter.shootAtSpeedCommand(
             () ->
-                Units.metersToFeet(
-                    Targeting.shootingSpeed(
-                        target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION))));
+                Targeting.shootingSpeed(
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
   }
 
   public ArcLock(

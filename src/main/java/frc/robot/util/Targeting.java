@@ -51,11 +51,13 @@ public class Targeting {
     double correctedSpeed = speedForDist(relativePos.magnitude());
     double prevTof = 0;
     for (int i = 0; i < precision; i++) {
-      double tof =
-          2
-              * correctedSpeed
-              * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
-              / 9.81;
+      //   double tof =
+      //       2
+      //           * correctedSpeed
+      //           *
+      // Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+      //           / 9.81;
+      double tof = Constants.Shooter.TOF_FOR_MOTOR_SPEED_INTERMAP.get(correctedSpeed);
       correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
       correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
       prevTof = tof;
@@ -65,20 +67,19 @@ public class Targeting {
   }
 
   public static double speedForDist(double d) {
-    return Math.sqrt(
-        d
-            * 9.81
-            / Math.sin(
-                Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
+    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(d);
+    // return Math.sqrt(
+    //     d
+    //         * 9.81
+    //         / Math.sin(
+    //             Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
   }
 
   public static Vector3 positionToTarget(
       Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
     double timeOfFlight =
-        2
-            * shootingSpeed(target, drivetrain, precision)
-            * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
-            / 9.81;
+        Constants.Shooter.TOF_FOR_MOTOR_SPEED_INTERMAP.get(
+            shootingSpeed(target, drivetrain, precision));
 
     Vector3 relativeVel =
         Vector3.mult(
