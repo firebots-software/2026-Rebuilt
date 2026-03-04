@@ -136,6 +136,8 @@ public class VisionSubsystem extends SubsystemBase {
       DogLog.log(
           loggingPath + "/Tags/" + tag.getFiducialId() + "/Distance",
           MiscUtils.get3dDistance(tag.bestCameraToTarget));
+      DogLog.log(
+          loggingPath + "/Tags/" + tag.getFiducialId() + "/Transform", tag.bestCameraToTarget);
     }
 
     // Extract pose estimate
