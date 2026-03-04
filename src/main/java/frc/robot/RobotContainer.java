@@ -292,12 +292,6 @@ public class RobotContainer {
           rearRightDist = visionRearRight.getPoseAmbiguity();
           rearLeftDist = visionRearLeft.getPoseAmbiguity();
           break;
-        case JITTER:
-          frontRightDist = visionFrontRight.getJitter();
-          frontLeftDist = visionFrontLeft.getJitter();
-          rearRightDist = visionRearRight.getJitter();
-          rearLeftDist = visionRearLeft.getJitter();
-          break;
       }
 
       if (frontRightDist < preferredDistance && visionFrontRight.hasValidMeasurement()) {
