@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import choreo.auto.AutoChooser;
 import dev.doglog.DogLog;
 import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -16,7 +17,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
@@ -45,7 +45,7 @@ public class RobotContainer {
   // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
-  public double interMapSpeed = 71.0;
+  public DoubleSubscriber interMapSpeed = DogLog.tunable("Subsystems/Shooter/Speed", 71.0);
   private BooleanSupplier redside = () -> setAlliance();
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -169,22 +169,7 @@ public class RobotContainer {
           .a()
           .whileTrue(
               new ShootBasicRetract(
-                  () -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-
-      joystick
-          .b()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    interMapSpeed += 1;
-                  }));
-      joystick
-          .y()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    interMapSpeed += 0.5;
-                  }));
+                  interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
     } else {
       joystick
           .a()
