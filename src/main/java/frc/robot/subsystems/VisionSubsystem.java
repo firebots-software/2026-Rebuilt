@@ -128,6 +128,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
     DogLog.log(loggingPath + "/Tags", true);
 
+    DogLog.log(loggingPath + "/TagList", tags.toString());
     // log area and yaw for all detected april tags
     for (PhotonTrackedTarget tag : tags) {
       DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
