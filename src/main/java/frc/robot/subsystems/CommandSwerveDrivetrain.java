@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -84,16 +86,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   // private final StructPublisher<Pose2d> posePublisher =
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
-
-  private ProfiledPIDController headingProfiledPIDController =
-      new ProfiledPIDController(
-          3.7, // 4 was good
+  private PIDController headingPIDController =
+      new PIDController(
+          15, // 4 was good
           0, //
-          0,
-          new TrapezoidProfile.Constraints(
-              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND - 1.5, // -1 was good
-              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND
-                  - 16)); // -13 was good
+          0); // -13 was good
+
+  public DoubleSubscriber headingKPTunable = DogLog.tunable("Subsystems/Swerve/kPHeading", 15.0, (x) ->{
+    headingPIDController.setP(x);
+  });
+  public DoubleSubscriber headingKITunable = DogLog.tunable("Subsystems/Swerve/kIHeading", 0.0, (x) -> {headingPIDController.setI(x);});
+  public DoubleSubscriber headingKIDunable = DogLog.tunable("Subsystems/Swerve/kDHeading", 0.0, (x) -> {headingPIDController.setD(x);});
+
 
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
@@ -174,6 +178,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     // if (Utils.isSimulation()) {
     //   startSimThread();
     // }
+    headingPIDController.setIZone(0.14);
+    headingPIDController.setIntegratorRange(0.0, Math.PI / 4); // 0.3 before
+
+    m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SmartDashboard.putData(field);
   }
@@ -355,6 +363,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * occurs during testing.
      */
     currentState = getState();
+    DogLog.log("Accumulated error swerve", headingPIDController.getAccumulatedError());
 
     if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
@@ -380,6 +389,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
 
     DogLog.log("CriticalInformation/DistanceToHub", MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
+    DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
 
   @Override
@@ -417,8 +427,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
     double omega =
         // headingProfiledPIDController.getSetpoint().velocity+
-        headingProfiledPIDController.calculate(
+        headingPIDController.calculate(
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    double max = Constants.Swerve.MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND;
+    boolean clamp = Math.abs(omega) > max;
+    if (clamp) {
+      omega = MathUtil.clamp(omega, -max, max);
+    }
+    DogLog.log("Swerve/rotationController/clamped", clamp);
+    DogLog.log("Swerve target rotations degrees", targetRotation.getDegrees());
     return omega;
   }
 
