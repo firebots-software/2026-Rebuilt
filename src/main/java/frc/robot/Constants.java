@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -462,7 +463,8 @@ public final class Constants {
         RedLeftIntakeSweepShort,
         BlueRightIntakeSweepShort,
         BlueLeftIntakeSweepShort,
-        p2Intake
+        p2Intake,
+        p2IntakeSide
       }
 
       public static enum ShootPos {
@@ -717,16 +719,17 @@ public final class Constants {
     public static final double REAR_RIGHT_X = Units.inchesToMeters(-13.852572);
     public static final double REAR_RIGHT_Y = Units.inchesToMeters(-9.047180);
     public static final double REAR_RIGHT_Z = Units.inchesToMeters(17.891914);
-    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0);//352.904
+    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0); // 352.904
     public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(340.0); // 288.882
-    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
+    public static final double REAR_RIGHT_YAW =
+        Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
 
     public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
     public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
     public static final double REAR_LEFT_Z = Units.inchesToMeters(17.903158);
-    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(0.0);//7.096
-    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(340.0); //288.882
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(160.0); //170
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(0.0); // 7.096
+    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(340.0); // 288.882
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(160.0); // 170
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
@@ -773,11 +776,14 @@ public final class Constants {
 
     public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
 
+    public static int MAX_JITTER_MEASUREMENTS = 16;
+
     public static enum CameraSelectionMethod {
       MIN(),
       AVG(),
       MAX(),
-      POSE_AMBIGUITY();
+      POSE_AMBIGUITY(),
+      JITTER();
     }
 
     public static final FieldTags FIELD_LAYOUT = FieldTags.ALL;
@@ -948,6 +954,30 @@ public final class Constants {
     public static final double MAX_DIST_FT = 8d;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
+    
+    
+    public static final InterpolatingDoubleTreeMap
+        MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
+            new InterpolatingDoubleTreeMap();
+
+    static {
+      UPDATE_INTERMAPS();
+    }
+
+    public static void UPDATE_INTERMAPS() {
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+
+      final double offset = 1.0429875;
+
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0.2111 + offset, 71.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0.6108 + offset, 73.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.0478 + offset, 80.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.4097 + offset, 83.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.7971 + offset, 87.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(2.1336 + offset, 90.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(3.6576 + offset, 96.0);
+
+    }
   }
 
   public static class OI {

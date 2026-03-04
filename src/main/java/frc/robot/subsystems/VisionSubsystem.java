@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.FieldTags;
 import frc.robot.Constants.Vision.VisionCamera;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,6 +53,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   // addFilteredPose() vals
   Pose2d latestMeasuredPose;
+  Pose2d previousPose;
+  ArrayList<Double> latestJitterMeasurements;
   double latestFinalTimestamp;
   Matrix<N3, N1> latestNoiseVector;
 
@@ -270,6 +273,20 @@ public class VisionSubsystem extends SubsystemBase {
     return poseAmbiguity;
   }
 
+  public double getJitter() {
+    if (latestMeasuredPose == null || previousPose == null) return 0.0;
+    latestJitterMeasurements.add(
+        Math.hypot(
+            latestMeasuredPose.getX() - previousPose.getX(),
+            latestMeasuredPose.getY() - previousPose.getY()));
+    if (latestJitterMeasurements.size() > Constants.Vision.MAX_JITTER_MEASUREMENTS) {
+      latestJitterMeasurements.remove(0);
+    }
+    Double sum = 0.0;
+    for (Double j : latestJitterMeasurements) sum += j;
+    return sum;
+  }
+
   public boolean hasValidMeasurement() {
     return hasValidMeasurement;
   }
@@ -290,6 +307,7 @@ public class VisionSubsystem extends SubsystemBase {
             ? fpgaTimestamp + timestampFPGACorrection
             : timestamp;
 
+    previousPose = latestMeasuredPose;
     latestMeasuredPose = measuredPose;
     latestFinalTimestamp = finalTimestamp;
     latestNoiseVector = noiseVector;

@@ -15,6 +15,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -164,6 +165,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetBallSpeed;
   }
 
+  public double grabTargetShootingSpeed(double distanceToTarget) {
+    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distanceToTarget);
+  }
+  
   // Commands
   public Command shootAtSpeedCommand() {
     return runEnd(() -> setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter);
@@ -176,6 +181,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command shootAtSpeedCommand(DoubleSupplier ballSpeed) {
     DogLog.log("ShootingSpeedRN", ballSpeed.getAsDouble());
     return runEnd(() -> this.setBallSpeed(ballSpeed.getAsDouble()), this::stopShooter);
+  }
+
+  public Command shootAtSpeedCommand(DoubleSubscriber ballSpeed) {
+    DogLog.log("ShootingSpeedRN", ballSpeed.get());
+    return runEnd(() -> this.setBallSpeed(ballSpeed.get()), this::stopShooter);
   }
 
   @Override
