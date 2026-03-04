@@ -550,9 +550,7 @@ public final class Constants {
         BlueOutpostR
       }
 
-      public static enum MiscPaths{
-
-      }
+      public static enum MiscPaths {}
     }
   }
 
