@@ -121,12 +121,11 @@ public class MiscUtils {
 
   public static double computeShootingSpeed(double distToHubCenter) {
     // Constants (meters)
-    final double a = edu.wpi.first.math.util.Units.inchesToMeters(5.67405);
-    final double b = edu.wpi.first.math.util.Units.inchesToMeters(36.60021);
+    final double a = 20.41232;
+    final double b = 57.26412;
+    final double c = -0.182208;
 
-    double y = (a * Math.sqrt(distToHubCenter)) + b;
-
-    return MiscMath.clamp(y, 71.0, 107.0);
+    return (a * Math.sqrt(distToHubCenter - c)) + b;
   }
 
   public static boolean isFlashDriveConnected() {

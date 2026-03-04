@@ -59,6 +59,9 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.visionPeriodic();
 
+    // Log odometry pose
+    DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
+
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));

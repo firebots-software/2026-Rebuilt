@@ -38,13 +38,13 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     warmUpMotor1 =
         new LoggedTalonFX(
-            Constants.Shooter.WARMUP_1_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "ShooterWarmUp1", Constants.Shooter.WARMUP_1_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     warmUpMotor2 =
         new LoggedTalonFX(
-            Constants.Shooter.WARMUP_2_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "ShooterWarmUp2", Constants.Shooter.WARMUP_2_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     warmUpMotor3 =
         new LoggedTalonFX(
-            Constants.Shooter.WARMUP_3_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "ShooterWarmUp3", Constants.Shooter.WARMUP_3_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     shooter = warmUpMotor3;
 
     Slot0Configs s0c =
@@ -165,6 +165,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetBallSpeed;
   }
 
+  public double grabTargetShootingSpeed(double distanceToTarget) {
+    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distanceToTarget);
+  }
+  
   // Commands
   public Command shootAtSpeedCommand() {
     return runEnd(() -> setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter);
