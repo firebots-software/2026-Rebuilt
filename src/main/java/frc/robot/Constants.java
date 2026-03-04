@@ -935,8 +935,7 @@ public final class Constants {
     public static final double MAX_DIST_FT = 8d;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
-    
-    
+
     public static final InterpolatingDoubleTreeMap
         MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
             new InterpolatingDoubleTreeMap();
@@ -957,7 +956,6 @@ public final class Constants {
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.7971 + offset, 87.0);
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(2.1336 + offset, 90.0);
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(3.6576 + offset, 96.0);
-
     }
   }
 
