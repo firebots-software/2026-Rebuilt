@@ -113,6 +113,9 @@ public class RobotContainer {
     shooterSpeedEntry = shooterSpeedTopic.getEntry(60.0);
     shooterSpeedTopic.setPersistent(true);
 
+    // Publish Field2d to SmartDashboard once during initialization
+    SmartDashboard.putData("Elastic/Field2d", field);
+
     configureBindings();
   }
 
@@ -314,11 +317,7 @@ public class RobotContainer {
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
-  }
-
-  public void updateFieldPose() {
     field.setRobotPose(drivetrain.getState().Pose);
-    SmartDashboard.putData("Elastic/Field2d", field);
   }
 
   public static boolean setAlliance() {
