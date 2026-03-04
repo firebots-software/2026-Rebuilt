@@ -144,8 +144,8 @@ public class RobotContainer {
 
     // INTAKE COMMANDS
 
-    // // left bumper -> run intake
-    joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+    // // left bumper -> run intake (changed to a cause mahesh wanted to)
+    joystick.a().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     // intake default command - stop rollers
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -158,24 +158,25 @@ public class RobotContainer {
         .whileTrue(
             new ShootBasicRetract(
                 () ->
-                    MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
+                    // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
+                    lebron.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
                 () -> true,
                 lebron,
                 intakeSubsystem,
                 hopperSubsystem));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
-      joystick
-          .a()
-          .whileTrue(
-              new ShootBasicRetract(
-                  interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-    } else {
-      joystick
-          .a()
-          .whileTrue(
-              new ShootBasicRetract(
-                  () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    //   joystick
+    //       .a()
+    //       .whileTrue(
+    //           new ShootBasicRetract(
+    //               interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    // } else {
+    //   joystick
+    //       .a()
+    //       .whileTrue(
+    //           new ShootBasicRetract(
+    //               () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
       joystick
           .b()
@@ -276,12 +277,6 @@ public class RobotContainer {
           frontLeftDist = visionFrontLeft.getPoseAmbiguity();
           rearRightDist = visionRearRight.getPoseAmbiguity();
           rearLeftDist = visionRearLeft.getPoseAmbiguity();
-          break;
-        case JITTER:
-          frontRightDist = visionFrontRight.getJitter();
-          frontLeftDist = visionFrontLeft.getJitter();
-          rearRightDist = visionRearRight.getJitter();
-          rearLeftDist = visionRearLeft.getJitter();
           break;
       }
 

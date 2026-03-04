@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -953,6 +954,30 @@ public final class Constants {
     public static final double MAX_DIST_FT = 8d;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
+    
+    
+    public static final InterpolatingDoubleTreeMap
+        MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
+            new InterpolatingDoubleTreeMap();
+
+    static {
+      UPDATE_INTERMAPS();
+    }
+
+    public static void UPDATE_INTERMAPS() {
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+
+      final double offset = 1.0429875;
+
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0.2111 + offset, 71.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0.6108 + offset, 73.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.0478 + offset, 80.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.4097 + offset, 83.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.7971 + offset, 87.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(2.1336 + offset, 90.0);
+      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(3.6576 + offset, 96.0);
+
+    }
   }
 
   public static class OI {
