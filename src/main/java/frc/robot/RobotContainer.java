@@ -14,6 +14,7 @@ import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -34,8 +35,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotContainer {
   // /* Setting up bindings for necessary control of the swerve drive platform */
@@ -162,7 +161,8 @@ public class RobotContainer {
         .whileTrue(
             new ShootBasicRetract(
                 () ->
-                    // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
+                    // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside,
+                    // drivetrain)),
                     lebron.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
                 () -> true,
                 lebron,
@@ -170,17 +170,17 @@ public class RobotContainer {
                 hopperSubsystem));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
-    //   joystick
-    //       .a()
-    //       .whileTrue(
-    //           new ShootBasicRetract(
-    //               interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-    // } else {
-    //   joystick
-    //       .a()
-    //       .whileTrue(
-    //           new ShootBasicRetract(
-    //               () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      //   joystick
+      //       .a()
+      //       .whileTrue(
+      //           new ShootBasicRetract(
+      //               interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      // } else {
+      //   joystick
+      //       .a()
+      //       .whileTrue(
+      //           new ShootBasicRetract(
+      //               () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
       joystick
           .b()
