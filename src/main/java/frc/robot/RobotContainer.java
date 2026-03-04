@@ -313,6 +313,9 @@ public class RobotContainer {
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
+  }
+
+  public void updateFieldPose() {
     field.setRobotPose(drivetrain.getState().Pose);
     SmartDashboard.putData("Elastic/Field2d", field);
   }
