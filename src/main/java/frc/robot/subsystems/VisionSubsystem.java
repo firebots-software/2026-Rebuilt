@@ -274,6 +274,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getJitter() {
+    if (latestMeasuredPose == null || previousPose == null) return 0.0;
     latestJitterMeasurements.add(
         Math.hypot(
             latestMeasuredPose.getX() - previousPose.getX(),
