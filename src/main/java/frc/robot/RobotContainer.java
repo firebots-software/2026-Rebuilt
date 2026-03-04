@@ -34,6 +34,8 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotContainer {
   // /* Setting up bindings for necessary control of the swerve drive platform */
@@ -47,6 +49,8 @@ public class RobotContainer {
   // SwerveRequest.SwerveDriveBrake();
   public DoubleSubscriber interMapSpeed = DogLog.tunable("Subsystems/Shooter/Speed", 71.0);
   private BooleanSupplier redside = () -> setAlliance();
+
+  private Field2d field = new Field2d();
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -309,6 +313,8 @@ public class RobotContainer {
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
+    field.setRobotPose(drivetrain.getState().Pose);
+    SmartDashboard.putData("Elastic/Field2d", field);
   }
 
   public static boolean setAlliance() {
