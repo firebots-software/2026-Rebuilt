@@ -65,7 +65,8 @@ public class RobotContainer {
       Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
-  public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+  public final ShooterSubsystem lebron =
+      Constants.shooterOnRobot ? new ShooterSubsystem(drivetrain, redside) : null;
 
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
@@ -313,6 +314,9 @@ public class RobotContainer {
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
+  }
+
+  public void updateFieldPose() {
     field.setRobotPose(drivetrain.getState().Pose);
     SmartDashboard.putData("Elastic/Field2d", field);
   }
