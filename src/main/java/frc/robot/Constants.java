@@ -703,60 +703,69 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
     // TODO: SID: update all vals
-    public static final double FRONT_RIGHT_X = Units.inchesToMeters(-4.775894);
-    public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-7.880312);
-    public static final double FRONT_RIGHT_Z = Units.inchesToMeters(27.024842);
-    public static final double FRONT_RIGHT_ROLL = Units.degreesToRadians(358.781735);
-    public static final double FRONT_RIGHT_PITCH = Units.degreesToRadians(355.256834);
-    public static final double FRONT_RIGHT_YAW = Units.degreesToRadians(15.619742);
 
-    public static final double FRONT_LEFT_X = Units.inchesToMeters(-4.757613);
-    public static final double FRONT_LEFT_Y = Units.inchesToMeters(7.938785);
-    public static final double FRONT_LEFT_Z = Units.inchesToMeters(27.046870);
-    public static final double FRONT_LEFT_ROLL = Units.degreesToRadians(1.26);
-    public static final double FRONT_LEFT_PITCH = Units.degreesToRadians(355.256834);
-    public static final double FRONT_LEFT_YAW = Units.degreesToRadians(344.380258);
+    private class FrontRight {
+      private static final double X = Units.inchesToMeters(-4.775894);
+      private static final double Y = Units.inchesToMeters(-7.880312);
+      private static final double Z = Units.inchesToMeters(27.024842);
+      private static final double ROLL = Units.degreesToRadians(358.781735);
+      private static final double PITCH = Units.degreesToRadians(355.256834);
+      private static final double YAW = Units.degreesToRadians(15.619742);
+    }
 
-    public static final double REAR_RIGHT_X = Units.inchesToMeters(-13.852572);
-    public static final double REAR_RIGHT_Y = Units.inchesToMeters(-9.047180);
-    public static final double REAR_RIGHT_Z = Units.inchesToMeters(17.891914);
-    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0); // 352.904
-    public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(340.0); // 288.882
-    public static final double REAR_RIGHT_YAW =
-        Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
+    private class FrontLeft {
+      private static final double X = Units.inchesToMeters(-4.757613);
+      private static final double Y = Units.inchesToMeters(7.938785);
+      private static final double Z = Units.inchesToMeters(27.046870);
+      private static final double ROLL = Units.degreesToRadians(1.26);
+      private static final double PITCH = Units.degreesToRadians(355.256834);
+      private static final double YAW = Units.degreesToRadians(344.380258);
+    }
 
-    public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
-    public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
-    public static final double REAR_LEFT_Z = Units.inchesToMeters(17.903158);
-    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(0.0); // 7.096
-    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(340.0); // 288.882
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(160.0); // 170
+    private class RearRight {
+      private static final double X = Units.inchesToMeters(-13.852572);
+      private static final double Y = Units.inchesToMeters(-9.047180);
+      private static final double Z = Units.inchesToMeters(17.891914);
+      private static final double ROLL = Units.degreesToRadians(0.0); // 352.904
+      private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
+      private static final double YAW =
+          Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
+    }
+
+    private class RearLeft {
+      private static final double X = Units.inchesToMeters(-13.846460);
+      private static final double Y = Units.inchesToMeters(9.052008);
+      private static final double Z = Units.inchesToMeters(17.903158);
+      private static final double ROLL = Units.degreesToRadians(0.0); // 7.096
+      private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
+      private static final double YAW = Units.degreesToRadians(160.0); // 170
+    }
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
       FRONT_RIGHT_CAM(
           "frontRightCam",
           new Transform3d(
-              new Translation3d(FRONT_RIGHT_X, FRONT_RIGHT_Y, FRONT_RIGHT_Z),
-              new Rotation3d(FRONT_RIGHT_ROLL, FRONT_RIGHT_PITCH, FRONT_RIGHT_YAW))),
+              new Translation3d(FrontRight.X, FrontRight.Y, FrontRight.Z),
+              new Rotation3d(FrontRight.ROLL, FrontRight.PITCH, FrontRight.YAW))),
 
       FRONT_LEFT_CAM(
           "frontLeftCam",
           new Transform3d(
-              new Translation3d(FRONT_LEFT_X, FRONT_LEFT_Y, FRONT_LEFT_Z),
-              new Rotation3d(FRONT_LEFT_ROLL, FRONT_LEFT_PITCH, FRONT_LEFT_YAW))),
+              new Translation3d(FrontLeft.X, FrontLeft.Y, FrontLeft.Z),
+              new Rotation3d(FrontLeft.ROLL, FrontLeft.PITCH, FrontLeft.YAW))),
 
       REAR_RIGHT_CAM(
           "rearRightCam",
           new Transform3d(
-              new Translation3d(REAR_RIGHT_X, REAR_RIGHT_Y, REAR_RIGHT_Z),
-              new Rotation3d(REAR_RIGHT_ROLL, REAR_RIGHT_PITCH, REAR_RIGHT_YAW))),
+              new Translation3d(RearRight.X, RearRight.Y, RearRight.Z),
+              new Rotation3d(RearRight.ROLL, RearRight.PITCH, RearRight.YAW))),
 
       REAR_LEFT_CAM(
           "rearLeftCam",
           new Transform3d(
-              new Translation3d(REAR_LEFT_X, REAR_LEFT_Y, REAR_LEFT_Z),
-              new Rotation3d(REAR_LEFT_ROLL, REAR_LEFT_PITCH, REAR_LEFT_YAW)));
+              new Translation3d(RearLeft.X, RearLeft.Y, RearLeft.Z),
+              new Rotation3d(RearLeft.ROLL, RearLeft.PITCH, RearLeft.YAW)));
 
       private String loggingName;
       private Transform3d cameraTransform;
@@ -775,7 +784,7 @@ public final class Constants {
       }
     }
 
-    public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.POSE_AMBIGUITY;
+    public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
 
     public static int MAX_JITTER_MEASUREMENTS = 16;
 
@@ -787,35 +796,8 @@ public final class Constants {
       JITTER();
     }
 
-    public static final FieldTags FIELD_LAYOUT = FieldTags.ALL;
-
-    private static final String WELDED_RESOURCE = "/vision/k2026RebuiltWelded.json";
-    private static final String RED_RESOURCE_FILE = "/vision/k2026RebuiltWeldedRedSide.json";
-    private static final String BLUE_RESOURCE_FILE = "/vision/k2026RebuiltWeldedBlueSide.json";
-
-    private static AprilTagFieldLayout loadLayout(String resource) {
-      try {
-        return AprilTagFieldLayout.loadFromResource(resource);
-      } catch (Exception e) {
-        throw new RuntimeException("Failed to load AprilTag layout: " + resource, e);
-      }
-    }
-
-    public static enum FieldTags {
-      ALL(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded));
-      // RED(loadLayout(RED_RESOURCE_FILE)),
-      // BLUE(loadLayout(BLUE_RESOURCE_FILE));
-
-      private final AprilTagFieldLayout fieldLayout;
-
-      FieldTags(AprilTagFieldLayout field) {
-        fieldLayout = field;
-      }
-
-      public AprilTagFieldLayout getField() {
-        return fieldLayout;
-      }
-    }
+    public static final AprilTagFieldLayout FIELD_LAYOUT =
+        AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
   }
 
   public static class FuelGaugeDetection {
@@ -955,8 +937,7 @@ public final class Constants {
     public static final double MAX_DIST_FT = 8d;
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
-    
-    
+
     public static final InterpolatingDoubleTreeMap
         MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
             new InterpolatingDoubleTreeMap();
@@ -977,7 +958,6 @@ public final class Constants {
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.7971 + offset, 87.0);
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(2.1336 + offset, 90.0);
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(3.6576 + offset, 96.0);
-
     }
   }
 

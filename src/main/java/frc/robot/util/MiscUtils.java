@@ -3,11 +3,11 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
-import frc.robot.MathUtils.MiscMath;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
 import java.util.Optional;
@@ -104,6 +104,10 @@ public class MiscUtils {
       return (shiftIndicatorSum / 10) % 2 == 1;
     }
     return false;
+  }
+
+  public static double get3dDistance(Transform3d transform) {
+    return Math.hypot(Math.hypot(transform.getX(), transform.getY()), transform.getZ());
   }
 
   public static double getDistanceToHub(BooleanSupplier redSide, CommandSwerveDrivetrain swerve) {
