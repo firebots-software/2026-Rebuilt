@@ -218,20 +218,22 @@ public class ShooterSubsystem extends SubsystemBase {
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         new Pose2d(
             Targeting.positionToTarget(
-                    target,
-                    drivetrain,
-                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
                 .x,
             Targeting.positionToTarget(
-                    target,
-                    drivetrain,
-                    Constants.Shooter.TARGETING_CALCULATION_PRECISION)
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
                 .y,
             new Rotation2d()));
-    DogLog.log("Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
-    DogLog.log("Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
-    DogLog.log("Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
-    DogLog.log("Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/ShootingSpeed",
+        Targeting.shootingSpeed(
+            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
   }
 
   // @Override
