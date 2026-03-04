@@ -86,18 +86,18 @@ public class ClimberSubsystem extends SubsystemBase {
 
     muscleUpMotor =
         new LoggedTalonFX(
-            Constants.Climber.MuscleUp.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "MuscleUp", Constants.Climber.MuscleUp.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
     sitUpMotor =
         new LoggedTalonFX(
-            Constants.Climber.SitUp.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "SitUp", Constants.Climber.SitUp.MOTOR_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
     pullUpMotorR =
         new LoggedTalonFX(
-            Constants.Climber.PullUp.MOTOR_R_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "PullUpRight", Constants.Climber.PullUp.MOTOR_R_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     pullUpMotorL =
         new LoggedTalonFX(
-            Constants.Climber.PullUp.MOTOR_L_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "PullUpLeft", Constants.Climber.PullUp.MOTOR_L_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Opposed));
 
     brake = new Servo(Constants.Climber.BRAKE_PORT);
