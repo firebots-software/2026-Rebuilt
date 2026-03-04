@@ -20,8 +20,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
+import frc.robot.Constants.Landmarks;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ShootBasicRetract;
+import frc.robot.commandGroups.ShootWithWarning;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -31,7 +33,6 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.util.MiscUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -156,13 +157,16 @@ public class RobotContainer {
     joystick
         .rightTrigger()
         .whileTrue(
-            new ShootBasicRetract(
-                () ->
-                    MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
-                () -> true,
+            new ShootWithWarning(
+                drivetrain,
                 lebron,
                 intakeSubsystem,
-                hopperSubsystem));
+                hopperSubsystem,
+                redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB,
+                redside,
+                debugJoystick,
+                frontBackFunction,
+                leftRightFunction));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
       joystick

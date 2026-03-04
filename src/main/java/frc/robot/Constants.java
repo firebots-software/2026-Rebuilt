@@ -718,16 +718,17 @@ public final class Constants {
     public static final double REAR_RIGHT_X = Units.inchesToMeters(-13.852572);
     public static final double REAR_RIGHT_Y = Units.inchesToMeters(-9.047180);
     public static final double REAR_RIGHT_Z = Units.inchesToMeters(17.891914);
-    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0);//352.904
+    public static final double REAR_RIGHT_ROLL = Units.degreesToRadians(0.0); // 352.904
     public static final double REAR_RIGHT_PITCH = Units.degreesToRadians(340.0); // 288.882
-    public static final double REAR_RIGHT_YAW = Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
+    public static final double REAR_RIGHT_YAW =
+        Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
 
     public static final double REAR_LEFT_X = Units.inchesToMeters(-13.846460);
     public static final double REAR_LEFT_Y = Units.inchesToMeters(9.052008);
     public static final double REAR_LEFT_Z = Units.inchesToMeters(17.903158);
-    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(0.0);//7.096
-    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(340.0); //288.882
-    public static final double REAR_LEFT_YAW = Units.degreesToRadians(160.0); //170
+    public static final double REAR_LEFT_ROLL = Units.degreesToRadians(0.0); // 7.096
+    public static final double REAR_LEFT_PITCH = Units.degreesToRadians(340.0); // 288.882
+    public static final double REAR_LEFT_YAW = Units.degreesToRadians(160.0); // 170
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
@@ -973,7 +974,7 @@ public final class Constants {
       // 70 3/4 in, 87
       // 84 in, 90
       // 12 feet, 96
-      
+
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
       MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
           Units.inchesToMeters(
