@@ -28,7 +28,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.MiscUtils;
 import java.util.function.Supplier;
 
 /**
@@ -375,6 +377,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log("Subsystems/Swerve/CurrPoseRotRads", getCurrentState().Pose.getRotation());
     DogLog.log(
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
+
+    DogLog.log(
+        "CriticalInformation/DistanceToHub",
+        MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
   }
 
   @Override

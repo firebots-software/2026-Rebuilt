@@ -9,14 +9,15 @@ import static edu.wpi.first.units.Units.*;
 import choreo.auto.AutoChooser;
 import dev.doglog.DogLog;
 import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
@@ -46,8 +47,10 @@ public class RobotContainer {
   // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
-  public double interMapSpeed = 71.0;
+  public DoubleSubscriber interMapSpeed = DogLog.tunable("Subsystems/Shooter/Speed", 71.0);
   private BooleanSupplier redside = () -> setAlliance();
+
+  private Field2d field = new Field2d();
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -63,7 +66,8 @@ public class RobotContainer {
       Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
-  public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+  public final ShooterSubsystem lebron =
+      Constants.shooterOnRobot ? new ShooterSubsystem(drivetrain, redside) : null;
 
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
@@ -136,7 +140,7 @@ public class RobotContainer {
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             () -> false,
-            (() -> joystick.leftTrigger().getAsBoolean()),
+            (() -> joystick.a().getAsBoolean()),
             redside,
             drivetrain);
 
@@ -145,8 +149,8 @@ public class RobotContainer {
 
     // INTAKE COMMANDS
 
-    // // left bumper -> run intake
-    joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+    // // left bumper -> run intake (changed to a cause mahesh wanted to)
+    joystick.leftTrigger().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     // intake default command - stop rollers
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -169,32 +173,17 @@ public class RobotContainer {
                 leftRightFunction));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
-      joystick
-          .a()
-          .whileTrue(
-              new ShootBasicRetract(
-                  () -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-
-      joystick
-          .b()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    interMapSpeed += 1;
-                  }));
-      joystick
-          .y()
-          .onTrue(
-              new InstantCommand(
-                  () -> {
-                    interMapSpeed += 0.5;
-                  }));
-    } else {
-      joystick
-          .a()
-          .whileTrue(
-              new ShootBasicRetract(
-                  () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      //   joystick
+      //       .a()
+      //       .whileTrue(
+      //           new ShootBasicRetract(
+      //               interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      // } else {
+      //   joystick
+      //       .a()
+      //       .whileTrue(
+      //           new ShootBasicRetract(
+      //               () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
       joystick
           .b()
@@ -327,6 +316,11 @@ public class RobotContainer {
 
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
+  }
+
+  public void updateFieldPose() {
+    field.setRobotPose(drivetrain.getState().Pose);
+    SmartDashboard.putData("Elastic/Field2d", field);
   }
 
   public static boolean setAlliance() {
