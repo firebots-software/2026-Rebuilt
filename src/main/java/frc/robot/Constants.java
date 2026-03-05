@@ -128,6 +128,7 @@ public final class Constants {
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
+    public static final double MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND = 4;
 
     public static enum SwerveLevel {
       L2(6.75, 21.428571428571427),

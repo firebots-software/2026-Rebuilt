@@ -37,6 +37,7 @@ public class Robot extends TimedRobot {
     RobotContainer.setAlliance();
     DogLog.setOptions(
         new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
+    DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
   }
 
   /**
