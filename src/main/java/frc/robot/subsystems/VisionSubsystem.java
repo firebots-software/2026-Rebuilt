@@ -270,7 +270,8 @@ public class VisionSubsystem extends SubsystemBase {
       double timestamp,
       Matrix<N3, N1> noiseVector) {
 
-    // Use vision timestamp if within threshold of FPGA timestamp, else take the FPGA timestamp with correction.
+    // Use vision timestamp if within threshold of FPGA timestamp, else take the FPGA timestamp with
+    // correction.
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
@@ -317,7 +318,8 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Vision/distanceFactor", distanceFactor);
     DogLog.log("Subsystems/Vision/speedFactor", speedFactor);
 
-    double computedStdDevs = Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
+    double computedStdDevs =
+        Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
     return computedStdDevs;
   }
 
@@ -340,7 +342,8 @@ public class VisionSubsystem extends SubsystemBase {
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
     double speedFactor = 1d + speedCoefficient * (vNorm * vNorm);
 
-    double computedStdDevs = Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
+    double computedStdDevs =
+        Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
     return computedStdDevs;
   }
 }

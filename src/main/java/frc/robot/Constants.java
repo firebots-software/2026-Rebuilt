@@ -681,9 +681,9 @@ public final class Constants {
     public static final double MAX_TAG_DISTANCE = 15.0; // meters, beyond which readings are dropped
 
     public static final double CALIBRATION_FACTOR = 1.0;
-    public static final double BASE_NOISE_X = 0.0008; //m
-    public static final double BASE_NOISE_Y = 0.0008; //m
-    public static final double BASE_NOISE_THETA = 0.5; //rad
+    public static final double BASE_NOISE_X = 0.0008; // m
+    public static final double BASE_NOISE_Y = 0.0008; // m
+    public static final double BASE_NOISE_THETA = 0.5; // rad
 
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
