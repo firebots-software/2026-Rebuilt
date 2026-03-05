@@ -15,13 +15,11 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -91,12 +89,27 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           0, //
           0); // -13 was good
 
-  public DoubleSubscriber headingKPTunable = DogLog.tunable("Subsystems/Swerve/kPHeading", 15.0, (x) ->{
-    headingPIDController.setP(x);
-  });
-  public DoubleSubscriber headingKITunable = DogLog.tunable("Subsystems/Swerve/kIHeading", 0.0, (x) -> {headingPIDController.setI(x);});
-  public DoubleSubscriber headingKIDunable = DogLog.tunable("Subsystems/Swerve/kDHeading", 0.0, (x) -> {headingPIDController.setD(x);});
-
+  public DoubleSubscriber headingKPTunable =
+      DogLog.tunable(
+          "Subsystems/Swerve/kPHeading",
+          15.0,
+          (x) -> {
+            headingPIDController.setP(x);
+          });
+  public DoubleSubscriber headingKITunable =
+      DogLog.tunable(
+          "Subsystems/Swerve/kIHeading",
+          0.0,
+          (x) -> {
+            headingPIDController.setI(x);
+          });
+  public DoubleSubscriber headingKIDunable =
+      DogLog.tunable(
+          "Subsystems/Swerve/kDHeading",
+          0.0,
+          (x) -> {
+            headingPIDController.setD(x);
+          });
 
   /*
    * SysId routine for characterizing translation. This is used to find PID gains
@@ -387,7 +400,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log(
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
 
-    DogLog.log("CriticalInformation/DistanceToHub", MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
+    DogLog.log(
+        "CriticalInformation/DistanceToHub",
+        MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
     DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
 
