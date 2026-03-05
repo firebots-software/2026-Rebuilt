@@ -6,6 +6,7 @@ package frc.robot;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.visionPeriodic();
 
+    DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
