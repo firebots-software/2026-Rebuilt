@@ -944,7 +944,7 @@ public final class Constants {
     public static final InterpolatingDoubleTreeMap
         MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
             new InterpolatingDoubleTreeMap();
-    public static final InterpolatingDoubleTreeMap TOF_FOR_MOTOR_SPEED_INTERMAP =
+    public static final InterpolatingDoubleTreeMap TOF_FOR_DISTANCE_INTERMAP =
         new InterpolatingDoubleTreeMap();
 
     static {
@@ -991,9 +991,8 @@ public final class Constants {
               144d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
           96d);
 
-      TOF_FOR_MOTOR_SPEED_INTERMAP.clear();
-      TOF_FOR_MOTOR_SPEED_INTERMAP.put(0d, 0d);
-      TOF_FOR_MOTOR_SPEED_INTERMAP.put(71d, 5d / 4d);
+      TOF_FOR_DISTANCE_INTERMAP.clear();
+      TOF_FOR_DISTANCE_INTERMAP.put(0d, 0d);
     }
   }
 
