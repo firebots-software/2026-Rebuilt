@@ -33,24 +33,18 @@ public class VisionSubsystem extends SubsystemBase {
   // normalization maximums
   private double maximumRobotSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
-  // Noise parameters
-  private double calibrationFactor = 1d; // constant multiplier to everything
-  private double baseNoiseX = 0.0008; // meters
-  private double baseNoiseY = 0.0008;
-  private double baseNoiseTheta = 0.5; // radians
-
   // references for PhotonVision
   private final PhotonCamera photonCamera;
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
   Optional<EstimatedRobotPose> visionEst;
   private final AprilTagFieldLayout fieldLayout;
-  private boolean hasValidMeasurement;
 
   public static final double timestampDiffThreshold = 0.5;
   public static final double timestampFPGACorrection = -0.03;
 
   // addFilteredPose() vals
+  private boolean hasValidMeasurement;
   Pose2d latestMeasuredPose;
   double latestFinalTimestamp;
   Matrix<N3, N1> latestNoiseVector;
@@ -62,10 +56,8 @@ public class VisionSubsystem extends SubsystemBase {
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
 
-    // load field layout
     this.fieldLayout = layout.getField();
 
-    // initialize poseEstimator
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
     poseEstimator.setFieldTags(fieldLayout);
 
@@ -131,18 +123,14 @@ public class VisionSubsystem extends SubsystemBase {
       DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
     }
 
-    // Extract pose estimate
     EstimatedRobotPose estimatedPose = visionEst.get();
     Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
     DogLog.log(loggingPath + "/MeasuredPose", measuredPose);
 
-    // distance to closest april tag
     double minDistance = getMinDistance();
 
-    // average distance to all visible april tags
     double averageDistance = getAverageDistance();
 
-    // Reject invalid or distant measurements
     if (Double.isNaN(minDistance) || minDistance > Constants.Vision.MAX_TAG_DISTANCE) {
       DogLog.log(loggingPath + "/ThrownOutDistance", true);
       return;
@@ -168,7 +156,7 @@ public class VisionSubsystem extends SubsystemBase {
     // Compute noise model
     double nX =
         computeNoiseXY(
-            baseNoiseX,
+            Constants.Vision.BASE_NOISE_X,
             Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
             Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
             Constants.Vision.ANGLE_COEFFICIENT_X,
@@ -179,7 +167,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     double nY =
         computeNoiseXY(
-            baseNoiseY,
+            Constants.Vision.BASE_NOISE_Y,
             Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
             Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
             Constants.Vision.ANGLE_COEFFICIENT_Y,
@@ -190,7 +178,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     double nTH =
         computeNoiseHeading(
-            baseNoiseTheta,
+            Constants.Vision.BASE_NOISE_THETA,
             Constants.Vision.DISTANCE_COEFFICIENT_THETA,
             Constants.Vision.ANGLE_COEFFICIENT_THETA,
             Constants.Vision.SPEED_COEFFICIENT_THETA,
@@ -282,7 +270,7 @@ public class VisionSubsystem extends SubsystemBase {
       double timestamp,
       Matrix<N3, N1> noiseVector) {
 
-    // Use vision timestamp if within threshold of FPGA timestamp
+    // Use vision timestamp if within threshold of FPGA timestamp, else take the FPGA timestamp with correction.
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
@@ -324,12 +312,12 @@ public class VisionSubsystem extends SubsystemBase {
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
     double speedFactor = 1d + speedCoefficient * (vNorm * vNorm);
 
-    DogLog.log("Subsystems/Vision/calibrationFactor", calibrationFactor);
+    DogLog.log("Subsystems/Vision/calibrationFactor", Constants.Vision.CALIBRATION_FACTOR);
     DogLog.log("Subsystems/Vision/tagFactor", tagFactor);
     DogLog.log("Subsystems/Vision/distanceFactor", distanceFactor);
     DogLog.log("Subsystems/Vision/speedFactor", speedFactor);
 
-    double computedStdDevs = calibrationFactor * tagFactor * distanceFactor * speedFactor;
+    double computedStdDevs = Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
     return computedStdDevs;
   }
 
@@ -352,7 +340,7 @@ public class VisionSubsystem extends SubsystemBase {
     double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
     double speedFactor = 1d + speedCoefficient * (vNorm * vNorm);
 
-    double computedStdDevs = calibrationFactor * tagFactor * distanceFactor * speedFactor;
+    double computedStdDevs = Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
     return computedStdDevs;
   }
 }
