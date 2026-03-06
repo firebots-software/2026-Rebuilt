@@ -702,6 +702,9 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_Y = 0.5;
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
 
+    public static final double TIMESTAMP_THRESHOLD = 0.5;
+    public static final double TIMESTAMP_FPGA_CORRECTION = -0.03;
+
     // TODO: SID: update all vals
     public static final double FRONT_RIGHT_X = Units.inchesToMeters(-4.775894);
     public static final double FRONT_RIGHT_Y = Units.inchesToMeters(-7.880312);

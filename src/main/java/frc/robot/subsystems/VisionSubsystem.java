@@ -40,9 +40,6 @@ public class VisionSubsystem extends SubsystemBase {
   Optional<EstimatedRobotPose> visionEst;
   private final AprilTagFieldLayout fieldLayout;
 
-  public static final double timestampDiffThreshold = 0.5;
-  public static final double timestampFPGACorrection = -0.03;
-
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
   Pose2d latestMeasuredPose;
@@ -275,8 +272,8 @@ public class VisionSubsystem extends SubsystemBase {
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
-        (timestampDiff > timestampDiffThreshold)
-            ? fpgaTimestamp + timestampFPGACorrection
+        (timestampDiff > Constants.Vision.TIMESTAMP_THRESHOLD)
+            ? fpgaTimestamp + Constants.Vision.TIMESTAMP_FPGA_CORRECTION
             : timestamp;
 
     latestMeasuredPose = measuredPose;
