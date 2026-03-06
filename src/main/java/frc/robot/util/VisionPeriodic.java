@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import dev.doglog.DogLog;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.CameraSelectionMethod;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -35,6 +36,8 @@ public final class VisionPeriodic {
         if (preferredVision == null || !preferredVision.hasValidMeasurement()) return;
 
         preferredVision.addFilteredPose(drivetrain);
+
+        preferredVisionLogs();
         
 
       }
@@ -112,5 +115,11 @@ public final class VisionPeriodic {
 
         return bestVision;
 
+      }
+
+      private void preferredVisionLogs() {
+        DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
+        DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
+        DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
       }
 }
