@@ -122,7 +122,7 @@ public class MiscUtils {
     }
     else {
       shiftIndicatorSum = 0;
-      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
     }
   }
 
