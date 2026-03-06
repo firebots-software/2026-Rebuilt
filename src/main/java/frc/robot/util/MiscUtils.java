@@ -101,7 +101,18 @@ public class MiscUtils {
     double currentTimes = currentTime;
     // double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
-    if ((timeUntilNextShift < 2 && !currentShiftName(currentTimes).equals("Endgame") && !areWeActive(currentTimes))) {
+    if (areWeActive(currentTimes) && !currentShiftName(currentTimes).equals("Endgame") && timeUntilNextShift > 8) {
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+    }
+    else if (areWeActive(currentTimes) && !currentShiftName(currentTimes).equals("Endgame") && timeUntilNextShift < 8) {
+      if ((shiftIndicatorSum / 20) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      }
+      shiftIndicatorSum++;
+    }
+    else if ((timeUntilNextShift < 2 && !currentShiftName(currentTimes).equals("Endgame") && !areWeActive(currentTimes))) {
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
     }
     else if (timeUntilNextShift < 5 && !currentShiftName(currentTimes).equals("Endgame") && !areWeActive(currentTimes)) {
