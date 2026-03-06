@@ -134,7 +134,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // from linear speed in ft/sec to motor rps
   public double calculateFtPSToRPS(double speedFtPS) {
-    return (speedFtPS * 12)
+    return speedFtPS
         / (Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI)
         * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
   }
@@ -143,8 +143,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public double calculateRPSToFtPS(double rps) {
     return (rps / Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS)
         * Constants.Shooter.SHOOTER_WHEEL_DIAMETER
-        * Math.PI
-        / 12;
+        * Math.PI;
     // return rps / 12
     // * (Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI)
     // / Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
@@ -160,7 +159,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setBallSpeed(double ballSpeed) {
     targetBallSpeed = ballSpeed;
     shooter.setControl(
-        m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed / 2.0 * coefficient)));
+        m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed * coefficient)));
   }
 
   public void stopShooter() {
@@ -171,12 +170,12 @@ public class ShooterSubsystem extends SubsystemBase {
     if (shooter.getCachedVelocityRps() == 0) {
       return false;
     }
-    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - (shooter.getCachedVelocityRps() * 2))
+    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - shooter.getCachedVelocityRps())
         <= TOLERANCE_RPS;
   }
 
   public double getCurrentBallSpeedFtPS() {
-    return calculateRPSToFtPS(shooter.getCachedVelocityRps()) * 2;
+    return calculateRPSToFtPS(shooter.getCachedVelocityRps());
   }
 
   public double getTargetBallSpeedFtPS() {
@@ -234,6 +233,7 @@ public class ShooterSubsystem extends SubsystemBase {
         "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
     DogLog.log(
         "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+    DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", shooter.getVelocity().getValueAsDouble());
   }
 
   // @Override
