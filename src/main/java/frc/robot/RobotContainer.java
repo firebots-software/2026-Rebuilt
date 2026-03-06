@@ -7,16 +7,13 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
-import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
-import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ShootBasic;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -28,6 +25,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.MiscUtils;
+import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -189,100 +187,11 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-    if (!Constants.visionOnRobot
-        || visionFrontRight == null
-        || visionFrontLeft == null
-        || visionRearRight == null
-        || visionRearLeft == null) return;
 
-    VisionSubsystem visionFallback;
+    VisionUtils.visionPeriodic(
+        visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
-    VisionCamera fallbackCamera = Constants.Vision.FALLBACK_CAMERA;
-
-    if (fallbackCamera == VisionCamera.FRONT_RIGHT_CAM) visionFallback = visionFrontRight;
-    else if (fallbackCamera == VisionCamera.REAR_RIGHT_CAM) visionFallback = visionRearRight;
-    else if (fallbackCamera == VisionCamera.REAR_LEFT_CAM) visionFallback = visionRearLeft;
-    else visionFallback = visionFrontLeft;
-
-    visionFrontRight.calculateFilteredPose(drivetrain);
-    visionFrontLeft.calculateFilteredPose(drivetrain);
-    visionRearRight.calculateFilteredPose(drivetrain);
-    visionRearLeft.calculateFilteredPose(drivetrain);
-
-    // Log fuel gauge state if enabled
-    if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
-      FuelGauge gaugeState = visionFuelGauge.getCurrentFuelGaugeState();
-      DogLog.log("Elastic/FuelGauge", gaugeState.toString());
-      DogLog.log("Elastic/FuelGauge/CameraConnected", true);
-    } else {
-      DogLog.log("Elastic/FuelGauge", "N/A");
-      DogLog.log("Elastic/FuelGauge/CameraConnected", false);
-    }
-
-    VisionSubsystem preferredVision = visionFallback;
-
-    if (!Constants.Vision.SKIP_TO_FALLBACK) {
-
-      double preferredDistance = Double.MAX_VALUE;
-      double frontRightDist, frontLeftDist, rearRightDist, rearLeftDist;
-
-      switch (Constants.Vision.CAMERA_SELECTION_METHOD) {
-        case MIN:
-        default:
-          frontRightDist = visionFrontRight.getMinDistance();
-          frontLeftDist = visionFrontLeft.getMinDistance();
-          rearRightDist = visionRearRight.getMinDistance();
-          rearLeftDist = visionRearLeft.getMinDistance();
-          break;
-        case AVG:
-          frontRightDist = visionFrontRight.getAverageDistance();
-          frontLeftDist = visionFrontLeft.getAverageDistance();
-          rearRightDist = visionRearRight.getAverageDistance();
-          rearLeftDist = visionRearLeft.getAverageDistance();
-          break;
-        case MAX:
-          frontRightDist = visionFrontRight.getMaxDistance();
-          frontLeftDist = visionFrontLeft.getMaxDistance();
-          rearRightDist = visionRearRight.getMaxDistance();
-          rearLeftDist = visionRearLeft.getMaxDistance();
-          break;
-        case POSE_AMBIGUITY:
-          frontRightDist = visionFrontRight.getPoseAmbiguity();
-          frontLeftDist = visionFrontLeft.getPoseAmbiguity();
-          rearRightDist = visionRearRight.getPoseAmbiguity();
-          rearLeftDist = visionRearLeft.getPoseAmbiguity();
-          break;
-      }
-
-      if (frontRightDist < preferredDistance && visionFrontRight.hasValidMeasurement()) {
-        preferredVision = visionFrontRight;
-        preferredDistance = frontRightDist;
-      }
-
-      if (frontLeftDist < preferredDistance && visionFrontLeft.hasValidMeasurement()) {
-        preferredVision = visionFrontLeft;
-        preferredDistance = frontLeftDist;
-      }
-
-      if (rearRightDist < preferredDistance && visionRearRight.hasValidMeasurement()) {
-        preferredVision = visionRearRight;
-        preferredDistance = rearRightDist;
-      }
-
-      if (rearLeftDist < preferredDistance && visionRearLeft.hasValidMeasurement()) {
-        preferredVision = visionRearLeft;
-        preferredDistance = rearLeftDist;
-      }
-    }
-
-    if (preferredVision == null || !preferredVision.hasValidMeasurement()) return;
-
-    DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
-
-    preferredVision.addFilteredPose(drivetrain);
-
-    DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
-    DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
+    VisionUtils.fuelGaugeLogs(visionFuelGauge);
   }
 
   public static void setAlliance() {
