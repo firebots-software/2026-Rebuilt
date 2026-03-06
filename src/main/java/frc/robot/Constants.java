@@ -5,8 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -784,36 +782,6 @@ public final class Constants {
       AVG(),
       MAX(),
       POSE_AMBIGUITY();
-    }
-
-    public static final FieldTags FIELD_LAYOUT = FieldTags.ALL;
-
-    private static final String WELDED_RESOURCE = "/vision/k2026RebuiltWelded.json";
-    private static final String RED_RESOURCE_FILE = "/vision/k2026RebuiltWeldedRedSide.json";
-    private static final String BLUE_RESOURCE_FILE = "/vision/k2026RebuiltWeldedBlueSide.json";
-
-    private static AprilTagFieldLayout loadLayout(String resource) {
-      try {
-        return AprilTagFieldLayout.loadFromResource(resource);
-      } catch (Exception e) {
-        throw new RuntimeException("Failed to load AprilTag layout: " + resource, e);
-      }
-    }
-
-    public static enum FieldTags {
-      ALL(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded));
-      // RED(loadLayout(RED_RESOURCE_FILE)),
-      // BLUE(loadLayout(BLUE_RESOURCE_FILE));
-
-      private final AprilTagFieldLayout fieldLayout;
-
-      FieldTags(AprilTagFieldLayout field) {
-        fieldLayout = field;
-      }
-
-      public AprilTagFieldLayout getField() {
-        return fieldLayout;
-      }
     }
   }
 

@@ -63,23 +63,19 @@ public class RobotContainer {
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
-          ? new VisionSubsystem(
-              Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM)
           : null;
   public final VisionSubsystem visionFrontLeft =
       Constants.visionOnRobot
-          ? new VisionSubsystem(
-              Constants.Vision.VisionCamera.FRONT_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM)
           : null;
   public final VisionSubsystem visionRearRight =
       Constants.visionOnRobot
-          ? new VisionSubsystem(
-              Constants.Vision.VisionCamera.REAR_RIGHT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM)
           : null;
   public final VisionSubsystem visionRearLeft =
       Constants.visionOnRobot
-          ? new VisionSubsystem(
-              Constants.Vision.VisionCamera.REAR_LEFT_CAM, Constants.Vision.FIELD_LAYOUT)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM)
           : null;
 
   public final FuelGaugeDetection visionFuelGauge =
