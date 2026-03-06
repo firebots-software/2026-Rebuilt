@@ -7,6 +7,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
@@ -95,15 +97,33 @@ public class MiscUtils {
     else return "Endgame";
   }
 
-  public static boolean shiftSwitchIndicator(double currentTime) {
+  public static void shiftSwitchIndicator(double currentTime) {
     double currentTimes = currentTime;
     // double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
-    if (timeUntilNextShift < 5 && !currentShiftName(currentTimes).equals("Endgame")) {
-      shiftIndicatorSum++;
-      return (shiftIndicatorSum / 10) % 2 == 1;
+    if ((timeUntilNextShift < 2 && !currentShiftName(currentTimes).equals("Endgame") && !areWeActive(currentTimes))) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
     }
-    return false;
+    else if (timeUntilNextShift < 5 && !currentShiftName(currentTimes).equals("Endgame") && !areWeActive(currentTimes)) {
+      if ((shiftIndicatorSum / 8) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFF00");
+      }
+      shiftIndicatorSum++;
+    }
+    else if (timeUntilNextShift < 8 && !currentShiftName(currentTimes).equals("Endgame") && !areWeActive(currentTimes)) {
+      if ((shiftIndicatorSum / 20) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
+      }
+      shiftIndicatorSum++;
+    }
+    else {
+      shiftIndicatorSum = 0;
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+    }
   }
 
   public static double get3dDistance(Transform3d transform) {
