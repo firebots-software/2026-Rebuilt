@@ -63,12 +63,14 @@ public class VisionSubsystem extends SubsystemBase {
     latestVisionResult = null;
   }
 
+  public VisionCamera getCamera() {
+    return cameraID;
+  }
+
   @Override
   public void periodic() {
 
-    visionEst = Optional.empty();
-    latestVisionResult = null;
-    hasValidMeasurement = false;
+    setupPeriodicVars();
 
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
     for (PhotonPipelineResult result : results) {
@@ -80,8 +82,10 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/CameraConnected", true);
   }
 
-  public VisionCamera getCamera() {
-    return cameraID;
+  private void setupPeriodicVars() {
+    visionEst = Optional.empty();
+    latestVisionResult = null;
+    hasValidMeasurement = false;
   }
 
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
