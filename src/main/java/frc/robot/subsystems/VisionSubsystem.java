@@ -91,20 +91,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
     hasValidMeasurement = false;
 
-    DogLog.log(loggingPath + "/addFilteredPoseworking", true);
-
-    if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-      DogLog.log(loggingPath + "/HasResult", false);
-      return;
-    }
-    DogLog.log(loggingPath + "/HasResult", true);
-
-    // Ensure we have a valid pose estimate and vision result from periodic()
-    if (visionEst.isEmpty()) {
-      DogLog.log(loggingPath + "/HasEstimate", false);
-      return;
-    }
-    DogLog.log(loggingPath + "/HasEstimate", true);
+    if (!checkResultValidity()) return;
 
     // creates a list of all detected tags and logs for debugging
     List<PhotonTrackedTarget> tags =
@@ -205,6 +192,27 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       DogLog.log("Subsystems/Vision/measuredPoseAvailable", true);
     }
+  }
+
+  private boolean checkResultValidity() {
+    boolean validResult = true;
+    DogLog.log(loggingPath + "/addFilteredPoseRunning", true);
+
+    if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
+      DogLog.log(loggingPath + "/HasResultsTargets", false);
+      validResult = false;
+    } else {
+      DogLog.log(loggingPath + "/HasResultsTargets", true);
+    }
+
+    if (visionEst.isEmpty()) {
+      DogLog.log(loggingPath + "/HasEstimate", false);
+      validResult = false;
+    } else {
+      DogLog.log(loggingPath + "/HasEstimate", true);
+    }
+
+    return validResult;
   }
 
   public double getMinDistance() {
