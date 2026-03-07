@@ -54,6 +54,7 @@ public class RobotContainer {
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CommandXboxController debugJoystick = new CommandXboxController(1);
+  private final CommandXboxController joystick2 = new CommandXboxController(2);
   private final CommandXboxController ronaldoJoystick = new CommandXboxController(3);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -194,6 +195,9 @@ public class RobotContainer {
                   () -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
     }
 
+
+    joystick2.a().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
+    joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
     // hopperSubsystem));
 
