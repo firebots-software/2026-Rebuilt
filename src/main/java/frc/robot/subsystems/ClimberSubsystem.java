@@ -164,7 +164,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void setSitUpPosition(double degrees) {
-    // sitUpTargetDeg = degrees * Constants.Climber.SitUp.DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS;
+    sitUpTargetDeg = degrees * Constants.Climber.SitUp.DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS;
     sitUpMotor.setControl(m_motionMagicRequest.withPosition(degrees));
   }
 
@@ -342,7 +342,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command SitUpCommand(double angle) {
-    return run(() -> setSitUpPosition(angle)); // .until(this::isSitUpAtPosition);
+    return runOnce(() -> setSitUpPosition(angle)).until(this::isSitUpAtPosition);
   }
 
   // separate command groups to incorporate driveToPose
