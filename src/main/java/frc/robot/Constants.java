@@ -595,8 +595,8 @@ public final class Constants {
     }
 
     public static class PullUp {
-      public static final int MOTOR_L_PORT = 9;
-      public static final int MOTOR_R_PORT = 10;
+      public static final int MOTOR_L_PORT = 10;
+      public static final int MOTOR_R_PORT = 9;
 
       public static final double KP = 0.4;
       public static final double KI = 0;
