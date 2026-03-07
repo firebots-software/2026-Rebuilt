@@ -113,7 +113,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     ChassisSpeeds robotSpeeds = swerve.getState().Speeds;
 
-    var field =
+    ChassisSpeeds field =
         ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
 
     double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
@@ -122,7 +122,7 @@ public class VisionSubsystem extends SubsystemBase {
         VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
 
     // Send to pose estimator / swerve
-    processPoseEstimate(measuredPose, estimatedPose.timestampSeconds, noiseVector);
+    latestFinalTimestamp = processPoseEstimate(measuredPose, estimatedPose.timestampSeconds, noiseVector);
 
     hasValidMeasurement = true;
 
@@ -232,11 +232,8 @@ public class VisionSubsystem extends SubsystemBase {
     return hasValidMeasurement;
   }
 
-  private void processPoseEstimate(
+  private double processPoseEstimate(
       Pose2d measuredPose, double timestamp, Matrix<N3, N1> noiseVector) {
-
-    // Use vision timestamp if within threshold of FPGA timestamp, else take the FPGA timestamp with
-    // correction.
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
@@ -244,9 +241,7 @@ public class VisionSubsystem extends SubsystemBase {
             ? fpgaTimestamp + Constants.Vision.TIMESTAMP_FPGA_CORRECTION
             : timestamp;
 
-    latestMeasuredPose = measuredPose;
-    latestFinalTimestamp = finalTimestamp;
-    latestNoiseVector = noiseVector;
+    return finalTimestamp;
   }
 
   public Pose2d getFilteredPose() {
