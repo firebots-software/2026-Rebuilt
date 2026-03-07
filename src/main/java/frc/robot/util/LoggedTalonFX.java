@@ -223,8 +223,7 @@ public class LoggedTalonFX extends TalonFX {
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(supplyCurrentLimit);
 
-    motorConfiguration.CurrentLimits = clc;
-    this.getConfigurator().apply(motorConfiguration);
+    this.getConfigurator().apply(clc);
   }
 
   public static void periodic_static() {
