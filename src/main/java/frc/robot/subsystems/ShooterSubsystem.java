@@ -131,7 +131,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
+    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(
         distanceToTarget);
   }
 
