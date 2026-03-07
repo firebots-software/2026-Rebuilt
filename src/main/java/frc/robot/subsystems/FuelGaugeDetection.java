@@ -41,6 +41,27 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     if (!validVisionResult()) return;
 
+    getVisionResult();
+  }
+
+  private boolean checkCameraConnected() {
+
+    boolean cameraConnected = photonCamera.isConnected();
+    DogLog.log("FuelGauge/CameraStatus", cameraConnected);
+    return cameraConnected;
+  }
+
+  private boolean validVisionResult() {
+
+    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
+    for (PhotonPipelineResult result : results) {
+      latestVisionResult = result;
+    }
+    return (latestVisionResult == null);
+  }
+
+  private void getVisionResult() {
+
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
         b -> {
@@ -65,26 +86,10 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", avgMultipleBalls);
           DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBalls);
 
-          fuelGaugeStateSetAndLog(
+          calculateFuelGaugeState(
               rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
-  }
-
-  private boolean checkCameraConnected() {
-
-    boolean cameraConnected = photonCamera.isConnected();
-    DogLog.log("FuelGauge/CameraStatus", cameraConnected);
-    return cameraConnected;
-  }
-
-  private boolean validVisionResult() {
-
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-    }
-    return (latestVisionResult == null);
   }
 
   private double updateLatestList(ArrayList<Double> list, double area) {
@@ -103,7 +108,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     return smoothedArea;
   }
 
-  private void fuelGaugeStateSetAndLog(
+  private void calculateFuelGaugeState(
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
 
     latestRawGauge = setFuelGauge(rawArea);
