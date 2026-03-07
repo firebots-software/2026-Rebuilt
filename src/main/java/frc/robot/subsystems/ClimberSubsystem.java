@@ -287,9 +287,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public boolean checkMuscleUpCurrent() {
     double supplyCurrent = Math.abs(muscleUpMotor.getSupplyCurrent().getValue().magnitude());
     double statorCurrent = Math.abs(muscleUpMotor.getStatorCurrent().getValue().magnitude());
-
-    DogLog.log("supply current", supplyCurrent);
-    DogLog.log("stator current", statorCurrent);
+    muscleUpMotor.getSupplyCurrent().getValueAsDouble();
 
     return supplyCurrent > 0.2 && statorCurrent > 6.0;
   }
@@ -401,5 +399,18 @@ public class ClimberSubsystem extends SubsystemBase {
 
     DogLog.log(
         "Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpPosInRotationsFromEncoder());
+
+    DogLog.log(
+        "Subsystems/Climber/CurrentLimits/MuscleUpStator",
+        muscleUpMotor.getStatorCurrent().getValue().magnitude());
+    DogLog.log(
+        "Subsystems/Climber/CurrentLimits/MuscleUpSupply",
+        muscleUpMotor.getSupplyCurrent().getValue().magnitude());
+    DogLog.log(
+        "Subsystems/Climber/CurrentLimits/PullUpStator",
+        pullUpMotorR.getStatorCurrent().getValue().magnitude());
+    DogLog.log(
+        "Subsystems/Climber/CurrentLimits/PullUpSupply",
+        pullUpMotorR.getSupplyCurrent().getValue().magnitude());
   }
 }
