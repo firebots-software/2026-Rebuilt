@@ -942,9 +942,8 @@ public final class Constants {
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
 
-    public static final InterpolatingDoubleTreeMap
-        SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
-            new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
+        new InterpolatingDoubleTreeMap();
 
     static {
       UPDATE_INTERMAPS();

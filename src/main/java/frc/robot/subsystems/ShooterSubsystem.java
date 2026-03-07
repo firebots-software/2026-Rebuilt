@@ -102,7 +102,6 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Gains/kD", Constants.Shooter.KD);
     DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.KV);
     DogLog.log("Subsystems/Shooter/Gains/kA", Constants.Shooter.KA);
-
   }
 
   public void setShooterWheelRPS(double shooterWheelSpeedRPS) {
@@ -118,12 +117,11 @@ public class ShooterSubsystem extends SubsystemBase {
     if (shooter.getCachedVelocityRps() == 0) {
       return false;
     }
-    return Math.abs(targetShooterWheelRPS - (getCurrentShooterWheelSpeedRPS()))
-        <= TOLERANCE_RPS;
+    return Math.abs(targetShooterWheelRPS - (getCurrentShooterWheelSpeedRPS())) <= TOLERANCE_RPS;
   }
 
   public double getCurrentShooterWheelSpeedRPS() {
-    return shooter.getCachedVelocityRps()*Constants.Shooter.WHEEL_ROTS_PER_MOTOR_ROT;
+    return shooter.getCachedVelocityRps() * Constants.Shooter.WHEEL_ROTS_PER_MOTOR_ROT;
   }
 
   public double getTargetShooterWheelSpeedRPS() {
@@ -131,8 +129,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(
-        distanceToTarget);
+    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget);
   }
 
   // Commands
@@ -146,7 +143,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public Command shootAtSpeedCommand(DoubleSupplier shooterWheelSpeedRPS) {
     DogLog.log("ShootingSpeedRN", shooterWheelSpeedRPS.getAsDouble());
-    return runEnd(() -> this.setShooterWheelRPS(shooterWheelSpeedRPS.getAsDouble()), this::stopShooter);
+    return runEnd(
+        () -> this.setShooterWheelRPS(shooterWheelSpeedRPS.getAsDouble()), this::stopShooter);
   }
 
   @Override
