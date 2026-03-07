@@ -4,7 +4,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.util.VisionUtils;
-
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -119,8 +117,9 @@ public class VisionSubsystem extends SubsystemBase {
         ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
 
     double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
-    
-    Matrix<N3, N1> noiseVector = VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
+
+    Matrix<N3, N1> noiseVector =
+        VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
 
     // Send to pose estimator / swerve
     processPoseEstimate(
