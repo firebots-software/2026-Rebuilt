@@ -32,6 +32,7 @@ public class ZeroMuscleUp extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    climberSubsystem.stopMuscleUp();
     if (!interrupted) {
       climberSubsystem.resetMuscleUpPositionToZero();
     }
