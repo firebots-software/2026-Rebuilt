@@ -16,7 +16,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -111,7 +110,7 @@ public class VisionSubsystem extends SubsystemBase {
     latestAvgDistance = getAverageDistance();
 
     if (throwOutDistance(latestMinDistance)) return;
-    
+
     ChassisSpeeds robotSpeeds = swerve.getState().Speeds;
 
     var field =
@@ -142,15 +141,7 @@ public class VisionSubsystem extends SubsystemBase {
             currentSpeed,
             latestTagCount);
 
-    double nTH =
-        computeNoiseHeading(
-            Constants.Vision.BASE_NOISE_THETA,
-            Constants.Vision.DISTANCE_COEFFICIENT_THETA,
-            Constants.Vision.ANGLE_COEFFICIENT_THETA,
-            Constants.Vision.SPEED_COEFFICIENT_THETA,
-            latestAvgDistance,
-            currentSpeed,
-            latestTagCount);
+    double nTH = computeNoiseHeading(latestAvgDistance, currentSpeed, latestTagCount);
 
     Matrix<N3, N1> noiseVector = VecBuilder.fill(nX, nY, nTH);
 
@@ -176,10 +167,14 @@ public class VisionSubsystem extends SubsystemBase {
     boolean resultExists = true, hasEstimate = true;
     DogLog.log(loggingPath + "/addFilteredPoseRunning", true);
 
-    if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) { resultExists = false; }
+    if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
+      resultExists = false;
+    }
     DogLog.log(loggingPath + "/HasResultsTargets", resultExists);
 
-    if (visionEst.isEmpty()) { hasEstimate = false; }
+    if (visionEst.isEmpty()) {
+      hasEstimate = false;
+    }
 
     DogLog.log(loggingPath + "/HasEstimate", hasEstimate);
 
@@ -189,7 +184,9 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean checkTagsValidity() {
     boolean tagsValid = true;
     List<PhotonTrackedTarget> tags = latestVisionResult.getTargets();
-    if (tags.isEmpty()) { tagsValid = false; } 
+    if (tags.isEmpty()) {
+      tagsValid = false;
+    }
     DogLog.log(loggingPath + "/Tags", tagsValid);
 
     if (tagsValid) {
@@ -202,12 +199,13 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     return tagsValid;
-
   }
 
   private boolean throwOutDistance(double min) {
     boolean thrownOut = false;
-    if (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE) { thrownOut = true; }
+    if (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE) {
+      thrownOut = true;
+    }
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
   }
@@ -329,14 +327,12 @@ public class VisionSubsystem extends SubsystemBase {
     return computedStdDevs;
   }
 
-  private double computeNoiseHeading(
-      double baseNoise,
-      double distanceCoefficient,
-      double angleCoefficient,
-      double speedCoefficient,
-      double distance,
-      double robotSpeed,
-      int tagCount) {
+  private double computeNoiseHeading(double distance, double robotSpeed, int tagCount) {
+
+    double baseNoise = Constants.Vision.BASE_NOISE_THETA;
+    double distanceCoefficient = Constants.Vision.DISTANCE_COEFFICIENT_THETA;
+    double angleCoefficient = Constants.Vision.ANGLE_COEFFICIENT_THETA;
+    double speedCoefficient = Constants.Vision.SPEED_COEFFICIENT_THETA;
 
     // Tag count factor (cap at 4 - diminishing returns)
     int effectiveTags = Math.min(tagCount, 4);
