@@ -132,11 +132,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     hasValidMeasurement = true;
 
-    if (measuredPose == null) {
-      DogLog.log("Subsystems/Vision/measuredPoseAvailable", false);
-    } else {
-      DogLog.log("Subsystems/Vision/measuredPoseAvailable", true);
-    }
+    DogLog.log("Subsystems/Vision/measuredPoseAvailable", measuredPose == null);
   }
 
   private boolean checkResultValidity() {
