@@ -36,16 +36,9 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Check camera connection status
-    boolean cameraConnected = photonCamera.isConnected();
-    if (cameraConnected) {
-      DogLog.log("FuelGauge/CameraStatus", true);
-    } else {
-      DogLog.log("FuelGauge/CameraStatus", false);
-      return;
-    }
 
-    // Get latest vision results
+    if (!checkCameraConnected()) return;
+
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
     for (PhotonPipelineResult result : results) {
       latestVisionResult = result;
@@ -83,6 +76,13 @@ public class FuelGaugeDetection extends SubsystemBase {
               rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
+  }
+
+  private boolean checkCameraConnected() {
+
+    boolean cameraConnected = photonCamera.isConnected();
+    DogLog.log("FuelGauge/CameraStatus", cameraConnected);
+    return cameraConnected;
   }
 
   private double updateLatestList(ArrayList<Double> list, double area) {

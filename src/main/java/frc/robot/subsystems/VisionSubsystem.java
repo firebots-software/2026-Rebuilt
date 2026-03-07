@@ -79,12 +79,14 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private void setupPeriodicVars() {
+
     visionEst = Optional.empty();
     latestVisionResult = null;
     hasValidMeasurement = false;
   }
 
   private void updateVisionEstFromResults(List<PhotonPipelineResult> results) {
+
     for (PhotonPipelineResult result : results) {
       latestVisionResult = result;
       visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
@@ -93,6 +95,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
+
     hasValidMeasurement = false;
 
     if (!checkResultValidity()) return;
@@ -127,29 +130,24 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private boolean checkResultValidity() {
-    boolean resultExists = true, hasEstimate = true;
+
     DogLog.log(loggingPath + "/addFilteredPoseRunning", true);
 
-    if (latestVisionResult == null || latestVisionResult.getTargets().isEmpty()) {
-      resultExists = false;
-    }
+    boolean resultExists =
+        (!(latestVisionResult == null) && !(latestVisionResult.getTargets().isEmpty()));
     DogLog.log(loggingPath + "/HasResultsTargets", resultExists);
 
-    if (visionEst.isEmpty()) {
-      hasEstimate = false;
-    }
-
+    boolean hasEstimate = !visionEst.isEmpty();
     DogLog.log(loggingPath + "/HasEstimate", hasEstimate);
 
     return (resultExists && hasEstimate);
   }
 
   private boolean checkTagsValidity() {
-    boolean tagsValid = true;
+
     List<PhotonTrackedTarget> tags = latestVisionResult.getTargets();
-    if (tags.isEmpty()) {
-      tagsValid = false;
-    }
+
+    boolean tagsValid = !tags.isEmpty();
     DogLog.log(loggingPath + "/Tags", tagsValid);
 
     if (tagsValid) {
@@ -165,15 +163,14 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private boolean throwOutDistance(double min) {
-    boolean thrownOut = false;
-    if (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE) {
-      thrownOut = true;
-    }
+
+    boolean thrownOut = (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE);
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
   }
 
   public double getMinDistance() {
+
     double minDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -187,6 +184,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getAverageDistance() {
+
     double avgDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -200,6 +198,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getMaxDistance() {
+
     double maxDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -213,6 +212,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getPoseAmbiguity() {
+
     double poseAmbiguity =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -226,11 +226,13 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean hasValidMeasurement() {
+
     return hasValidMeasurement;
   }
 
   private double calculateTimestamp(
       Pose2d measuredPose, double timestamp, Matrix<N3, N1> noiseVector) {
+
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
@@ -242,10 +244,12 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public Pose2d getFilteredPose() {
+
     return latestMeasuredPose;
   }
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
+
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
 }
