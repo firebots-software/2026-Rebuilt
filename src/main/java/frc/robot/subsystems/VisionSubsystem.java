@@ -106,8 +106,8 @@ public class VisionSubsystem extends SubsystemBase {
     if (!checkTagsValidity()) return;
 
     EstimatedRobotPose estimatedPose = visionEst.get();
-    Pose2d measuredPose = estimatedPose.estimatedPose.toPose2d();
-    DogLog.log(loggingPath + "/MeasuredPose", measuredPose);
+    latestMeasuredPose = estimatedPose.estimatedPose.toPose2d();
+    DogLog.log(loggingPath + "/MeasuredPose", latestMeasuredPose);
 
     latestMinDistance = getMinDistance();
     latestAvgDistance = getAverageDistance();
@@ -121,15 +121,14 @@ public class VisionSubsystem extends SubsystemBase {
 
     double currentSpeed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
 
-    Matrix<N3, N1> noiseVector =
+    latestNoiseVector =
         VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
 
-    latestFinalTimestamp =
-        calculateTimestamp(measuredPose, estimatedPose.timestampSeconds, noiseVector);
+    latestFinalTimestamp = calculateTimestamp(estimatedPose.timestampSeconds);
 
     hasValidMeasurement = true;
 
-    DogLog.log(loggingPath + "/measuredPoseAvailable", measuredPose == null);
+    DogLog.log(loggingPath + "/measuredPoseAvailable", latestMeasuredPose == null);
   }
 
   private boolean checkResultValidity() {
@@ -248,8 +247,7 @@ public class VisionSubsystem extends SubsystemBase {
     return hasValidMeasurement;
   }
 
-  private double calculateTimestamp(
-      Pose2d measuredPose, double timestamp, Matrix<N3, N1> noiseVector) {
+  private double calculateTimestamp(double timestamp) {
 
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
