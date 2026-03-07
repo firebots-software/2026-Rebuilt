@@ -32,7 +32,7 @@ public class ShootWithWarning extends ParallelCommandGroup {
             frontBackFunction,
             leftRightFunction,
             () -> 1f,
-            () -> true,
+            () -> false,
             () -> Targeting.targetAngle(target, drivetrain),
             drivetrain),
         Commands.runEnd(

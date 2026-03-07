@@ -32,7 +32,7 @@ public class ArcAroundAndShoot extends ParallelCommandGroup {
             target,
             tangentialVelocitySupplier,
             () -> 1f,
-            () -> true,
+            () -> false,
             () -> Targeting.targetAngle(target, drivetrain),
             drivetrain,
             redside),
