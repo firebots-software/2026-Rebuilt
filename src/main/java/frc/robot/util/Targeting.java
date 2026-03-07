@@ -51,7 +51,7 @@ public class Targeting {
 
     for (int i = 0; i < precision; i++) {
       double dist = Vector3.subtract(correctedPos, shooterPos).magnitude();
-      double tof = Constants.Shooter.TOF_FOR_DISTANCE_INTERMAP.get(dist);
+      double tof = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(dist);
       correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
       correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
       prevTof = tof;

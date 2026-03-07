@@ -944,8 +944,8 @@ public final class Constants {
     public static final InterpolatingDoubleTreeMap
         MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
             new InterpolatingDoubleTreeMap();
-    public static final InterpolatingDoubleTreeMap TOF_FOR_DISTANCE_INTERMAP =
-        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap
+        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
 
     static {
       UPDATE_INTERMAPS();
@@ -991,8 +991,29 @@ public final class Constants {
               144d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
           96d);
 
-      TOF_FOR_DISTANCE_INTERMAP.clear();
-      TOF_FOR_DISTANCE_INTERMAP.put(0d, 0d);
+      double VIDEO_SECONDS_TO_REGULAR_SECONDS = 1d / 8d;
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, 0d);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              13d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          10d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              50d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              70d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              93d + 1d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          14d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              102d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          15d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
     }
   }
 
