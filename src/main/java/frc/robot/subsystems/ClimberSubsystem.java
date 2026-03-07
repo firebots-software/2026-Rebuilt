@@ -72,14 +72,14 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKI(Constants.Climber.SitUp.KI)
             .withKD(Constants.Climber.SitUp.KD);
 
-    MotorOutputConfigs moc =
-        new MotorOutputConfigs()
-            .withNeutralMode(NeutralModeValue.Brake)
-            .withInverted(InvertedValue.Clockwise_Positive);
-    MotorOutputConfigs mocReversed =
+    MotorOutputConfigs mocCCWPos =
         new MotorOutputConfigs()
             .withNeutralMode(NeutralModeValue.Brake)
             .withInverted(InvertedValue.CounterClockwise_Positive);
+    MotorOutputConfigs mocCWPos =
+        new MotorOutputConfigs()
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInverted(InvertedValue.Clockwise_Positive);
 
     MotionMagicConfigs mmc =
         new MotionMagicConfigs()
@@ -128,7 +128,7 @@ public class ClimberSubsystem extends SubsystemBase {
         new TalonFXConfiguration()
             .withSlot0(muscleUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(mocReversed);
+            .withMotorOutput(mocCWPos);
 
     FeedbackConfigs feedbackConfigs =
         new FeedbackConfigs()
@@ -141,7 +141,7 @@ public class ClimberSubsystem extends SubsystemBase {
         new TalonFXConfiguration()
             .withSlot0(sitUps0c)
             .withCurrentLimits(specialClc)
-            .withMotorOutput(moc)
+            .withMotorOutput(mocCWPos)
             .withMotionMagic(mmc)
             .withFeedback(feedbackConfigs);
 
@@ -149,13 +149,13 @@ public class ClimberSubsystem extends SubsystemBase {
         new TalonFXConfiguration()
             .withSlot0(pullUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(moc);
+            .withMotorOutput(mocCWPos);
 
     TalonFXConfiguration pullUpRightConfig =
         new TalonFXConfiguration()
             .withSlot0(pullUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(mocReversed);
+            .withMotorOutput(mocCCWPos);
 
     TalonFXConfigurator muscleUpMotorConfig = muscleUpMotor.getConfigurator();
     TalonFXConfigurator sitUpMotorConfig = sitUpMotor.getConfigurator();
@@ -275,13 +275,13 @@ public class ClimberSubsystem extends SubsystemBase {
   public void movePullUpUpWithVoltage() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_voltageRequest.withOutput(-5.0));
+    pullUpMotorR.setControl(m_voltageRequest.withOutput(4.0));
   }
 
   public void movePullUpDownWithVoltage() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_voltageRequest.withOutput(3.5));
+    pullUpMotorR.setControl(m_voltageRequest.withOutput(-4.0));
   }
 
   public Command movePullUpUpWithVoltageCommand() {
