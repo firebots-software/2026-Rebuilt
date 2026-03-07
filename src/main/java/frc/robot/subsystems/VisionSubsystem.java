@@ -122,13 +122,7 @@ public class VisionSubsystem extends SubsystemBase {
         VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
 
     // Send to pose estimator / swerve
-    processPoseEstimate(
-        measuredPose,
-        latestAvgDistance,
-        currentSpeed,
-        latestTagCount,
-        estimatedPose.timestampSeconds,
-        noiseVector);
+    processPoseEstimate(measuredPose, estimatedPose.timestampSeconds, noiseVector);
 
     hasValidMeasurement = true;
 
@@ -239,12 +233,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private void processPoseEstimate(
-      Pose2d measuredPose,
-      double averageDistance,
-      double currentSpeed,
-      int tagCount,
-      double timestamp,
-      Matrix<N3, N1> noiseVector) {
+      Pose2d measuredPose, double timestamp, Matrix<N3, N1> noiseVector) {
 
     // Use vision timestamp if within threshold of FPGA timestamp, else take the FPGA timestamp with
     // correction.
