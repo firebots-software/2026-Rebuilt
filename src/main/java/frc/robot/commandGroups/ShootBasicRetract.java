@@ -29,23 +29,4 @@ public class ShootBasicRetract extends ParallelCommandGroup {
                             .beforeStarting(
                                 Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
   }
-
-  public ShootBasicRetract(
-      DoubleSubscriber speed,
-      BooleanSupplier readyToShoot,
-      ShooterSubsystem shooterSubsystem,
-      IntakeSubsystem intakeSubsystem,
-      HopperSubsystem hopperSubsystem) {
-    addCommands(
-        shooterSubsystem.shootAtSpeedCommand(speed),
-        Commands.waitUntil(() -> (shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()))
-            .andThen(
-                hopperSubsystem
-                    .runHopperUntilInterruptedCommand()
-                    .alongWith(
-                        intakeSubsystem
-                            .powerRetractRollersCommand()
-                            .beforeStarting(
-                                Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
-  }
 }
