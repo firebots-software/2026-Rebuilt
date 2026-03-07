@@ -1,6 +1,10 @@
 package frc.robot.util;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.Vision.CameraSelectionMethod;
@@ -138,6 +142,13 @@ public class VisionUtils {
     }
   }
 
+  public static Matrix<N3, N1> computeNoiseVector(double distance, double speed, int tagCount) {
+    double nX = computeNoiseX(distance, speed, tagCount);
+    double nY = computeNoiseY(distance, speed, tagCount);
+    double nTH = computeNoiseHeading(distance, speed,  tagCount);
+    return VecBuilder.fill(nX, nY, nTH);
+  }
+
   private static double computeNoiseXY(
       double baseNoise,
       double distanceExponentialCoefficient,
@@ -171,7 +182,7 @@ public class VisionUtils {
     return computedStdDevs;
   }
 
-  public static double computeNoiseHeading(double distance, double robotSpeed, int tagCount) {
+  private static double computeNoiseHeading(double distance, double robotSpeed, int tagCount) {
 
     double baseNoise = Constants.Vision.BASE_NOISE_THETA;
     double distanceCoefficient = Constants.Vision.DISTANCE_COEFFICIENT_THETA;
@@ -194,7 +205,7 @@ public class VisionUtils {
     return computedStdDevs;
   }
 
-  public static double computeNoiseX(double distance, double robotSpeed, int tagCount) {
+  private static double computeNoiseX(double distance, double robotSpeed, int tagCount) {
     return computeNoiseXY(
         Constants.Vision.BASE_NOISE_X,
         Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
@@ -206,7 +217,7 @@ public class VisionUtils {
         tagCount);
   }
 
-  public static double computeNoiseY(double distance, double robotSpeed, int tagCount) {
+  private static double computeNoiseY(double distance, double robotSpeed, int tagCount) {
     return computeNoiseXY(
         Constants.Vision.BASE_NOISE_Y,
         Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,

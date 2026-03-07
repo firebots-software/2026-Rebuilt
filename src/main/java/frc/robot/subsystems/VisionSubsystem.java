@@ -119,15 +119,8 @@ public class VisionSubsystem extends SubsystemBase {
         ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
 
     double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
-
-    // Compute noise model
-    double nX = VisionUtils.computeNoiseX(latestAvgDistance, currentSpeed, latestTagCount);
-
-    double nY = VisionUtils.computeNoiseY(latestAvgDistance, currentSpeed, latestTagCount);
-
-    double nTH = VisionUtils.computeNoiseHeading(latestAvgDistance, currentSpeed, latestTagCount);
-
-    Matrix<N3, N1> noiseVector = VecBuilder.fill(nX, nY, nTH);
+    
+    Matrix<N3, N1> noiseVector = VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
 
     // Send to pose estimator / swerve
     processPoseEstimate(
