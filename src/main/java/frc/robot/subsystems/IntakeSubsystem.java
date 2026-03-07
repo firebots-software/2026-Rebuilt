@@ -111,10 +111,11 @@ public class IntakeSubsystem extends SubsystemBase {
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(cancoder.getDeviceID())
             .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-            .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
             .withRotorToSensorRatio(
                 Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT
-                    / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+                    / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
+            .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+            
 
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersSlot0Configs;
