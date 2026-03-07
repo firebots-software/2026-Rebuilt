@@ -272,13 +272,13 @@ public class ClimberSubsystem extends SubsystemBase {
     pullUpMotorR.setControl(m_inwardsVoltageOut);
   }
 
-  public void moveMuscleUpDown() {
+  public void moveMuscleUpIn() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
     muscleUpMotor.setControl(m_inwardsVoltageOut);
   }
 
-  public void moveMuscleUpUp() {
+  public void moveMuscleUpOut() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
     muscleUpMotor.setControl(m_outwardsVoltageOut);
