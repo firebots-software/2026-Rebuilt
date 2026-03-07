@@ -43,8 +43,8 @@ public final class Constants {
 
       // Current Limits
       public static final double ARM_POS_RETRACTED = 126.56;
-      public static final double ARM_POS_EXTENDED = 25.75;
-      public static final double ARM_POS_MAX = 121.0;
+      public static final double ARM_POS_EXTENDED = 28.75;
+      public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
       public static final double ARM_POS_MIN = 18.6;
       public static final double ARM_POS_IDLE = 73.7;
 
@@ -55,13 +55,13 @@ public final class Constants {
 
       // TODO: Tune
       public static final double kV = 0.12;
-      public static final double kP = 206.7;
+      public static final double kP = 256.7;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
-      public static final double kG = 0.0;
+      public static final double kG = 0.167;
 
-      public static final double mmcV = 1;
-      public static final double mmcA = 3.0;
+      public static final double mmcV = 3.0;
+      public static final double mmcA = 6.0;
 
       public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
       public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
