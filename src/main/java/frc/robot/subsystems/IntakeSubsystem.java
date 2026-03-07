@@ -115,7 +115,6 @@ public class IntakeSubsystem extends SubsystemBase {
                 Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT
                     / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
             .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
-            
 
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersSlot0Configs;
