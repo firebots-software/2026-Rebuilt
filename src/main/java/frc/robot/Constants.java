@@ -5,8 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -685,6 +683,11 @@ public final class Constants {
 
     public static final double MAX_TAG_DISTANCE = 15.0; // meters, beyond which readings are dropped
 
+    public static final double CALIBRATION_FACTOR = 1.0;
+    public static final double BASE_NOISE_X = 0.0008; // m
+    public static final double BASE_NOISE_Y = 0.0008; // m
+    public static final double BASE_NOISE_THETA = 0.5; // rad
+
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
     public static final double DISTANCE_EXPONENTIAL_BASE_X = 2.97294;
@@ -701,6 +704,9 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_X = 0.5; // noise growth per fraction of max speed
     public static final double SPEED_COEFFICIENT_Y = 0.5;
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
+
+    public static final double TIMESTAMP_THRESHOLD = 0.5;
+    public static final double TIMESTAMP_FPGA_CORRECTION = -0.03;
 
     // TODO: SID: update all vals
 
@@ -795,9 +801,6 @@ public final class Constants {
       POSE_AMBIGUITY(),
       JITTER();
     }
-
-    public static final AprilTagFieldLayout FIELD_LAYOUT =
-        AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
   }
 
   public static class FuelGaugeDetection {
