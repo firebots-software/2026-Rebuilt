@@ -16,7 +16,7 @@ import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
-import frc.robot.commandGroups.ShootBasic;
+import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -53,9 +53,8 @@ public class AutoRoutines {
     this.swerveSubsystem = swerve;
     // this.climberSubsystem = climber;
     this.redSide = redSide;
-
-    forwardDTP = redSide.getAsBoolean() ? () -> false : () -> true;
-    backDTP = redSide.getAsBoolean() ? () -> true : () -> false;
+    forwardDTP = () -> !redSide.getAsBoolean();
+    backDTP = () -> redSide.getAsBoolean();
 
     autoFactory = swerveSubsystem.createAutoFactory();
 
@@ -597,27 +596,45 @@ public class AutoRoutines {
 
   public AutoRoutine test() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-    AutoTrajectory right = routine.trajectory("GoRight.traj");
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSide);
 
-    routine.active().onTrue(Commands.sequence(right.resetOdometry(), right.cmd()));
+    BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
+    BooleanSupplier backSupplier = () -> RobotContainer.setAlliance();
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardSupplier),
+                intake.resetOdometry(),
+                intake.cmd()));
+
+    intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backSupplier)));
 
     return routine;
   }
 
   public AutoRoutine testDTP() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
+
     AutoTrajectory right = routine.trajectory("GoRight.traj");
 
-    BooleanSupplier forwardSupplier = redSide.getAsBoolean() ? () -> false : () -> true;
-
+    // routine
+    //     .active()
+    //     .onTrue(
+    //         Commands.sequence(
+    //             right.resetOdometry(),
+    //             new BumpDTP(swerveSubsystem, forwardSupplier),
+    //             right.resetOdometry(),
+    //             right.cmd()));
     routine
         .active()
         .onTrue(
             Commands.sequence(
-                right.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forwardSupplier),
-                right.resetOdometry(),
-                right.cmd()));
+                right.resetOdometry(), new BumpDTP(swerveSubsystem, forwardSupplier)));
 
     return routine;
   }
@@ -707,7 +724,7 @@ public class AutoRoutines {
 
   public Command returnBasicShoot() {
     Command shoot =
-        new ShootBasic(
+        new ShootBasicRetract(
                 () ->
                     MiscUtils.computeShootingSpeed(
                         MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
