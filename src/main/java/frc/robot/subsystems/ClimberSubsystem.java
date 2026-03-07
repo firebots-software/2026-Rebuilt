@@ -75,11 +75,11 @@ public class ClimberSubsystem extends SubsystemBase {
     MotorOutputConfigs moc =
         new MotorOutputConfigs()
             .withNeutralMode(NeutralModeValue.Brake)
-            .withInverted(InvertedValue.CounterClockwise_Positive);
+            .withInverted(InvertedValue.Clockwise_Positive);
     MotorOutputConfigs mocReversed =
         new MotorOutputConfigs()
             .withNeutralMode(NeutralModeValue.Brake)
-            .withInverted(InvertedValue.Clockwise_Positive);
+            .withInverted(InvertedValue.CounterClockwise_Positive);
 
     MotionMagicConfigs mmc =
         new MotionMagicConfigs()
@@ -149,13 +149,13 @@ public class ClimberSubsystem extends SubsystemBase {
         new TalonFXConfiguration()
             .withSlot0(pullUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(mocReversed);
+            .withMotorOutput(moc);
 
     TalonFXConfiguration pullUpRightConfig =
         new TalonFXConfiguration()
             .withSlot0(pullUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(moc);
+            .withMotorOutput(mocReversed);
 
     TalonFXConfigurator muscleUpMotorConfig = muscleUpMotor.getConfigurator();
     TalonFXConfigurator sitUpMotorConfig = sitUpMotor.getConfigurator();
@@ -255,8 +255,8 @@ public class ClimberSubsystem extends SubsystemBase {
   // Zeroing climb functions (only pull up because it doesn't have an encoder):
 
   public void reducePullUpCurrentLimits() {
-    pullUpMotorR.updateCurrentLimits(10, 15);
-    pullUpMotorL.updateCurrentLimits(10, 15);
+    pullUpMotorR.updateCurrentLimits(15, 15);
+    pullUpMotorL.updateCurrentLimits(15, 15);
   }
 
   public void reduceMuscleUpCurrentLimits() {
@@ -269,20 +269,19 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void movePullUpUp() {
-    pullUpMotorR.setControl(
-        m_velocityRequest.withVelocity(3.0));
+    pullUpMotorR.setControl(m_velocityRequest.withVelocity(3.0));
   }
 
   public void movePullUpUpWithVoltage() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_voltageRequest.withOutput(3.5));
+    pullUpMotorR.setControl(m_voltageRequest.withOutput(-5.0));
   }
 
   public void movePullUpDownWithVoltage() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_voltageRequest.withOutput(-7.0));
+    pullUpMotorR.setControl(m_voltageRequest.withOutput(3.5));
   }
 
   public Command movePullUpUpWithVoltageCommand() {
@@ -309,7 +308,7 @@ public class ClimberSubsystem extends SubsystemBase {
     double supplyCurrent = Math.abs(pullUpMotorR.getSupplyCurrent().getValue().magnitude());
     double statorCurrent = Math.abs(pullUpMotorR.getStatorCurrent().getValue().magnitude());
 
-    return supplyCurrent > 1.0 && statorCurrent > 9.0;
+    return supplyCurrent > 0.5 && statorCurrent > 14.0;
   }
 
   public boolean checkMuscleUpCurrent() {
