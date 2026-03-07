@@ -922,7 +922,8 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-    public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
+    public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
+    public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 104.72;
 

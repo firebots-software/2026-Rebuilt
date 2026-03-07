@@ -18,8 +18,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,14 +33,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
-  private double targetBallSpeed = 0; // this needs to be consistent
+  private double targetShooterWheelRPS = 0;
   private static final double TOLERANCE_RPS = 2.0; // tolerance in rotations per second
-
-  private final double coefficient = 1;
-
-  // Simulation objects
-  // private TalonFXSimState shooterSimState;
-  private DCMotorSim shooterMechanismSim;
 
   public ShooterSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
     this.drivetrain = drivetrain;
@@ -111,75 +103,31 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.KV);
     DogLog.log("Subsystems/Shooter/Gains/kA", Constants.Shooter.KA);
 
-    // if (RobotBase.isSimulation()) setupSimulation();
   }
 
-  // private void setupSimulation() {
-  // shooterSimState = warmUpMotor3.getSimState();
-  // shooterSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-  // shooterSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
-
-  // // Use a SINGLE motor model since only Motor 3 is actively controlled
-  // var singleKrakenGearbox = DCMotor.getKrakenX60Foc(1);
-
-  // shooterMechanismSim =
-  // new DCMotorSim(
-  // LinearSystemId.createDCMotorSystem(
-  // singleKrakenGearbox,
-  // Constants.Shooter.SHOOTER_SIM_MOI_KG_M2, // MOI of entire coupled system
-  // Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS), // Motor 3 → Shooter wheel
-  // (1.25)
-  // singleKrakenGearbox);
-  // }
-
-  // from linear speed in ft/sec to motor rps
-  public double calculateFtPSToRPS(double speedFtPS) {
-    return speedFtPS
-        / (Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI)
-        * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
-  }
-
-  // from motor rps to linear speed in ft/sec
-  public double calculateRPSToFtPS(double rps) {
-    return (rps / Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS)
-        * Constants.Shooter.SHOOTER_WHEEL_DIAMETER
-        * Math.PI;
-    // return rps / 12
-    // * (Constants.Shooter.SHOOTER_WHEEL_DIAMETER * Math.PI)
-    // / Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
-  }
-
-  // speed based on shooter wheel which is the one flinging the ball with a max of
-  // 52.36 and a min
-  // of 35.60 ft/sec
-  // input the speed you want the ball to go at (ft/sec); it will be divided by 2
-  // because that's
-  // what Jeff said that relationship is
-  // so now max is 104.72 and min is 71.2
-  public void setBallSpeed(double ballSpeed) {
-    targetBallSpeed = ballSpeed;
-    shooter.setControl(
-        m_velocityRequest.withVelocity(calculateFtPSToRPS(targetBallSpeed * coefficient)));
+  public void setShooterWheelRPS(double shooterWheelSpeedRPS) {
+    targetShooterWheelRPS = shooterWheelSpeedRPS;
+    shooter.setControl(m_velocityRequest.withVelocity(targetShooterWheelRPS));
   }
 
   public void stopShooter() {
-    setBallSpeed(0);
+    setShooterWheelRPS(0);
   }
 
   public boolean isAtSpeed() {
     if (shooter.getCachedVelocityRps() == 0) {
       return false;
     }
-    return Math.abs(calculateFtPSToRPS(targetBallSpeed) - shooter.getCachedVelocityRps())
+    return Math.abs(targetShooterWheelRPS - (getCurrentShooterWheelSpeedRPS()))
         <= TOLERANCE_RPS;
   }
 
-  public double getCurrentBallSpeedFtPS() {
-    return calculateRPSToFtPS(shooter.getCachedVelocityRps());
+  public double getCurrentShooterWheelSpeedRPS() {
+    return shooter.getCachedVelocityRps()*Constants.Shooter.WHEEL_ROTS_PER_MOTOR_ROT;
   }
 
-  public double getTargetBallSpeedFtPS() {
-    return targetBallSpeed;
+  public double getTargetShooterWheelSpeedRPS() {
+    return targetShooterWheelRPS;
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
@@ -189,30 +137,26 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Commands
   public Command shootAtSpeedCommand() {
-    return runEnd(() -> setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter);
+    return runEnd(() -> setShooterWheelRPS(67.0), this::stopShooter);
   }
 
-  public Command shootAtSpeedCommand(double ballSpeed) {
-    return runEnd(() -> setBallSpeed(ballSpeed), this::stopShooter);
+  public Command shootAtSpeedCommand(double shooterWheelSpeedRPS) {
+    return runEnd(() -> setShooterWheelRPS(shooterWheelSpeedRPS), this::stopShooter);
   }
 
-  public Command shootAtSpeedCommand(DoubleSupplier ballSpeed) {
-    DogLog.log("ShootingSpeedRN", ballSpeed.getAsDouble());
-    return runEnd(() -> this.setBallSpeed(ballSpeed.getAsDouble()), this::stopShooter);
-  }
-
-  public Command shootAtSpeedCommand(DoubleSubscriber ballSpeed) {
-    DogLog.log("ShootingSpeedRN", ballSpeed.get());
-    return runEnd(() -> this.setBallSpeed(ballSpeed.get()), this::stopShooter);
+  public Command shootAtSpeedCommand(DoubleSupplier shooterWheelSpeedRPS) {
+    DogLog.log("ShootingSpeedRN", shooterWheelSpeedRPS.getAsDouble());
+    return runEnd(() -> this.setShooterWheelRPS(shooterWheelSpeedRPS.getAsDouble()), this::stopShooter);
   }
 
   @Override
   public void periodic() {
-    DogLog.log("Subsystems/Shooter/TargetSpeed (fps)", getTargetBallSpeedFtPS());
+    DogLog.log("Subsystems/Shooter/TargetWheelSpeed (rps)", getTargetShooterWheelSpeedRPS());
     DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
-    DogLog.log("Subsystems/Shooter/CurrentSpeed (fps)", getCurrentBallSpeedFtPS());
+    DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", getCurrentShooterWheelSpeedRPS());
 
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
+
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         new Pose2d(
@@ -233,50 +177,5 @@ public class ShooterSubsystem extends SubsystemBase {
         "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
     DogLog.log(
         "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
-    DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", shooter.getVelocity().getValueAsDouble());
   }
-
-  // @Override
-  // public void simulationPeriodic() {
-  // if (shooterSimState == null || shooterMechanismSim == null) {
-  // return;
-  // }
-
-  // // 1) Supply voltage to all three motor sims
-  // double batteryV = RobotController.getBatteryVoltage();
-  // shooterSimState.setSupplyVoltage(batteryV);
-
-  // // 2) Read applied motor voltage from leader (motor3) and step mechanism
-  // plant
-  // // Since motor1 and motor2 follow motor3, we only read motor3's voltage
-  // double appliedMotorVoltageVolts =
-  // shooterSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
-
-  // shooterMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
-  // shooterMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
-
-  // // 3) Mechanism-side sim -> rotor-side sensor state
-  // // DCMotorSim tracks the shooter wheel mechanism (after gear reduction)
-  // double shooterWheelVelocityRotationsPerSecond =
-  // shooterMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
-  // double shooterWheelPositionRotations =
-  // shooterMechanismSim.getAngularPositionRotations();
-
-  // // Convert mechanism rotations to motor rotor rotations
-  // double motorRotorPositionRotations =
-  // shooterWheelPositionRotations * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
-  // double motorRotorVelocityRotationsPerSecond =
-  // shooterWheelVelocityRotationsPerSecond *
-  // Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROTS;
-
-  // shooterSimState.setRawRotorPosition(motorRotorPositionRotations);
-  // shooterSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
-
-  // // 4) Battery sag model
-  // // Sum the supply current from all three motors
-  // double loadedBatteryVoltageVolts =
-  // BatterySim.calculateDefaultBatteryLoadedVoltage(shooterSimState.getSupplyCurrent()
-  // * 3);
-  // RoboRioSim.setVInVoltage(loadedBatteryVoltageVolts);
-  // }
 }
