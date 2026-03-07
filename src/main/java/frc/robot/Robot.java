@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.util.LoggedTalonFX;
+import frc.robot.util.MiscUtils;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -28,6 +32,13 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
   }
 
+  @Override
+  public void robotInit() {
+    RobotContainer.setAlliance();
+    DogLog.setOptions(
+        new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
+  }
+
   /**
    * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
@@ -41,12 +52,33 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+
     CommandScheduler.getInstance().run();
+
+    LoggedTalonFX.periodic_static();
+
+    m_robotContainer.visionPeriodic();
+
+    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
+    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
+    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
+    DogLog.log("Elastic/shiftSwitchIndicator", MiscUtils.shiftSwitchIndicator(134));
+    if (MiscUtils.isFlashDriveConnected()) {
+      DogLog.log("Elastic/FlashDriveConnected", true);
+    } else {
+      DogLog.log("Elastic/FlashDriveConnected", false);
+    }
+
+    RobotContainer.setAlliance();
+    DogLog.log("Red Side", RobotContainer.setAlliance());
+    // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.intakeSubsystem.applyCoastConfigArm();
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -54,6 +86,9 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    RobotContainer.setAlliance();
+
+    m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -64,10 +99,12 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {
+    m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -75,11 +112,18 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // // stow climber
+    // new ZeroPullUp(climberSubsystem);
+    // climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE);
+    // climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK);
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    RobotContainer.setAlliance();
+  }
 
   @Override
   public void testInit() {
