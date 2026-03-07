@@ -10,7 +10,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 // temp drivetoPos so I can do auton L1 Climb
 public class ZeroPullUp extends Command {
   private final ClimberSubsystem climberSubsystem;
-  private double timesExceededCurrent = 0;
+  private double timesExceededCurrent;
 
   public ZeroPullUp(ClimberSubsystem climberSubsystem) {
     this.climberSubsystem = climberSubsystem;
@@ -21,22 +21,23 @@ public class ZeroPullUp extends Command {
   @Override
   public void initialize() {
     climberSubsystem.reducePullUpCurrentLimits();
+    timesExceededCurrent = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.movePullUpUp();
+    climberSubsystem.movePullUpUpWithVoltage();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climberSubsystem.stopPullUp();
     if (!interrupted) {
       climberSubsystem.resetPullUpPositionToTop();
     }
     climberSubsystem.resetPullUpCurrentLimits();
+    climberSubsystem.stopPullUp();
   }
 
   // Returns true when the command should end.

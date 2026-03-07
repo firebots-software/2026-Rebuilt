@@ -38,8 +38,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
-  private final VoltageOut m_inwardsVoltageOut = new VoltageOut(8.0); // positive = inwards
-  private final VoltageOut m_outwardsVoltageOut = new VoltageOut(-8.0);
+  private final VoltageOut m_voltageRequest = new VoltageOut(0.0);
 
   public ClimberSubsystem() {
     CurrentLimitsConfigs regClc =
@@ -109,7 +108,7 @@ public class ClimberSubsystem extends SubsystemBase {
             "PullUpLeft",
             Constants.Climber.PullUp.MOTOR_L_PORT,
             Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-    pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Aligned));
+    pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Opposed));
 
     brake = new Servo(Constants.Climber.BRAKE_PORT);
 
@@ -256,8 +255,8 @@ public class ClimberSubsystem extends SubsystemBase {
   // Zeroing climb functions (only pull up because it doesn't have an encoder):
 
   public void reducePullUpCurrentLimits() {
-    pullUpMotorR.updateCurrentLimits(6, 10);
-    pullUpMotorL.updateCurrentLimits(6, 10);
+    pullUpMotorR.updateCurrentLimits(10, 15);
+    pullUpMotorL.updateCurrentLimits(10, 15);
   }
 
   public void reduceMuscleUpCurrentLimits() {
@@ -271,19 +270,19 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void movePullUpUp() {
     pullUpMotorR.setControl(
-        m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
+        m_velocityRequest.withVelocity(3.0));
   }
 
   public void movePullUpUpWithVoltage() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_inwardsVoltageOut);
+    pullUpMotorR.setControl(m_voltageRequest.withOutput(3.5));
   }
 
   public void movePullUpDownWithVoltage() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_outwardsVoltageOut);
+    pullUpMotorR.setControl(m_voltageRequest.withOutput(-7.0));
   }
 
   public Command movePullUpUpWithVoltageCommand() {
@@ -297,13 +296,13 @@ public class ClimberSubsystem extends SubsystemBase {
   public void moveMuscleUpDown() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
-    muscleUpMotor.setControl(m_outwardsVoltageOut);
+    muscleUpMotor.setControl(m_voltageRequest.withOutput(3.0));
   }
 
   public void moveMuscleUpUp() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
-    muscleUpMotor.setControl(m_outwardsVoltageOut);
+    muscleUpMotor.setControl(m_voltageRequest.withOutput(-3.0));
   }
 
   public boolean checkPullUpCurrent() {

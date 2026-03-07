@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
+import frc.robot.commands.ZeroPullUp;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -197,6 +198,7 @@ public class RobotContainer {
 
     joystick2.a().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
     joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
+    joystick2.x().whileTrue(new ZeroPullUp(climberSubsystem));
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
     // hopperSubsystem));
 
