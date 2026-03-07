@@ -171,7 +171,7 @@ public class LoggedTalonFX extends TalonFX {
    */
   public LoggedTalonFX(int deviceId, String canbus) {
     super(deviceId, canbus);
-    name = "Motors/Motor" + deviceId;
+    name = "Motors/Motor " + deviceId;
     init();
   }
 
@@ -180,7 +180,7 @@ public class LoggedTalonFX extends TalonFX {
    */
   public LoggedTalonFX(int deviceId) {
     super(deviceId);
-    name = "Motors/Motor" + deviceId;
+    name = "Motors/Motor " + deviceId;
     init();
   }
 
