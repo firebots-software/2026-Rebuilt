@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
-import frc.robot.RobotContainer;
 import frc.robot.util.LoggedTalonFX;
 
 public class HopperSubsystem extends SubsystemBase {

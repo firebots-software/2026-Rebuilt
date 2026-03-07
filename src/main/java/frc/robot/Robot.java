@@ -60,7 +60,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     LoggedTalonFX.periodic_static();
-    
+
     m_robotContainer.visionPeriodic();
 
     DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());

@@ -92,7 +92,6 @@ public class RobotContainer {
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
-
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
 
