@@ -119,27 +119,9 @@ public class VisionSubsystem extends SubsystemBase {
     double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
 
     // Compute noise model
-    double nX =
-        computeNoiseXY(
-            Constants.Vision.BASE_NOISE_X,
-            Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
-            Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
-            Constants.Vision.ANGLE_COEFFICIENT_X,
-            Constants.Vision.SPEED_COEFFICIENT_X,
-            latestAvgDistance,
-            currentSpeed,
-            latestTagCount);
+    double nX = computeNoiseX(latestAvgDistance, currentSpeed, latestTagCount);
 
-    double nY =
-        computeNoiseXY(
-            Constants.Vision.BASE_NOISE_Y,
-            Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
-            Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
-            Constants.Vision.ANGLE_COEFFICIENT_Y,
-            Constants.Vision.SPEED_COEFFICIENT_Y,
-            latestAvgDistance,
-            currentSpeed,
-            latestTagCount);
+    double nY = computeNoiseY(latestAvgDistance, currentSpeed, latestTagCount);
 
     double nTH = computeNoiseHeading(latestAvgDistance, currentSpeed, latestTagCount);
 
@@ -347,5 +329,29 @@ public class VisionSubsystem extends SubsystemBase {
     double computedStdDevs =
         Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
     return computedStdDevs;
+  }
+
+  private double computeNoiseX(double distance, double robotSpeed, int tagCount) {
+    return computeNoiseXY(
+        Constants.Vision.BASE_NOISE_X,
+        Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
+        Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
+        Constants.Vision.ANGLE_COEFFICIENT_X,
+        Constants.Vision.SPEED_COEFFICIENT_X,
+        distance,
+        robotSpeed,
+        tagCount);
+  }
+
+  private double computeNoiseY(double distance, double robotSpeed, int tagCount) {
+    return computeNoiseXY(
+        Constants.Vision.BASE_NOISE_Y,
+        Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
+        Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
+        Constants.Vision.ANGLE_COEFFICIENT_Y,
+        Constants.Vision.SPEED_COEFFICIENT_Y,
+        distance,
+        robotSpeed,
+        tagCount);
   }
 }
