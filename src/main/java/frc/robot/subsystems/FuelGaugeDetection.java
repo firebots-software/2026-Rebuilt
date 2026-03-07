@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
+import frc.robot.RobotContainer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     if (!validVisionResult()) return;
 
     getVisionResult();
+    RobotContainer.tracer.addEpoch("FuelGauge periodic");
   }
 
   private boolean checkCameraConnected() {

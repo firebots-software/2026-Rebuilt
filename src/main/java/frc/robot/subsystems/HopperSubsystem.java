@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
+import frc.robot.RobotContainer;
 import frc.robot.util.LoggedTalonFX;
 
 public class HopperSubsystem extends SubsystemBase {
@@ -162,6 +163,7 @@ public class HopperSubsystem extends SubsystemBase {
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
         targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
     DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getCachedVelocityRps());
+  RobotContainer.tracer.addEpoch("Hopper periodic");
   }
 
   // @Override
