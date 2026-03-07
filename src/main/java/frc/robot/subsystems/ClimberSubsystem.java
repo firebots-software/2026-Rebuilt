@@ -240,15 +240,15 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command MuscleUpCommand(double angle) {
-    return runOnce(() -> setMuscleUpPosition(angle)).until(this::isMuscleUpAtPosition);
+    return run(() -> setMuscleUpPosition(angle)).until(this::isMuscleUpAtPosition);
   }
 
   public Command PullUpCommand(double position) {
-    return runOnce(() -> setPullUpPosition(position)).until(this::isPullUpAtPosition);
+    return run(() -> setPullUpPosition(position)).until(this::isPullUpAtPosition);
   }
 
   public Command SitUpCommand(double angle) {
-    return runOnce(() -> setSitUpPosition(angle)).until(this::isSitUpAtPosition);
+    return run(() -> setSitUpPosition(angle)).until(this::isSitUpAtPosition);
   }
 
   // separate command groups to incorporate driveToPose
