@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -37,9 +38,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
-  private final VoltageOut m_voltageOut = new VoltageOut(3.0);
-  private final VoltageOut m_inwardsvoltageOut = new VoltageOut(3.0); // positive = inwards
-  private final VoltageOut m_outwardsvoltageOut = new VoltageOut(-3.0);
+  private final VoltageOut m_inwardsVoltageOut = new VoltageOut(3.0); // positive = inwards
+  private final VoltageOut m_outwardsVoltageOut = new VoltageOut(-3.0);
 
   public ClimberSubsystem() {
     CurrentLimitsConfigs regClc =
@@ -122,31 +122,38 @@ public class ClimberSubsystem extends SubsystemBase {
     sitUpEncoder.getConfigurator().apply(canCoderConfig);
 
     // setting configs to configurator
-    TalonFXConfiguration muscleUpConfig = new TalonFXConfiguration();
-    muscleUpConfig.Slot0 = muscleUps0c;
-    muscleUpConfig.CurrentLimits = regClc;
-    muscleUpConfig.MotorOutput = mocReversed;
+    TalonFXConfiguration muscleUpConfig =
+        new TalonFXConfiguration()
+            .withSlot0(muscleUps0c)
+            .withCurrentLimits(regClc)
+            .withMotorOutput(mocReversed);
 
-    TalonFXConfiguration sitUpConfig = new TalonFXConfiguration();
-    sitUpConfig.Slot0 = sitUps0c;
-    sitUpConfig.CurrentLimits = specialClc;
-    sitUpConfig.MotorOutput = moc;
-    sitUpConfig.MotionMagic = mmc;
-    sitUpConfig.Feedback.withFeedbackRemoteSensorID(sitUpEncoder.getDeviceID());
-    sitUpConfig.Feedback.withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder);
-    sitUpConfig.Feedback.withSensorToMechanismRatio(
-        Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROTS);
-    sitUpConfig.Feedback.withRotorToSensorRatio(Constants.Climber.SitUp.MOTOR_ROTS_TO_ENCODER_ROTS);
+    FeedbackConfigs feedbackConfigs =
+        new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(sitUpEncoder.getDeviceID())
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+            .withSensorToMechanismRatio(Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROTS)
+            .withRotorToSensorRatio(Constants.Climber.SitUp.MOTOR_ROTS_TO_ENCODER_ROTS);
 
-    TalonFXConfiguration pullUpLeftConfig = new TalonFXConfiguration();
-    pullUpLeftConfig.Slot0 = pullUps0c;
-    pullUpLeftConfig.CurrentLimits = regClc;
-    pullUpLeftConfig.MotorOutput = moc;
+    TalonFXConfiguration sitUpConfig =
+        new TalonFXConfiguration()
+            .withSlot0(sitUps0c)
+            .withCurrentLimits(specialClc)
+            .withMotorOutput(moc)
+            .withMotionMagic(mmc)
+            .withFeedback(feedbackConfigs);
 
-    TalonFXConfiguration pullUpRightConfig = new TalonFXConfiguration();
-    pullUpRightConfig.Slot0 = pullUps0c;
-    pullUpRightConfig.CurrentLimits = regClc;
-    pullUpRightConfig.MotorOutput = moc;
+    TalonFXConfiguration pullUpLeftConfig =
+        new TalonFXConfiguration()
+            .withSlot0(pullUps0c)
+            .withCurrentLimits(regClc)
+            .withMotorOutput(moc);
+
+    TalonFXConfiguration pullUpRightConfig =
+        new TalonFXConfiguration()
+            .withSlot0(pullUps0c)
+            .withCurrentLimits(regClc)
+            .withMotorOutput(moc);
 
     TalonFXConfigurator muscleUpMotorConfig = muscleUpMotor.getConfigurator();
     TalonFXConfigurator sitUpMotorConfig = sitUpMotor.getConfigurator();
@@ -262,19 +269,19 @@ public class ClimberSubsystem extends SubsystemBase {
   public void movePullUpUp() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_voltageOut);
+    pullUpMotorR.setControl(m_inwardsVoltageOut);
   }
 
   public void moveMuscleUpDown() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
-    muscleUpMotor.setControl(m_inwardsvoltageOut);
+    muscleUpMotor.setControl(m_inwardsVoltageOut);
   }
 
   public void moveMuscleUpUp() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
-    muscleUpMotor.setControl(m_outwardsvoltageOut);
+    muscleUpMotor.setControl(m_outwardsVoltageOut);
   }
 
   public boolean checkPullUpCurrent() {
@@ -314,7 +321,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command resetPullUpPositionToZeroCommand() {
-    return runOnce(() -> this.resetPullUpPositionToZero());
+    return runOnce(this::resetPullUpPositionToZero);
   }
 
   public void resetMuscleUpPositionToZero() {
@@ -331,15 +338,15 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command MuscleUpCommand(double angle) {
-    return runOnce(() -> setMuscleUpPosition(angle)).until(this::isMuscleUpAtPosition);
+    return run(() -> setMuscleUpPosition(angle)).until(this::isMuscleUpAtPosition);
   }
 
   public Command PullUpCommand(double position) {
-    return runOnce(() -> setPullUpPosition(position)).until(this::isPullUpAtPosition);
+    return run(() -> setPullUpPosition(position)).until(this::isPullUpAtPosition);
   }
 
   public Command SitUpCommand(double angle) {
-    return runOnce(() -> setSitUpPosition(angle)).until(this::isSitUpAtPosition);
+    return run(() -> setSitUpPosition(angle)).until(this::isSitUpAtPosition);
   }
 
   // separate command groups to incorporate driveToPose
