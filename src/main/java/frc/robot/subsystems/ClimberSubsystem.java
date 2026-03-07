@@ -38,8 +38,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
-  private final VoltageOut m_inwardsvoltageOut = new VoltageOut(3.0); // positive = inwards
-  private final VoltageOut m_outwardsvoltageOut = new VoltageOut(-3.0);
+  private final VoltageOut m_inwardsVoltageOut = new VoltageOut(3.0); // positive = inwards
+  private final VoltageOut m_outwardsVoltageOut = new VoltageOut(-3.0);
 
   public ClimberSubsystem() {
     CurrentLimitsConfigs regClc =
@@ -122,34 +122,38 @@ public class ClimberSubsystem extends SubsystemBase {
     sitUpEncoder.getConfigurator().apply(canCoderConfig);
 
     // setting configs to configurator
-    TalonFXConfiguration muscleUpConfig = new TalonFXConfiguration()
-      .withSlot0(muscleUps0c)
-      .withCurrentLimits(regClc)
-      .withMotorOutput(mocReversed);
+    TalonFXConfiguration muscleUpConfig =
+        new TalonFXConfiguration()
+            .withSlot0(muscleUps0c)
+            .withCurrentLimits(regClc)
+            .withMotorOutput(mocReversed);
 
-    FeedbackConfigs feedbackConfigs = new FeedbackConfigs()
-      .withFeedbackRemoteSensorID(sitUpEncoder.getDeviceID())
-      .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-      .withSensorToMechanismRatio(
-        Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROTS)
-      .withRotorToSensorRatio(Constants.Climber.SitUp.MOTOR_ROTS_TO_ENCODER_ROTS);
+    FeedbackConfigs feedbackConfigs =
+        new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(sitUpEncoder.getDeviceID())
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+            .withSensorToMechanismRatio(Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROTS)
+            .withRotorToSensorRatio(Constants.Climber.SitUp.MOTOR_ROTS_TO_ENCODER_ROTS);
 
-    TalonFXConfiguration sitUpConfig = new TalonFXConfiguration()
-      .withSlot0(sitUps0c)
-      .withCurrentLimits(specialClc)
-      .withMotorOutput(moc)
-      .withMotionMagic(mmc)
-      .withFeedback(feedbackConfigs);
+    TalonFXConfiguration sitUpConfig =
+        new TalonFXConfiguration()
+            .withSlot0(sitUps0c)
+            .withCurrentLimits(specialClc)
+            .withMotorOutput(moc)
+            .withMotionMagic(mmc)
+            .withFeedback(feedbackConfigs);
 
-    TalonFXConfiguration pullUpLeftConfig = new TalonFXConfiguration()
-      .withSlot0(pullUps0c)
-      .withCurrentLimits(regClc)
-      .withMotorOutput(moc);
+    TalonFXConfiguration pullUpLeftConfig =
+        new TalonFXConfiguration()
+            .withSlot0(pullUps0c)
+            .withCurrentLimits(regClc)
+            .withMotorOutput(moc);
 
-    TalonFXConfiguration pullUpRightConfig = new TalonFXConfiguration()
-      .withSlot0(pullUps0c)
-      .withCurrentLimits(regClc)
-      .withMotorOutput(moc);
+    TalonFXConfiguration pullUpRightConfig =
+        new TalonFXConfiguration()
+            .withSlot0(pullUps0c)
+            .withCurrentLimits(regClc)
+            .withMotorOutput(moc);
 
     TalonFXConfigurator muscleUpMotorConfig = muscleUpMotor.getConfigurator();
     TalonFXConfigurator sitUpMotorConfig = sitUpMotor.getConfigurator();
@@ -265,19 +269,19 @@ public class ClimberSubsystem extends SubsystemBase {
   public void movePullUpUp() {
     // pullUpMotorR.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
-    pullUpMotorR.setControl(m_inwardsvoltageOut);
+    pullUpMotorR.setControl(m_inwardsVoltageOut);
   }
 
   public void moveMuscleUpDown() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
-    muscleUpMotor.setControl(m_inwardsvoltageOut);
+    muscleUpMotor.setControl(m_inwardsVoltageOut);
   }
 
   public void moveMuscleUpUp() {
     // muscleUpMotor.setControl(
     // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
-    muscleUpMotor.setControl(m_outwardsvoltageOut);
+    muscleUpMotor.setControl(m_outwardsVoltageOut);
   }
 
   public boolean checkPullUpCurrent() {
