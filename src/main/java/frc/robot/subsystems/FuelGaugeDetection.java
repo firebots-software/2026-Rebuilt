@@ -45,7 +45,6 @@ public class FuelGaugeDetection extends SubsystemBase {
     if (!validVisionResult()) return;
 
     getVisionResult();
-    RobotContainer.tracer.addEpoch("FuelGauge periodic");
   }
 
   private boolean checkCameraConnected() {

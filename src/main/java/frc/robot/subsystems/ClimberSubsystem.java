@@ -419,6 +419,5 @@ public class ClimberSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Climber/CurrentLimits/PullUpSupply",
         pullUpMotorR.getSupplyCurrent().getValue().magnitude());
-    RobotContainer.tracer.addEpoch("Climber periodic");
   }
 }

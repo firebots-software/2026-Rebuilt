@@ -13,7 +13,6 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Tracer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -93,7 +92,6 @@ public class RobotContainer {
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
-  public static Tracer tracer = new Tracer();
 
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
@@ -218,7 +216,6 @@ public class RobotContainer {
 
     // drivetrain.registerTelemetry(logger::telemeterize);
     // joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
-    tracer.addEpoch("configureBindings run");
   }
 
   public void visionPeriodic() {
@@ -227,7 +224,6 @@ public class RobotContainer {
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
-        tracer.addEpoch("RobotContainer visionPeriodic");
   }
 
   public static boolean setAlliance() {

@@ -80,7 +80,6 @@ public class VisionSubsystem extends SubsystemBase {
     updateVisionEstFromResults(results);
 
     DogLog.log(loggingPath + "/CameraConnected", true);
-    RobotContainer.tracer.addEpoch("VisionSubsystem periodic");
   }
 
   private void setupPeriodicVars() {

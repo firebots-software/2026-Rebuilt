@@ -163,7 +163,6 @@ public class HopperSubsystem extends SubsystemBase {
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
         targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
     DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getCachedVelocityRps());
-  RobotContainer.tracer.addEpoch("Hopper periodic");
   }
 
   // @Override

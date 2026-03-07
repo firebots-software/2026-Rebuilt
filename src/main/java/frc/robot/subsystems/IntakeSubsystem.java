@@ -336,7 +336,6 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
 
     SmartDashboard.putNumber("Arm Angle", getArmPosition().getDegrees());
-  RobotContainer.tracer.addEpoch("Intake periodic");
   }
 
   // @Override
