@@ -73,11 +73,8 @@ public class VisionSubsystem extends SubsystemBase {
     setupPeriodicVars();
 
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-      visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEst.isEmpty()) visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
-    }
+
+    updateVisionEstFromResults(results);
 
     DogLog.log(loggingPath + "/CameraConnected", true);
   }
@@ -86,6 +83,14 @@ public class VisionSubsystem extends SubsystemBase {
     visionEst = Optional.empty();
     latestVisionResult = null;
     hasValidMeasurement = false;
+  }
+
+  private void updateVisionEstFromResults(List<PhotonPipelineResult> results) {
+    for (PhotonPipelineResult result : results) {
+      latestVisionResult = result;
+      visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
+      if (visionEst.isEmpty()) visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
+    }
   }
 
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
