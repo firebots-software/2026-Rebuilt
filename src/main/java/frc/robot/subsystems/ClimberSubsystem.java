@@ -304,6 +304,14 @@ public class ClimberSubsystem extends SubsystemBase {
     muscleUpMotor.setControl(m_voltageRequest.withOutput(-3.0));
   }
 
+  public Command moveMuscleUpDownCommand() {
+    return startEnd(() -> moveMuscleUpDown(), this::stopMuscleUp);
+  }
+
+  public Command moveMuscleUpUpCommand() {
+    return startEnd(() -> moveMuscleUpUp(), this::stopMuscleUp);
+  }
+
   public boolean checkPullUpCurrent() {
     double supplyCurrent = Math.abs(pullUpMotorR.getSupplyCurrent().getValue().magnitude());
     double statorCurrent = Math.abs(pullUpMotorR.getStatorCurrent().getValue().magnitude());
