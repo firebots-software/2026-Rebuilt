@@ -201,8 +201,8 @@ public class RobotContainer {
     joystick2.b().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
     joystick2.x().onTrue(new ZeroPullUp(climberSubsystem));
 
-    joystick2.rightBumper().and(joystick2.a()).whileTrue(climberSubsystem.moveMuscleUpUpCommand());
-    joystick2.rightBumper().and(joystick.b()).whileTrue(climberSubsystem.moveMuscleUpDownCommand());
+    joystick2.rightBumper().and(joystick2.a()).whileTrue(climberSubsystem.moveMuscleUpOutCommand());
+    joystick2.rightBumper().and(joystick.b()).whileTrue(climberSubsystem.moveMuscleUpInCommand());
     joystick2.rightBumper().and(joystick.x()).whileTrue(new ZeroMuscleUp(climberSubsystem));
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
