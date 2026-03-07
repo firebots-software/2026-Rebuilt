@@ -198,7 +198,7 @@ public class RobotContainer {
     }
 
     joystick2.a().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
-    joystick2.b().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
+    joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
     joystick2.x().onTrue(new ZeroPullUp(climberSubsystem));
 
     joystick2.rightTrigger().and(joystick2.a()).whileTrue(climberSubsystem.moveMuscleUpOutCommand());

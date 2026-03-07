@@ -149,13 +149,13 @@ public class ClimberSubsystem extends SubsystemBase {
         new TalonFXConfiguration()
             .withSlot0(pullUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(mocCWPos);
+            .withMotorOutput(mocCCWPos);
 
     TalonFXConfiguration pullUpRightConfig =
         new TalonFXConfiguration()
             .withSlot0(pullUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(mocCCWPos);
+            .withMotorOutput(mocCWPos);
 
     TalonFXConfigurator muscleUpMotorConfig = muscleUpMotor.getConfigurator();
     TalonFXConfigurator sitUpMotorConfig = sitUpMotor.getConfigurator();
@@ -373,6 +373,9 @@ public class ClimberSubsystem extends SubsystemBase {
     return run(() -> setPullUpPosition(position)).until(this::isPullUpAtPosition);
   }
 
+  public Command PullUpToCertainPositionCommand(double positionMeters) {
+    return runOnce(() -> this.setPullUpPosition(0.1));
+  }
   public Command SitUpCommand(double angle) {
     return run(() -> setSitUpPosition(angle)).until(this::isSitUpAtPosition);
   }
