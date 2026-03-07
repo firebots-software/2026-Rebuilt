@@ -39,14 +39,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     if (!checkCameraConnected()) return;
 
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-    }
-
-    if (latestVisionResult == null) {
-      return;
-    }
+    if (!validVisionResult()) return;
 
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
@@ -83,6 +76,15 @@ public class FuelGaugeDetection extends SubsystemBase {
     boolean cameraConnected = photonCamera.isConnected();
     DogLog.log("FuelGauge/CameraStatus", cameraConnected);
     return cameraConnected;
+  }
+
+  private boolean validVisionResult() {
+
+    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
+    for (PhotonPipelineResult result : results) {
+      latestVisionResult = result;
+    }
+    return (latestVisionResult == null);
   }
 
   private double updateLatestList(ArrayList<Double> list, double area) {
