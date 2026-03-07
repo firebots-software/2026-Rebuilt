@@ -23,6 +23,8 @@ public class Robot extends TimedRobot {
 
   private final RobotContainer m_robotContainer;
 
+  private static double simulatedTime = 160;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -38,6 +40,7 @@ public class Robot extends TimedRobot {
     RobotContainer.setAlliance();
     DogLog.setOptions(
         new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
+    DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
   }
 
   /**
@@ -64,13 +67,17 @@ public class Robot extends TimedRobot {
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
 
     // Update Field2d visualization
-    m_robotContainer.updateFieldPose();
+    // m_robotContainer.updateFieldPose();
 
     DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
-    DogLog.log("Elastic/shiftSwitchIndicator", MiscUtils.shiftSwitchIndicator(134));
+    simulatedTime -= 0.02;
+    if (simulatedTime < 0) {
+      simulatedTime = 160;
+    }
+    MiscUtils.shiftSwitchIndicator(simulatedTime);
     if (MiscUtils.isFlashDriveConnected()) {
       DogLog.log("Elastic/FlashDriveConnected", true);
     } else {

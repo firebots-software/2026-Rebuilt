@@ -5,8 +5,6 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -128,6 +126,7 @@ public final class Constants {
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
+    public static final double MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND = 4;
 
     public static enum SwerveLevel {
       L2(6.75, 21.428571428571427),
@@ -684,6 +683,11 @@ public final class Constants {
 
     public static final double MAX_TAG_DISTANCE = 15.0; // meters, beyond which readings are dropped
 
+    public static final double CALIBRATION_FACTOR = 1.0;
+    public static final double BASE_NOISE_X = 0.0008; // m
+    public static final double BASE_NOISE_Y = 0.0008; // m
+    public static final double BASE_NOISE_THETA = 0.5; // rad
+
     // Constants for noise calculation
     public static final double DISTANCE_EXPONENTIAL_COEFFICIENT_X = 0.00046074;
     public static final double DISTANCE_EXPONENTIAL_BASE_X = 2.97294;
@@ -700,6 +704,9 @@ public final class Constants {
     public static final double SPEED_COEFFICIENT_X = 0.5; // noise growth per fraction of max speed
     public static final double SPEED_COEFFICIENT_Y = 0.5;
     public static final double SPEED_COEFFICIENT_THETA = 0.5;
+
+    public static final double TIMESTAMP_THRESHOLD = 0.5;
+    public static final double TIMESTAMP_FPGA_CORRECTION = -0.03;
 
     // TODO: SID: update all vals
 
@@ -794,9 +801,6 @@ public final class Constants {
       POSE_AMBIGUITY(),
       JITTER();
     }
-
-    public static final AprilTagFieldLayout FIELD_LAYOUT =
-        AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
   }
 
   public static class FuelGaugeDetection {
@@ -918,7 +922,8 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-    public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
+    public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
+    public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 104.72;
 
@@ -942,7 +947,7 @@ public final class Constants {
     public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
 
     public static final InterpolatingDoubleTreeMap
-        MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
+        SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
             new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap
         TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
@@ -952,68 +957,17 @@ public final class Constants {
     }
 
     public static void UPDATE_INTERMAPS() {
-      // ROBOT EDGE TO HUB EDGE, motor speed
-      // 8 5/16 in, 71
-      // 2 ft 1/16 in, 73
-      // 41 1/4 in, 80
-      // 55.5 in, 83
-      // 70 3/4 in, 87
-      // 84 in, 90
-      // 12 feet, 96
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();
 
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              8d + 5d / 16d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          71d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              24d + 1d / 16d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          73d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              41d + 1d / 4d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          80d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              55.5d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          83d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              70d + 3d / 4d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          87d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              84d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          90d);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              144d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          96d);
+      final double offset = 1.0429875;
 
-      double VIDEO_SECONDS_TO_REGULAR_SECONDS = 1d / 8d;
-      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
-      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, 0d);
-      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              13d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          10d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              50d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              70d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              93d + 1d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          14d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-          Units.inchesToMeters(
-              102d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
-          15d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.2111 + offset, 45.2000038381);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.6108 + offset, 46.4732433828);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.0478 + offset, 50.9295817894);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.4097 + offset, 52.8394411065);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.7971 + offset, 55.385920196);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(2.1336 + offset, 57.2957795131);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(3.6576 + offset, 61.1154981473);
     }
   }
 

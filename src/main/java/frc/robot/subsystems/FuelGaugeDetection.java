@@ -38,24 +38,31 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Check camera connection status
-    boolean cameraConnected = photonCamera.isConnected();
-    if (cameraConnected) {
-      DogLog.log("FuelGauge/CameraStatus", true);
-    } else {
-      DogLog.log("FuelGauge/CameraStatus", false);
-      return;
-    }
 
-    // Get latest vision results
+    if (!checkCameraConnected()) return;
+
+    if (!validVisionResult()) return;
+
+    getVisionResult();
+  }
+
+  private boolean checkCameraConnected() {
+
+    boolean cameraConnected = photonCamera.isConnected();
+    DogLog.log("FuelGauge/CameraStatus", cameraConnected);
+    return cameraConnected;
+  }
+
+  private boolean validVisionResult() {
+
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
     for (PhotonPipelineResult result : results) {
       latestVisionResult = result;
     }
+    return (latestVisionResult == null);
+  }
 
-    if (latestVisionResult == null) {
-      return;
-    }
+  private void getVisionResult() {
 
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
@@ -81,7 +88,7 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", avgMultipleBalls);
           DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBalls);
 
-          fuelGaugeStateSetAndLog(
+          calculateFuelGaugeState(
               rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
@@ -103,7 +110,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     return smoothedArea;
   }
 
-  private void fuelGaugeStateSetAndLog(
+  private void calculateFuelGaugeState(
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
     Color greenColor = new Color(0, 255, 0);
     Color redColor = new Color(255, 0, 0);

@@ -3,9 +3,11 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
@@ -94,15 +96,53 @@ public class MiscUtils {
     else return "Endgame";
   }
 
-  public static boolean shiftSwitchIndicator(double currentTime) {
+  public static void shiftSwitchIndicator(double currentTime) {
     double currentTimes = currentTime;
     // double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
-    if (timeUntilNextShift < 5 && !currentShiftName(currentTimes).equals("Endgame")) {
+    if (areWeActive(currentTimes)
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && timeUntilNextShift > 8) {
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+    } else if (areWeActive(currentTimes)
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && timeUntilNextShift < 8) {
+      if ((shiftIndicatorSum / 20) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      }
       shiftIndicatorSum++;
-      return (shiftIndicatorSum / 10) % 2 == 1;
+    } else if ((timeUntilNextShift < 2
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && !areWeActive(currentTimes))) {
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
+    } else if (timeUntilNextShift < 5
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && !areWeActive(currentTimes)) {
+      if ((shiftIndicatorSum / 8) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFF00");
+      }
+      shiftIndicatorSum++;
+    } else if (timeUntilNextShift < 8
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && !areWeActive(currentTimes)) {
+      if ((shiftIndicatorSum / 20) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
+      }
+      shiftIndicatorSum++;
+    } else {
+      shiftIndicatorSum = 0;
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
     }
-    return false;
+  }
+
+  public static double get3dDistance(Transform3d transform) {
+    return Math.hypot(Math.hypot(transform.getX(), transform.getY()), transform.getZ());
   }
 
   public static double getDistanceToHub(BooleanSupplier redSide, CommandSwerveDrivetrain swerve) {
