@@ -29,9 +29,6 @@ public class VisionSubsystem extends SubsystemBase {
   private String cameraTitle;
   private String loggingPath;
 
-  // normalization maximums
-  private double maximumRobotSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
-
   // references for PhotonVision
   private final PhotonCamera photonCamera;
   private final PhotonPoseEstimator poseEstimator;
@@ -113,16 +110,16 @@ public class VisionSubsystem extends SubsystemBase {
 
     ChassisSpeeds robotSpeeds = swerve.getState().Speeds;
 
-    ChassisSpeeds field =
+    ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
 
-    double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
+    double currentSpeed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
 
     Matrix<N3, N1> noiseVector =
         VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
 
-    // Send to pose estimator / swerve
-    latestFinalTimestamp = processPoseEstimate(measuredPose, estimatedPose.timestampSeconds, noiseVector);
+    latestFinalTimestamp =
+        calculateTimestamp(measuredPose, estimatedPose.timestampSeconds, noiseVector);
 
     hasValidMeasurement = true;
 
@@ -232,7 +229,7 @@ public class VisionSubsystem extends SubsystemBase {
     return hasValidMeasurement;
   }
 
-  private double processPoseEstimate(
+  private double calculateTimestamp(
       Pose2d measuredPose, double timestamp, Matrix<N3, N1> noiseVector) {
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
