@@ -195,7 +195,6 @@ public class RobotContainer {
                   () -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
     }
 
-
     joystick2.a().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
     joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,

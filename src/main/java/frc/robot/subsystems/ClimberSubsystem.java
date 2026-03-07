@@ -38,8 +38,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
-  private final VoltageOut m_inwardsVoltageOut = new VoltageOut(3.0); // positive = inwards
-  private final VoltageOut m_outwardsVoltageOut = new VoltageOut(-3.0);
+  private final VoltageOut m_inwardsVoltageOut = new VoltageOut(8.0); // positive = inwards
+  private final VoltageOut m_outwardsVoltageOut = new VoltageOut(-8.0);
 
   public ClimberSubsystem() {
     CurrentLimitsConfigs regClc =
@@ -73,7 +73,10 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKI(Constants.Climber.SitUp.KI)
             .withKD(Constants.Climber.SitUp.KD);
 
-    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
+    MotorOutputConfigs moc =
+        new MotorOutputConfigs()
+            .withNeutralMode(NeutralModeValue.Brake)
+            .withInverted(InvertedValue.CounterClockwise_Positive);
     MotorOutputConfigs mocReversed =
         new MotorOutputConfigs()
             .withNeutralMode(NeutralModeValue.Brake)
@@ -106,7 +109,7 @@ public class ClimberSubsystem extends SubsystemBase {
             "PullUpLeft",
             Constants.Climber.PullUp.MOTOR_L_PORT,
             Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-    pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Opposed));
+    pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Aligned));
 
     brake = new Servo(Constants.Climber.BRAKE_PORT);
 
@@ -147,7 +150,7 @@ public class ClimberSubsystem extends SubsystemBase {
         new TalonFXConfiguration()
             .withSlot0(pullUps0c)
             .withCurrentLimits(regClc)
-            .withMotorOutput(moc);
+            .withMotorOutput(mocReversed);
 
     TalonFXConfiguration pullUpRightConfig =
         new TalonFXConfiguration()
@@ -266,7 +269,6 @@ public class ClimberSubsystem extends SubsystemBase {
         m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_DOWN_VELOCITY));
   }
 
-
   public void movePullUpUp() {
     pullUpMotorR.setControl(
         m_velocityRequest.withVelocity(Constants.Climber.PullUp.PULL_UP_VELOCITY));
@@ -286,7 +288,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public Command movePullUpUpWithVoltageCommand() {
     return startEnd(() -> movePullUpUpWithVoltage(), this::stopPullUp);
-  }  
+  }
 
   public Command movePullUpDownWithVoltageCommand() {
     return startEnd(() -> movePullUpDownWithVoltage(), this::stopPullUp);
