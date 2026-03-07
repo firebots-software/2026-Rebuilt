@@ -922,9 +922,10 @@ public final class Constants {
     public static final double STATOR_CURRENT_LIMIT = 30.0;
     public static final double SUPPLY_CURRENT_LIMIT = 30.0;
 
-    public static final double MOTOR_ROTS_PER_WHEEL_ROTS = 1.25;
+    public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
+    public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
-    public static final double SHOOT_FOR_AUTO = 104.72;
+    public static final double SHOOT_FOR_AUTO = 67.0;
 
     public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
 
@@ -941,26 +942,25 @@ public final class Constants {
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
 
-    public static final InterpolatingDoubleTreeMap
-        MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
-            new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
+        new InterpolatingDoubleTreeMap();
 
     static {
       UPDATE_INTERMAPS();
     }
 
     public static void UPDATE_INTERMAPS() {
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();
 
       final double offset = 1.0429875;
 
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0.2111 + offset, 71.0);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0.6108 + offset, 73.0);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.0478 + offset, 80.0);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.4097 + offset, 83.0);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(1.7971 + offset, 87.0);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(2.1336 + offset, 90.0);
-      MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(3.6576 + offset, 96.0);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.2111 + offset, 45.2000038381);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.6108 + offset, 46.4732433828);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.0478 + offset, 50.9295817894);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.4097 + offset, 52.8394411065);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.7971 + offset, 55.385920196);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(2.1336 + offset, 57.2957795131);
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(3.6576 + offset, 61.1154981473);
     }
   }
 
