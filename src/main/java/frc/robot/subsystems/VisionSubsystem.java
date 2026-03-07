@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
+import frc.robot.util.VisionUtils;
+
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -119,11 +121,11 @@ public class VisionSubsystem extends SubsystemBase {
     double currentSpeed = Math.hypot(field.vxMetersPerSecond, field.vyMetersPerSecond);
 
     // Compute noise model
-    double nX = computeNoiseX(latestAvgDistance, currentSpeed, latestTagCount);
+    double nX = VisionUtils.computeNoiseX(latestAvgDistance, currentSpeed, latestTagCount);
 
-    double nY = computeNoiseY(latestAvgDistance, currentSpeed, latestTagCount);
+    double nY = VisionUtils.computeNoiseY(latestAvgDistance, currentSpeed, latestTagCount);
 
-    double nTH = computeNoiseHeading(latestAvgDistance, currentSpeed, latestTagCount);
+    double nTH = VisionUtils.computeNoiseHeading(latestAvgDistance, currentSpeed, latestTagCount);
 
     Matrix<N3, N1> noiseVector = VecBuilder.fill(nX, nY, nTH);
 
@@ -276,82 +278,5 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
-  }
-
-  private double computeNoiseXY(
-      double baseNoise,
-      double distanceExponentialCoefficient,
-      double distanceExponentialBase,
-      double angleCoefficient,
-      double speedCoefficient,
-      double distance,
-      double robotSpeed,
-      int tagCount) {
-
-    // Tag count factor (cap at 4 - diminishing returns)
-    int effectiveTags = Math.min(tagCount, 4);
-    double tagFactor = 1d / Math.sqrt(effectiveTags);
-
-    double distanceFactor =
-        baseNoise + distanceExponentialCoefficient * Math.pow(distanceExponentialBase, distance);
-
-    // Speed term (quadratic)
-    double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
-    double speedFactor = 1d + speedCoefficient * (vNorm * vNorm);
-
-    DogLog.log("Subsystems/Vision/calibrationFactor", Constants.Vision.CALIBRATION_FACTOR);
-    DogLog.log("Subsystems/Vision/tagFactor", tagFactor);
-    DogLog.log("Subsystems/Vision/distanceFactor", distanceFactor);
-    DogLog.log("Subsystems/Vision/speedFactor", speedFactor);
-
-    double computedStdDevs =
-        Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
-    return computedStdDevs;
-  }
-
-  private double computeNoiseHeading(double distance, double robotSpeed, int tagCount) {
-
-    double baseNoise = Constants.Vision.BASE_NOISE_THETA;
-    double distanceCoefficient = Constants.Vision.DISTANCE_COEFFICIENT_THETA;
-    double angleCoefficient = Constants.Vision.ANGLE_COEFFICIENT_THETA;
-    double speedCoefficient = Constants.Vision.SPEED_COEFFICIENT_THETA;
-
-    // Tag count factor (cap at 4 - diminishing returns)
-    int effectiveTags = Math.min(tagCount, 4);
-    double tagFactor = 1d / Math.sqrt(effectiveTags);
-
-    // Distance term (d^2)
-    double distanceFactor = baseNoise + distanceCoefficient * distance * distance;
-
-    double vNorm = Math.min(robotSpeed, maximumRobotSpeed) / maximumRobotSpeed;
-    double speedFactor = 1d + speedCoefficient * (vNorm * vNorm);
-
-    double computedStdDevs =
-        Constants.Vision.CALIBRATION_FACTOR * tagFactor * distanceFactor * speedFactor;
-    return computedStdDevs;
-  }
-
-  private double computeNoiseX(double distance, double robotSpeed, int tagCount) {
-    return computeNoiseXY(
-        Constants.Vision.BASE_NOISE_X,
-        Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_X,
-        Constants.Vision.DISTANCE_EXPONENTIAL_BASE_X,
-        Constants.Vision.ANGLE_COEFFICIENT_X,
-        Constants.Vision.SPEED_COEFFICIENT_X,
-        distance,
-        robotSpeed,
-        tagCount);
-  }
-
-  private double computeNoiseY(double distance, double robotSpeed, int tagCount) {
-    return computeNoiseXY(
-        Constants.Vision.BASE_NOISE_Y,
-        Constants.Vision.DISTANCE_EXPONENTIAL_COEFFICIENT_Y,
-        Constants.Vision.DISTANCE_EXPONENTIAL_BASE_Y,
-        Constants.Vision.ANGLE_COEFFICIENT_Y,
-        Constants.Vision.SPEED_COEFFICIENT_Y,
-        distance,
-        robotSpeed,
-        tagCount);
   }
 }
