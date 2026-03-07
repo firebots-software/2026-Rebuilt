@@ -160,7 +160,7 @@ public class LoggedTalonFX extends TalonFX {
    */
   public LoggedTalonFX(String deviceName, int deviceId) {
     super(deviceId);
-    name = deviceName;
+    name = "Motors/Motor " + deviceName;
     init();
   }
 

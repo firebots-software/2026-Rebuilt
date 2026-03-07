@@ -7,14 +7,20 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
+import dev.doglog.DogLog;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.DoubleTopic;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
-import frc.robot.commandGroups.ShootBasic;
+import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -32,15 +38,17 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   // /* Setting up bindings for necessary control of the swerve drive platform */
   // private final SwerveRequest.FieldCentric drive =
-  //     new SwerveRequest.FieldCentric()
-  //         .withDeadband(MaxSpeed * 0.1)
-  //         .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-  //         .withDriveRequestType(
-  //             DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-  // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  public double interMapSpeed = 71.0;
-  private BooleanSupplier redside = () -> redAlliance;
-  private static boolean redAlliance;
+  // new SwerveRequest.FieldCentric()
+  // .withDeadband(MaxSpeed * 0.1)
+  // .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+  // .withDriveRequestType(
+  // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+  // private final SwerveRequest.SwerveDriveBrake brake = new
+  // SwerveRequest.SwerveDriveBrake();
+  public DoubleSubscriber interMapSpeed = DogLog.tunable("Subsystems/Shooter/Speed", 71.0);
+  private BooleanSupplier redside = () -> setAlliance();
+
+  private Field2d field = new Field2d();
 
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -56,7 +64,8 @@ public class RobotContainer {
       Constants.hopperOnRobot ? new HopperSubsystem() : null;
   public final IntakeSubsystem intakeSubsystem =
       Constants.intakeOnRobot ? new IntakeSubsystem() : null;
-  public final ShooterSubsystem lebron = Constants.shooterOnRobot ? new ShooterSubsystem() : null;
+  public final ShooterSubsystem lebron =
+      Constants.shooterOnRobot ? new ShooterSubsystem(drivetrain, redside) : null;
 
   private final AutoRoutines autoRoutines;
   private final AutoChooser autoChooser;
@@ -83,6 +92,9 @@ public class RobotContainer {
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
+  private DoubleEntry shooterSpeedEntry;
+  private DoubleTopic shooterSpeedTopic;
+
   public RobotContainer() {
     autoRoutines =
         new AutoRoutines(
@@ -90,6 +102,14 @@ public class RobotContainer {
     autoChooser = autoRoutines.getAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    var table = NetworkTableInstance.getDefault().getTable("Shooter");
+    shooterSpeedTopic = table.getDoubleTopic("TargetSpeed");
+    shooterSpeedEntry = shooterSpeedTopic.getEntry(60.0);
+    shooterSpeedTopic.setPersistent(true);
+
+    // Publish Field2d to SmartDashboard once during initialization
+    SmartDashboard.putData("Elastic/Field2d", field);
 
     configureBindings();
   }
@@ -117,7 +137,7 @@ public class RobotContainer {
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
             () -> false,
-            (() -> joystick.leftTrigger().getAsBoolean()),
+            (() -> joystick.a().getAsBoolean()),
             redside,
             drivetrain);
 
@@ -126,8 +146,8 @@ public class RobotContainer {
 
     // INTAKE COMMANDS
 
-    // // left bumper -> run intake
-    joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+    // // left bumper -> run intake (changed to a cause mahesh wanted to)
+    joystick.leftTrigger().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     // intake default command - stop rollers
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -138,45 +158,60 @@ public class RobotContainer {
     joystick
         .rightTrigger()
         .whileTrue(
-            new ShootBasic(
+            new ShootBasicRetract(
                 () ->
-                    MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
+                    // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside,
+                    // drivetrain)),
+                    lebron.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
                 () -> true,
                 lebron,
                 intakeSubsystem,
                 hopperSubsystem));
 
-    joystick
-        .a()
-        .whileTrue(
-            new ShootBasic(() -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    if (Constants.Shooter.INTERMAP_TESTING) {
+      //   joystick
+      //       .a()
+      //       .whileTrue(
+      //           new ShootBasicRetract(
+      //               interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      // } else {
+      //   joystick
+      //       .a()
+      //       .whileTrue(
+      //           new ShootBasicRetract(
+      //               () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    joystick
-        .b()
-        .whileTrue(
-            new ShootBasic(() -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      joystick
+          .b()
+          .whileTrue(
+              new ShootBasicRetract(
+                  () -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    joystick
-        .y()
-        .whileTrue(
-            new ShootBasic(() -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      joystick
+          .y()
+          .whileTrue(
+              new ShootBasicRetract(
+                  () -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    }
 
-    // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem, hopperSubsystem));
+    // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
+    // hopperSubsystem));
 
-    // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(), lebron,
+    // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(),
+    // lebron,
     // intakeSubsystem, hopperSubsystem));
 
     // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new ArcAroundAndShoot(
-    //             drivetrain,`
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem,
-    //             leftRightFunction,
-    //             redside,
-    //             joystick));
+    // .rightTrigger()
+    // .whileTrue(
+    // new ArcAroundAndShoot(
+    // drivetrain,`
+    // lebron,
+    // intakeSubsystem,
+    // hopperSubsystem,
+    // leftRightFunction,
+    // redside,
+    // joystick));
 
     // drivetrain.registerTelemetry(logger::telemeterize);
     // joystick.a().whileTrue(new BumpDTP(drivetrain, () -> true));
@@ -190,11 +225,10 @@ public class RobotContainer {
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
   }
 
-  public static void setAlliance() {
-    redAlliance =
-        (DriverStation.getAlliance().isEmpty())
-            ? false
-            : (DriverStation.getAlliance().get() == Alliance.Red);
+  public static boolean setAlliance() {
+    return (DriverStation.getAlliance().isEmpty())
+        ? false
+        : (DriverStation.getAlliance().get() == Alliance.Red);
   }
 
   public Command getAutonomousCommand() {

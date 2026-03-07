@@ -15,14 +15,24 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Landmarks;
 import frc.robot.util.LoggedTalonFX;
+import frc.robot.util.Targeting;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ShooterSubsystem extends SubsystemBase {
+  private final CommandSwerveDrivetrain drivetrain;
+  private final BooleanSupplier redside;
+
   private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private double targetBallSpeed = 0; // this needs to be consistent
@@ -34,16 +44,25 @@ public class ShooterSubsystem extends SubsystemBase {
   // private TalonFXSimState shooterSimState;
   private DCMotorSim shooterMechanismSim;
 
-  public ShooterSubsystem() {
+  public ShooterSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
+    this.drivetrain = drivetrain;
+    this.redside = redside;
+
     warmUpMotor1 =
         new LoggedTalonFX(
-            Constants.Shooter.WARMUP_1_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "ShooterWarmUp1",
+            Constants.Shooter.WARMUP_1_ID,
+            Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     warmUpMotor2 =
         new LoggedTalonFX(
-            Constants.Shooter.WARMUP_2_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "ShooterWarmUp2",
+            Constants.Shooter.WARMUP_2_ID,
+            Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     warmUpMotor3 =
         new LoggedTalonFX(
-            Constants.Shooter.WARMUP_3_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+            "ShooterWarmUp3",
+            Constants.Shooter.WARMUP_3_ID,
+            Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     shooter = warmUpMotor3;
 
     Slot0Configs s0c =
@@ -163,6 +182,11 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetBallSpeed;
   }
 
+  public double grabTargetShootingSpeed(double distanceToTarget) {
+    return Constants.Shooter.MOTOR_SPEED_FPS_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
+        distanceToTarget);
+  }
+
   // Commands
   public Command shootAtSpeedCommand() {
     return runEnd(() -> setBallSpeed(Constants.Shooter.SHOOT_FOR_AUTO), this::stopShooter);
@@ -173,7 +197,13 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command shootAtSpeedCommand(DoubleSupplier ballSpeed) {
+    DogLog.log("ShootingSpeedRN", ballSpeed.getAsDouble());
     return runEnd(() -> this.setBallSpeed(ballSpeed.getAsDouble()), this::stopShooter);
+  }
+
+  public Command shootAtSpeedCommand(DoubleSubscriber ballSpeed) {
+    DogLog.log("ShootingSpeedRN", ballSpeed.get());
+    return runEnd(() -> this.setBallSpeed(ballSpeed.get()), this::stopShooter);
   }
 
   @Override
@@ -181,6 +211,28 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/TargetSpeed (fps)", getTargetBallSpeedFtPS());
     DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
     DogLog.log("Subsystems/Shooter/CurrentSpeed (fps)", getCurrentBallSpeedFtPS());
+
+    Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/TargetPlusLead",
+        new Pose2d(
+            Targeting.positionToTarget(
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
+                .x,
+            Targeting.positionToTarget(
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
+                .y,
+            new Rotation2d()));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/ShootingSpeed",
+        Targeting.shootingSpeed(
+            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
     DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", shooter.getVelocity().getValueAsDouble());
   }
 

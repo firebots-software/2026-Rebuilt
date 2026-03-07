@@ -1,18 +1,23 @@
 package frc.robot.util;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.MathUtils.MiscMath;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public class MiscUtils {
+
+  public static int shiftIndicatorSum = 0;
+
   public static Pose2d plus(Pose2d a, Translation2d b) {
     return new Pose2d(
         a.getX() + b.getX(), a.getY() + b.getY(), new Rotation2d(a.getRotation().getRadians()));
@@ -68,8 +73,8 @@ public class MiscUtils {
   }
 
   public static double countdownTillNextShift(double currentTime) {
-    // double currentMatchTime = currentTime;
-    double currentMatchTime = DriverStation.getMatchTime();
+    double currentMatchTime = currentTime;
+    // double currentMatchTime = DriverStation.getMatchTime();
     if (currentMatchTime > 140) return currentMatchTime - 140;
     else if (currentMatchTime > 130) return currentMatchTime - 130;
     else if (currentMatchTime > 105) return currentMatchTime - 105;
@@ -91,6 +96,55 @@ public class MiscUtils {
     else return "Endgame";
   }
 
+  public static void shiftSwitchIndicator(double currentTime) {
+    double currentTimes = currentTime;
+    // double currentTimes = DriverStation.getMatchTime();
+    double timeUntilNextShift = countdownTillNextShift(currentTimes);
+    if (areWeActive(currentTimes)
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && timeUntilNextShift > 8) {
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+    } else if (areWeActive(currentTimes)
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && timeUntilNextShift < 8) {
+      if ((shiftIndicatorSum / 20) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      }
+      shiftIndicatorSum++;
+    } else if ((timeUntilNextShift < 2
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && !areWeActive(currentTimes))) {
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
+    } else if (timeUntilNextShift < 5
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && !areWeActive(currentTimes)) {
+      if ((shiftIndicatorSum / 8) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFF00");
+      }
+      shiftIndicatorSum++;
+    } else if (timeUntilNextShift < 8
+        && !currentShiftName(currentTimes).equals("Endgame")
+        && !areWeActive(currentTimes)) {
+      if ((shiftIndicatorSum / 20) % 2 == 1) {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      } else {
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
+      }
+      shiftIndicatorSum++;
+    } else {
+      shiftIndicatorSum = 0;
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+    }
+  }
+
+  public static double get3dDistance(Transform3d transform) {
+    return Math.hypot(Math.hypot(transform.getX(), transform.getY()), transform.getZ());
+  }
+
   public static double getDistanceToHub(BooleanSupplier redSide, CommandSwerveDrivetrain swerve) {
     Pose2d robotPose = swerve.getCurrentState().Pose;
 
@@ -106,20 +160,23 @@ public class MiscUtils {
 
   public static double computeShootingSpeed(double distToHubCenter) {
     // Constants (meters)
-    final double a = edu.wpi.first.math.util.Units.inchesToMeters(5.67405);
-    final double b = edu.wpi.first.math.util.Units.inchesToMeters(36.60021);
+    final double a = 20.41232;
+    final double b = 57.26412;
+    final double c = -0.182208;
 
-    double y = (a * Math.sqrt(distToHubCenter)) + b;
-
-    return MiscMath.clamp(y, 71.0, 107.0);
+    return (a * Math.sqrt(distToHubCenter - c)) + b;
   }
 
   public static boolean isFlashDriveConnected() {
     String[] possiblePaths = {"/u"};
 
     for (String path : possiblePaths) {
-      File usbDrive = new File(path);
-      if (usbDrive.exists() && usbDrive.isDirectory() && usbDrive.canRead()) {
+      // Check if /u/logs exists and is writable (indicates USB is actually mounted)
+      File logsDir = new File(path + "/logs");
+      DogLog.log("Elastic/logsDirExists", logsDir.exists());
+      DogLog.log("Elastic/logsDirIsDirectory", logsDir.isDirectory());
+      DogLog.log("Elastic/logsDirCanWrite", logsDir.canWrite());
+      if (logsDir.exists() && logsDir.isDirectory() && logsDir.canWrite()) {
         return true;
       }
     }

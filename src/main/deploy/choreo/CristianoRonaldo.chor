@@ -76,7 +76,7 @@
  },
  "generationFeatures":[],
  "codegen":{
-  "root":"../../java/frc/robot/util",
+  "root":null,
   "genVars":true,
   "genTrajData":true,
   "useChoreoLib":true
