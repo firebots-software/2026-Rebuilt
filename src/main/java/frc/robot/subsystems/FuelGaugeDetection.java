@@ -49,7 +49,7 @@ public class FuelGaugeDetection extends SubsystemBase {
   private boolean checkCameraConnected() {
 
     boolean cameraConnected = photonCamera.isConnected();
-    DogLog.log("FuelGauge/CameraStatus", cameraConnected);
+    DogLog.log("Subsystems/FuelGauge/CameraStatus", cameraConnected);
     return cameraConnected;
   }
 

@@ -375,7 +375,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * occurs during testing.
      */
     currentState = getState();
-    DogLog.log("Accumulated error swerve", headingPIDController.getAccumulatedError());
+    DogLog.log("Subsystems/Swerve/AccumulatedError", headingPIDController.getAccumulatedError());
 
     if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
@@ -401,7 +401,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
 
     DogLog.log(
-        "CriticalInformation/DistanceToHub",
+        "Subsystems/Swerve/DistanceToHub",
         MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
     DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
