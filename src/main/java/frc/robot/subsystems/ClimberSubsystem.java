@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+<<<<<<< HEAD
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -23,9 +24,24 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.Servo;
+=======
+import java.lang.reflect.Constructor;
+
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import dev.doglog.DogLog;
+>>>>>>> 4c1bf1a0f622715c565c8680a45322098f3e7cdc
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+<<<<<<< HEAD
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
@@ -34,6 +50,23 @@ public class ClimberSubsystem extends SubsystemBase {
   private double sitUpTargetDeg, muscleUpTargetDeg, pullUpTargetPosition;
   private final CANcoder sitUpEncoder;
   private final Servo brake;
+=======
+import frc.robot.util.LoggedTalonFX;
+import frc.robot.Constants;
+import frc.robot.Constants.ClimberConstants.ClimberPositions;
+
+
+
+public class ClimberSubsystem extends SubsystemBase {
+  private static ClimberSubsystem instance;
+  private final LoggedTalonFX motor1, motor2, master;
+
+  private ClimberPositions currentLevel;
+  private final double tolerance = 1;
+
+  private MotionMagicConfigs mmc;
+  private final MotionMagicVoltage controlRequest = new MotionMagicVoltage(0);
+>>>>>>> 4c1bf1a0f622715c565c8680a45322098f3e7cdc
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
@@ -41,17 +74,29 @@ public class ClimberSubsystem extends SubsystemBase {
   private final VoltageOut m_inwardsvoltageOut = new VoltageOut(3.0); // positive = inwards
   private final VoltageOut m_outwardsvoltageOut = new VoltageOut(-3.0);
 
+<<<<<<< HEAD
   public ClimberSubsystem() {
     CurrentLimitsConfigs regClc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Climber.DEFAULT_STATOR_CURRENT)
             .withSupplyCurrentLimit(Constants.Climber.DEFAULT_SUPPLY_CURRENT);
+=======
+
+  public ClimberSubsystem() {
+    motor1 = new LoggedTalonFX(Constants.ClimberConstants.MOTOR1_PORT, Constants.ClimberConstants.canbus);
+    motor2 = new LoggedTalonFX(Constants.ClimberConstants.MOTOR2_PORT, Constants.ClimberConstants.canbus);
+    master = motor1;
+
+    Follower follower = new Follower(Constants.ClimberConstants.MOTOR1_PORT, MotorAlignmentValue.Opposed);
+    motor2.setControl(follower);
+>>>>>>> 4c1bf1a0f622715c565c8680a45322098f3e7cdc
 
     CurrentLimitsConfigs specialClc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Climber.SitUp.STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Climber.SitUp.SUPPLY_CURRENT_LIMIT);
 
+<<<<<<< HEAD
     Slot0Configs pullUps0c =
         new Slot0Configs()
             .withKP(Constants.Climber.PullUp.KP)
@@ -390,6 +435,58 @@ public class ClimberSubsystem extends SubsystemBase {
         "Subsystems/Climber/PullUpPositionMeter",
         pullUpMotorR.getPosition().getValueAsDouble()
             / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS);
+=======
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.ClimberConstants.S0C_KP).withKI(Constants.ClimberConstants.S0C_KI).withKD(Constants.ClimberConstants.S0C_KD).withKS(Constants.ClimberConstants.S0C_KS).withKG(Constants.ClimberConstants.S0C_KG).withKA(Constants.ClimberConstants.S0C_KA).withKV(Constants.ClimberConstants.S0C_KV);
+  
+    motor1.updateCurrentLimits(Constants.ClimberConstants.STATOR_CURRENT_LIMIT, Constants.ClimberConstants.SUPPLY_CURRENT_LIMIT);
+    motor2.updateCurrentLimits(Constants.ClimberConstants.STATOR_CURRENT_LIMIT, Constants.ClimberConstants.SUPPLY_CURRENT_LIMIT);
+
+    mmc = new MotionMagicConfigs();
+    mmc.MotionMagicAcceleration = Constants.ClimberConstants.MOTIONMAGIC_MAX_ACCELERATION;
+    mmc.MotionMagicCruiseVelocity = Constants.ClimberConstants.MOTIONMAGIC_MAX_VELOCITY;
+
+    TalonFXConfigurator m1config = motor1.getConfigurator();
+    TalonFXConfigurator m2config = motor2.getConfigurator();
+
+    MotorOutputConfigs moc = new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake);
+    
+    m1config.apply(s0c);
+    m2config.apply(s0c);
+    m1config.apply(mmc);
+    m2config.apply(mmc);
+    m1config.apply(moc);
+    m2config.apply(moc);
+  }
+
+  public static ClimberSubsystem getInstance() {
+    if (instance == null) {
+      instance = new ClimberSubsystem();
+    }
+    return instance;
+  }
+
+  public void setClimbTo(ClimberPositions level) {
+   this.currentLevel = level;
+   master.setControl(controlRequest.withPosition(level.height * Constants.ClimberConstants.CONVERSOIN_DISTANCE_TO_ROTATIONS));
+  }
+
+  public double getError() {
+    return (currentLevel.height * Constants.ClimberConstants.CONVERSOIN_DISTANCE_TO_ROTATIONS) - master.getPosition().getValueAsDouble();
+    // returns in rotations
+  }
+
+  public boolean isAtLevel() {
+    return Math.abs(getError()) <= tolerance;
+  }
+ 
+
+  @Override
+  public void periodic() {
+    DogLog.log("Doglog/climber/error", getError());
+    DogLog.log("Doglog/climber/target", currentLevel.getHeight());
+    DogLog.log("Doglog/climber/isAtLevel", isAtLevel());
+  }
+>>>>>>> 4c1bf1a0f622715c565c8680a45322098f3e7cdc
 
     DogLog.log(
         "Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpPosInRotationsFromEncoder());
