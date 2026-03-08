@@ -206,6 +206,8 @@ public class RobotContainer {
     joystick2.leftBumper().whileTrue(climberSubsystem.SitUpCommand(25));
     joystick2.rightBumper().whileTrue(climberSubsystem.SitUpCommand(48.8));
 
+    joystick2.rightTrigger().whileTrue(climberSubsystem.sitUpVoltageCommand(3));
+
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
     // hopperSubsystem));
 
