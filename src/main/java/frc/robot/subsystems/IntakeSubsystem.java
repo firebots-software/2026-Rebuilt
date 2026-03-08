@@ -100,7 +100,7 @@ public class IntakeSubsystem extends SubsystemBase {
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()
             .withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
-            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
+            .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
             .withMagnetOffset(Rotations.of(Constants.Intake.Arm.ENCODER_OFFSET));
 
     cancoder.getConfigurator().apply(ccConfig);
@@ -126,7 +126,7 @@ public class IntakeSubsystem extends SubsystemBase {
     armConfig.Slot0 = armSlot0Configs;
     armConfig.CurrentLimits = armCurrentLimitsConfigs;
     armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    armConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    armConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     armConfig.Feedback = feedbackConfigs;
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
