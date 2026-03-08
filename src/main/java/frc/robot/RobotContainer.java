@@ -145,7 +145,8 @@ public class RobotContainer {
             drivetrain);
 
     drivetrain.setDefaultCommand(swerveJoystickCommand);
-    hopperSubsystem.setDefaultCommand(Commands.run(hopperSubsystem::stop, hopperSubsystem));
+    hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
+    climberSubsystem.setDefaultCommand(climberSubsystem.runOnce(climberSubsystem::stopClimbWithoutBrake));
 
     // INTAKE COMMANDS
 
@@ -199,11 +200,11 @@ public class RobotContainer {
 
     joystick2.a().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
-    joystick2.x().onTrue(new ZeroPullUp(climberSubsystem));
+    joystick2.x().whileTrue(new ZeroPullUp(climberSubsystem));
+    joystick2.y().whileTrue(new ZeroMuscleUp(climberSubsystem));
 
-    joystick2.rightTrigger().and(joystick2.a()).whileTrue(climberSubsystem.moveMuscleUpOutCommand());
-    joystick2.rightTrigger().and(joystick2.b()).whileTrue(climberSubsystem.moveMuscleUpInCommand());
-    joystick2.rightTrigger().and(joystick2.x()).whileTrue(new ZeroMuscleUp(climberSubsystem));
+    joystick2.leftBumper().whileTrue(climberSubsystem.run(() -> climberSubsystem.setMuscleUpPosition(67)));
+    joystick2.rightBumper().whileTrue(climberSubsystem.moveMuscleUpInCommand());
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
     // hopperSubsystem));
