@@ -71,19 +71,19 @@ public class VisionSubsystem extends SubsystemBase {
     latestVisionResult = null;
     hasValidMeasurement = false;
 
-    if (!checkCameraConnected()) return;
+    if (!cameraConnected()) return;
 
     updateEstimate(photonCamera.getAllUnreadResults());
   }
 
-  private boolean checkCameraConnected() {
+  private boolean cameraConnected() {
     boolean cameraConnected = photonCamera.isConnected();
     DogLog.log(loggingPath + "/CameraConnected", cameraConnected);
     return cameraConnected;
   }
 
   private void updateEstimate(List<PhotonPipelineResult> results) {
-    latestVisionResult = results.get( results.size() - 1 );
+    latestVisionResult = results.get(results.size() - 1);
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     if (visionEstimate.isEmpty())
@@ -91,12 +91,11 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
-
     hasValidMeasurement = false;
 
-    if (!checkResultValidity()) return;
+    if (!resultValid()) return;
 
-    if (!checkTagsValidity()) return;
+    if (!tagsValid()) return;
 
     EstimatedRobotPose estimatedPose = visionEstimate.get();
     latestMeasuredPose = estimatedPose.estimatedPose.toPose2d();
@@ -124,7 +123,7 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/measuredPoseAvailable", latestMeasuredPose == null);
   }
 
-  private boolean checkResultValidity() {
+  private boolean resultValid() {
 
     DogLog.log(loggingPath + "/addFilteredPoseRunning", true);
 
@@ -138,7 +137,7 @@ public class VisionSubsystem extends SubsystemBase {
     return (resultExists && hasEstimate);
   }
 
-  private boolean checkTagsValidity() {
+  private boolean tagsValid() {
 
     List<PhotonTrackedTarget> tags = latestVisionResult.getTargets();
 
