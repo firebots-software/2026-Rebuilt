@@ -432,7 +432,11 @@ public class ClimberSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     DogLog.log(
-        "Subsystems/Climber/SitUpPositionDeg", sitUpMotor.getCachedPositionRotations() * 360f);
+        "Subsystems/Climber/SitUpPositionDeg", getSitUpPosition().getDegrees());
+    DogLog.log(
+        "Subsystems/Climber/SitUpPositionDegUnfused", getSitUpUnfusedPosition().getDegrees());
+    DogLog.log(
+        "Subsystems/Climber/SitUpPositioDegRawFromCancoder", getSitUpCancoderPositionRaw()*360.0);  
     DogLog.log(
         "Subsystems/Climber/MuscleUpPositionDeg",
         muscleUpMotor.getCachedPositionRotations()
