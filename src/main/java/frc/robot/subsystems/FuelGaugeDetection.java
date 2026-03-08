@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
@@ -105,7 +104,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     // Color redColor = new Color(255, 0, 0);
     // Color yellowColor = new Color(255, 255, 0);
     // Color blackColor = new Color(0, 0, 0);
-    
+
     latestRawGauge = setFuelGauge(rawArea);
     latestSmoothedGauge = setFuelGauge(smoothedArea);
     latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);
@@ -118,17 +117,17 @@ public class FuelGaugeDetection extends SubsystemBase {
     DogLog.log(
         "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
-    if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.EMPTY.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#000000");
-    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.LOW.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FF0000");
-    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.MEDIUM.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FFFF00");
-    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.FULL.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#00FF00");
-    } else {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FFFFFF");
-    }
+
+    String fuelGaugeColor =
+        switch (latestSmoothedMultipleBallsGauge) {
+          case EMPTY -> "#000000";
+          case LOW -> "#FF0000";
+          case MEDIUM -> "#FFFF00";
+          case FULL -> "#00FF00";
+          default -> "#FFFFFF";
+        };
+
+    SmartDashboard.putString("Elastic/FuelGaugeLevel", fuelGaugeColor);
   }
 
   private FuelGauge setFuelGauge(double area) {
