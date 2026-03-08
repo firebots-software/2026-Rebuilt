@@ -575,7 +575,7 @@ public final class Constants {
 
       public static final double SIT_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 54.1;
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 54.4;
       public static final double ENCODER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ENCODER_ROT;
 
       public static final double ENCODER_ROTS_PER_ARM_ROT = 32f/17f; 
