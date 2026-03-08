@@ -106,10 +106,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (throwOutDistance(latestMinDistance)) return;
 
-    ChassisSpeeds robotSpeeds = swerve.getState().Speeds;
-
     ChassisSpeeds fieldSpeeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
+        ChassisSpeeds.fromRobotRelativeSpeeds(
+            swerve.getState().Speeds, swerve.getState().Pose.getRotation());
 
     double currentSpeed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
 
@@ -157,14 +156,12 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private boolean throwOutDistance(double min) {
-
     boolean thrownOut = (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE);
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
   }
 
   public double getMinDistance() {
-
     double minDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -178,7 +175,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getAverageDistance() {
-
     double avgDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -192,7 +188,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getMaxDistance() {
-
     double maxDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -206,7 +201,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getPoseAmbiguity() {
-
     double poseAmbiguity =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -240,7 +234,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private double calculateTimestamp(double timestamp) {
-
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
@@ -252,12 +245,10 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public Pose2d getFilteredPose() {
-
     return latestMeasuredPose;
   }
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
-
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
 }
