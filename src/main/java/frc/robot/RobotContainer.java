@@ -184,7 +184,7 @@ public class RobotContainer {
       //       .whileTrue(
       //           new ShootBasicRetract(
       //               () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-
+    } else {
       joystick
           .b()
           .whileTrue(
@@ -196,8 +196,8 @@ public class RobotContainer {
           .whileTrue(
               new ShootBasicRetract(
                   () -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    
     }
-
     // joystick2.a().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
     // joystick2.x().whileTrue(new ZeroPullUp(climberSubsystem));
