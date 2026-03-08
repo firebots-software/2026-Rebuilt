@@ -385,7 +385,7 @@ public class ClimberSubsystem extends SubsystemBase {
     return runOnce(() -> this.setPullUpPosition(0.1));
   }
   public Command SitUpCommand(double angle) {
-    return run(() -> setSitUpPosition(angle)).until(this::isSitUpAtPosition);
+    return run(() -> setSitUpPosition(angle)); //.until(this::isSitUpAtPosition);
   }
 
   // separate command groups to incorporate driveToPose
