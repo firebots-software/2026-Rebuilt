@@ -26,16 +26,16 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class VisionSubsystem extends SubsystemBase {
 
   private final Constants.Vision.VisionCamera cameraID;
+  private final PhotonCamera photonCamera;
+  private final AprilTagFieldLayout fieldLayout;
+  private final PhotonPoseEstimator poseEstimator;
+  private PhotonPipelineResult latestVisionResult;
+
 
   private String cameraTitle;
   private String loggingPath;
 
-  // references for PhotonVision
-  private final PhotonCamera photonCamera;
-  private final PhotonPoseEstimator poseEstimator;
-  private PhotonPipelineResult latestVisionResult;
   Optional<EstimatedRobotPose> visionEst;
-  private final AprilTagFieldLayout fieldLayout;
 
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
@@ -55,14 +55,13 @@ public class VisionSubsystem extends SubsystemBase {
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
 
-    this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
-    poseEstimator.setFieldTags(fieldLayout);
+    latestVisionResult = null;
 
     cameraTitle = cameraID.getLoggingName();
     loggingPath = "Subsystems/Vision/" + cameraTitle;
-    latestVisionResult = null;
   }
 
   public VisionCamera getCamera() {
