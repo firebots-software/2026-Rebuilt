@@ -578,7 +578,7 @@ public final class Constants {
       public static final double ARM_ROTS_PER_MOTOR_ROT =
           (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
       public static final double MOTOR_ROTS_PER_ARM_ROTS = 1.0 / ARM_ROTS_PER_MOTOR_ROT;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROT / 360d;
+      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_PER_ARM_ROTS / 360d;
       public static final double DEGREES_OF_ARM_ROT_PER_MOTOR_ROT =
           1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
 
