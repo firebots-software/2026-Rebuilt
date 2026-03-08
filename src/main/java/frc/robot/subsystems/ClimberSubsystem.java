@@ -70,6 +70,7 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKP(Constants.Climber.SitUp.KP)
             .withKI(Constants.Climber.SitUp.KI)
             .withKD(Constants.Climber.SitUp.KD)
+
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     Slot0Configs pullUps0c =
@@ -197,9 +198,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public boolean isSitUpAtPosition() {
-    return Math.abs(
-            sitUpMotor.getCachedPositionRotations()
-                - ((sitUpTargetDeg*Constants.Climber.SitUp.MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT)*Constants.Climber.SitUp.ARM_ROTS_PER_MOTOR_ROT))
+    return Math.abs((sitUpMotor.getCachedPositionRotations()*360.0)-sitUpTargetDeg)
         <= Constants.Climber.SitUp.SIT_UP_TOLERANCE;
   }
 
@@ -213,7 +212,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public boolean isPullUpAtPosition() {
     return Math.abs(
-            (pullUpMotorR.getCachedPositionRotations()*Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS)- pullUpTargetPositionMeters)
+            (pullUpMotorR.getCachedPositionRotations()/Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS)- pullUpTargetPositionMeters)
         <= Constants.Climber.PullUp.PULL_UP_TOLERANCE_METERS;
   }
 
