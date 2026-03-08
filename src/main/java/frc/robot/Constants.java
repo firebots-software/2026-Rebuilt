@@ -424,10 +424,10 @@ public final class Constants {
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
       public static enum Intake {
-        RightIntakeSweep,
         LeftIntakeSweep,
+        RightIntakeSweep,
+        LeftIntakeSweepShort,
         RightIntakeSweepShort,
-        LeftIntakeSweepShort
       }
 
       public static enum ShootPos {
@@ -446,17 +446,19 @@ public final class Constants {
 
       public static enum Depot {
         DepotL,
-        DepotM,
         DepotR,
+        DepotStart
       }
 
       public static enum Outpost {
         OutpostL,
-        OutpostM,
-        OutpostR
+        OutpostR,
+        OutpostStart
       }
 
       public static enum MiscPaths {
+        LeftSweep,
+        RightSweep
       }
     }
   }

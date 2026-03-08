@@ -191,8 +191,8 @@ public class AutoRoutines {
                 intakeToShoot.resetOdometry(),
                 intakeToShoot.cmd()));
 
-    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd(), new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE)));
-    outpostIntake.done().onTrue(outpostToShoot.cmd());
+    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
+    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
 
     return routine;
@@ -319,8 +319,8 @@ public class AutoRoutines {
                 shoot.resetOdometry(),
                 shoot.cmd()));
 
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd(), new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE)));
-    outpostIntake.done().onTrue(outpostToShoot.cmd());
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
+    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
 
     return routine;
@@ -351,9 +351,88 @@ public class AutoRoutines {
                 shoot.resetOdometry(),
                 shoot.cmd()));
 
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd(), new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE)));
-    outpostIntake.done().onTrue(outpostToShoot.cmd());
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
+    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeOutpostShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+
+    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+
+    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeOutpostLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+    AutoTrajectory rightSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightSweep);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotL);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+
+    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+
+    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), rightSweep.cmd()));
+    rightSweep.done().onTrue(depotIntake.cmd());
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeDepotShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+
+    routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+
+  public AutoRoutine DrakeDepotLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+    AutoTrajectory leftSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftSweep);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostR);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+
+    routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), leftSweep.cmd()));
+    leftSweep.done().onTrue(outpostIntake.cmd());
+    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(returnBasicShoot());
+
+    return routine;
+  }
+
+
+
+  public AutoRoutine Nike() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    routine.active().onTrue(returnBasicShoot());
 
     return routine;
   }
