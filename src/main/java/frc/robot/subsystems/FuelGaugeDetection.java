@@ -22,10 +22,10 @@ public class FuelGaugeDetection extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
 
-  private double latestRawArea;
-  private double latestSmoothedArea;
-  private double latestMultipleBallsArea;
-  private double latestSmoothedMultipleBallsArea;
+  private double rawArea;
+  private double smoothedArea;
+  private double multipleBallsArea;
+  private double smoothedMultipleBallsArea;
 
   private FuelGauge latestRawGauge;
   private FuelGauge latestSmoothedGauge;
@@ -42,7 +42,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
 
-    getVisionResult();
+    updateVisionResult();
   }
 
   private boolean cameraConnected() {
@@ -57,8 +57,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     return (latestVisionResult == null);
   }
 
-  private void getVisionResult() {
-
+  private void updateVisionResult() {
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
         b -> {
@@ -67,24 +66,24 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/BallPitch", b.getPitch());
           DogLog.log("Subsystems/FuelGauge/BallSkew", b.getSkew());
 
-          latestRawArea = b.getArea();
-          latestSmoothedArea = updateLatestList(latestRawMeasurements, latestRawArea);
-          latestMultipleBallsArea = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
-          latestSmoothedMultipleBallsArea =
-              updateLatestList(latestMultipleMeasurements, latestMultipleBallsArea);
+          rawArea = b.getArea();
+          smoothedArea = smoothFromList(latestRawMeasurements, rawArea);
+          multipleBallsArea = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
+          smoothedMultipleBallsArea = smoothFromList(latestMultipleMeasurements, multipleBallsArea);
 
-          DogLog.log("Subsystems/FuelGauge/Area/RawArea", latestRawArea);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", latestSmoothedArea);
-          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", latestMultipleBallsArea);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", latestSmoothedMultipleBallsArea);
+          DogLog.log("Subsystems/FuelGauge/Area/RawArea", rawArea);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedArea);
+          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", multipleBallsArea);
+          DogLog.log(
+              "Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBallsArea);
 
           calculateFuelGaugeState(
-              latestRawArea, latestSmoothedArea, latestMultipleBallsArea, latestSmoothedMultipleBallsArea);
+              rawArea, smoothedArea, multipleBallsArea, smoothedMultipleBallsArea);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
   }
 
-  private double updateLatestList(ArrayList<Double> list, double area) {
+  private double smoothFromList(ArrayList<Double> list, double area) {
     double smoothedArea = 0.0;
 
     list.add(area);
@@ -159,15 +158,15 @@ public class FuelGaugeDetection extends SubsystemBase {
   public double getArea(GaugeCalculationType type) {
     switch (type) {
       case RAW:
-        return latestRawArea;
+        return rawArea;
       case SMOOTHED:
-        return latestSmoothedArea;
+        return smoothedArea;
       case MULTIPLE_BALLS:
-        return latestMultipleBallsArea;
+        return multipleBallsArea;
       case SMOOTHED_MULTIPLE_BALLS:
-        return latestSmoothedMultipleBallsArea;
+        return smoothedMultipleBallsArea;
       default:
-        return latestRawArea;
+        return rawArea;
     }
   }
 
@@ -222,7 +221,7 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   public FuelGauge getCurrentFuelGaugeState() {
-    double currentMeasurement = latestSmoothedMultipleBallsArea; // or whichever measurement we use
+    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
 
     if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
       return FuelGauge.EMPTY;
