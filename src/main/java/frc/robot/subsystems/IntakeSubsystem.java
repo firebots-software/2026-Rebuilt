@@ -100,7 +100,7 @@ public class IntakeSubsystem extends SubsystemBase {
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()
             .withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
-            .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+            .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
             .withMagnetOffset(Rotations.of(Constants.Intake.Arm.ENCODER_OFFSET));
 
     cancoder.getConfigurator().apply(ccConfig);
