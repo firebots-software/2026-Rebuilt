@@ -434,7 +434,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command sitUpVoltageCommand(double voltage) {
-    return run(() -> sitUpMotor.setControl(new VoltageOut(voltage)));
+    return runOnce(() -> sitUpMotor.setControl(new VoltageOut(voltage)));
   }
 
   @Override
