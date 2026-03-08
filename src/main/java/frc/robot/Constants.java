@@ -536,7 +536,7 @@ public final class Constants {
       public static final double KP = 0.4;
       public static final double KI = 0;
       public static final double KD = 0;
-      public static final double KV = 0.12;
+      public static final double KV = 0.09;
       public static final double KG = 0;
       public static final double KS = 0;
 

@@ -48,6 +48,6 @@ public class ZeroMuscleUp extends Command {
       timesExceededCurrent = 0;
     }
     DogLog.log("time exceeded current", timesExceededCurrent);
-    return timesExceededCurrent >= 10;
+    return timesExceededCurrent >= 5;
   }
 }

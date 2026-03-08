@@ -323,7 +323,7 @@ public class ClimberSubsystem extends SubsystemBase {
     double supplyCurrent = Math.abs(muscleUpMotor.getSupplyCurrent().getValue().magnitude());
     double statorCurrent = Math.abs(muscleUpMotor.getStatorCurrent().getValue().magnitude());
 
-    return supplyCurrent > 0.2 && statorCurrent > 6.0;
+    return supplyCurrent > 0.2 && statorCurrent > 5.0;
   }
 
   public void resetPullUpCurrentLimits() {
