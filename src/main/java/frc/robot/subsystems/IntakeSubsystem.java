@@ -126,7 +126,7 @@ public class IntakeSubsystem extends SubsystemBase {
     armConfig.Slot0 = armSlot0Configs;
     armConfig.CurrentLimits = armCurrentLimitsConfigs;
     armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    armConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    armConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     armConfig.Feedback = feedbackConfigs;
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
