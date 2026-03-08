@@ -31,7 +31,6 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
 
-
   private String cameraTitle;
   private String loggingPath;
 
@@ -88,7 +87,8 @@ public class VisionSubsystem extends SubsystemBase {
     for (PhotonPipelineResult result : results) {
       latestVisionResult = result;
       visionEstimate = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEstimate.isEmpty()) visionEstimate = poseEstimator.estimateLowestAmbiguityPose(result);
+      if (visionEstimate.isEmpty())
+        visionEstimate = poseEstimator.estimateLowestAmbiguityPose(result);
     }
   }
 
