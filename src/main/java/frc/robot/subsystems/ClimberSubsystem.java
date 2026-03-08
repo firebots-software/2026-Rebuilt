@@ -80,7 +80,8 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKD(Constants.Climber.PullUp.KD)
             .withKV(Constants.Climber.PullUp.KV)
             .withKG(Constants.Climber.PullUp.KG)
-            .withGravityType(GravityTypeValue.Elevator_Static);
+            .withKS(.1);
+            // .withGravityType(GravityTypeValue.Eslevator_Static);
 
     Slot0Configs muscleUps0c =
         new Slot0Configs()
@@ -426,6 +427,10 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public Command abortCommand() {
     return runOnce(this::brakeClimb);
+  }
+
+  public Command sitUpVoltageCommand(double voltage) {
+    return run(() -> sitUpMotor.setControl(new VoltageOut(voltage)));
   }
 
   @Override
