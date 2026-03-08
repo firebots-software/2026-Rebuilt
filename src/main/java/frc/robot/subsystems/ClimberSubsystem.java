@@ -300,16 +300,16 @@ public class ClimberSubsystem extends SubsystemBase {
     return startEnd(() -> movePullUpDownWithVoltage(), this::stopPullUp);
   }
 
-  public Command stopPullUpCommand() {
-    return runOnce(this::stopPullUp);
-  }
-
   public void moveMuscleUpInWithVoltage() {
-    muscleUpMotor.setControl(m_voltageRequest.withOutput(3.0));
+    // muscleUpMotor.setControl(
+    // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
+    muscleUpMotor.setControl(m_voltageRequest.withOutput(-3.0));
   }
 
   public void moveMuscleUpOutWithVoltage() {
-    muscleUpMotor.setControl(m_voltageRequest.withOutput(-3.0));
+    // muscleUpMotor.setControl(
+    // m_velocityRequest.withVelocity(Constants.Climber.MuscleUp.MUSCLEUP_DOWN_VELOCITY));
+    muscleUpMotor.setControl(m_voltageRequest.withOutput(3.0));
   }
 
   public Command moveMuscleUpOutCommand() {
