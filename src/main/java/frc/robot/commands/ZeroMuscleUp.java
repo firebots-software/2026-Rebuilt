@@ -27,7 +27,7 @@ public class ZeroMuscleUp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.moveMuscleUpIn();
+    climberSubsystem.moveMuscleUpInWithVoltage();
   }
 
   // Called once the command ends or is interrupted.
