@@ -142,6 +142,10 @@ public class VisionUtils {
     }
   }
 
+  public static String getColorOrDefault(FuelGauge gauge) {
+    return gauge == null ? "#FFFFFF" : gauge.getColor();
+  }
+
   public static Matrix<N3, N1> computeNoiseVector(double distance, double speed, int tagCount) {
     double nX = computeNoiseX(distance, speed, tagCount);
     double nY = computeNoiseY(distance, speed, tagCount);

@@ -848,19 +848,25 @@ public final class Constants {
     }
 
     public static enum FuelGauge { // LAST: 20, 50, 70, 100
-      EMPTY(2.0),
-      LOW(9.0),
-      MEDIUM(12.0),
-      FULL(100.0);
+      EMPTY(2.0, "#000000"),
+      LOW(9.0, "#FF0000"),
+      MEDIUM(12.0, "#FFFF00"),
+      FULL(100.0, "#00FF00");
 
       private double threshold;
+      private String color;
 
-      FuelGauge(double threshold) {
+      FuelGauge(double threshold, String color) {
         this.threshold = threshold;
+        this.color = color;
       }
 
       public double getThreshold() {
         return threshold;
+      }
+
+      public String getColor() {
+        return color;
       }
     }
   }

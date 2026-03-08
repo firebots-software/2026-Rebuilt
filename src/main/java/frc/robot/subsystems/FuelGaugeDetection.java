@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
+import frc.robot.util.VisionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -100,11 +101,6 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   private void calculateFuelGaugeState(
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
-    // Color greenColor = new Color(0, 255, 0);
-    // Color redColor = new Color(255, 0, 0);
-    // Color yellowColor = new Color(255, 255, 0);
-    // Color blackColor = new Color(0, 0, 0);
-
     latestRawGauge = setFuelGauge(rawArea);
     latestSmoothedGauge = setFuelGauge(smoothedArea);
     latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);
@@ -118,16 +114,8 @@ public class FuelGaugeDetection extends SubsystemBase {
         "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
 
-    String fuelGaugeColor =
-        switch (latestSmoothedMultipleBallsGauge) {
-          case EMPTY -> "#000000";
-          case LOW -> "#FF0000";
-          case MEDIUM -> "#FFFF00";
-          case FULL -> "#00FF00";
-          default -> "#FFFFFF";
-        };
-
-    SmartDashboard.putString("Elastic/FuelGaugeLevel", fuelGaugeColor);
+    SmartDashboard.putString(
+        "Elastic/FuelGaugeLevel", VisionUtils.getColorOrDefault(latestSmoothedMultipleBallsGauge));
   }
 
   private FuelGauge setFuelGauge(double area) {
