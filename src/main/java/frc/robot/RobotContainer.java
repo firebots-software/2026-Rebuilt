@@ -17,13 +17,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.ZeroMuscleUp;
-import frc.robot.commands.ZeroPullUp;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -196,21 +193,25 @@ public class RobotContainer {
           .whileTrue(
               new ShootBasicRetract(
                   () -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-    
     }
     // joystick2.a().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
     // joystick2.x().whileTrue(new ZeroPullUp(climberSubsystem));
     // joystick2.y().whileTrue(new ZeroMuscleUp(climberSubsystem));
 
-    joystick2.leftBumper().whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
-    joystick2.rightBumper().whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+    joystick2
+        .leftBumper()
+        .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+    joystick2
+        .rightBumper()
+        .whileTrue(
+            climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
 
     joystick2.a().whileTrue(climberSubsystem.sitUpVoltageCommand(4.0));
 
     // ronaldoJoystick.a().whileTrue(new ReverseIntakeAndHopper(intakeSubsystem,
     // hopperSubsystem));
- 
+
     // joystick.a().whileTrue(new ShootBasic(() -> 90.00, () -> lebron.isAtSpeed(),
     // lebron,
     // intakeSubsystem, hopperSubsystem));

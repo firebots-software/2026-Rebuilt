@@ -6,19 +6,16 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -55,14 +52,14 @@ public class ClimberSubsystem extends SubsystemBase {
             .withSupplyCurrentLimit(Constants.Climber.SitUp.SUPPLY_CURRENT_LIMIT);
 
     CurrentLimitsConfigs pullUpClimbingClc =
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(Constants.Climber.PullUp.CLIMBING_STATOR_CURRENT_LIMIT)
-                .withSupplyCurrentLimit(Constants.Climber.PullUp.CLIMBING_SUPPLY_CURRENT_LIMIT);
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Climber.PullUp.CLIMBING_STATOR_CURRENT_LIMIT)
+            .withSupplyCurrentLimit(Constants.Climber.PullUp.CLIMBING_SUPPLY_CURRENT_LIMIT);
 
     CurrentLimitsConfigs muscleUpClimbingClc =
-            new CurrentLimitsConfigs()
-                .withStatorCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT)
-                .withSupplyCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT);
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT)
+            .withSupplyCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT);
 
     // 1. SLOT CONFIGS for all climber parts
     Slot0Configs sitUps0c =
@@ -71,7 +68,7 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKI(Constants.Climber.SitUp.KI)
             .withKD(Constants.Climber.SitUp.KD);
 
-            // .withGravityType(GravityTypeValue.Arm_Cosine);
+    // .withGravityType(GravityTypeValue.Arm_Cosine);
 
     Slot0Configs pullUps0c =
         new Slot0Configs()
@@ -81,7 +78,7 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKV(Constants.Climber.PullUp.KV)
             .withKG(Constants.Climber.PullUp.KG)
             .withKS(.1);
-            // .withGravityType(GravityTypeValue.Eslevator_Static);
+    // .withGravityType(GravityTypeValue.Eslevator_Static);
 
     Slot0Configs muscleUps0c =
         new Slot0Configs()
@@ -185,21 +182,25 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void setSitUpPosition(double degrees) {
     sitUpTargetDeg = degrees;
-    sitUpMotor.setControl(m_positionRequest.withPosition(sitUpTargetDeg/360.0));
+    sitUpMotor.setControl(m_positionRequest.withPosition(sitUpTargetDeg / 360.0));
   }
 
   public void setMuscleUpPosition(double degrees) {
     muscleUpTargetDeg = degrees;
-    muscleUpMotor.setControl(m_positionRequest.withPosition(muscleUpTargetDeg * Constants.Climber.MuscleUp.MOTOR_ROTS_PER_ARM_DEGREES));
+    muscleUpMotor.setControl(
+        m_positionRequest.withPosition(
+            muscleUpTargetDeg * Constants.Climber.MuscleUp.MOTOR_ROTS_PER_ARM_DEGREES));
   }
 
   public void setPullUpPosition(double metersFromZero) {
     pullUpTargetPositionMeters = metersFromZero;
-    pullUpMotorR.setControl(m_positionRequest.withPosition(pullUpTargetPositionMeters * Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS));
+    pullUpMotorR.setControl(
+        m_positionRequest.withPosition(
+            pullUpTargetPositionMeters * Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS));
   }
 
   public boolean isSitUpAtPosition() {
-    return Math.abs((sitUpMotor.getCachedPositionRotations()*360.0)-sitUpTargetDeg)
+    return Math.abs((sitUpMotor.getCachedPositionRotations() * 360.0) - sitUpTargetDeg)
         <= Constants.Climber.SitUp.SIT_UP_TOLERANCE;
   }
 
@@ -213,7 +214,9 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public boolean isPullUpAtPosition() {
     return Math.abs(
-            (pullUpMotorR.getCachedPositionRotations()/Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS)- pullUpTargetPositionMeters)
+            (pullUpMotorR.getCachedPositionRotations()
+                    / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS)
+                - pullUpTargetPositionMeters)
         <= Constants.Climber.PullUp.PULL_UP_TOLERANCE_METERS;
   }
 
@@ -221,7 +224,7 @@ public class ClimberSubsystem extends SubsystemBase {
     return sitUpEncoder.getAbsolutePosition().getValueAsDouble();
   }
 
-   public Rotation2d getSitUpUnfusedPosition() {
+  public Rotation2d getSitUpUnfusedPosition() {
     return new Rotation2d(
         Units.rotationsToRadians(
             getSitUpCancoderPositionRaw() * Constants.Intake.Arm.ARM_ROTS_PER_CANCODER_ROT));
@@ -238,12 +241,16 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void stopPullUp() {
-    pullUpTargetPositionMeters = pullUpMotorR.getCachedPositionRotations()*Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
+    pullUpTargetPositionMeters =
+        pullUpMotorR.getCachedPositionRotations()
+            * Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
     setPullUpPosition(pullUpTargetPositionMeters);
   }
 
   public void stopMuscleUp() {
-    muscleUpTargetDeg = muscleUpMotor.getCachedPositionRotations() * Constants.Climber.MuscleUp.ARM_DEGREES_PER_MOTOR_ROTS;
+    muscleUpTargetDeg =
+        muscleUpMotor.getCachedPositionRotations()
+            * Constants.Climber.MuscleUp.ARM_DEGREES_PER_MOTOR_ROTS;
     setMuscleUpPosition(muscleUpTargetDeg);
   }
 
@@ -267,12 +274,18 @@ public class ClimberSubsystem extends SubsystemBase {
   // Zeroing climb functions (only pull up because it doesn't have an encoder):
 
   public void reducePullUpCurrentLimits() {
-    pullUpMotorR.updateCurrentLimits(Constants.Climber.PullUp.ZEROING_STATOR_CURRENT_LIMIT, Constants.Climber.PullUp.ZEROING_SUPPLY_CURRENT_LIMIT);
-    pullUpMotorL.updateCurrentLimits(Constants.Climber.PullUp.ZEROING_STATOR_CURRENT_LIMIT, Constants.Climber.PullUp.ZEROING_SUPPLY_CURRENT_LIMIT);
+    pullUpMotorR.updateCurrentLimits(
+        Constants.Climber.PullUp.ZEROING_STATOR_CURRENT_LIMIT,
+        Constants.Climber.PullUp.ZEROING_SUPPLY_CURRENT_LIMIT);
+    pullUpMotorL.updateCurrentLimits(
+        Constants.Climber.PullUp.ZEROING_STATOR_CURRENT_LIMIT,
+        Constants.Climber.PullUp.ZEROING_SUPPLY_CURRENT_LIMIT);
   }
 
   public void reduceMuscleUpCurrentLimits() {
-    muscleUpMotor.updateCurrentLimits(Constants.Climber.MuscleUp.ZEROING_STATOR_CURRENT_LIMIT, Constants.Climber.MuscleUp.ZEROING_SUPPLY_CURRENT_LIMIT);
+    muscleUpMotor.updateCurrentLimits(
+        Constants.Climber.MuscleUp.ZEROING_STATOR_CURRENT_LIMIT,
+        Constants.Climber.MuscleUp.ZEROING_SUPPLY_CURRENT_LIMIT);
   }
 
   public void movePullUpDownVelocity() {
@@ -384,8 +397,9 @@ public class ClimberSubsystem extends SubsystemBase {
   public Command PullUpToCertainPositionCommand(double positionMeters) {
     return runOnce(() -> this.setPullUpPosition(0.1));
   }
+
   public Command SitUpCommand(double angle) {
-    return run(() -> setSitUpPosition(angle)); //.until(this::isSitUpAtPosition);
+    return run(() -> setSitUpPosition(angle)); // .until(this::isSitUpAtPosition);
   }
 
   public Command SitUpCertainPos(double angle) {
@@ -439,12 +453,11 @@ public class ClimberSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    DogLog.log(
-        "Subsystems/Climber/SitUpPositionDeg", getSitUpPosition().getDegrees());
+    DogLog.log("Subsystems/Climber/SitUpPositionDeg", getSitUpPosition().getDegrees());
     DogLog.log(
         "Subsystems/Climber/SitUpPositionDegUnfused", getSitUpUnfusedPosition().getDegrees());
     DogLog.log(
-        "Subsystems/Climber/SitUpPositioDegRawFromCancoder", getSitUpCancoderPositionRaw()*360.0);  
+        "Subsystems/Climber/SitUpPositioDegRawFromCancoder", getSitUpCancoderPositionRaw() * 360.0);
     DogLog.log(
         "Subsystems/Climber/MuscleUpPositionDeg",
         muscleUpMotor.getCachedPositionRotations()
@@ -453,8 +466,7 @@ public class ClimberSubsystem extends SubsystemBase {
         "Subsystems/Climber/PullUpPositionMeter",
         pullUpMotorR.getCachedPositionRotations()
             / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS);
-    DogLog.log(
-        "Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpCancoderPositionRaw());
+    DogLog.log("Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpCancoderPositionRaw());
     // DogLog.log(
     //     "Subsystems/Climber/CurrentLimits/MuscleUpStator",
     //     Math.abs(muscleUpMotor.getCachedStatorCurrentA()));

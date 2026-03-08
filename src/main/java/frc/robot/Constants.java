@@ -555,7 +555,7 @@ public final class Constants {
 
       public static final double CLIMBING_STATOR_CURRENT_LIMIT = 20.0;
       public static final double CLIMBING_SUPPLY_CURRENT_LIMIT = 40.0;
-      
+
       public static final double ZEROING_STATOR_CURRENT_LIMIT = 7.0;
       public static final double ZEROING_SUPPLY_CURRENT_LIMIT = 11.0;
     }
@@ -578,17 +578,17 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ENCODER_ROT = 54.4;
       public static final double ENCODER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ENCODER_ROT;
 
-      public static final double ENCODER_ROTS_PER_ARM_ROT = 32f/17f; 
+      public static final double ENCODER_ROTS_PER_ARM_ROT = 32f / 17f;
       public static final double ARM_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_ARM_ROT;
 
-      public static final double MOTOR_ROTS_PER_ARM_ROT = (1.0 / ENCODER_ROTS_PER_MOTOR_ROT) * (1.0 / ARM_ROTS_PER_ENCODER_ROT);
+      public static final double MOTOR_ROTS_PER_ARM_ROT =
+          (1.0 / ENCODER_ROTS_PER_MOTOR_ROT) * (1.0 / ARM_ROTS_PER_ENCODER_ROT);
       public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
-      
 
       public static final double SIT_UP_ANGLE_DEGREES = 67.67;
       public static final double SIT_BACK_ANGLE_DEGREES = 80.0;
 
-      public static final double STATOR_CURRENT_LIMIT = 20.0;  
+      public static final double STATOR_CURRENT_LIMIT = 20.0;
       public static final double SUPPLY_CURRENT_LIMIT = 30.0;
     }
 
