@@ -455,17 +455,17 @@ public class ClimberSubsystem extends SubsystemBase {
             / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS);
     DogLog.log(
         "Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpCancoderPositionRaw());
-    DogLog.log(
-        "Subsystems/Climber/CurrentLimits/MuscleUpStator",
-        Math.abs(muscleUpMotor.getCachedStatorCurrentA()));
-    DogLog.log(
-        "Subsystems/Climber/CurrentLimits/MuscleUpSupply",
-        Math.abs(muscleUpMotor.getCachedSupplyCurrentA()));
-    DogLog.log(
-        "Subsystems/Climber/CurrentLimits/PullUpStator",
-        Math.abs(pullUpMotorR.getCachedStatorCurrentA()));
-    DogLog.log(
-        "Subsystems/Climber/CurrentLimits/PullUpSupply",
-        Math.abs(pullUpMotorR.getCachedSupplyCurrentA()));
+    // DogLog.log(
+    //     "Subsystems/Climber/CurrentLimits/MuscleUpStator",
+    //     Math.abs(muscleUpMotor.getCachedStatorCurrentA()));
+    // DogLog.log(
+    //     "Subsystems/Climber/CurrentLimits/MuscleUpSupply",
+    //     Math.abs(muscleUpMotor.getCachedSupplyCurrentA()));
+    // DogLog.log(
+    //     "Subsystems/Climber/CurrentLimits/PullUpStator",
+    //     Math.abs(pullUpMotorR.getCachedStatorCurrentA()));
+    // DogLog.log(
+    //     "Subsystems/Climber/CurrentLimits/PullUpSupply",
+    //     Math.abs(pullUpMotorR.getCachedSupplyCurrentA()));
   }
 }
