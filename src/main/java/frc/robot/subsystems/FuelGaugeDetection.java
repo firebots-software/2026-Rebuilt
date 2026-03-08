@@ -67,24 +67,19 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/BallPitch", b.getPitch());
           DogLog.log("Subsystems/FuelGauge/BallSkew", b.getSkew());
 
-          double rawArea = b.getArea();
-          double smoothedRawArea = updateLatestList(latestRawMeasurements, rawArea);
-          double avgMultipleBalls = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
-          double smoothedMultipleBalls =
-              updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
+          latestRawArea = b.getArea();
+          latestSmoothedArea = updateLatestList(latestRawMeasurements, latestRawArea);
+          latestMultipleBallsArea = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
+          latestSmoothedMultipleBallsArea =
+              updateLatestList(latestMultipleMeasurements, latestMultipleBallsArea);
 
-          latestRawArea = rawArea;
-          latestSmoothedArea = smoothedRawArea;
-          latestMultipleBallsArea = avgMultipleBalls;
-          latestSmoothedMultipleBallsArea = smoothedMultipleBalls;
-
-          DogLog.log("Subsystems/FuelGauge/Area/RawArea", rawArea);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedRawArea);
-          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", avgMultipleBalls);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/Area/RawArea", latestRawArea);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", latestSmoothedArea);
+          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", latestMultipleBallsArea);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", latestSmoothedMultipleBallsArea);
 
           calculateFuelGaugeState(
-              rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
+              latestRawArea, latestSmoothedArea, latestMultipleBallsArea, latestSmoothedMultipleBallsArea);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
   }
