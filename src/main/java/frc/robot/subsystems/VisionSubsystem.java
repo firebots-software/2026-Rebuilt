@@ -35,7 +35,7 @@ public class VisionSubsystem extends SubsystemBase {
   private String cameraTitle;
   private String loggingPath;
 
-  Optional<EstimatedRobotPose> visionEst;
+  Optional<EstimatedRobotPose> visionEstimate;
 
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
@@ -48,9 +48,7 @@ public class VisionSubsystem extends SubsystemBase {
   double latestAvgDistance;
   int latestTagCount;
 
-  // constructor for VisionSubsystem
   public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
-
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
@@ -64,35 +62,33 @@ public class VisionSubsystem extends SubsystemBase {
     loggingPath = "Subsystems/Vision/" + cameraTitle;
   }
 
-  public VisionCamera getCamera() {
+  public VisionCamera getCameraID() {
     return cameraID;
   }
 
   @Override
   public void periodic() {
-
-    setupPeriodicVars();
-
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-
-    updateVisionEstFromResults(results);
-
-    DogLog.log(loggingPath + "/CameraConnected", true);
-  }
-
-  private void setupPeriodicVars() {
-
-    visionEst = Optional.empty();
+    visionEstimate = Optional.empty();
     latestVisionResult = null;
     hasValidMeasurement = false;
+
+    if (!checkCameraConnected()) return;
+
+    updateEstimate(photonCamera.getAllUnreadResults());
   }
 
-  private void updateVisionEstFromResults(List<PhotonPipelineResult> results) {
+  private boolean checkCameraConnected() {
+    boolean cameraConnected = photonCamera.isConnected();
+    DogLog.log(loggingPath + "/CameraConnected", cameraConnected);
+    return cameraConnected;
+  }
+
+  private void updateEstimate(List<PhotonPipelineResult> results) {
 
     for (PhotonPipelineResult result : results) {
       latestVisionResult = result;
-      visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEst.isEmpty()) visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
+      visionEstimate = poseEstimator.estimateCoprocMultiTagPose(result);
+      if (visionEstimate.isEmpty()) visionEstimate = poseEstimator.estimateLowestAmbiguityPose(result);
     }
   }
 
@@ -104,7 +100,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (!checkTagsValidity()) return;
 
-    EstimatedRobotPose estimatedPose = visionEst.get();
+    EstimatedRobotPose estimatedPose = visionEstimate.get();
     latestMeasuredPose = estimatedPose.estimatedPose.toPose2d();
     DogLog.log(loggingPath + "/MeasuredPose", latestMeasuredPose);
 
@@ -138,7 +134,7 @@ public class VisionSubsystem extends SubsystemBase {
         (!(latestVisionResult == null) && !(latestVisionResult.getTargets().isEmpty()));
     DogLog.log(loggingPath + "/HasResultsTargets", resultExists);
 
-    boolean hasEstimate = !visionEst.isEmpty();
+    boolean hasEstimate = !visionEstimate.isEmpty();
     DogLog.log(loggingPath + "/HasEstimate", hasEstimate);
 
     return (resultExists && hasEstimate);

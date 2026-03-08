@@ -126,7 +126,7 @@ public class VisionUtils {
   }
 
   private static void preferredVisionLogs() {
-    DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
+    DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCameraID().getLoggingName());
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
   }
