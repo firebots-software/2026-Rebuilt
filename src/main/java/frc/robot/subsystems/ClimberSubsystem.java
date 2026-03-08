@@ -69,9 +69,9 @@ public class ClimberSubsystem extends SubsystemBase {
         new Slot0Configs()
             .withKP(Constants.Climber.SitUp.KP)
             .withKI(Constants.Climber.SitUp.KI)
-            .withKD(Constants.Climber.SitUp.KD)
+            .withKD(Constants.Climber.SitUp.KD);
 
-            .withGravityType(GravityTypeValue.Arm_Cosine);
+            // .withGravityType(GravityTypeValue.Arm_Cosine);
 
     Slot0Configs pullUps0c =
         new Slot0Configs()
@@ -259,7 +259,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void stopClimbWithoutBrake() {
-    stopSitUp();
+    // stopSitUp();
     stopPullUp();
     stopMuscleUp();
   }
@@ -386,6 +386,10 @@ public class ClimberSubsystem extends SubsystemBase {
   }
   public Command SitUpCommand(double angle) {
     return run(() -> setSitUpPosition(angle)); //.until(this::isSitUpAtPosition);
+  }
+
+  public Command SitUpCertainPos(double angle) {
+    return runOnce(() -> setSitUpPosition(angle));
   }
 
   // separate command groups to incorporate driveToPose

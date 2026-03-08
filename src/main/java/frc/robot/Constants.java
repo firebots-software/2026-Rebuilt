@@ -566,7 +566,7 @@ public final class Constants {
 
       public static final double ENCODER_OFFSET = -0.3125; // TODO: get vals
 
-      public static final double KP = 10.0;
+      public static final double KP = 1500.0;
       public static final double KI = 0;
       public static final double KD = 0;
       public static final double KV = 0.12;
