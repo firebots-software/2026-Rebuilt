@@ -146,6 +146,7 @@ public class FuelGaugeDetection extends SubsystemBase {
   public double getArea(GaugeCalculationType type) {
     switch (type) {
       case RAW:
+      default:
         return rawArea;
       case SMOOTHED:
         return smoothedArea;
@@ -153,14 +154,13 @@ public class FuelGaugeDetection extends SubsystemBase {
         return multipleBallsArea;
       case SMOOTHED_MULTIPLE_BALLS:
         return smoothedMultipleBallsArea;
-      default:
-        return rawArea;
     }
   }
 
   public FuelGauge getGauge(GaugeCalculationType type) {
     switch (type) {
       case RAW:
+      default:
         return latestRawGauge;
       case SMOOTHED:
         return latestSmoothedGauge;
@@ -168,8 +168,6 @@ public class FuelGaugeDetection extends SubsystemBase {
         return latestMultipleBallsGauge;
       case SMOOTHED_MULTIPLE_BALLS:
         return latestSmoothedMultipleBallsGauge;
-      default:
-        return latestRawGauge;
     }
   }
 
