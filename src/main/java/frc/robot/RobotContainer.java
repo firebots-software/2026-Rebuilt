@@ -100,7 +100,6 @@ public class RobotContainer {
         new AutoRoutines(
             intakeSubsystem, lebron, hopperSubsystem, drivetrain, climberSubsystem, redside);
     autoChooser = autoRoutines.getAutoChooser();
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     var table = NetworkTableInstance.getDefault().getTable("Shooter");
