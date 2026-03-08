@@ -185,7 +185,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void setSitUpPosition(double degrees) {
     sitUpTargetDeg = degrees;
-    sitUpMotor.setControl(m_positionRequest.withPosition((degrees * Constants.Climber.SitUp.MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT)*Constants.Climber.SitUp.ARM_ROTS_PER_MOTOR_ROT));
+    sitUpMotor.setControl(m_positionRequest.withPosition(sitUpTargetDeg/360.0));
   }
 
   public void setMuscleUpPosition(double degrees) {
@@ -233,7 +233,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void stopSitUp() {
-    sitUpTargetDeg = sitUpMotor.getCachedPositionRotations() * Constants.Climber.SitUp.DEGREES_OF_ARM_ROT_PER_MOTOR_ROT;
+    sitUpTargetDeg = sitUpMotor.getCachedPositionRotations();
     setSitUpPosition(sitUpTargetDeg);
   }
 

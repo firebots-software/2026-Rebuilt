@@ -575,17 +575,18 @@ public final class Constants {
 
       public static final double SIT_UP_TOLERANCE = 0.1;
 
-      public static final double ARM_ROTS_PER_MOTOR_ROT =
-          (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
-      public static final double MOTOR_ROTS_PER_ARM_ROTS = 1.0 / ARM_ROTS_PER_MOTOR_ROT;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = MOTOR_ROTS_PER_ARM_ROTS / 360d;
-      public static final double DEGREES_OF_ARM_ROT_PER_MOTOR_ROT =
-          1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 54.1;
+      public static final double ENCODER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ENCODER_ROT;
 
-      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 54.4;
-      public static final double ENCODER_ROTS_PER_ARM_ROT = 32f / 17f;
-      public static final double SIT_UP_ANGLE_DEGREES = 35.0;
-      public static final double SIT_BACK_ANGLE_DEGREES = 52.0;
+      public static final double ENCODER_ROTS_PER_ARM_ROT = 32f/17f; 
+      public static final double ARM_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_ARM_ROT;
+
+      public static final double MOTOR_ROTS_PER_ARM_ROT = (1.0 / ENCODER_ROTS_PER_MOTOR_ROT) * (1.0 / ARM_ROTS_PER_ENCODER_ROT);
+      public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
+      
+
+      public static final double SIT_UP_ANGLE_DEGREES = 25.0;
+      public static final double SIT_BACK_ANGLE_DEGREES = 48.8;
 
       public static final double STATOR_CURRENT_LIMIT = 20.0;  
       public static final double SUPPLY_CURRENT_LIMIT = 30.0;
