@@ -83,13 +83,11 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private void updateEstimate(List<PhotonPipelineResult> results) {
+    latestVisionResult = results.get( results.size() - 1 );
 
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-      visionEstimate = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEstimate.isEmpty())
-        visionEstimate = poseEstimator.estimateLowestAmbiguityPose(result);
-    }
+    visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
+    if (visionEstimate.isEmpty())
+      visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
   }
 
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
