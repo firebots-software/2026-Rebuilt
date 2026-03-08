@@ -59,27 +59,21 @@ public class Robot extends TimedRobot {
 
     CommandScheduler.getInstance().run();
 
-    LoggedTalonFX.periodic_static();
+    // LoggedTalonFX.periodic_static();
 
     m_robotContainer.visionPeriodic();
 
-    DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
-    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
-    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
-    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
-    simulatedTime -= 0.02;
-    if (simulatedTime < 0) {
-      simulatedTime = 160;
-    }
-    MiscUtils.shiftSwitchIndicator(simulatedTime);
-    if (MiscUtils.isFlashDriveConnected()) {
-      DogLog.log("Elastic/FlashDriveConnected", true);
-    } else {
-      DogLog.log("Elastic/FlashDriveConnected", false);
-    }
+    // DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
+    // DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
+    // DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
+    // DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
+    // simulatedTime -= 0.02;
+    // if (simulatedTime < 0) {
+    //   simulatedTime = 160;
+    // }
 
-    RobotContainer.setAlliance();
-    DogLog.log("Red Side", RobotContainer.setAlliance());
+    // RobotContainer.setAlliance();
+    // DogLog.log("Red Side", RobotContainer.setAlliance());
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
@@ -119,6 +113,13 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+
+    MiscUtils.shiftSwitchIndicator(simulatedTime);
+    if (MiscUtils.isFlashDriveConnected()) {
+      DogLog.log("Elastic/FlashDriveConnected", true);
+    } else {
+      DogLog.log("Elastic/FlashDriveConnected", false);
     }
 
     // // stow climber
