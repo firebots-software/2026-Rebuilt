@@ -519,10 +519,6 @@ public final class Constants {
   }
 
   public static class Climber {
-    public static final double KP = 0.4;
-    public static final double KI = 0;
-    public static final double KD = 0;
-
     public static final double DEFAULT_SUPPLY_CURRENT = 12.0;
     public static final double DEFAULT_STATOR_CURRENT = 6.0;
 
@@ -557,8 +553,11 @@ public final class Constants {
       public static final double MUSCLE_UP_BACK = 0;
       public static final double MUSCLEUP_DOWN_VELOCITY = -0.2;
 
-      public static final double SUPPLY_CURRENT_LIMIT = 30;
-      public static final double STATOR_CURRENT_LIMIT = 30;
+      public static final double CLIMBING_STATOR_CURRENT_LIMIT = 20.0;
+      public static final double CLIMBING_SUPPLY_CURRENT_LIMIT = 40.0;
+      
+      public static final double ZEROING_STATOR_CURRENT_LIMIT = 7.0;
+      public static final double ZEROING_SUPPLY_CURRENT_LIMIT = 11.0;
     }
 
     public static class SitUp {
@@ -573,25 +572,23 @@ public final class Constants {
       public static final double KV = 0.12;
       public static final double KG = 0;
       public static final double KS = 0;
-      public static final double mmcV = 0.07;
-      public static final double mmcA = 0.14;
 
       public static final double SIT_UP_TOLERANCE = 0.1;
 
       public static final double MOTOR_ROTS_PER_ARM_ROTS =
           (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
-      public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROTS / 360d;
-      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
+      public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
+      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROT / 360d;
+      public static final double DEGREES_OF_ARM_ROT_PER_MOTOR_ROT =
           1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
 
-      public static final double MOTOR_ROTS_TO_ENCODER_ROTS = 54.4;
-      public static final double ENCODER_ROTS_PER_ARM_ROTS = 32f / 17f;
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 54.4;
+      public static final double ENCODER_ROTS_PER_ARM_ROT = 32f / 17f;
       public static final double SIT_UP_ANGLE_DEGREES = 35.0;
       public static final double SIT_BACK_ANGLE_DEGREES = 52.0;
 
-      public static final double SUPPLY_CURRENT_LIMIT = 60.0;
-      public static final double STATOR_CURRENT_LIMIT = 100.0;
+      public static final double STATOR_CURRENT_LIMIT = 20.0;  
+      public static final double SUPPLY_CURRENT_LIMIT = 30.0;
     }
 
     public static class PullUp {
@@ -616,8 +613,11 @@ public final class Constants {
       public static final double PULL_DOWN_POS_L1_AUTO = -0.192885 + 0.369885;
       public static final double PULL_DOWN_POS_METERS = 0.369885;
 
-      public static final double SUPPLY_CURRENT_LIMIT = 30;
-      public static final double STATOR_CURRENT_LIMIT = 30;
+      public static final double CLIMBING_STATOR_CURRENT_LIMIT = 40.0;
+      public static final double CLIMBING_SUPPLY_CURRENT_LIMIT = 60.0;
+
+      public static final double ZEROING_STATOR_CURRENT_LIMIT = 15.0;
+      public static final double ZEROING_SUPPLY_CURRENT_LIMIT = 15.0;
 
       public static final double PULL_DOWN_VELOCITY = -1.0;
       public static final double PULL_UP_VELOCITY = 5.0;
