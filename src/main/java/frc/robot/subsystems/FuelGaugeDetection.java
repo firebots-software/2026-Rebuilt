@@ -38,27 +38,22 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (!cameraConnected()) return;
 
-    if (!checkCameraConnected()) return;
-
-    if (!validVisionResult()) return;
+    if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
 
     getVisionResult();
   }
 
-  private boolean checkCameraConnected() {
-
+  private boolean cameraConnected() {
     boolean cameraConnected = photonCamera.isConnected();
     DogLog.log("Subsystems/FuelGauge/CameraStatus", cameraConnected);
     return cameraConnected;
   }
 
-  private boolean validVisionResult() {
+  private boolean validVisionResult(List<PhotonPipelineResult> results) {
+    latestVisionResult = results.get(results.size() - 1);
 
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-    }
     return (latestVisionResult == null);
   }
 
