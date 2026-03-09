@@ -54,14 +54,14 @@ public final class Constants {
       public static final double POWER_RETRACT_DELAY = 0.5;
 
       // TODO: Tune
-      public static final double kV = 0.12;
-      public static final double kP = 256.7;
+      public static final double kV = 0.124;
+      public static final double kP = 100.0;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
-      public static final double kG = 0.167;
+      // public static final double kG = 0.167;
 
       public static final double mmcV = 3.0;
-      public static final double mmcA = 6.0;
+      public static final double mmcA = 12.0;
 
       public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
       public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
@@ -566,7 +566,7 @@ public final class Constants {
 
       public static final double ENCODER_OFFSET = -0.1; // TODO: get vals
 
-      public static final double KP = 40.0;
+      public static final double KP = 1500.0;
       public static final double KI = 0;
       public static final double KD = 0;
       public static final double KV = 0.12;

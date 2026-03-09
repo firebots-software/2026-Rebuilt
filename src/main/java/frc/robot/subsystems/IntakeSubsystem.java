@@ -73,9 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKV(Constants.Intake.Arm.kV)
             .withKP(Constants.Intake.Arm.kP)
             .withKI(Constants.Intake.Arm.kI)
-            .withKD(Constants.Intake.Arm.kD)
-            .withKG(Constants.Intake.Arm.kG)
-            .withGravityType(GravityTypeValue.Arm_Cosine);
+            .withKD(Constants.Intake.Arm.kD);
 
     CurrentLimitsConfigs rollersCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
@@ -140,7 +138,7 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/Gains/kI", Constants.Intake.Arm.kI);
     DogLog.log("Subsystems/Intake/Arm/Gains/kD", Constants.Intake.Arm.kD);
     DogLog.log("Subsystems/Intake/Arm/Gains/kV", Constants.Intake.Arm.kV);
-    DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.kG);
+    // DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.kG);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcV", Constants.Intake.Arm.mmcV);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcA", Constants.Intake.Arm.mmcA);
 
