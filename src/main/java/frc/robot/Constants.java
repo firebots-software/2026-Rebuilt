@@ -596,7 +596,7 @@ public final class Constants {
       public static final int MOTOR_L_PORT = 10;
       public static final int MOTOR_R_PORT = 9;
 
-      public static final double KP = 400.0;
+      public static final double KP = 2.0;
       public static final double KI = 0;
       public static final double KD = 0;
       public static final double KV = 0.124;
