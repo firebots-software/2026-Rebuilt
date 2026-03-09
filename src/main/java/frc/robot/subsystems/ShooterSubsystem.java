@@ -106,7 +106,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setShooterWheelRPS(double shooterWheelSpeedRPS) {
     targetShooterWheelRPS = shooterWheelSpeedRPS;
-    shooter.setControl(m_velocityRequest.withVelocity(targetShooterWheelRPS * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROT));
+    shooter.setControl(
+        m_velocityRequest.withVelocity(
+            targetShooterWheelRPS * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROT));
   }
 
   public void stopShooter() {

@@ -17,6 +17,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -453,6 +454,35 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return omega;
   }
 
+  public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint) {
+    Translation2d robotPos = getCurrentState().Pose.getTranslation();
+    double dx = targetPoint.getX() - robotPos.getX();
+    double dy = targetPoint.getY() - robotPos.getY();
+    double r2 = dx * dx + dy * dy;
+
+    double omegaFF = 0.0;
+    if (r2 > Constants.Swerve.FF_RADIUS_M2) {
+      ChassisSpeeds fieldSpeeds =
+          ChassisSpeeds.fromRobotRelativeSpeeds(
+              currentState.Speeds, currentState.Pose.getRotation());
+      double vx = fieldSpeeds.vxMetersPerSecond;
+      double vy = fieldSpeeds.vyMetersPerSecond;
+
+      omegaFF = (dy * vx - dx * vy) / r2;
+    }
+
+    Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx));
+    double omegaPID =
+        headingPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+
+    double omega = omegaFF + omegaPID;
+
+    DogLog.log("Swerve/rotationController/omegaFF", omegaFF);
+    DogLog.log("Swerve/rotationController/omegaPID", omegaPID);
+    DogLog.log("Swerve target rotation degrees", targetRotation.getDegrees());
+    return omega;
+  }
   // private void startSimThread() {
   //   m_lastSimTime = Utils.getCurrentTimeSeconds();
 
