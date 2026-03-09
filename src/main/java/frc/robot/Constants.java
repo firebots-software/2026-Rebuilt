@@ -585,7 +585,7 @@ public final class Constants {
           (1.0 / ENCODER_ROTS_PER_MOTOR_ROT) * (1.0 / ARM_ROTS_PER_ENCODER_ROT);
       public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
 
-      public static final double SIT_UP_ANGLE_DEGREES = 64;
+      public static final double SIT_UP_ANGLE_DEGREES = 57.0;
       public static final double SIT_BACK_ANGLE_DEGREES = 80.0;
 
       public static final double STATOR_CURRENT_LIMIT = 20.0;
@@ -596,10 +596,10 @@ public final class Constants {
       public static final int MOTOR_L_PORT = 10;
       public static final int MOTOR_R_PORT = 9;
 
-      public static final double KP = 0.4;
+      public static final double KP = 400.0;
       public static final double KI = 0;
       public static final double KD = 0;
-      public static final double KV = 0.12;
+      public static final double KV = 0.124;
       public static final double KG = 0;
       public static final double KS = 0;
 

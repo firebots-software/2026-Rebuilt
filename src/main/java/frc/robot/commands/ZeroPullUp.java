@@ -35,7 +35,7 @@ public class ZeroPullUp extends Command {
   public void end(boolean interrupted) {
     if (!interrupted) {
       // climberSubsystem.resetPullUpPositionToTop();
-      climberSubsystem.resetPullUpPositionToZero();
+      climberSubsystem.resetPullUpPositionToTop();
     }
     climberSubsystem.resetPullUpCurrentLimits();
     climberSubsystem.stopPullUp();
