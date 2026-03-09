@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
+import frc.robot.commands.ZeroPullUp;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -194,18 +195,22 @@ public class RobotContainer {
               new ShootBasicRetract(
                   () -> 100.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
     }
-    // joystick2.a().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
+    // joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
     // joystick2.x().whileTrue(new ZeroPullUp(climberSubsystem));
     // joystick2.y().whileTrue(new ZeroMuscleUp(climberSubsystem));
 
-    joystick2
-        .leftBumper()
-        .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
-    joystick2
-        .rightBumper()
-        .whileTrue(
-            climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+    joystick2.a().onTrue(new ZeroPullUp(climberSubsystem));
+    // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.2));
+    joystick2.leftBumper().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
+    joystick2.rightBumper().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
+    // joystick2
+    //     .leftBumper()
+    //     .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+    // joystick2
+    //     .rightBumper()
+    //     .whileTrue(
+    //         climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
 
     // joystick2.a().whileTrue(climberSubsystem.sitUpVoltageCommand(4.0));
 

@@ -242,8 +242,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void stopPullUp() {
     pullUpTargetPositionMeters =
-        pullUpMotorR.getCachedPositionRotations()
-            * Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
+        pullUpMotorR.getCachedPositionRotations() / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
     setPullUpPosition(pullUpTargetPositionMeters);
   }
 
@@ -337,7 +336,7 @@ public class ClimberSubsystem extends SubsystemBase {
     double supplyCurrent = Math.abs(pullUpMotorR.getSupplyCurrent().getValue().magnitude());
     double statorCurrent = Math.abs(pullUpMotorR.getStatorCurrent().getValue().magnitude());
 
-    return supplyCurrent > 0.5 && statorCurrent > 14.0;
+    return supplyCurrent > 0.48 && statorCurrent > 13.8;
   }
 
   public boolean checkMuscleUpCurrent() {
@@ -360,7 +359,8 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void resetPullUpPositionToZero() {
-    pullUpMotorR.setPosition(0);
+  pullUpMotorR.setPosition(Constants.Climber.PullUp.);
+    pullUpMotorL.setPosition(0);
   }
 
   public void resetPullUpPositionToTop() {
@@ -395,7 +395,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command PullUpToCertainPositionCommand(double positionMeters) {
-    return runOnce(() -> this.setPullUpPosition(0.1));
+    return runOnce(() -> this.setPullUpPosition(positionMeters));
   }
 
   public Command SitUpCommand(double angle) {
