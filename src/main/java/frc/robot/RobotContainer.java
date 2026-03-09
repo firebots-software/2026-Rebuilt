@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.ZeroMuscleUp;
 import frc.robot.commands.ZeroPullUp;
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -204,15 +204,21 @@ public class RobotContainer {
     joystick2.a().onTrue(new ZeroPullUp(climberSubsystem));
     joystick2.y().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.362));
     joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.2));
-    joystick2.x().whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
-    joystick2.rightBumper().whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+    joystick2
+        .x()
+        .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+    joystick2
+        .rightBumper()
+        .whileTrue(
+            climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
     joystick2.leftBumper().whileTrue(new ZeroMuscleUp(climberSubsystem));
 
     // joystick2.leftBumper().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
     // joystick2.rightBumper().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
-    // joystick2 
+    // joystick2
     //     .leftBumper()
-    //     .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+    //
+    // .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
     // joystick2
     //     .rightBumper()
     //     .whileTrue(

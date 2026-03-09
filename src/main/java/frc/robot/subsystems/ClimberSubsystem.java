@@ -242,7 +242,8 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void stopPullUp() {
     pullUpTargetPositionMeters =
-        pullUpMotorR.getCachedPositionRotations() / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
+        pullUpMotorR.getCachedPositionRotations()
+            / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS;
     setPullUpPosition(pullUpTargetPositionMeters);
   }
 
@@ -359,7 +360,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void resetPullUpPositionToZero() {
-  pullUpMotorR.setPosition(0);
+    pullUpMotorR.setPosition(0);
     pullUpMotorL.setPosition(0);
   }
 
