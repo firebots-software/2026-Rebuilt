@@ -153,7 +153,7 @@ public class ClimberSubsystem extends SubsystemBase {
     TalonFXConfiguration sitUpConfig =
         new TalonFXConfiguration()
             .withSlot0(sitUps0c)
-            .withCurrentLimits(idleClc)
+            .withCurrentLimits(sitUpClimbingClc)
             .withMotorOutput(mocCWPos)
             .withFeedback(feedbackConfigs);
 
