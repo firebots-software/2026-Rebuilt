@@ -79,6 +79,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKD(Constants.Intake.Arm.kD)
             .withKG(Constants.Intake.Arm.kG)
             .withGravityArmPositionOffset(10.0/360.0)
+            .withKS(Constants.Intake.Arm.kS)
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     CurrentLimitsConfigs rollersCurrentLimitsConfigs =
