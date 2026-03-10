@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -16,6 +17,7 @@ import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -72,7 +74,10 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKV(Constants.Intake.Arm.kV)
             .withKP(Constants.Intake.Arm.kP)
             .withKI(Constants.Intake.Arm.kI)
-            .withKD(Constants.Intake.Arm.kD);
+            .withKD(Constants.Intake.Arm.kD)
+            .withKG(Constants.Intake.Arm.kG)
+            .withGravityArmPositionOffset(Rotations.convertFrom(10.0, Degrees))
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
     CurrentLimitsConfigs rollersCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
