@@ -23,8 +23,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.ZeroMuscleUp;
-import frc.robot.commands.ZeroPullUp;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -135,7 +133,17 @@ public class RobotContainer {
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
-    joystick.rightBumper().whileTrue(new ShootWithAim(frontBackFunction, leftRightFunction, lebron, intakeSubsystem, hopperSubsystem, drivetrain, redside));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootWithAim(
+                frontBackFunction,
+                leftRightFunction,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem,
+                drivetrain,
+                redside));
 
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
@@ -208,7 +216,8 @@ public class RobotContainer {
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.2));
     // joystick2
     //     .x()
-    //     .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+    //
+    // .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
     // joystick2
     //     .rightBumper()
     //     .whileTrue(
