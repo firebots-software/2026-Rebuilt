@@ -678,12 +678,10 @@ public final class Constants {
     public static void UPDATE_INTERMAPS() {
       HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
 
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.2000038381, 6.0);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(61.1154981473, 5.4);
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.2000038381, 1.8288000000000002);
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(61.1154981473, 1.4);
     }
-
-
-
+    
     public static class Simulation {
       public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
 

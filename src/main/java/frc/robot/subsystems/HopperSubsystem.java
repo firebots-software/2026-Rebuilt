@@ -85,12 +85,12 @@ public class HopperSubsystem extends SubsystemBase {
   // }
 
   // Ruth's version
-  public void runHopperMps(double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+  public void runHopperMps(DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
     if (readyToRun.getAsBoolean()) {
-      this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
+      this.targetSurfaceSpeedMps = targetSurfaceSpeedMps.getAsDouble();
       hopperMotor.setControl(
           m_velocityRequest.withVelocity(
-              targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+              this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
     }
   }
 
@@ -149,12 +149,16 @@ public class HopperSubsystem extends SubsystemBase {
   // Stops the Hopper when interrupted
   // Ruth's Version
   public Command runHopperUntilInterruptedCommand(
-      double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+      DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
   }
 
   public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
+  }
+
+  public double grabHopperRecommendedSpeed(double speedOfShooter) {
+    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(speedOfShooter);
   }
 
   @Override
