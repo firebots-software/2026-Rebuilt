@@ -58,7 +58,7 @@ public final class Constants {
       public static final double kP = 100.0;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
-      // public static final double kG = 0.167;
+      public static final double kG = 0.69;
 
       public static final double mmcV = 3.0;
       public static final double mmcA = 12.0;
