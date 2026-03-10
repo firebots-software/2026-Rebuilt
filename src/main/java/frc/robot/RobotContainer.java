@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
@@ -122,13 +123,13 @@ public class RobotContainer {
 
   private void configureBindings() {
     // SWERVE COMMANDS
-    // joystick2.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    DoubleSupplier frontBackFunction = () -> -joystick2.getLeftY(),
-        leftRightFunction = () -> -joystick2.getLeftX(),
-        rotationFunction = () -> -joystick2.getRightX(),
+    joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+        leftRightFunction = () -> -joystick.getLeftX(),
+        rotationFunction = () -> -joystick.getRightX(),
         speedFunction =
             () ->
-                joystick2.rightTrigger().getAsBoolean()
+                joystick.rightTrigger().getAsBoolean()
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
 
@@ -156,7 +157,7 @@ public class RobotContainer {
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     // Commands.runOnce(intakeSubsystem::stopRollers, intakeSubsystem));
 
-    // lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
+    lebron.setDefaultCommand(Commands.runOnce(lebron::stopShooter, lebron));
 
     joystick
         .rightTrigger()
