@@ -15,6 +15,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
 import frc.robot.util.LoggedTalonFX;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
@@ -82,14 +84,14 @@ public class HopperSubsystem extends SubsystemBase {
   // }
 
   // Ruth's version
-  // public void runHopperMps(double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
-  //   if (readyToRun.getAsBoolean()) {
-  //     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
-  //     hopperMotor.setControl(
-  //         m_velocityRequest.withVelocity(
-  //             targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
-  //   }
-  // }
+  public void runHopperMps(DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+    if (readyToRun.getAsBoolean()) {
+      this.targetSurfaceSpeedMps = targetSurfaceSpeedMps.getAsDouble();
+      hopperMotor.setControl(
+          m_velocityRequest.withVelocity(
+              this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+    }
+  }
 
   public void runHopperMps(double targetSurfaceSpeedMps) {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
@@ -124,6 +126,10 @@ public class HopperSubsystem extends SubsystemBase {
         : false);
   }
 
+  public double getTargetHopperSpeed(double shooterSpeed) {
+    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(shooterSpeed);
+  }
+
   // Does not stop the Hopper when interrupted
   public Command runHopperCommand() {
     return runOnce(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
@@ -141,13 +147,17 @@ public class HopperSubsystem extends SubsystemBase {
 
   // Stops the Hopper when interrupted
   // Ruth's Version
-  // public Command runHopperUntilInterruptedCommand(
-  //     double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
-  //   return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
-  // }
+  public Command runHopperUntilInterruptedCommand(
+      DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+    return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
+  }
 
   public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
+  }
+
+  public double grabHopperRecommendedSpeed(double speedOfShooter) {
+    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(speedOfShooter);
   }
 
   @Override

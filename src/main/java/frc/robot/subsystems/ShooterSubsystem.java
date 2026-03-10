@@ -106,7 +106,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setShooterWheelRPS(double shooterWheelSpeedRPS) {
     targetShooterWheelRPS = shooterWheelSpeedRPS;
-    shooter.setControl(m_velocityRequest.withVelocity(targetShooterWheelRPS));
+    shooter.setControl(
+        m_velocityRequest.withVelocity(
+            targetShooterWheelRPS * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROT));
   }
 
   public void stopShooter() {
@@ -155,6 +157,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
 
+    // TODO: Cache this value
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         new Pose2d(

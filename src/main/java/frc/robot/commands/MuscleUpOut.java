@@ -8,11 +8,11 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimberSubsystem;
 
-public class MuscleUpDown extends Command {
+public class MuscleUpOut extends Command {
   private final ClimberSubsystem climberSubsystem;
   private double timesExceededCurrent = 0;
 
-  public MuscleUpDown(ClimberSubsystem climberSubsystem) {
+  public MuscleUpOut(ClimberSubsystem climberSubsystem) {
     this.climberSubsystem = climberSubsystem;
     addRequirements(climberSubsystem);
   }
@@ -26,7 +26,7 @@ public class MuscleUpDown extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.moveMuscleUpUp();
+    climberSubsystem.moveMuscleUpOutWithVoltage();
   }
 
   // Called once the command ends or is interrupted.
