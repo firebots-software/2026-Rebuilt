@@ -2,11 +2,11 @@ package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
+import frc.robot.util.VisionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,10 +22,10 @@ public class FuelGaugeDetection extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
 
-  private double latestRawArea;
-  private double latestSmoothedArea;
-  private double latestMultipleBallsArea;
-  private double latestSmoothedMultipleBallsArea;
+  private double rawArea;
+  private double smoothedArea;
+  private double multipleBallsArea;
+  private double smoothedMultipleBallsArea;
 
   private FuelGauge latestRawGauge;
   private FuelGauge latestSmoothedGauge;
@@ -38,32 +38,28 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (!cameraConnected()) return;
 
-    if (!checkCameraConnected()) return;
+    if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
 
-    if (!validVisionResult()) return;
-
-    getVisionResult();
+    updateVisionResult();
   }
 
-  private boolean checkCameraConnected() {
-
+  private boolean cameraConnected() {
     boolean cameraConnected = photonCamera.isConnected();
-    DogLog.log("FuelGauge/CameraStatus", cameraConnected);
+    DogLog.log("Subsystems/FuelGauge/CameraStatus", cameraConnected);
     return cameraConnected;
   }
 
-  private boolean validVisionResult() {
+  private boolean validVisionResult(List<PhotonPipelineResult> results) {
+    if (results.isEmpty()) return false;
 
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-    }
+    latestVisionResult = results.get(results.size() - 1);
+
     return (latestVisionResult == null);
   }
 
-  private void getVisionResult() {
-
+  private void updateVisionResult() {
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
         b -> {
@@ -72,29 +68,24 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/BallPitch", b.getPitch());
           DogLog.log("Subsystems/FuelGauge/BallSkew", b.getSkew());
 
-          double rawArea = b.getArea();
-          double smoothedRawArea = updateLatestList(latestRawMeasurements, rawArea);
-          double avgMultipleBalls = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
-          double smoothedMultipleBalls =
-              updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
-
-          latestRawArea = rawArea;
-          latestSmoothedArea = smoothedRawArea;
-          latestMultipleBallsArea = avgMultipleBalls;
-          latestSmoothedMultipleBallsArea = smoothedMultipleBalls;
+          rawArea = b.getArea();
+          smoothedArea = smoothFromList(latestRawMeasurements, rawArea);
+          multipleBallsArea = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
+          smoothedMultipleBallsArea = smoothFromList(latestMultipleMeasurements, multipleBallsArea);
 
           DogLog.log("Subsystems/FuelGauge/Area/RawArea", rawArea);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedRawArea);
-          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", avgMultipleBalls);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedArea);
+          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", multipleBallsArea);
+          DogLog.log(
+              "Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBallsArea);
 
           calculateFuelGaugeState(
-              rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
+              rawArea, smoothedArea, multipleBallsArea, smoothedMultipleBallsArea);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
   }
 
-  private double updateLatestList(ArrayList<Double> list, double area) {
+  private double smoothFromList(ArrayList<Double> list, double area) {
     double smoothedArea = 0.0;
 
     list.add(area);
@@ -112,10 +103,6 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   private void calculateFuelGaugeState(
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
-    Color greenColor = new Color(0, 255, 0);
-    Color redColor = new Color(255, 0, 0);
-    Color yellowColor = new Color(255, 255, 0);
-    Color blackColor = new Color(0, 0, 0);
     latestRawGauge = setFuelGauge(rawArea);
     latestSmoothedGauge = setFuelGauge(smoothedArea);
     latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);
@@ -128,17 +115,9 @@ public class FuelGaugeDetection extends SubsystemBase {
     DogLog.log(
         "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
-    if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.EMPTY.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#000000");
-    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.LOW.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FF0000");
-    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.MEDIUM.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FFFF00");
-    } else if (latestSmoothedMultipleBallsGauge.toString().equals(FuelGauge.FULL.toString())) {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#00FF00");
-    } else {
-      SmartDashboard.putString("Elastic/FuelGaugeLevel", "#FFFFFF");
-    }
+
+    SmartDashboard.putString(
+        "Elastic/FuelGaugeLevel", VisionUtils.getColorOrDefault(latestSmoothedMultipleBallsGauge));
   }
 
   private FuelGauge setFuelGauge(double area) {
@@ -169,21 +148,21 @@ public class FuelGaugeDetection extends SubsystemBase {
   public double getArea(GaugeCalculationType type) {
     switch (type) {
       case RAW:
-        return latestRawArea;
-      case SMOOTHED:
-        return latestSmoothedArea;
-      case MULTIPLE_BALLS:
-        return latestMultipleBallsArea;
-      case SMOOTHED_MULTIPLE_BALLS:
-        return latestSmoothedMultipleBallsArea;
       default:
-        return latestRawArea;
+        return rawArea;
+      case SMOOTHED:
+        return smoothedArea;
+      case MULTIPLE_BALLS:
+        return multipleBallsArea;
+      case SMOOTHED_MULTIPLE_BALLS:
+        return smoothedMultipleBallsArea;
     }
   }
 
   public FuelGauge getGauge(GaugeCalculationType type) {
     switch (type) {
       case RAW:
+      default:
         return latestRawGauge;
       case SMOOTHED:
         return latestSmoothedGauge;
@@ -191,8 +170,6 @@ public class FuelGaugeDetection extends SubsystemBase {
         return latestMultipleBallsGauge;
       case SMOOTHED_MULTIPLE_BALLS:
         return latestSmoothedMultipleBallsGauge;
-      default:
-        return latestRawGauge;
     }
   }
 
@@ -232,7 +209,7 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   public FuelGauge getCurrentFuelGaugeState() {
-    double currentMeasurement = latestSmoothedMultipleBallsArea; // or whichever measurement we use
+    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
 
     if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
       return FuelGauge.EMPTY;

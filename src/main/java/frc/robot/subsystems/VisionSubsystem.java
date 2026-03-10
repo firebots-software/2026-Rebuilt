@@ -26,16 +26,15 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class VisionSubsystem extends SubsystemBase {
 
   private final Constants.Vision.VisionCamera cameraID;
+  private final PhotonCamera photonCamera;
+  private final AprilTagFieldLayout fieldLayout;
+  private final PhotonPoseEstimator poseEstimator;
+  private PhotonPipelineResult latestVisionResult;
 
   private String cameraTitle;
   private String loggingPath;
 
-  // references for PhotonVision
-  private final PhotonCamera photonCamera;
-  private final PhotonPoseEstimator poseEstimator;
-  private PhotonPipelineResult latestVisionResult;
-  Optional<EstimatedRobotPose> visionEst;
-  private final AprilTagFieldLayout fieldLayout;
+  Optional<EstimatedRobotPose> visionEstimate;
 
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
@@ -48,64 +47,58 @@ public class VisionSubsystem extends SubsystemBase {
   double latestAvgDistance;
   int latestTagCount;
 
-  // constructor for VisionSubsystem
   public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
-
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
 
-    this.fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
-    poseEstimator.setFieldTags(fieldLayout);
+    latestVisionResult = null;
 
     cameraTitle = cameraID.getLoggingName();
     loggingPath = "Subsystems/Vision/" + cameraTitle;
-    latestVisionResult = null;
   }
 
-  public VisionCamera getCamera() {
+  public VisionCamera getCameraID() {
     return cameraID;
   }
 
   @Override
   public void periodic() {
-
-    setupPeriodicVars();
-
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-
-    updateVisionEstFromResults(results);
-
-    DogLog.log(loggingPath + "/CameraConnected", true);
-  }
-
-  private void setupPeriodicVars() {
-
-    visionEst = Optional.empty();
+    visionEstimate = Optional.empty();
     latestVisionResult = null;
     hasValidMeasurement = false;
+
+    if (!cameraConnected()) return;
+
+    updateEstimate(photonCamera.getAllUnreadResults());
   }
 
-  private void updateVisionEstFromResults(List<PhotonPipelineResult> results) {
+  private boolean cameraConnected() {
+    boolean cameraConnected = photonCamera.isConnected();
+    DogLog.log(loggingPath + "/CameraConnected", cameraConnected);
+    return cameraConnected;
+  }
 
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-      visionEst = poseEstimator.estimateCoprocMultiTagPose(result);
-      if (visionEst.isEmpty()) visionEst = poseEstimator.estimateLowestAmbiguityPose(result);
-    }
+  private void updateEstimate(List<PhotonPipelineResult> results) {
+    if (results.isEmpty()) return;
+    latestVisionResult = results.get(results.size() - 1);
+
+    visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
+    if (visionEstimate.isEmpty())
+      visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
   }
 
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
-
     hasValidMeasurement = false;
 
-    if (!checkResultValidity()) return;
+    if (!resultValid()) return;
 
-    if (!checkTagsValidity()) return;
+    if (!tagsValid()) return;
 
-    EstimatedRobotPose estimatedPose = visionEst.get();
+    EstimatedRobotPose estimatedPose = visionEstimate.get();
     latestMeasuredPose = estimatedPose.estimatedPose.toPose2d();
     DogLog.log(loggingPath + "/MeasuredPose", latestMeasuredPose);
 
@@ -114,10 +107,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (throwOutDistance(latestMinDistance)) return;
 
-    ChassisSpeeds robotSpeeds = swerve.getState().Speeds;
-
     ChassisSpeeds fieldSpeeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, swerve.getState().Pose.getRotation());
+        ChassisSpeeds.fromRobotRelativeSpeeds(
+            swerve.getState().Speeds, swerve.getState().Pose.getRotation());
 
     double currentSpeed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
 
@@ -131,7 +123,7 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/measuredPoseAvailable", latestMeasuredPose == null);
   }
 
-  private boolean checkResultValidity() {
+  private boolean resultValid() {
 
     DogLog.log(loggingPath + "/addFilteredPoseRunning", true);
 
@@ -139,13 +131,13 @@ public class VisionSubsystem extends SubsystemBase {
         (!(latestVisionResult == null) && !(latestVisionResult.getTargets().isEmpty()));
     DogLog.log(loggingPath + "/HasResultsTargets", resultExists);
 
-    boolean hasEstimate = !visionEst.isEmpty();
+    boolean hasEstimate = !visionEstimate.isEmpty();
     DogLog.log(loggingPath + "/HasEstimate", hasEstimate);
 
     return (resultExists && hasEstimate);
   }
 
-  private boolean checkTagsValidity() {
+  private boolean tagsValid() {
 
     List<PhotonTrackedTarget> tags = latestVisionResult.getTargets();
 
@@ -165,14 +157,12 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private boolean throwOutDistance(double min) {
-
     boolean thrownOut = (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE);
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
   }
 
   public double getMinDistance() {
-
     double minDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -186,7 +176,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getAverageDistance() {
-
     double avgDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -200,7 +189,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getMaxDistance() {
-
     double maxDist =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -214,7 +202,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getPoseAmbiguity() {
-
     double poseAmbiguity =
         (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
             ? Double.MAX_VALUE
@@ -248,7 +235,6 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private double calculateTimestamp(double timestamp) {
-
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
@@ -260,12 +246,10 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public Pose2d getFilteredPose() {
-
     return latestMeasuredPose;
   }
 
   public void addFilteredPose(CommandSwerveDrivetrain swerve) {
-
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
 }

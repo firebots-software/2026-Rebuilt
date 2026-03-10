@@ -51,6 +51,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
 
+  // private final PositionVoltage m_positionRequest = new PositionVoltage(0);
+
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
     armMotor =
@@ -75,6 +77,8 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKI(Constants.Intake.Arm.kI)
             .withKD(Constants.Intake.Arm.kD)
             .withKG(Constants.Intake.Arm.kG)
+            .withGravityArmPositionOffset(10.0 / 360.0)
+            .withKS(Constants.Intake.Arm.kS)
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     CurrentLimitsConfigs rollersCurrentLimitsConfigs =
@@ -84,7 +88,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     CurrentLimitsConfigs armCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT);
+            .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT)
+            .withStatorCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
 
     MotionMagicConfigs mmc =
         new MotionMagicConfigs()
@@ -111,10 +116,10 @@ public class IntakeSubsystem extends SubsystemBase {
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(cancoder.getDeviceID())
             .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-            .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
             .withRotorToSensorRatio(
                 Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT
-                    / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+                    / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
+            .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
 
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersSlot0Configs;
@@ -140,7 +145,7 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/Gains/kI", Constants.Intake.Arm.kI);
     DogLog.log("Subsystems/Intake/Arm/Gains/kD", Constants.Intake.Arm.kD);
     DogLog.log("Subsystems/Intake/Arm/Gains/kV", Constants.Intake.Arm.kV);
-    DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.kG);
+    // DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.kG);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcV", Constants.Intake.Arm.mmcV);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcA", Constants.Intake.Arm.mmcA);
 

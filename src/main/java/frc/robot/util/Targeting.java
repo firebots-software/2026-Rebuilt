@@ -4,9 +4,11 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
+import frc.robot.Constants.Landmarks;
 import frc.robot.MathUtils.MiscMath;
 import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Targeting {
@@ -125,5 +127,10 @@ public class Targeting {
                     < Constants.Shooter.MIN_DIST_FT)
             ? .5d
             : 0d;
+  }
+
+  public static boolean pointingAtHub(BooleanSupplier redside, CommandSwerveDrivetrain drivetrain) {
+    Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
+    return pointingAtTarget(target, drivetrain);
   }
 }

@@ -150,7 +150,7 @@ public class LoggedTalonFX extends TalonFX {
    */
   public LoggedTalonFX(String deviceName, int deviceId, String canbus) {
     super(deviceId, canbus);
-    name = deviceName;
+    name = "Motors/" + deviceName;
     init();
   }
 
@@ -160,7 +160,7 @@ public class LoggedTalonFX extends TalonFX {
    */
   public LoggedTalonFX(String deviceName, int deviceId) {
     super(deviceId);
-    name = "Motors/Motor " + deviceName;
+    name = "Motors/" + deviceName;
     init();
   }
 
@@ -223,8 +223,7 @@ public class LoggedTalonFX extends TalonFX {
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(supplyCurrentLimit);
 
-    motorConfiguration.CurrentLimits = clc;
-    this.getConfigurator().apply(motorConfiguration);
+    this.getConfigurator().apply(clc);
   }
 
   public static void periodic_static() {

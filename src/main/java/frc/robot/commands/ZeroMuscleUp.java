@@ -10,7 +10,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 
 public class ZeroMuscleUp extends Command {
   private final ClimberSubsystem climberSubsystem;
-  private double timesExceededCurrent = 0;
+  private double timesExceededCurrent;
 
   public ZeroMuscleUp(ClimberSubsystem climberSubsystem) {
     this.climberSubsystem = climberSubsystem;
@@ -21,12 +21,13 @@ public class ZeroMuscleUp extends Command {
   @Override
   public void initialize() {
     climberSubsystem.reduceMuscleUpCurrentLimits();
+    timesExceededCurrent = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climberSubsystem.moveMuscleUpDown();
+    climberSubsystem.moveMuscleUpInWithVoltage();
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +37,7 @@ public class ZeroMuscleUp extends Command {
       climberSubsystem.resetMuscleUpPositionToZero();
     }
     climberSubsystem.resetMuscleUpCurrentLimits();
+    climberSubsystem.stopMuscleUp();
   }
 
   // Returns true when the command should end.
@@ -47,6 +49,6 @@ public class ZeroMuscleUp extends Command {
       timesExceededCurrent = 0;
     }
     DogLog.log("time exceeded current", timesExceededCurrent);
-    return timesExceededCurrent >= 10;
+    return timesExceededCurrent >= 3;
   }
 }

@@ -126,7 +126,7 @@ public class VisionUtils {
   }
 
   private static void preferredVisionLogs() {
-    DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCamera().getLoggingName());
+    DogLog.log("Subsystems/Vision/PreferredCamera", preferredVision.getCameraID().getLoggingName());
     DogLog.log("Subsystems/Vision/CompletePoseEstimate", drivetrain.getState().Pose);
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
   }
@@ -140,6 +140,10 @@ public class VisionUtils {
       DogLog.log("Elastic/FuelGauge", "N/A");
       DogLog.log("Elastic/FuelGauge/CameraConnected", false);
     }
+  }
+
+  public static String getColorOrDefault(FuelGauge gauge) {
+    return gauge == null ? "#FFFFFF" : gauge.getColor();
   }
 
   public static Matrix<N3, N1> computeNoiseVector(double distance, double speed, int tagCount) {

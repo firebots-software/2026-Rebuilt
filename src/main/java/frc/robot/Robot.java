@@ -39,8 +39,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     RobotContainer.setAlliance();
     DogLog.setOptions(
-        new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(true));
+        new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(false));
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
+    DogLog.log("Red Side", RobotContainer.setAlliance());
   }
 
   /**
@@ -77,22 +78,14 @@ public class Robot extends TimedRobot {
     if (simulatedTime < 0) {
       simulatedTime = 160;
     }
-    MiscUtils.shiftSwitchIndicator(simulatedTime);
-    if (MiscUtils.isFlashDriveConnected()) {
-      DogLog.log("Elastic/FlashDriveConnected", true);
-    } else {
-      DogLog.log("Elastic/FlashDriveConnected", false);
-    }
 
-    RobotContainer.setAlliance();
-    DogLog.log("Red Side", RobotContainer.setAlliance());
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_robotContainer.intakeSubsystem.applyCoastConfigArm();
+    m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
   }
 
   @Override
@@ -127,6 +120,13 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
+    MiscUtils.shiftSwitchIndicator(simulatedTime);
+    if (MiscUtils.isFlashDriveConnected()) {
+      DogLog.log("Elastic/FlashDriveConnected", true);
+    } else {
+      DogLog.log("Elastic/FlashDriveConnected", false);
+    }
+
     // // stow climber
     // new ZeroPullUp(climberSubsystem);
     // climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE);
@@ -135,9 +135,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-    RobotContainer.setAlliance();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {

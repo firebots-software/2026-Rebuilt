@@ -17,6 +17,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -85,10 +86,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
       new PIDController(
-          15, // 4 was good
+          3.7, // 4 was good
           0, //
           0); // -13 was good
-
+  // 15, 0, 0 w/o FF
   public DoubleSubscriber headingKPTunable =
       DogLog.tunable(
           "Subsystems/Swerve/kPHeading",
@@ -344,6 +345,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_pathApplyFieldSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity));
   }
 
+  public double getSpeedMagnitude() {
+    double xSpeed = getFieldSpeeds().vxMetersPerSecond;
+    double ySpeed = getFieldSpeeds().vyMetersPerSecond;
+    return Math.sqrt((xSpeed * xSpeed) + (ySpeed * ySpeed));
+  }
+
   public Pose2d getPose() {
     return currentState.Pose;
   }
@@ -376,7 +383,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * occurs during testing.
      */
     currentState = getState();
-    DogLog.log("Accumulated error swerve", headingPIDController.getAccumulatedError());
+    DogLog.log("Subsystems/Swerve/AccumulatedError", headingPIDController.getAccumulatedError());
 
     if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
@@ -402,7 +409,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
 
     DogLog.log(
-        "CriticalInformation/DistanceToHub",
+        "Subsystems/Swerve/DistanceToHub",
         MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
     DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
@@ -454,6 +461,35 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return omega;
   }
 
+  public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint) {
+    Translation2d robotPos = getCurrentState().Pose.getTranslation();
+    double dx = targetPoint.getX() - robotPos.getX();
+    double dy = targetPoint.getY() - robotPos.getY();
+    double r2 = dx * dx + dy * dy;
+
+    double omegaFF = 0.0;
+    if (r2 > Constants.Swerve.FF_RADIUS_M2) {
+      ChassisSpeeds fieldSpeeds =
+          ChassisSpeeds.fromRobotRelativeSpeeds(
+              currentState.Speeds, currentState.Pose.getRotation());
+      double vx = fieldSpeeds.vxMetersPerSecond;
+      double vy = fieldSpeeds.vyMetersPerSecond;
+
+      omegaFF = (dy * vx - dx * vy) / r2;
+    }
+
+    Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx));
+    double omegaPID =
+        headingPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+
+    double omega = omegaFF + omegaPID;
+
+    DogLog.log("Swerve/rotationController/omegaFF", omegaFF);
+    DogLog.log("Swerve/rotationController/omegaPID", omegaPID);
+    DogLog.log("Swerve target rotation degrees", targetRotation.getDegrees());
+    return omega;
+  }
   // private void startSimThread() {
   //   m_lastSimTime = Utils.getCurrentTimeSeconds();
 
