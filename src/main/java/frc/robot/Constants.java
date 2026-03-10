@@ -55,16 +55,16 @@ public final class Constants {
 
       // TODO: Tune
       public static final double kV = 0.124;
-      public static final double kP = 100.0;
+      public static final double kP = 63.0;
       public static final double kI = 0.0;
       public static final double kD = 0.0;
-      public static final double kG = 0.69;
+      public static final double kG = 1.15; // 0.69 recalc
 
-      public static final double mmcV = 3.0;
-      public static final double mmcA = 12.0;
+      public static final double mmcV = 6.0;
+      public static final double mmcA = 14.0;
 
-      public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
-      public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
+      public static final double STATOR_CURRENT_LIMIT = 80.0; // TODO: Verify
+      public static final double SUPPLY_CURRENT_LIMIT = 60.0; // TODO: Verify
 
       public static final double MOTOR_ROTS_PER_ARM_ROT =
           (12.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
