@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.Constants.Landmarks;
 import frc.robot.Constants.Vision.VisionCamera;
+import frc.robot.commandGroups.ArcLock;
+import frc.robot.commandGroups.LockOnCommand;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithWarning;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -159,18 +161,27 @@ public class RobotContainer {
     lebron.setDefaultCommand(Commands.run(lebron::stopShooter, lebron));
 
     joystick
-        .rightTrigger()
+        .a()
         .whileTrue(
-            new ShootWithWarning(
+            new ArcLock(
                 drivetrain,
                 lebron,
-                intakeSubsystem,
-                hopperSubsystem,
-                redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB,
+                leftRightFunction,
                 redside,
-                debugJoystick,
+                joystick
+            ));
+    
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new LockOnCommand(
+                drivetrain,
+                lebron,
+                leftRightFunction,
                 frontBackFunction,
-                leftRightFunction));
+                (redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB),
+                joystick
+            ));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
       //   joystick

@@ -49,8 +49,6 @@ public class ArcLock extends ParallelCommandGroup {
   public ArcLock(
       CommandSwerveDrivetrain drivetrain,
       ShooterSubsystem shooter,
-      IntakeSubsystem intake,
-      HopperSubsystem hopper,
       DoubleSupplier tangentialVelocitySupplier,
       BooleanSupplier redside,
       CommandXboxController joystick) {

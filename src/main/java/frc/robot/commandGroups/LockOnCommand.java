@@ -18,8 +18,6 @@ public class LockOnCommand extends ParallelCommandGroup {
   public LockOnCommand(
       CommandSwerveDrivetrain drivetrain,
       ShooterSubsystem shooter,
-      IntakeSubsystem intake,
-      HopperSubsystem hopper,
       DoubleSupplier frontBackFunction,
       DoubleSupplier leftRightFunction,
       Pose3d target,
