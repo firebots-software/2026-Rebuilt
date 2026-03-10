@@ -126,8 +126,8 @@ public class HopperSubsystem extends SubsystemBase {
         : false);
   }
 
-  public double getTargetHopperSpeed(DoubleSupplier shooterSpeed) {
-    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(shooterSpeed.getAsDouble());
+  public double getTargetHopperSpeed(double shooterSpeed) {
+    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(shooterSpeed);
   }
 
   // Does not stop the Hopper when interrupted
