@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -13,7 +12,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -52,6 +50,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
+
   // private final PositionVoltage m_positionRequest = new PositionVoltage(0);
 
   public IntakeSubsystem() {
@@ -78,7 +77,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKI(Constants.Intake.Arm.kI)
             .withKD(Constants.Intake.Arm.kD)
             .withKG(Constants.Intake.Arm.kG)
-            .withGravityArmPositionOffset(10.0/360.0)
+            .withGravityArmPositionOffset(10.0 / 360.0)
             .withKS(Constants.Intake.Arm.kS)
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
