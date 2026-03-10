@@ -43,9 +43,9 @@ public final class Constants {
 
       // Current Limits
       public static final double ARM_POS_RETRACTED = 126.56;
-      public static final double ARM_POS_EXTENDED = 28.75;
+      public static final double ARM_POS_EXTENDED = 29.85;
       public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
-      public static final double ARM_POS_MIN = 18.6;
+      public static final double ARM_POS_MIN = 19.7;
       public static final double ARM_POS_IDLE = 73.7;
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
@@ -54,17 +54,18 @@ public final class Constants {
       public static final double POWER_RETRACT_DELAY = 0.5;
 
       // TODO: Tune
-      public static final double kV = 0.12;
-      public static final double kP = 256.7;
-      public static final double kI = 0.0;
+      public static final double kV = 0.124;
+      public static final double kP = 63.0;
+      public static final double kI = 0.1;
       public static final double kD = 0.0;
-      public static final double kG = 0.167;
+      public static final double kG = 1.15; // 0.69 recalc
+      public static final double kS = 0.4;
 
-      public static final double mmcV = 3.0;
-      public static final double mmcA = 6.0;
+      public static final double mmcV = 6.0;
+      public static final double mmcA = 14.0;
 
-      public static final double STATOR_CURRENT_LIMIT = 40.0; // TODO: Verify
-      public static final double SUPPLY_CURRENT_LIMIT = 0.0; // TODO: Verify
+      public static final double STATOR_CURRENT_LIMIT = 80.0; // TODO: Verify
+      public static final double SUPPLY_CURRENT_LIMIT = 60.0; // TODO: Verify
 
       public static final double MOTOR_ROTS_PER_ARM_ROT =
           (12.0 / 1.0) * (42.0 / 36.0) * (30.0 / 18.0) * (32.0 / 20.0);
@@ -120,6 +121,7 @@ public final class Constants {
   }
 
   public static class Swerve {
+    public static final double FF_RADIUS_M2 = 0.1;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
     // the distance over the bump in meters
     public static final double DISTANCE_OVER_BUMP = 3.0; // correct distance is 3 meters
@@ -519,12 +521,8 @@ public final class Constants {
   }
 
   public static class Climber {
-    public static final double KP = 0.4;
-    public static final double KI = 0;
-    public static final double KD = 0;
-
-    public static final double DEFAULT_SUPPLY_CURRENT = 12.0;
-    public static final double DEFAULT_STATOR_CURRENT = 6.0;
+    public static final double DEFAULT_SUPPLY_CURRENT = 20.0; // 12.0
+    public static final double DEFAULT_STATOR_CURRENT = 12.0; // 6.0
 
     public static final int BRAKE_PORT = 7; // TODO
     public static final double BRAKE_ANGLE = 24.838;
@@ -536,8 +534,8 @@ public final class Constants {
       public static final double KP = 0.4;
       public static final double KI = 0;
       public static final double KD = 0;
-      public static final double KV = 0.12;
-      public static final double KG = 0;
+      public static final double KV = 0.15;
+      public static final double KG = 0.3;
       public static final double KS = 0;
 
       public static final double MUSCLE_UP_TOLERANCE = 0.1;
@@ -557,51 +555,53 @@ public final class Constants {
       public static final double MUSCLE_UP_BACK = 0;
       public static final double MUSCLEUP_DOWN_VELOCITY = -0.2;
 
-      public static final double SUPPLY_CURRENT_LIMIT = 30;
-      public static final double STATOR_CURRENT_LIMIT = 30;
+      public static final double CLIMBING_STATOR_CURRENT_LIMIT = 20.0;
+      public static final double CLIMBING_SUPPLY_CURRENT_LIMIT = 40.0;
+
+      public static final double ZEROING_STATOR_CURRENT_LIMIT = 7.0;
+      public static final double ZEROING_SUPPLY_CURRENT_LIMIT = 11.0;
     }
 
     public static class SitUp {
       public static final int MOTOR_PORT = 12;
       public static final int ENCODER_PORT = 13;
 
-      public static final double ENCODER_OFFSET = -0.3125; // TODO: get vals
+      public static final double ENCODER_OFFSET = -0.1; // TODO: get vals
 
-      public static final double KP = 30;
+      public static final double KP = 500.0;
       public static final double KI = 0;
       public static final double KD = 0;
       public static final double KV = 0.12;
       public static final double KG = 0;
       public static final double KS = 0;
-      public static final double mmcV = 0.07;
-      public static final double mmcA = 0.14;
 
       public static final double SIT_UP_TOLERANCE = 0.1;
 
-      public static final double MOTOR_ROTS_PER_ARM_ROTS =
-          (1.0 / 48.0) * (30.0 / 34.0) * (32.0 / 17.0);
-      public static final double ARM_ROTS_PER_MOTOR_ROTS = 1.0 / MOTOR_ROTS_PER_ARM_ROTS;
-      public static final double MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT = ARM_ROTS_PER_MOTOR_ROTS / 360d;
-      public static final double DEGREES_OF_ARM_ROT_TO_MOTOR_ROTS =
-          1 / MOTOR_ROTS_PER_DEGREES_OF_ARM_ROT;
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 54.4;
+      public static final double ENCODER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ENCODER_ROT;
 
-      public static final double MOTOR_ROTS_TO_ENCODER_ROTS = 54.4;
-      public static final double ENCODER_ROTS_PER_ARM_ROTS = 32f / 17f;
-      public static final double SIT_UP_ANGLE_DEGREES = 35.0;
-      public static final double SIT_BACK_ANGLE_DEGREES = 52.0;
+      public static final double ENCODER_ROTS_PER_ARM_ROT = 32f / 17f;
+      public static final double ARM_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_ARM_ROT;
 
-      public static final double SUPPLY_CURRENT_LIMIT = 60.0;
-      public static final double STATOR_CURRENT_LIMIT = 100.0;
+      public static final double MOTOR_ROTS_PER_ARM_ROT =
+          (1.0 / ENCODER_ROTS_PER_MOTOR_ROT) * (1.0 / ARM_ROTS_PER_ENCODER_ROT);
+      public static final double ARM_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ARM_ROT;
+
+      public static final double SIT_UP_ANGLE_DEGREES = 57.0;
+      public static final double SIT_BACK_ANGLE_DEGREES = 80.0;
+
+      public static final double STATOR_CURRENT_LIMIT = 20.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 30.0;
     }
 
     public static class PullUp {
       public static final int MOTOR_L_PORT = 10;
       public static final int MOTOR_R_PORT = 9;
 
-      public static final double KP = 0.4;
+      public static final double KP = 2.0;
       public static final double KI = 0;
       public static final double KD = 0;
-      public static final double KV = 0.12;
+      public static final double KV = 0.124;
       public static final double KG = 0;
       public static final double KS = 0;
 
@@ -616,8 +616,11 @@ public final class Constants {
       public static final double PULL_DOWN_POS_L1_AUTO = -0.192885 + 0.369885;
       public static final double PULL_DOWN_POS_METERS = 0.369885;
 
-      public static final double SUPPLY_CURRENT_LIMIT = 30;
-      public static final double STATOR_CURRENT_LIMIT = 30;
+      public static final double CLIMBING_STATOR_CURRENT_LIMIT = 40.0;
+      public static final double CLIMBING_SUPPLY_CURRENT_LIMIT = 60.0;
+
+      public static final double ZEROING_STATOR_CURRENT_LIMIT = 15.0;
+      public static final double ZEROING_SUPPLY_CURRENT_LIMIT = 15.0;
 
       public static final double PULL_DOWN_VELOCITY = -1.0;
       public static final double PULL_UP_VELOCITY = 5.0;
@@ -664,6 +667,20 @@ public final class Constants {
 
     public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
         1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
+
+    public static final InterpolatingDoubleTreeMap HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS =
+        new InterpolatingDoubleTreeMap();
+
+    static {
+      UPDATE_INTERMAPS();
+    }
+
+    public static void UPDATE_INTERMAPS() {
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
+
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.2000038381, 1.8288000000000002);
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(61.1154981473, 1.4);
+    }
 
     public static class Simulation {
       public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
