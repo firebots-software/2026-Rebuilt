@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -82,14 +84,14 @@ public class HopperSubsystem extends SubsystemBase {
   // }
 
   // Ruth's version
-  // public void runHopperMps(double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
-  //   if (readyToRun.getAsBoolean()) {
-  //     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
-  //     hopperMotor.setControl(
-  //         m_velocityRequest.withVelocity(
-  //             targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
-  //   }
-  // }
+  public void runHopperMps(double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+    if (readyToRun.getAsBoolean()) {
+      this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
+      hopperMotor.setControl(
+          m_velocityRequest.withVelocity(
+              targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+    }
+  }
 
   public void runHopperMps(double targetSurfaceSpeedMps) {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
@@ -141,10 +143,10 @@ public class HopperSubsystem extends SubsystemBase {
 
   // Stops the Hopper when interrupted
   // Ruth's Version
-  // public Command runHopperUntilInterruptedCommand(
-  //     double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
-  //   return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
-  // }
+  public Command runHopperUntilInterruptedCommand(
+      double targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+    return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
+  }
 
   public Command runHopperUntilInterruptedCommand(double targetSurfaceSpeedMps) {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);

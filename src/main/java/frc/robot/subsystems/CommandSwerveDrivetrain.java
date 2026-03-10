@@ -344,6 +344,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_pathApplyFieldSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity));
   }
 
+  public double getSpeedMagnitude() {
+    double xSpeed = getFieldSpeeds().vxMetersPerSecond;
+    double ySpeed = getFieldSpeeds().vyMetersPerSecond;
+    return Math.sqrt((xSpeed * xSpeed) + (ySpeed*ySpeed));
+  }
+
   public Pose2d getPose() {
     return currentState.Pose;
   }

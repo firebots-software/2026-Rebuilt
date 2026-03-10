@@ -59,7 +59,7 @@ public final class Constants {
       public static final double kI = 0.1;
       public static final double kD = 0.0;
       public static final double kG = 1.15; // 0.69 recalc
-      public static final double kS = 0.2;
+      public static final double kS = 0.4;
 
       public static final double mmcV = 6.0;
       public static final double mmcA = 14.0;

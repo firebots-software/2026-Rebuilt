@@ -39,10 +39,10 @@ public class ShootWithAim extends ParallelCommandGroup {
             redside,
             drivetrain),
         Commands.waitUntil(
-                () -> shooterSubsystem.isAtSpeed() && Targeting.pointingAtHub(redside, drivetrain))
+                () -> shooterSubsystem.isAtSpeed())
             .andThen(
                 hopperSubsystem
-                    .runHopperUntilInterruptedCommand()
+                    .runHopperUntilInterruptedCommand(Constants.Hopper.TARGET_SURFACE_SPEED_MPS , () -> (Targeting.pointingAtHub(redside, drivetrain) && (drivetrain.getSpeedMagnitude() <= 0.4)))
                     .alongWith(
                         intakeSubsystem
                             .powerRetractRollersCommand()
