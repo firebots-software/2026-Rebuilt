@@ -127,9 +127,8 @@ public class RobotContainer {
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
         rotationFunction = () -> -joystick.getRightX(),
-        speedFunction =
-            () -> 1d;
-                // slowmode when left shoulder is pressed, otherwise fast
+        speedFunction = () -> 1d;
+    // slowmode when left shoulder is pressed, otherwise fast
 
     joystick
         .rightBumper()

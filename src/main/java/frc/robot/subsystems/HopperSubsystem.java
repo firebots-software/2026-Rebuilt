@@ -1,8 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -18,6 +15,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
 import frc.robot.util.LoggedTalonFX;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 public class HopperSubsystem extends SubsystemBase {
   private final LoggedTalonFX hopperMotor;
