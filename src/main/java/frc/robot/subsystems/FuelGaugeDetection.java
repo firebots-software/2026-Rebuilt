@@ -52,6 +52,8 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   private boolean validVisionResult(List<PhotonPipelineResult> results) {
+    if (results.isEmpty()) return false;
+
     latestVisionResult = results.get(results.size() - 1);
 
     return (latestVisionResult == null);

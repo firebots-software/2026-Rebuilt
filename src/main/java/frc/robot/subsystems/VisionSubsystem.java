@@ -83,6 +83,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private void updateEstimate(List<PhotonPipelineResult> results) {
+    if (results.isEmpty()) return;
     latestVisionResult = results.get(results.size() - 1);
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
