@@ -135,7 +135,14 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
 
-    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), new BumpDTP(swerveSubsystem, forwardSupplier), intake.resetOdometry(), intake.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forwardSupplier),
+                intake.resetOdometry(),
+                intake.cmd()));
 
     intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backSupplier)));
 

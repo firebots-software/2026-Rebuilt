@@ -424,33 +424,21 @@ public final class Constants {
         26.971;
 
     public static class Auto {
-      public static enum Maneuver {
-
-      }
+      public static enum Maneuver {}
 
       public static enum Intake {
         p2Intake
       }
 
-      public static enum ShootPos {
+      public static enum ShootPos {}
 
-      }
+      public static enum ClimbPos {}
 
-      public static enum ClimbPos {
+      public static enum Depot {}
 
-      }
+      public static enum Outpost {}
 
-      public static enum Depot {
-
-      }
-
-      public static enum Outpost {
-
-      }
-
-      public static enum MiscPaths {
-
-      }
+      public static enum MiscPaths {}
     }
   }
 
