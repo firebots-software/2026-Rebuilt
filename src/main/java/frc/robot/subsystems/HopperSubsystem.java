@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -122,6 +124,10 @@ public class HopperSubsystem extends SubsystemBase {
         ? fuelGaugeDetection.GaugeLessThanEqualTo(
             GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS, FuelGauge.LOW)
         : false);
+  }
+
+  public double getTargetHopperSpeed(DoubleSupplier shooterSpeed) {
+    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(shooterSpeed.getAsDouble());
   }
 
   // Does not stop the Hopper when interrupted

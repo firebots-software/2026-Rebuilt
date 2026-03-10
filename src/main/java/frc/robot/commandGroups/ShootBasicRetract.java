@@ -22,7 +22,7 @@ public class ShootBasicRetract extends ParallelCommandGroup {
         Commands.waitUntil(() -> (shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()))
             .andThen(
                 hopperSubsystem
-                    .runHopperUntilInterruptedCommand()
+                    .runHopperUntilInterruptedCommand(hopperSubsystem.getTargetHopperSpeed(speed))
                     .alongWith(
                         intakeSubsystem
                             .powerRetractRollersCommand()
