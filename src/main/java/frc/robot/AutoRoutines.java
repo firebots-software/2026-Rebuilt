@@ -128,7 +128,7 @@ public class AutoRoutines {
     return traj;
   }
 
-  public AutoRoutine test() {
+  public AutoRoutine testWithoutShoot() {
     BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
     BooleanSupplier backSupplier = () -> RobotContainer.setAlliance();
 
@@ -136,17 +136,6 @@ public class AutoRoutines {
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
 
     routine.active().onTrue(Commands.sequence(intake.resetOdometry(), new BumpDTP(swerveSubsystem, forwardSupplier), intake.resetOdometry(), intake.cmd()));
-
-    intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backSupplier)));
-
-    routine
-        .active()
-        .onTrue(
-            Commands.sequence(
-                intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forwardSupplier),
-                intake.resetOdometry(),
-                intake.cmd()));
 
     intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backSupplier)));
 
@@ -181,8 +170,7 @@ public class AutoRoutines {
   // if first path is null and odo is not reset, should i add smth to reset next
   // path or is that OD
   public void addCommandstoAutoChooser() {
-    autoChooser.addRoutine("go right", () -> test());
-
+    autoChooser.addRoutine("go right", () -> testWithoutShoot());
   }
 
   public AutoChooser getAutoChooser() {
