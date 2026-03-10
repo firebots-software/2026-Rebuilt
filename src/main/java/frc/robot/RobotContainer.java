@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
+import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.ZeroMuscleUp;
 import frc.robot.commands.ZeroPullUp;
@@ -123,15 +124,18 @@ public class RobotContainer {
 
   private void configureBindings() {
     // SWERVE COMMANDS
-    joystick.leftBumper().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
         leftRightFunction = () -> -joystick.getLeftX(),
         rotationFunction = () -> -joystick.getRightX(),
         speedFunction =
             () ->
-                joystick.rightTrigger().getAsBoolean()
+                joystick.leftTrigger().getAsBoolean()
                     ? 0d
                     : 1d; // slowmode when left shoulder is pressed, otherwise fast
+
+    joystick.rightBumper().whileTrue(new ShootWithAim(frontBackFunction, leftRightFunction, lebron, intakeSubsystem, hopperSubsystem, drivetrain, redside));
 
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
@@ -149,9 +153,6 @@ public class RobotContainer {
     // climberSubsystem.setDefaultCommand(climberSubsystem.runOnce(climberSubsystem::stopClimbWithoutBrake));
 
     // INTAKE COMMANDS
-
-    // // left bumper -> run intake (changed to a cause mahesh wanted to)
-    joystick.leftTrigger().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     // intake default command - stop rollers
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -202,17 +203,17 @@ public class RobotContainer {
     // joystick2.x().whileTrue(new ZeroPullUp(climberSubsystem));
     // joystick2.y().whileTrue(new ZeroMuscleUp(climberSubsystem));
 
-    joystick2.a().onTrue(new ZeroPullUp(climberSubsystem));
-    joystick2.y().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.362));
-    joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.2));
-    joystick2
-        .x()
-        .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
-    joystick2
-        .rightBumper()
-        .whileTrue(
-            climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
-    joystick2.leftBumper().whileTrue(new ZeroMuscleUp(climberSubsystem));
+    // joystick2.a().onTrue(new ZeroPullUp(climberSubsystem));
+    // joystick2.y().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.362));
+    // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.2));
+    // joystick2
+    //     .x()
+    //     .whileTrue(climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES));
+    // joystick2
+    //     .rightBumper()
+    //     .whileTrue(
+    //         climberSubsystem.SitUpCertainPos(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+    // joystick2.leftBumper().whileTrue(new ZeroMuscleUp(climberSubsystem));
 
     // joystick2.leftBumper().whileTrue(climberSubsystem.movePullUpDownWithVoltageCommand());
     // joystick2.rightBumper().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
