@@ -423,97 +423,31 @@ public final class Constants {
 
     public static class Auto {
       public static enum Maneuver {
-        RedLeftManeuverL,
-        RedLeftManeuverR,
-        RedRightManeuverL,
-        RedRightManeuverR,
-        BlueLeftManeuverL,
-        BlueLeftManeuverR,
-        BlueRightManeuverL,
-        BlueRightManeuverR
+
       }
 
       public static enum Intake {
-        RedLeftIntakeL,
-        RedLeftIntakeM,
-        RedLeftIntakeR,
-        RedLeftIntakeML,
-        RedLeftIntakeMR,
-        RedRightIntakeL,
-        RedRightIntakeM,
-        RedRightIntakeR,
-        RedRightIntakeML,
-        RedRightIntakeMR,
-        BlueLeftIntakeL,
-        BlueLeftIntakeM,
-        BlueLeftIntakeR,
-        BlueLeftIntakeML,
-        BlueLeftIntakeMR,
-        BlueRightIntakeL,
-        BlueRightIntakeM,
-        BlueRightIntakeR,
-        BlueRightIntakeML,
-        BlueRightIntakeMR,
-        RedRightIntakeSweep,
-        RedLeftIntakeSweep,
-        BlueRightIntakeSweep,
-        BlueLeftIntakeSweep,
-        RedRightIntakeSweepShort,
-        RedLeftIntakeSweepShort,
-        BlueRightIntakeSweepShort,
-        BlueLeftIntakeSweepShort,
-        p2Intake,
-        p2IntakeSide
+        p2Intake
       }
 
       public static enum ShootPos {
-        RedLeftShoot,
-        RedRightShoot,
-        BlueLeftShoot,
-        BlueRightShoot,
-        RedDepotToShoot,
-        BlueDepotToShoot,
-        RedOutpostToShoot,
-        BlueOutpostToShoot,
-        RedOutpostToShootShort
+
       }
 
       public static enum ClimbPos {
-        RedLeftClimbL,
-        RedLeftClimbR,
-        RedRightClimbL,
-        RedRightClimbR,
-        BlueLeftClimbL,
-        BlueLeftClimbR,
-        BlueRightClimbL,
-        BlueRightClimbR
+
       }
 
       public static enum Depot {
-        RedDepotL,
-        RedDepotM,
-        RedDepotR,
-        BlueDepotL,
-        BlueDepotM,
-        BlueDepotR,
-        RedDepotRDrake
+
       }
 
       public static enum Outpost {
-        RedOutpostL,
-        RedOutpostM,
-        RedOutpostR,
-        RedOutpostRDrake,
-        BlueOutpostL,
-        BlueOutpostM,
-        BlueOutpostR
+
       }
 
       public static enum MiscPaths {
-        MoveLeft,
-        MoveRight,
-        MoveLeftWithMarker,
-        MoveRightWithMarker
+
       }
     }
   }
