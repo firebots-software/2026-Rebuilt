@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -37,7 +36,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final Servo brake;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
-  private final VoltageOut m_voltageRequest = new VoltageOut(0.0);
+  private final VoltageOut m_voltageRequest = new VoltageOut(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
 
   public ClimberSubsystem() {
@@ -111,55 +110,53 @@ public class ClimberSubsystem extends SubsystemBase {
             Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Opposed));
 
-    sitUpEncoder =
-      new CANcoder(
-        Constants.Climber.SitUp.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-      
+    sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT, Constants.Swerve.CAN_BUS);
+
     MagnetSensorConfigs canCoderConfig =
-      new CANcoderConfiguration()
-        .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
-        .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
-        .withMagnetOffset(Rotations.of(Constants.Climber.SitUp.ENCODER_OFFSET));
-    
+        new CANcoderConfiguration()
+            .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
+                .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+                .withMagnetOffset(Rotations.of(Constants.Climber.SitUp.ENCODER_OFFSET));
+
     sitUpEncoder.getConfigurator().apply(canCoderConfig);
-    
+
     TalonFXConfiguration muscleUpConfig =
-      new TalonFXConfiguration()
-        .withSlot0(muscleUps0c)
-        .withCurrentLimits(idleClc)
-        .withMotorOutput(mocCWPos);
-    
+        new TalonFXConfiguration()
+            .withSlot0(muscleUps0c)
+            .withCurrentLimits(idleClc)
+            .withMotorOutput(mocCWPos);
+
     FeedbackConfigs feedbackConfigs =
-      new FeedbackConfigs()
-        .withFeedbackRemoteSensorID(sitUpEncoder.getDeviceID())
-        .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-        .withSensorToMechanismRatio(Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROT)
-        .withRotorToSensorRatio(Constants.Climber.SitUp.MOTOR_ROTS_PER_ENCODER_ROT);
+        new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(sitUpEncoder.getDeviceID())
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+            .withSensorToMechanismRatio(Constants.Climber.SitUp.ENCODER_ROTS_PER_ARM_ROT)
+            .withRotorToSensorRatio(Constants.Climber.SitUp.MOTOR_ROTS_PER_ENCODER_ROT);
 
     TalonFXConfiguration sitUpConfig =
-      new TalonFXConfiguration()
-        .withSlot0(sitUps0c)
-        .withCurrentLimits(sitUpClimbingClc)
-        .withMotorOutput(mocCWPos)
-        .withFeedback(feedbackConfigs);
-    
+        new TalonFXConfiguration()
+            .withSlot0(sitUps0c)
+            .withCurrentLimits(sitUpClimbingClc)
+            .withMotorOutput(mocCWPos)
+            .withFeedback(feedbackConfigs);
+
     TalonFXConfiguration pullUpLeftConfig =
-      new TalonFXConfiguration()
-        .withSlot0(pullUps0c)
-        .withCurrentLimits(pullUpClimbingClc)
-        .withMotorOutput(mocCCWPos);
-    
+        new TalonFXConfiguration()
+            .withSlot0(pullUps0c)
+            .withCurrentLimits(pullUpClimbingClc)
+            .withMotorOutput(mocCCWPos);
+
     TalonFXConfiguration pullUpRightConfig =
-      new TalonFXConfiguration()
-        .withSlot0(pullUps0c)
-        .withCurrentLimits(pullUpClimbingClc)
-        .withMotorOutput(mocCWPos);
-    
+        new TalonFXConfiguration()
+            .withSlot0(pullUps0c)
+            .withCurrentLimits(pullUpClimbingClc)
+            .withMotorOutput(mocCWPos);
+
     muscleUpMotor.getConfigurator().apply(muscleUpConfig);
     sitUpMotor.getConfigurator().apply(sitUpConfig);
     pullUpMotorL.getConfigurator().apply(pullUpLeftConfig);
     pullUpMotorR.getConfigurator().apply(pullUpRightConfig);
-    
+
     brake = new Servo(Constants.Climber.BRAKE_PORT);
   }
 
@@ -451,17 +448,5 @@ public class ClimberSubsystem extends SubsystemBase {
         pullUpMotorR.getCachedPositionRotations()
             / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS);
     DogLog.log("Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpCancoderPositionRaw());
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/MuscleUpStator",
-    //     Math.abs(muscleUpMotor.getCachedStatorCurrentA()));
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/MuscleUpSupply",
-    //     Math.abs(muscleUpMotor.getCachedSupplyCurrentA()));
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/PullUpStator",
-    //     Math.abs(pullUpMotorR.getCachedStatorCurrentA()));
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/PullUpSupply",
-    //     Math.abs(pullUpMotorR.getCachedSupplyCurrentA()));
   }
 }

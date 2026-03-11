@@ -33,9 +33,7 @@ public class ZeroPullUp extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted) {
-      climberSubsystem.resetPullUpPositionToTop();
-    }
+    if (!interrupted) climberSubsystem.resetPullUpPositionToTop();
     climberSubsystem.resetPullUpCurrentLimits();
     climberSubsystem.stopPullUp();
   }

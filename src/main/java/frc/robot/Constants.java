@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -102,6 +103,8 @@ public final class Constants {
   public static class Swerve {
     public static final double FF_RADIUS_M2 = 0.1;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    public static final CANBus CAN_BUS =
+        new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
     public static final double DISTANCE_OVER_BUMP = 3.0;
 
@@ -649,8 +652,9 @@ public final class Constants {
     public static void UPDATE_INTERMAPS() {
       HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
 
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.2000038381, 1.8288000000000002);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(61.1154981473, 1.4);
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.0, 2.2);
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(53.0, 2.2);
+      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(62.0, 0.88);
     }
 
     public static class Simulation {
@@ -836,19 +840,25 @@ public final class Constants {
     }
 
     public static enum FuelGauge { // LAST: 20, 50, 70, 100
-      EMPTY(2.0),
-      LOW(9.0),
-      MEDIUM(12.0),
-      FULL(100.0);
+      EMPTY(2.0, "#000000"),
+      LOW(9.0, "#FF0000"),
+      MEDIUM(12.0, "#FFFF00"),
+      FULL(100.0, "#00FF00");
 
       private double threshold;
+      private String color;
 
-      FuelGauge(double threshold) {
+      FuelGauge(double threshold, String color) {
         this.threshold = threshold;
+        this.color = color;
       }
 
       public double getThreshold() {
         return threshold;
+      }
+
+      public String getColor() {
+        return color;
       }
     }
   }

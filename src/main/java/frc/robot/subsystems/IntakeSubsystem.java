@@ -85,9 +85,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
-    cancoder =
-        new CANcoder(
-            Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.CAN_BUS);
     CANcoderConfiguration ccConfig = new CANcoderConfiguration();
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()
@@ -108,20 +106,24 @@ public class IntakeSubsystem extends SubsystemBase {
                     / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
             .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
 
-    TalonFXConfiguration rollersConfig = new TalonFXConfiguration()
-      .withSlot0(rollersSlot0Configs)
-      .withCurrentLimits(rollersCurrentLimitsConfigs)
-      .withMotorOutput(new MotorOutputConfigs()
-        .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast));
+    TalonFXConfiguration rollersConfig =
+        new TalonFXConfiguration()
+            .withSlot0(rollersSlot0Configs)
+            .withCurrentLimits(rollersCurrentLimitsConfigs)
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Coast));
 
-    TalonFXConfiguration armConfig = new TalonFXConfiguration()
-      .withSlot0(armSlot0Configs)
-      .withCurrentLimits(armCurrentLimitsConfigs)
-      .withFeedback(feedbackConfigs)
-      .withMotorOutput(new MotorOutputConfigs()
-        .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Brake));
+    TalonFXConfiguration armConfig =
+        new TalonFXConfiguration()
+            .withSlot0(armSlot0Configs)
+            .withCurrentLimits(armCurrentLimitsConfigs)
+            .withFeedback(feedbackConfigs)
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake));
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
     TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();

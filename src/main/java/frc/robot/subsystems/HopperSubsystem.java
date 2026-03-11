@@ -48,10 +48,11 @@ public class HopperSubsystem extends SubsystemBase {
             Constants.Hopper.MOTOR_PORT,
             Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
 
-    TalonFXConfiguration hopperConfig = new TalonFXConfiguration()
-      .withSlot0(s0c)
-      .withCurrentLimits(currentLimitConfigs)
-      .withMotorOutput(motorOutputConfigs);
+    TalonFXConfiguration hopperConfig =
+        new TalonFXConfiguration()
+            .withSlot0(s0c)
+            .withCurrentLimits(currentLimitConfigs)
+            .withMotorOutput(motorOutputConfigs);
 
     TalonFXConfigurator hopperMotorConfig = hopperMotor.getConfigurator();
     hopperMotorConfig.apply(hopperConfig);
@@ -69,7 +70,7 @@ public class HopperSubsystem extends SubsystemBase {
       hopperMotor.setControl(
           m_velocityRequest.withVelocity(
               this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
-    }
+    } else hopperMotor.stopMotor();
   }
 
   public void runHopperMps(double targetSurfaceSpeedMps) {
