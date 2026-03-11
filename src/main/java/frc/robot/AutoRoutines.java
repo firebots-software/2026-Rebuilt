@@ -451,25 +451,49 @@ public class AutoRoutines {
     return routine;
   }
 
+  //Paths for p2
+  public AutoRoutine p2BumpForward() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    BooleanSupplier forward = () -> !redSide.getAsBoolean();
+    BooleanSupplier backward = () -> redSide.getAsBoolean();
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+
+    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), new BumpDTP(swerveSubsystem, forward), intake.resetOdometry(), intake.cmd()));
+
+    intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
+
+    // shoot.done().onTrue(null)
+
+    return routine;
+  }
+
   //Add paths to chooser
   public void addCommandstoAutoChooser() {
-    autoChooser.addRoutine("Depot (Left) Extreme", () -> PedriDepotLeft());
-    autoChooser.addRoutine("Depot (Right) Extreme", () -> PedriDepotRight());
-    autoChooser.addRoutine("Outpost (Left) Extreme", () -> PedriOutpostLeft());
-    autoChooser.addRoutine("Outpost (Right) Extreme", () -> PedriOutpostRight());
+    // autoChooser.addRoutine("Depot (Left) Extreme", () -> PedriDepotLeft());
+    // autoChooser.addRoutine("Depot (Right) Extreme", () -> PedriDepotRight());
+    // autoChooser.addRoutine("Outpost (Left) Extreme", () -> PedriOutpostLeft());
+    // autoChooser.addRoutine("Outpost (Right) Extreme", () -> PedriOutpostRight());
 
-    autoChooser.addRoutine("Right Okay", () -> PedriShortRight());
-    autoChooser.addRoutine("Left Okay", () -> PedriShortLeft());
+    // autoChooser.addRoutine("Right Okay", () -> PedriShortRight());
+    // autoChooser.addRoutine("Left Okay", () -> PedriShortLeft());
 
-    autoChooser.addRoutine("Right Lame", () -> PedriMidRight());
-    autoChooser.addRoutine("Left Lame", () -> PedriMidLeft());
+    // autoChooser.addRoutine("Right Lame", () -> PedriMidRight());
+    // autoChooser.addRoutine("Left Lame", () -> PedriMidLeft());
 
-    autoChooser.addRoutine("DrakeOutpostShort", () -> DrakeOutpostShort());
-    autoChooser.addRoutine("DrakeOutpostLong", () -> DrakeOutpostLong());
-    autoChooser.addRoutine("DrakeDepotShort", () -> DrakeDepotShort());
-    autoChooser.addRoutine("DrakeDepotLong", () -> DrakeDepotLong());
+    // autoChooser.addRoutine("DrakeOutpostShort", () -> DrakeOutpostShort());
+    // autoChooser.addRoutine("DrakeOutpostLong", () -> DrakeOutpostLong());
+    // autoChooser.addRoutine("DrakeDepotShort", () -> DrakeDepotShort());
+    // autoChooser.addRoutine("DrakeDepotLong", () -> DrakeDepotLong());
 
-    autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
+    // autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
+
+
+
+
+    autoChooser.addRoutine("Bump forward, one cycle", () -> p2BumpForward());
   }
 
   public AutoChooser getAutoChooser() {
