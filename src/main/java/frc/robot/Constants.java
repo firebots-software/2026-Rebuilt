@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
@@ -123,6 +124,8 @@ public final class Constants {
   public static class Swerve {
     public static final double FF_RADIUS_M2 = 0.1;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
+    public static final CANBus CAN_BUS =
+        new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
     public static final double DISTANCE_OVER_BUMP = 3.0; // correct distance is 3 meters
 

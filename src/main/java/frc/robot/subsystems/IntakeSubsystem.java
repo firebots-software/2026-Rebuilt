@@ -98,9 +98,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
-    cancoder =
-        new CANcoder(
-            Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.CAN_BUS);
     CANcoderConfiguration ccConfig = new CANcoderConfiguration();
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()

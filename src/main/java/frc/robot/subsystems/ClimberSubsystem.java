@@ -124,9 +124,7 @@ public class ClimberSubsystem extends SubsystemBase {
     brake = new Servo(Constants.Climber.BRAKE_PORT);
 
     // 4. DEALING WITH SIT UP CANCODER and Configurations
-    sitUpEncoder =
-        new CANcoder(
-            Constants.Climber.SitUp.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT, Constants.Swerve.CAN_BUS);
 
     MagnetSensorConfigs canCoderConfig =
         new CANcoderConfiguration()
