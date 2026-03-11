@@ -173,6 +173,16 @@ public class AutoRoutines {
         .andThen(() -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), null));
   }
 
+  public Command driveBackward(double time) {
+    return Commands.run(
+            () -> {
+              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5.0, 0, 0), null);
+            },
+            swerveSubsystem)
+        .withTimeout(time)
+        .andThen(() -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), null));
+  }
+
   public boolean getBestVisionMeasurement() {
     if (visionFrontLeft.hasValidMeasurement()) {
       bestVisionMeasurement = visionFrontLeft.getFilteredPose();
@@ -582,7 +592,7 @@ public class AutoRoutines {
         .onTrue(
             Commands.sequence(
                 intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forward),
+                driveForward(0.5),
                 intake.resetOdometry(),
                 intake.cmd()));
 
@@ -620,7 +630,7 @@ public class AutoRoutines {
         .onTrue(
             Commands.sequence(
                 intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forward),
+                driveForward(0.5),
                 Commands.waitUntil(() -> getBestVisionMeasurement())
                     .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement)),
                 intake.cmd()));
@@ -629,19 +639,9 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
+                driveBackward(0.5), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
-
-    return routine;
-  }
-
-  public AutoRoutine dtp() {
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-    AutoTrajectory bump = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.DriveToPoseForward);
-
-    routine.active().onTrue(Commands.sequence(bump.resetOdometry(), bump.cmd()));
 
     return routine;
   }
@@ -670,8 +670,6 @@ public class AutoRoutines {
     autoChooser.addRoutine("Bump forward left short", () -> p2BumpForwardLeftShort());
 
     autoChooser.addRoutine("Bump side left short", () -> p2BumpSideLeftShort());
-
-    autoChooser.addRoutine("dtp", () -> dtp());
   }
 
   public AutoChooser getAutoChooser() {

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.Landmarks;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.commandGroups.ArcLock;
+import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.LockOnCommand;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithWarning;
@@ -187,6 +188,8 @@ public class RobotContainer {
                 redside,
                 joystick
             ));
+
+    joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
     
     joystick
         .rightTrigger()
@@ -213,11 +216,11 @@ public class RobotContainer {
       //           new ShootBasicRetract(
       //               () -> 71.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
     } else {
-      joystick
-          .b()
-          .whileTrue(
-              new ShootBasicRetract(
-                  () -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    //   joystick
+    //       .b()
+    //       .whileTrue(
+    //           new ShootBasicRetract(
+    //               () -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
       joystick
           .y()
