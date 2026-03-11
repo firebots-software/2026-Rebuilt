@@ -4,6 +4,7 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -62,7 +63,7 @@ public class AutoRoutines {
     addCommandstoAutoChooser();
   }
 
-  //Trajectory loading and specific cmds
+  // Trajectory loading and specific cmds
   private AutoTrajectory intake(AutoRoutine routine, Intake type) {
     if (type == null) return null;
 
@@ -136,7 +137,25 @@ public class AutoRoutines {
     return Commands.sequence(shoot.asProxy());
   }
 
-  //Auto paths without climb
+  public Command aimAtHub(BooleanSupplier isRedSide) {
+    Command aim = Commands.run(
+        () -> {
+          double rot =
+              swerveSubsystem.calculateRequiredRotationalRateWithFF(
+                  isRedSide.getAsBoolean()
+                      ? Constants.Landmarks.RED_HUB_2D.getTranslation()
+                      : Constants.Landmarks.BLUE_HUB_2D.getTranslation());
+
+          ChassisSpeeds currSpeeds = swerveSubsystem.getFieldSpeeds();
+          currSpeeds.omegaRadiansPerSecond = rot;
+
+          swerveSubsystem.applyOneFieldSpeeds(currSpeeds);
+        }, swerveSubsystem).withTimeout(1);
+
+    return Commands.sequence(aim.asProxy());
+  }
+
+  // Auto paths without climb
   public AutoRoutine PedriMidRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -209,7 +228,12 @@ public class AutoRoutines {
                 intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
-    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
 
     return routine;
@@ -268,9 +292,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, backDTP),
-                shoot.resetOdometry(),
-                shoot.cmd()));
+                new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
@@ -300,9 +322,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, backDTP),
-                shoot.resetOdometry(),
-                shoot.cmd()));
+                new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
@@ -332,12 +352,15 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, backDTP),
-                shoot.resetOdometry(),
-                shoot.cmd()));
+                new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
-    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
 
     return routine;
@@ -364,12 +387,15 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                new BumpDTP(swerveSubsystem, backDTP),
-                shoot.resetOdometry(),
-                shoot.cmd()));
+                new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
-    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
 
     return routine;
@@ -383,7 +409,12 @@ public class AutoRoutines {
 
     routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
-    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
 
     return routine;
@@ -400,7 +431,12 @@ public class AutoRoutines {
 
     routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
-    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), rightSweep.cmd()));
     rightSweep.done().onTrue(depotIntake.cmd());
     depotIntake.done().onTrue(depotToShoot.cmd());
@@ -437,7 +473,12 @@ public class AutoRoutines {
     depotIntake.done().onTrue(depotToShoot.cmd());
     depotToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), leftSweep.cmd()));
     leftSweep.done().onTrue(outpostIntake.cmd());
-    outpostIntake.done().onTrue(Commands.sequence(new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE), outpostToShoot.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
     outpostToShoot.done().onTrue(returnBasicShoot());
 
     return routine;
@@ -451,7 +492,7 @@ public class AutoRoutines {
     return routine;
   }
 
-  //Paths for p2
+  // Paths for p2
   public AutoRoutine p2BumpForward() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -461,16 +502,27 @@ public class AutoRoutines {
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
-    routine.active().onTrue(Commands.sequence(intake.resetOdometry(), new BumpDTP(swerveSubsystem, forward), intake.resetOdometry(), intake.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forward),
+                intake.resetOdometry(),
+                intake.cmd()));
 
-    intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
 
-    // shoot.done().onTrue(null)
+    shoot.done().onTrue(Commands.sequence(aimAtHub(redSide), ));
 
     return routine;
   }
 
-  //Add paths to chooser
+  // Add paths to chooser
   public void addCommandstoAutoChooser() {
     // autoChooser.addRoutine("Depot (Left) Extreme", () -> PedriDepotLeft());
     // autoChooser.addRoutine("Depot (Right) Extreme", () -> PedriDepotRight());
@@ -489,9 +541,6 @@ public class AutoRoutines {
     // autoChooser.addRoutine("DrakeDepotLong", () -> DrakeDepotLong());
 
     // autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
-
-
-
 
     autoChooser.addRoutine("Bump forward, one cycle", () -> p2BumpForward());
   }

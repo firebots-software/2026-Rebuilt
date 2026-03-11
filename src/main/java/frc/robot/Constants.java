@@ -425,6 +425,7 @@ public final class Constants {
 
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
+
       public static enum Intake {
         LeftIntakeSweep,
         RightIntakeSweep,
