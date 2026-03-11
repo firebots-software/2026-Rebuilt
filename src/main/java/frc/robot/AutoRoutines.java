@@ -209,12 +209,17 @@ public class AutoRoutines {
   }
 
   public Command aimToHub(BooleanSupplier isRedSide) {
-      return Commands.run(() -> {double omega = swerveSubsystem.calculateRequiredRotationalRateWithFF(
+    return Commands.run(
+        () -> {
+          double omega =
+              swerveSubsystem.calculateRequiredRotationalRateWithFF(
                   isRedSide.getAsBoolean()
                       ? Constants.Landmarks.RED_HUB_2D.getTranslation()
                       : Constants.Landmarks.BLUE_HUB_2D.getTranslation());
 
-      swerveSubsystem.applyOneFieldSpeeds(new ChassisSpeeds(0, 0, omega));}, swerveSubsystem);
+          swerveSubsystem.applyOneFieldSpeeds(new ChassisSpeeds(0, 0, omega));
+        },
+        swerveSubsystem);
   }
 
   // // Auto paths without climb
