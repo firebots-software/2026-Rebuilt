@@ -62,6 +62,7 @@ public class AutoRoutines {
     addCommandstoAutoChooser();
   }
 
+  //Trajectory loading and specific cmds
   private AutoTrajectory intake(AutoRoutine routine, Intake type) {
     if (type == null) return null;
 
@@ -120,6 +121,22 @@ public class AutoRoutines {
     return traj;
   }
 
+  public Command returnBasicShoot() {
+    Command shoot =
+        new ShootBasicRetract(
+                () ->
+                    MiscUtils.computeShootingSpeed(
+                        MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
+                () -> lebronShooterSubsystem.isAtSpeed(),
+                lebronShooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem)
+            .withTimeout(4);
+
+    return Commands.sequence(shoot.asProxy());
+  }
+
+  //Auto paths without climb
   public AutoRoutine PedriMidRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -434,52 +451,7 @@ public class AutoRoutines {
     return routine;
   }
 
-  // public AutoRoutine test() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSide);
-
-  //   BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
-  //   BooleanSupplier backSupplier = () -> RobotContainer.setAlliance();
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               intake.resetOdometry(),
-  //               new BumpDTP(swerveSubsystem, forwardSupplier),
-  //               intake.resetOdometry(),
-  //               intake.cmd()));
-
-  //   intake.done().onTrue(Commands.sequence(new BumpDTP(swerveSubsystem, backSupplier)));
-
-  //   return routine;
-  // }
-
-  public Command returnBasicShoot() {
-    Command shoot =
-        new ShootBasicRetract(
-                () ->
-                    MiscUtils.computeShootingSpeed(
-                        MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
-                () -> lebronShooterSubsystem.isAtSpeed(),
-                lebronShooterSubsystem,
-                intakeSubsystem,
-                hopperSubsystem)
-            .withTimeout(4);
-
-    return Commands.sequence(shoot.asProxy());
-  }
-
-  // // this may not be needed, but is good to have
-  // public Command getPathCommandSafely(AutoTrajectory traj) {
-  //   return traj != null ? traj.cmd() : Commands.none();
-  // }
-
-  // // this may not be needed, but is good to have
-  // public Command resetPathOdometrySafely(AutoTrajectory traj) {
-  //   return traj != null ? traj.resetOdometry() : Commands.none();
-  // }
-
+  //Add paths to chooser
   public void addCommandstoAutoChooser() {
     autoChooser.addRoutine("Depot (Left) Extreme", () -> PedriDepotLeft());
     autoChooser.addRoutine("Depot (Right) Extreme", () -> PedriDepotRight());
@@ -498,8 +470,6 @@ public class AutoRoutines {
     autoChooser.addRoutine("DrakeDepotLong", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
-
-    // autoChooser.addRoutine("go right", () -> test());
   }
 
   public AutoChooser getAutoChooser() {
