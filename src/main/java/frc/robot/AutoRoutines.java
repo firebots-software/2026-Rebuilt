@@ -631,7 +631,6 @@ public class AutoRoutines {
 
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
-    AutoTrajectory start = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.start);
 
     // routine
     //     .active()
@@ -642,15 +641,16 @@ public class AutoRoutines {
     //             intake.resetOdometry(),
     //             intake.cmd()));
 
-    start
-        .done()
+    routine
+        .active()
         .onTrue(
             Commands.sequence(
                 driveForward(1),
-                aimToHub(redSide),
-                Commands.waitUntil(() -> getBestVisionMeasurement())
-                    .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
-                    .withTimeout(0.4),
+                // aimToHub(redSide).withTimeout(0.4),
+                // Commands.waitUntil(() -> getBestVisionMeasurement())
+                //     .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
+                //     .withTimeout(0.4),
+                intake.resetOdometry(),
                 intake.cmd()));
     // routine
     //   .active()
@@ -661,7 +661,7 @@ public class AutoRoutines {
     //           intake.resetOdometry(),
     //           intake.cmd()));
 
-    intake.done().onTrue(Commands.sequence(driveBackward(0.5), shoot.resetOdometry(), shoot.cmd()));
+    intake.done().onTrue(Commands.sequence(driveBackward(1), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 
