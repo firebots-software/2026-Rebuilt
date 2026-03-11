@@ -208,6 +208,15 @@ public class AutoRoutines {
     return false;
   }
 
+  public Command aimToHub(BooleanSupplier isRedSide) {
+      return Commands.run(() -> {double omega = swerveSubsystem.calculateRequiredRotationalRateWithFF(
+                  isRedSide.getAsBoolean()
+                      ? Constants.Landmarks.RED_HUB_2D.getTranslation()
+                      : Constants.Landmarks.BLUE_HUB_2D.getTranslation());
+
+      swerveSubsystem.applyOneFieldSpeeds(new ChassisSpeeds(0, 0, omega));}, swerveSubsystem);
+  }
+
   // // Auto paths without climb
   // public AutoRoutine PedriMidRight() {
   //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
@@ -628,13 +637,12 @@ public class AutoRoutines {
     //             intake.resetOdometry(),
     //             intake.cmd()));
 
-    routine.active().onTrue(Commands.sequence(start.resetOdometry(), start.cmd()));
-
     start
         .done()
         .onTrue(
             Commands.sequence(
-                driveForward(0.8),
+                driveForward(1),
+                aimToHub(redSide),
                 Commands.waitUntil(() -> getBestVisionMeasurement())
                     .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
                     .withTimeout(0.4),
