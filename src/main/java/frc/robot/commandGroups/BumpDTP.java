@@ -11,9 +11,9 @@ import java.util.function.BooleanSupplier;
 public class BumpDTP extends SequentialCommandGroup {
   public BumpDTP(CommandSwerveDrivetrain swerve, BooleanSupplier forward) {
     double direction =
-        (forward.getAsBoolean())
-            ? (Constants.Swerve.DISTANCE_OVER_BUMP)
-            : ((-1) * Constants.Swerve.DISTANCE_OVER_BUMP);
+        forward.getAsBoolean()
+            ? Constants.Swerve.DISTANCE_OVER_BUMP
+            : -Constants.Swerve.DISTANCE_OVER_BUMP;
     addCommands(
         new DriveToPose(
             swerve,

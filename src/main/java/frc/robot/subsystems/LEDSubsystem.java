@@ -12,7 +12,6 @@ import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.LEDSubsystem.LEDState;
 import java.util.Optional;
 
 public class LEDSubsystem extends SubsystemBase {

@@ -13,9 +13,9 @@ public class L1ClimbAuto extends SequentialCommandGroup {
       CommandSwerveDrivetrain swerveDrivetrain,
       Pose2d poseToDriveTo) {
     addCommands(
-        climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
-        climberSubsystem.PullUpCommand(Constants.Climber.PullUp.L1_REACH_POS),
+        climberSubsystem.sitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
+        climberSubsystem.pullUpCommand(Constants.Climber.PullUp.L1_REACH_POS),
         new DriveToPose(swerveDrivetrain, () -> poseToDriveTo),
-        climberSubsystem.PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS_L1_AUTO));
+        climberSubsystem.pullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS_L1_AUTO));
   }
 }

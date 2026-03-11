@@ -12,7 +12,7 @@ public class L3Climb extends SequentialCommandGroup {
       Pose2d poseToDriveTo) {
     addCommands(
         new L1Climb(climberSubsystem, swerveDrivetrain, poseToDriveTo),
-        climberSubsystem.L3ClimbCommand(),
+        climberSubsystem.l3ClimbCommand(),
         climberSubsystem.brakeCommand());
   }
 }

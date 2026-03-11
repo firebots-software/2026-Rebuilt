@@ -38,32 +38,25 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     if (!checkCameraConnected()) return;
-
     if (!validVisionResult()) return;
 
     getVisionResult();
   }
 
   private boolean checkCameraConnected() {
-
     boolean cameraConnected = photonCamera.isConnected();
     DogLog.log("Subsystems/FuelGauge/CameraStatus", cameraConnected);
     return cameraConnected;
   }
 
   private boolean validVisionResult() {
-
     List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-    }
+    for (PhotonPipelineResult result : results) latestVisionResult = result;
     return (latestVisionResult == null);
   }
 
   private void getVisionResult() {
-
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
         b -> {
@@ -98,9 +91,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     double smoothedArea = 0.0;
 
     list.add(area);
-    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
-      list.remove(0);
-    }
+    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) list.remove(0);
 
     if (!list.isEmpty()) {
       for (double rawArea : list) smoothedArea += rawArea;
@@ -112,10 +103,6 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   private void calculateFuelGaugeState(
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
-    Color greenColor = new Color(0, 255, 0);
-    Color redColor = new Color(255, 0, 0);
-    Color yellowColor = new Color(255, 255, 0);
-    Color blackColor = new Color(0, 0, 0);
     latestRawGauge = setFuelGauge(rawArea);
     latestSmoothedGauge = setFuelGauge(smoothedArea);
     latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);

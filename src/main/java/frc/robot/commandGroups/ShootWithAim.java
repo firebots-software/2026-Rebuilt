@@ -14,7 +14,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ShootWithAim extends ParallelCommandGroup {
-
   public ShootWithAim(
       DoubleSupplier translationalX,
       DoubleSupplier translationalY,
@@ -23,7 +22,6 @@ public class ShootWithAim extends ParallelCommandGroup {
       HopperSubsystem hopperSubsystem,
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside) {
-
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(
             () ->
@@ -38,20 +36,19 @@ public class ShootWithAim extends ParallelCommandGroup {
             () -> true,
             redside,
             drivetrain),
-        Commands.waitUntil(() -> shooterSubsystem.isAtSpeed())
+        Commands.waitUntil(shooterSubsystem::isAtSpeed)
             .andThen(
-                hopperSubsystem
-                    .runHopperUntilInterruptedCommand(
+                new ParallelCommandGroup(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
                         () ->
-                            hopperSubsystem.grabHopperRecommendedSpeed(
+                            hopperSubsystem.getHopperRecommendedSpeed(
                                 shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
                         () ->
-                            (Targeting.pointingAtHub(redside, drivetrain)
-                                && (drivetrain.getSpeedMagnitude() <= 0.2)))
-                    .alongWith(
-                        intakeSubsystem
-                            .powerRetractRollersCommand()
-                            .beforeStarting(
-                                Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
+                            Targeting.pointingAtHub(redside, drivetrain)
+                                && drivetrain.getSpeedMagnitude() <= 0.2),
+                    intakeSubsystem
+                        .powerRetractRollersCommand()
+                        .beforeStarting(
+                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
   }
 }

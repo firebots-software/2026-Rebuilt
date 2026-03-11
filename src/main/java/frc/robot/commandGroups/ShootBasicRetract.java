@@ -7,45 +7,40 @@ import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ShootBasicRetract extends ParallelCommandGroup {
   public ShootBasicRetract(
       DoubleSupplier speed,
-      BooleanSupplier readyToShoot,
-      ShooterSubsystem shooterSubsystem,
-      IntakeSubsystem intakeSubsystem,
-      HopperSubsystem hopperSubsystem) {
-    addCommands(
-        (shooterSubsystem.shootAtSpeedCommand(speed)),
-        Commands.waitUntil(() -> (shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()))
-            .andThen(
-                hopperSubsystem
-                    .runHopperUntilInterruptedCommand()
-                    .alongWith(
-                        intakeSubsystem
-                            .powerRetractRollersCommand()
-                            .beforeStarting(
-                                Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
-  }
-
-  public ShootBasicRetract(
-      DoubleSubscriber speed,
-      BooleanSupplier readyToShoot,
       ShooterSubsystem shooterSubsystem,
       IntakeSubsystem intakeSubsystem,
       HopperSubsystem hopperSubsystem) {
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(speed),
-        Commands.waitUntil(() -> (shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()))
+        Commands.waitUntil(shooterSubsystem::isAtSpeed)
             .andThen(
-                hopperSubsystem
-                    .runHopperUntilInterruptedCommand()
-                    .alongWith(
-                        intakeSubsystem
-                            .powerRetractRollersCommand()
-                            .beforeStarting(
-                                Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
+                new ParallelCommandGroup(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(),
+                    intakeSubsystem
+                        .powerRetractRollersCommand()
+                        .beforeStarting(
+                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
+  }
+
+  public ShootBasicRetract(
+      DoubleSubscriber speed,
+      ShooterSubsystem shooterSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      HopperSubsystem hopperSubsystem) {
+    addCommands(
+        shooterSubsystem.shootAtSpeedCommand(speed),
+        Commands.waitUntil(shooterSubsystem::isAtSpeed)
+            .andThen(
+                new ParallelCommandGroup(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(),
+                    intakeSubsystem
+                        .powerRetractRollersCommand()
+                        .beforeStarting(
+                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
   }
 }

@@ -14,8 +14,6 @@ import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.BumpDTP;
-import frc.robot.commandGroups.ExtendIntake;
-import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -76,8 +74,8 @@ public class AutoRoutines {
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
     if (traj != null) {
-      traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-      traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
     }
 
     return traj;
@@ -105,8 +103,8 @@ public class AutoRoutines {
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
     if (traj != null) {
-      traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-      traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
     }
 
     return traj;
@@ -467,7 +465,7 @@ public class AutoRoutines {
                 intake.resetOdometry(),
                 intake.cmd()));
 
-    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
 
     intake
@@ -503,7 +501,7 @@ public class AutoRoutines {
                 intake.resetOdometry(),
                 intake.cmd()));
 
-    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
 
     intake
@@ -539,7 +537,7 @@ public class AutoRoutines {
                 intake.resetOdometry(),
                 intake.cmd()));
 
-    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
 
     intake
@@ -575,7 +573,7 @@ public class AutoRoutines {
                 intake.resetOdometry(),
                 intake.cmd()));
 
-    intake.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
+    intake.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
     intake.atTime("IntakeUp").onTrue(intakeSubsystem.intakeDefault());
 
     intake
@@ -598,8 +596,8 @@ public class AutoRoutines {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSide);
 
-    BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
-    BooleanSupplier backSupplier = () -> RobotContainer.setAlliance();
+    BooleanSupplier forwardSupplier = () -> !RobotContainer.isRedAlliance();
+    BooleanSupplier backSupplier = () -> RobotContainer.isRedAlliance();
 
     routine
         .active()
@@ -618,7 +616,7 @@ public class AutoRoutines {
   public AutoRoutine testDTP() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    BooleanSupplier forwardSupplier = () -> !RobotContainer.setAlliance();
+    BooleanSupplier forwardSupplier = () -> !RobotContainer.isRedAlliance();
 
     AutoTrajectory right = routine.trajectory("GoRight.traj");
 
@@ -728,7 +726,6 @@ public class AutoRoutines {
                 () ->
                     MiscUtils.computeShootingSpeed(
                         MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
-                () -> lebronShooterSubsystem.isAtSpeed(),
                 lebronShooterSubsystem,
                 intakeSubsystem,
                 hopperSubsystem)

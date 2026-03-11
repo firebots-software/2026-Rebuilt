@@ -34,7 +34,6 @@ public class ZeroPullUp extends Command {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      // climberSubsystem.resetPullUpPositionToTop();
       climberSubsystem.resetPullUpPositionToTop();
     }
     climberSubsystem.resetPullUpCurrentLimits();
@@ -44,11 +43,7 @@ public class ZeroPullUp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (climberSubsystem.checkPullUpCurrent()) {
-      timesExceededCurrent++;
-    } else {
-      timesExceededCurrent = 0;
-    }
+    timesExceededCurrent = climberSubsystem.checkPullUpCurrent() ? timesExceededCurrent + 1 : 0;
     return timesExceededCurrent >= 10;
   }
 }

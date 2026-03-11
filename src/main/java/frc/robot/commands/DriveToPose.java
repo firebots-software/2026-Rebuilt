@@ -79,9 +79,7 @@ public class DriveToPose extends Command {
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    if (targetPoseSupplier != null) {
-      targetPose = targetPoseSupplier.get();
-    }
+    if (targetPoseSupplier != null) targetPose = targetPoseSupplier.get();
 
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
@@ -102,7 +100,6 @@ public class DriveToPose extends Command {
     pathState = path.calculate(currTime, pathState, targetPose);
 
     // Generate the next speeds for the robot
-    // Generate the next speeds for the robot
     ChassisSpeeds speeds =
         new ChassisSpeeds(
             pathState.speeds.vxMetersPerSecond
@@ -120,14 +117,14 @@ public class DriveToPose extends Command {
   }
 
   private boolean atPosition() {
-    return (Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
-            <= Constants.Swerve.targetPositionError)
+    return Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
+            <= Constants.Swerve.TARGET_POSITION_ERROR
         && (Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
-            <= Constants.Swerve.targetPositionError)
-        && (Math.abs(
+            <= Constants.Swerve.TARGET_POSITION_ERROR)
+        && Math.abs(
                 swerve.getCurrentState().Pose.getRotation().getRadians()
                     - targetPose.getRotation().getRadians())
-            <= Constants.Swerve.targetAngleError);
+            <= Constants.Swerve.TARGET_ANGLE_ERROR;
   }
 
   // Called once the command ends or is interrupted.

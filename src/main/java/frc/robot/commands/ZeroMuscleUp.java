@@ -43,12 +43,7 @@ public class ZeroMuscleUp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (climberSubsystem.checkMuscleUpCurrent()) {
-      timesExceededCurrent++;
-    } else {
-      timesExceededCurrent = 0;
-    }
-    DogLog.log("time exceeded current", timesExceededCurrent);
+    timesExceededCurrent = climberSubsystem.checkMuscleUpCurrent() ? timesExceededCurrent + 1 : 0;
     return timesExceededCurrent >= 3;
   }
 }

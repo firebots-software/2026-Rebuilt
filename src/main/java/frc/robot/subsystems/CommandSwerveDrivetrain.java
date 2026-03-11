@@ -409,7 +409,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     DogLog.log(
         "Subsystems/Swerve/DistanceToHub",
-        MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
+        MiscUtils.getDistanceToHub(() -> RobotContainer.isRedAlliance(), this));
     DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
 

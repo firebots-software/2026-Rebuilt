@@ -51,17 +51,13 @@ public class VisionUtils {
   }
 
   private static VisionSubsystem getVisionFallback() {
-    switch (Constants.Vision.FALLBACK_CAMERA) {
-      case FRONT_RIGHT_CAM:
-        return visionFrontRight;
-      case FRONT_LEFT_CAM:
-      default:
-        return visionFrontLeft;
-      case REAR_RIGHT_CAM:
-        return visionRearRight;
-      case REAR_LEFT_CAM:
-        return visionRearLeft;
-    }
+    return switch (Constants.Vision.FALLBACK_CAMERA) {
+      case FRONT_RIGHT_CAM -> visionFrontRight;
+      case FRONT_LEFT_CAM -> visionFrontLeft;
+      case REAR_RIGHT_CAM -> visionRearRight;
+      case REAR_LEFT_CAM -> visionRearLeft;
+      default -> visionFrontLeft;
+    };
   }
 
   private static void calculateAllCameraPoses() {
@@ -186,7 +182,7 @@ public class VisionUtils {
 
     double baseNoise = Constants.Vision.BASE_NOISE_THETA;
     double distanceCoefficient = Constants.Vision.DISTANCE_COEFFICIENT_THETA;
-    double angleCoefficient = Constants.Vision.ANGLE_COEFFICIENT_THETA;
+    // double angleCoefficient = Constants.Vision.ANGLE_COEFFICIENT_THETA;
     double speedCoefficient = Constants.Vision.SPEED_COEFFICIENT_THETA;
     double maximumRobotSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
