@@ -38,7 +38,7 @@ public class ShootWithAim extends ParallelCommandGroup {
             () -> true,
             redside,
             drivetrain),
-        Commands.waitUntil(() -> shooterSubsystem.isAtSpeed())
+        Commands.waitUntil(shooterSubsystem::isAtSpeed)
             .andThen(
                 hopperSubsystem
                     .runHopperUntilInterruptedCommand(
