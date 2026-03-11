@@ -4,6 +4,8 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.Swerve.Auto.ClimbPos;
@@ -21,6 +23,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 
 public class AutoRoutines {
@@ -30,7 +33,12 @@ public class AutoRoutines {
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
+  private final VisionSubsystem visionFrontLeft;
+  private final VisionSubsystem visionFrontRight;
+  private final VisionSubsystem visionRearLeft;
+  private final VisionSubsystem visionRearRight;
   private final BooleanSupplier redSide;
+  private Pose2d bestVisionMeasurement = null;
 
   // private final BooleanSupplier forwardDTP;
   // private final BooleanSupplier backDTP;
@@ -45,11 +53,19 @@ public class AutoRoutines {
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
       ClimberSubsystem climber,
+      VisionSubsystem visionFrontLeft,
+      VisionSubsystem visionFrontRight,
+      VisionSubsystem visionRearLeft,
+      VisionSubsystem visionRearRight,
       BooleanSupplier redSide) {
     this.intakeSubsystem = intake;
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
+    this.visionFrontLeft = visionFrontLeft;
+    this.visionFrontRight = visionFrontRight;
+    this.visionRearLeft = visionRearLeft;
+    this.visionRearRight = visionRearRight;
     // this.climberSubsystem = climber;
     this.redSide = redSide;
     // forwardDTP = () -> !redSide.getAsBoolean();
@@ -147,26 +163,35 @@ public class AutoRoutines {
     // return Commands.sequence(shoot.asProxy());
   }
 
-  // public Command aimAtHub(BooleanSupplier isRedSide) {
-  //   Command aim =
-  //       Commands.run(
-  //               () -> {
-  //                 double rot =
-  //                     swerveSubsystem.calculateRequiredRotationalRateWithFF(
-  //                         isRedSide.getAsBoolean()
-  //                             ? Constants.Landmarks.RED_HUB_2D.getTranslation()
-  //                             : Constants.Landmarks.BLUE_HUB_2D.getTranslation());
+  public Command driveForward(double time) {
+    return Commands.run(
+            () -> {
+              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), null);
+            },
+            swerveSubsystem)
+        .withTimeout(time)
+        .andThen(() -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), null));
+  }
 
-  //                 ChassisSpeeds currSpeeds = swerveSubsystem.getFieldSpeeds();
-  //                 currSpeeds.omegaRadiansPerSecond = rot;
-
-  //                 swerveSubsystem.applyOneFieldSpeeds(currSpeeds);
-  //               },
-  //               swerveSubsystem)
-  //           .withTimeout(1);
-
-  //   return Commands.sequence(aim.asProxy());
-  // }
+  public boolean getBestVisionMeasurement() {
+    if (visionFrontLeft.hasValidMeasurement()) {
+      bestVisionMeasurement = visionFrontLeft.getFilteredPose();
+      return true;
+    }
+    if (visionFrontRight.hasValidMeasurement()) {
+      bestVisionMeasurement = visionFrontRight.getFilteredPose();
+      return true;
+    }
+    if (visionRearLeft.hasValidMeasurement()) {
+      bestVisionMeasurement = visionRearLeft.getFilteredPose();
+      return true;
+    }
+    if (visionRearRight.hasValidMeasurement()) {
+      bestVisionMeasurement = visionRearRight.getFilteredPose();
+      return true;
+    }
+    return false;
+  }
 
   // // Auto paths without climb
   // public AutoRoutine PedriMidRight() {
@@ -581,13 +606,23 @@ public class AutoRoutines {
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
 
+    // routine
+    //     .active()
+    //     .onTrue(
+    //         Commands.sequence(
+    //             intake.resetOdometry(),
+    //             new BumpDTP(swerveSubsystem, forward),
+    //             intake.resetOdometry(),
+    //             intake.cmd()));
+
     routine
         .active()
         .onTrue(
             Commands.sequence(
                 intake.resetOdometry(),
                 new BumpDTP(swerveSubsystem, forward),
-                intake.resetOdometry(),
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement)),
                 intake.cmd()));
 
     intake
@@ -597,6 +632,16 @@ public class AutoRoutines {
                 new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
+    return routine;
+  }
+
+  public AutoRoutine dtp() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory bump = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.DriveToPoseForward);
+
+    routine.active().onTrue(Commands.sequence(bump.resetOdometry(), bump.cmd()));
 
     return routine;
   }
@@ -625,6 +670,8 @@ public class AutoRoutines {
     autoChooser.addRoutine("Bump forward left short", () -> p2BumpForwardLeftShort());
 
     autoChooser.addRoutine("Bump side left short", () -> p2BumpSideLeftShort());
+
+    autoChooser.addRoutine("dtp", () -> dtp());
   }
 
   public AutoChooser getAutoChooser() {

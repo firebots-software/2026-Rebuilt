@@ -465,7 +465,8 @@ public final class Constants {
 
       public static enum MiscPaths {
         LeftSweep,
-        RightSweep
+        RightSweep,
+        DriveToPoseForward
       }
     }
   }

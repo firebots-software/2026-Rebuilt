@@ -31,7 +31,6 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.util.MiscUtils;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -100,7 +99,16 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines =
         new AutoRoutines(
-            intakeSubsystem, lebron, hopperSubsystem, drivetrain, climberSubsystem, redside);
+            intakeSubsystem,
+            lebron,
+            hopperSubsystem,
+            drivetrain,
+            climberSubsystem,
+            visionFrontLeft,
+            visionFrontRight,
+            visionRearLeft,
+            visionRearRight,
+            redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -130,7 +138,7 @@ public class RobotContainer {
     // slowmode when left shoulder is pressed, otherwise fast
 
     joystick
-        .rightBumper()
+        .rightTrigger()
         .whileTrue(
             new ShootWithAim(
                 frontBackFunction,
@@ -164,18 +172,19 @@ public class RobotContainer {
 
     lebron.setDefaultCommand(Commands.runOnce(lebron::stopShooter, lebron));
 
-    joystick
-        .rightTrigger()
-        .whileTrue(
-            new ShootBasicRetract(
-                () ->
-                    // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside,
-                    // drivetrain)),
-                    lebron.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain)),
-                () -> true,
-                lebron,
-                intakeSubsystem,
-                hopperSubsystem));
+    // joystick
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         new ShootBasicRetract(
+    //             () ->
+    //                 // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside,
+    //                 // drivetrain)),
+    //                 lebron.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside,
+    // drivetrain)),
+    //             () -> true,
+    //             lebron,
+    //             intakeSubsystem,
+    //             hopperSubsystem));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
       //   joystick
