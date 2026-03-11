@@ -20,7 +20,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
+import frc.robot.Constants.Landmarks;
+import frc.robot.Constants.Vision.VisionCamera;
+import frc.robot.commandGroups.ArcLock;
+import frc.robot.commandGroups.LockOnCommand;
 import frc.robot.commandGroups.ShootBasicRetract;
+import frc.robot.commandGroups.ShootWithWarning;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -172,19 +177,28 @@ public class RobotContainer {
 
     lebron.setDefaultCommand(Commands.runOnce(lebron::stopShooter, lebron));
 
-    // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new ShootBasicRetract(
-    //             () ->
-    //                 // MiscUtils.computeShootingSpeed(MiscUtils.getDistanceToHub(redside,
-    //                 // drivetrain)),
-    //                 lebron.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside,
-    // drivetrain)),
-    //             () -> true,
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem));
+    joystick
+        .a()
+        .whileTrue(
+            new ArcLock(
+                drivetrain,
+                lebron,
+                leftRightFunction,
+                redside,
+                joystick
+            ));
+    
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new LockOnCommand(
+                drivetrain,
+                lebron,
+                leftRightFunction,
+                frontBackFunction,
+                (redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB),
+                joystick
+            ));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
       //   joystick

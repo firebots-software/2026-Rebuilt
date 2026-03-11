@@ -2,6 +2,7 @@ package frc.robot.MathUtils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Vector3 {
   public float x;
@@ -60,5 +61,9 @@ public class Vector3 {
 
   public static Vector3 mult(Vector3 a, double m) {
     return new Vector3(a.x * m, a.y * m, a.z * m);
+  }
+
+  public static Pose2d toPose2d(Vector3 a) {
+    return new Pose2d(a.x, a.y, new Rotation2d());
   }
 }

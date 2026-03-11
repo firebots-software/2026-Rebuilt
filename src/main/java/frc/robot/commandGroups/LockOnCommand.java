@@ -1,7 +1,6 @@
 package frc.robot.commandGroups;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -19,8 +18,6 @@ public class LockOnCommand extends ParallelCommandGroup {
   public LockOnCommand(
       CommandSwerveDrivetrain drivetrain,
       ShooterSubsystem shooter,
-      IntakeSubsystem intake,
-      HopperSubsystem hopper,
       DoubleSupplier frontBackFunction,
       DoubleSupplier leftRightFunction,
       Pose3d target,
@@ -31,7 +28,7 @@ public class LockOnCommand extends ParallelCommandGroup {
             frontBackFunction,
             leftRightFunction,
             () -> 1f,
-            () -> true,
+            () -> false,
             () -> Targeting.targetAngle(target, drivetrain),
             drivetrain),
         Commands.runEnd(
@@ -42,8 +39,7 @@ public class LockOnCommand extends ParallelCommandGroup {
             () -> joystick.setRumble(RumbleType.kBothRumble, (0d))),
         shooter.shootAtSpeedCommand(
             () ->
-                Units.metersToFeet(
-                    Targeting.shootingSpeed(
-                        target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION))));
+                Targeting.shootingSpeed(
+                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
   }
 }
