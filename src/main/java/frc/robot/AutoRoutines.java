@@ -4,6 +4,7 @@ import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -166,21 +167,25 @@ public class AutoRoutines {
   public Command driveForward(double time) {
     return Commands.run(
             () -> {
-              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), null);
+              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), new Feedforwards(4));
             },
             swerveSubsystem)
         .withTimeout(time)
-        .andThen(() -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), null));
+        .andThen(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
   public Command driveBackward(double time) {
     return Commands.run(
             () -> {
-              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5.0, 0, 0), null);
+              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5.0, 0, 0), new Feedforwards(4));
             },
             swerveSubsystem)
         .withTimeout(time)
-        .andThen(() -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), null));
+        .andThen(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
   public boolean getBestVisionMeasurement() {
@@ -591,10 +596,7 @@ public class AutoRoutines {
         .active()
         .onTrue(
             Commands.sequence(
-                intake.resetOdometry(),
-                driveForward(0.5),
-                intake.resetOdometry(),
-                intake.cmd()));
+                intake.resetOdometry(), driveForward(0.5), intake.resetOdometry(), intake.cmd()));
 
     intake
         .done()
@@ -615,6 +617,7 @@ public class AutoRoutines {
 
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
+    AutoTrajectory start = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.start);
 
     // routine
     //     .active()
@@ -625,21 +628,27 @@ public class AutoRoutines {
     //             intake.resetOdometry(),
     //             intake.cmd()));
 
-    routine
-        .active()
-        .onTrue(
-            Commands.sequence(
-                intake.resetOdometry(),
-                driveForward(0.5),
-                Commands.waitUntil(() -> getBestVisionMeasurement())
-                    .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement)),
-                intake.cmd()));
+    routine.active().onTrue(Commands.sequence(start.resetOdometry(), start.cmd()));
 
-    intake
+    start
         .done()
         .onTrue(
             Commands.sequence(
-                driveBackward(0.5), shoot.resetOdometry(), shoot.cmd()));
+                driveForward(0.8),
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
+                    .withTimeout(0.4),
+                intake.cmd()));
+    // routine
+    //   .active()
+    //     .onTrue(
+    //       Commands.sequence(
+    //           intake.resetOdometry(),
+    //           driveForward(0.75),
+    //           intake.resetOdometry(),
+    //           intake.cmd()));
+
+    intake.done().onTrue(Commands.sequence(driveBackward(0.5), shoot.resetOdometry(), shoot.cmd()));
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
 

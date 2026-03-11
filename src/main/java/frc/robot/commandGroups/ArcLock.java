@@ -9,8 +9,6 @@ import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandInArc;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;

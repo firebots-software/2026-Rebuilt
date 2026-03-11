@@ -466,7 +466,8 @@ public final class Constants {
       public static enum MiscPaths {
         LeftSweep,
         RightSweep,
-        DriveToPoseForward
+        DriveToPoseForward,
+        start
       }
     }
   }
@@ -921,9 +922,8 @@ public final class Constants {
     public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
     public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
 
-    public static final InterpolatingDoubleTreeMap
-        SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
-            new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
+        new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap
         TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
 
