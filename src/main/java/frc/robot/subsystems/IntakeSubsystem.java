@@ -316,7 +316,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeDefault() {
     return runOnce(
         () -> {
-          stopRollers();
+          runRollersUntilInterruptedCommand(5);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
   }
