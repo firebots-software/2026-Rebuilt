@@ -579,7 +579,7 @@ public class AutoRoutines {
     BooleanSupplier backward = () -> redSide.getAsBoolean();
 
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
-    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
 
     routine
         .active()

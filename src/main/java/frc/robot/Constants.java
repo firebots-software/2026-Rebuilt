@@ -441,6 +441,7 @@ public final class Constants {
         RightShoot,
         DepotToShoot,
         OutpostToShoot,
+        LeftShootSide
       }
 
       public static enum ClimbPos {
