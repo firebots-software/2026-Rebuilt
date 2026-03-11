@@ -180,17 +180,6 @@ public class RobotContainer {
 
     joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
 
-    joystick
-        .rightTrigger()
-        .whileTrue(
-            new LockOnCommand(
-                drivetrain,
-                lebron,
-                leftRightFunction,
-                frontBackFunction,
-                (redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB),
-                joystick));
-
     if (Constants.Shooter.INTERMAP_TESTING) {
       //   joystick
       //       .a()
