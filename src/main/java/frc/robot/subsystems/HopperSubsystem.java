@@ -90,6 +90,8 @@ public class HopperSubsystem extends SubsystemBase {
       hopperMotor.setControl(
           m_velocityRequest.withVelocity(
               this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+    } else {
+      hopperMotor.stopMotor();
     }
   }
 
