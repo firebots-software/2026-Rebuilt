@@ -130,7 +130,7 @@ public class AutoRoutines {
             intakeSubsystem,
             hopperSubsystem,
             swerveSubsystem,
-            isRedSide);
+            isRedSide).withTimeout(4);
 
     return Commands.sequence(shoot.asProxy());
     // Command shoot =
@@ -514,13 +514,71 @@ public class AutoRoutines {
   // }
 
   // Paths for p2
-  public AutoRoutine p2BumpForward() {
+  public AutoRoutine p2BumpForwardRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     BooleanSupplier forward = () -> !redSide.getAsBoolean();
     BooleanSupplier backward = () -> redSide.getAsBoolean();
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2Intake);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeForwardRight);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forward),
+                intake.resetOdometry(),
+                intake.cmd()));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
+
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
+    return routine;
+  }
+
+  public AutoRoutine p2BumpForwardLeftShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    BooleanSupplier forward = () -> !redSide.getAsBoolean();
+    BooleanSupplier backward = () -> redSide.getAsBoolean();
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeForwardLeftShort);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                intake.resetOdometry(),
+                new BumpDTP(swerveSubsystem, forward),
+                intake.resetOdometry(),
+                intake.cmd()));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
+
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+
+    return routine;
+  }
+
+  public AutoRoutine p2BumpSideLeftShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    BooleanSupplier forward = () -> !redSide.getAsBoolean();
+    BooleanSupplier backward = () -> redSide.getAsBoolean();
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
     routine
@@ -563,7 +621,10 @@ public class AutoRoutines {
 
     // autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
 
-    autoChooser.addRoutine("Bump forward, one cycle", () -> p2BumpForward());
+    autoChooser.addRoutine("Bump forward right long", () -> p2BumpForwardRight());
+    autoChooser.addRoutine("Bump forward left short", () -> p2BumpForwardLeftShort());
+
+    autoChooser.addRoutine("Bump side left short", () -> p2BumpSideLeftShort());
   }
 
   public AutoChooser getAutoChooser() {

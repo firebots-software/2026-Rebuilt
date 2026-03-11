@@ -431,7 +431,9 @@ public final class Constants {
         RightIntakeSweep,
         LeftIntakeSweepShort,
         RightIntakeSweepShort,
-        p2Intake
+        p2IntakeForwardRight,
+        p2IntakeForwardLeftShort,
+        p2IntakeSideLeftShort
       }
 
       public static enum ShootPos {
