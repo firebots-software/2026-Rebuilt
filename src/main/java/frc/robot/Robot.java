@@ -6,6 +6,7 @@ package frc.robot;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -73,6 +74,12 @@ public class Robot extends TimedRobot {
       simulatedTime = 160;
     }
 
+    double timeForShiftFeedback = DriverStation.getMatchTime();
+    if (timeForShiftFeedback <= 0) {
+      timeForShiftFeedback = simulatedTime;
+    }
+    m_robotContainer.shiftSwitchFeedbackPeriodic(timeForShiftFeedback);
+
     // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
@@ -80,6 +87,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
+    m_robotContainer.stopAllRumble();
   }
 
   @Override

@@ -97,6 +97,10 @@ public class MiscUtils {
   }
 
   public static void shiftSwitchIndicator(double currentTime) {
+    shiftSwitchIndicatorAndGetRumble(currentTime);
+  }
+  
+  public static double shiftSwitchIndicatorAndGetRumble(double currentTime) {
     double currentTimes = currentTime;
     // double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
@@ -104,40 +108,52 @@ public class MiscUtils {
         && !currentShiftName(currentTimes).equals("Endgame")
         && timeUntilNextShift > 8) {
       SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      return 0.0;
     } else if (areWeActive(currentTimes)
         && !currentShiftName(currentTimes).equals("Endgame")
         && timeUntilNextShift < 8) {
       if ((shiftIndicatorSum / 20) % 2 == 1) {
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+        shiftIndicatorSum++;
+        return 0.0;
       } else {
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+        shiftIndicatorSum++;
+        return 0.25;
       }
-      shiftIndicatorSum++;
     } else if ((timeUntilNextShift < 2
         && !currentShiftName(currentTimes).equals("Endgame")
         && !areWeActive(currentTimes))) {
       SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
+      return 1.0;
     } else if (timeUntilNextShift < 5
         && !currentShiftName(currentTimes).equals("Endgame")
         && !areWeActive(currentTimes)) {
       if ((shiftIndicatorSum / 8) % 2 == 1) {
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+        shiftIndicatorSum++;
+        return 0.0;
       } else {
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFF00");
+        shiftIndicatorSum++;
+        return 0.6;
       }
-      shiftIndicatorSum++;
     } else if (timeUntilNextShift < 8
         && !currentShiftName(currentTimes).equals("Endgame")
         && !areWeActive(currentTimes)) {
       if ((shiftIndicatorSum / 20) % 2 == 1) {
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+        shiftIndicatorSum++;
+        return 0.0;
       } else {
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
+        shiftIndicatorSum++;
+        return 0.4;
       }
-      shiftIndicatorSum++;
     } else {
       shiftIndicatorSum = 0;
       SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      return 0.0;
     }
   }
 

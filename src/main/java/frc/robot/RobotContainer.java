@@ -14,6 +14,7 @@ import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -114,6 +115,18 @@ public class RobotContainer {
     SmartDashboard.putData("Elastic/Field2d", field);
 
     configureBindings();
+  }
+
+  public void shiftSwitchFeedbackPeriodic(double currentTime) {
+    double intensity = MiscUtils.shiftSwitchIndicatorAndGetRumble(currentTime);
+    joystick.getHID().setRumble(RumbleType.kBothRumble, intensity);
+  }
+
+  public void stopAllRumble() {
+    joystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+    debugJoystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+    joystick2.getHID().setRumble(RumbleType.kBothRumble, 0.0);
+    ronaldoJoystick.getHID().setRumble(RumbleType.kBothRumble, 0.0);
   }
 
   public CommandSwerveDrivetrain getDrivetrain() {
