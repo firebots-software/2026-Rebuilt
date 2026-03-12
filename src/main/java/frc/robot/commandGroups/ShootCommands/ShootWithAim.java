@@ -1,4 +1,4 @@
-package frc.robot.commandGroups;
+package frc.robot.commandGroups.ShootCommands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -14,7 +14,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ShootWithAim extends ParallelCommandGroup {
-
   public ShootWithAim(
       DoubleSupplier translationalX,
       DoubleSupplier translationalY,
@@ -23,7 +22,6 @@ public class ShootWithAim extends ParallelCommandGroup {
       HopperSubsystem hopperSubsystem,
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside) {
-
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(
             () ->
@@ -40,18 +38,17 @@ public class ShootWithAim extends ParallelCommandGroup {
             drivetrain),
         Commands.waitUntil(shooterSubsystem::isAtSpeed)
             .andThen(
-                hopperSubsystem
-                    .runHopperUntilInterruptedCommand(
+                new ParallelCommandGroup(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
                         () ->
-                            hopperSubsystem.grabHopperRecommendedSpeed(
+                            hopperSubsystem.getHopperRecommendedSpeed(
                                 shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
                         () ->
-                            (Targeting.pointingAtHub(redside, drivetrain)
-                                && (drivetrain.getSpeedMagnitude() <= 0.2)))
-                    .alongWith(
-                        intakeSubsystem
-                            .powerRetractRollersCommand()
-                            .beforeStarting(
-                                Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
+                            Targeting.pointingAtHub(redside, drivetrain)
+                                && drivetrain.getSpeedMagnitude() <= 0.2),
+                    intakeSubsystem
+                        .powerRetractRollersCommand()
+                        .beforeStarting(
+                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))));
   }
 }

@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimberSubsystem;
 
@@ -33,9 +32,7 @@ public class ZeroMuscleUp extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted) {
-      climberSubsystem.resetMuscleUpPositionToZero();
-    }
+    if (!interrupted) climberSubsystem.resetMuscleUpPositionToZero();
     climberSubsystem.resetMuscleUpCurrentLimits();
     climberSubsystem.stopMuscleUp();
   }
@@ -43,12 +40,7 @@ public class ZeroMuscleUp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (climberSubsystem.checkMuscleUpCurrent()) {
-      timesExceededCurrent++;
-    } else {
-      timesExceededCurrent = 0;
-    }
-    DogLog.log("time exceeded current", timesExceededCurrent);
+    timesExceededCurrent = climberSubsystem.checkMuscleUpCurrent() ? timesExceededCurrent + 1 : 0;
     return timesExceededCurrent >= 3;
   }
 }

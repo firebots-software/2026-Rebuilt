@@ -1,4 +1,4 @@
-package frc.robot.commandGroups;
+package frc.robot.commandGroups.ShootCommands;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
@@ -13,19 +13,21 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.Targeting;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-public class LockOnCommand extends ParallelCommandGroup {
-  public LockOnCommand(
+@Deprecated
+public class ShootWithWarning extends ParallelCommandGroup {
+  public ShootWithWarning(
       CommandSwerveDrivetrain drivetrain,
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       HopperSubsystem hopper,
-      DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction,
       Pose3d target,
-      CommandXboxController joystick) {
-
+      BooleanSupplier redside,
+      CommandXboxController joystick,
+      DoubleSupplier frontBackFunction,
+      DoubleSupplier leftRightFunction) {
     addCommands(
         new SwerveJoystickCommandWithPointing(
             frontBackFunction,
@@ -40,10 +42,13 @@ public class LockOnCommand extends ParallelCommandGroup {
                     RumbleType.kBothRumble,
                     (Targeting.amtToRumble(drivetrain, target).getAsDouble())),
             () -> joystick.setRumble(RumbleType.kBothRumble, (0d))),
-        shooter.shootAtSpeedCommand(
+        new ShootBasic(
             () ->
                 Units.metersToFeet(
                     Targeting.shootingSpeed(
-                        target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION))));
+                        target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+            shooter,
+            intake,
+            hopper));
   }
 }

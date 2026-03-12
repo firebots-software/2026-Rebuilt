@@ -15,7 +15,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class FuelGaugeDetection extends SubsystemBase {
-
   private static ArrayList<Double> latestRawMeasurements = new ArrayList<>();
   private static ArrayList<Double> latestMultipleMeasurements = new ArrayList<>();
 
@@ -39,7 +38,6 @@ public class FuelGaugeDetection extends SubsystemBase {
   @Override
   public void periodic() {
     if (!cameraConnected()) return;
-
     if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
 
     updateVisionResult();
@@ -55,7 +53,6 @@ public class FuelGaugeDetection extends SubsystemBase {
     if (results.isEmpty()) return false;
 
     latestVisionResult = results.get(results.size() - 1);
-
     return (latestVisionResult == null);
   }
 
@@ -89,9 +86,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     double smoothedArea = 0.0;
 
     list.add(area);
-    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
-      list.remove(0);
-    }
+    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) list.remove(0);
 
     if (!list.isEmpty()) {
       for (double rawArea : list) smoothedArea += rawArea;

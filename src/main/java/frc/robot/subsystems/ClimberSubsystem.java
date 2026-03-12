@@ -9,7 +9,6 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -37,7 +36,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private final Servo brake;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
-  private final VoltageOut m_voltageRequest = new VoltageOut(0.0);
+  private final VoltageOut m_voltageRequest = new VoltageOut(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
 
   public ClimberSubsystem() {
@@ -56,20 +55,16 @@ public class ClimberSubsystem extends SubsystemBase {
             .withStatorCurrentLimit(Constants.Climber.PullUp.CLIMBING_STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Climber.PullUp.CLIMBING_SUPPLY_CURRENT_LIMIT);
 
-    CurrentLimitsConfigs muscleUpClimbingClc =
-        new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT)
-            .withSupplyCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT);
+    // CurrentLimitsConfigs muscleUpClimbingClc =
+    //     new CurrentLimitsConfigs()
+    //         .withStatorCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT)
+    //         .withSupplyCurrentLimit(Constants.Climber.MuscleUp.CLIMBING_STATOR_CURRENT_LIMIT);
 
-    // 1. SLOT CONFIGS for all climber parts
     Slot0Configs sitUps0c =
         new Slot0Configs()
             .withKP(Constants.Climber.SitUp.KP)
             .withKI(Constants.Climber.SitUp.KI)
             .withKD(Constants.Climber.SitUp.KD);
-
-    // .withGravityType(GravityTypeValue.Arm_Cosine);
-
     Slot0Configs pullUps0c =
         new Slot0Configs()
             .withKP(Constants.Climber.PullUp.KP)
@@ -77,16 +72,13 @@ public class ClimberSubsystem extends SubsystemBase {
             .withKD(Constants.Climber.PullUp.KD)
             .withKV(Constants.Climber.PullUp.KV)
             .withKG(Constants.Climber.PullUp.KG)
-            .withKS(.1);
-    // .withGravityType(GravityTypeValue.Eslevator_Static);
-
+            .withKS(Constants.Climber.PullUp.KS);
     Slot0Configs muscleUps0c =
         new Slot0Configs()
             .withKP(Constants.Climber.MuscleUp.KP)
             .withKI(Constants.Climber.MuscleUp.KI)
             .withKD(Constants.Climber.MuscleUp.KD);
 
-    // 2. MOTOR OUTPUT CONFIGS (Clockwise inversions and Counterclockwise inversions)
     MotorOutputConfigs mocCCWPos =
         new MotorOutputConfigs()
             .withNeutralMode(NeutralModeValue.Brake)
@@ -96,19 +88,16 @@ public class ClimberSubsystem extends SubsystemBase {
             .withNeutralMode(NeutralModeValue.Brake)
             .withInverted(InvertedValue.Clockwise_Positive);
 
-    // 3. MOTOR INSTANTIATIONS
     muscleUpMotor =
         new LoggedTalonFX(
             "MuscleUp",
             Constants.Climber.MuscleUp.MOTOR_PORT,
             Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-
     sitUpMotor =
         new LoggedTalonFX(
             "SitUp",
             Constants.Climber.SitUp.MOTOR_PORT,
             Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
-
     pullUpMotorR =
         new LoggedTalonFX(
             "PullUpRight",
@@ -121,9 +110,6 @@ public class ClimberSubsystem extends SubsystemBase {
             Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
     pullUpMotorL.setControl(new Follower(pullUpMotorR.getDeviceID(), MotorAlignmentValue.Opposed));
 
-    brake = new Servo(Constants.Climber.BRAKE_PORT);
-
-    // 4. DEALING WITH SIT UP CANCODER and Configurations
     sitUpEncoder = new CANcoder(Constants.Climber.SitUp.ENCODER_PORT, Constants.Swerve.CAN_BUS);
 
     MagnetSensorConfigs canCoderConfig =
@@ -134,7 +120,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
     sitUpEncoder.getConfigurator().apply(canCoderConfig);
 
-    // 5. APPLYING CONFIGS TO ALL MOTORS
     TalonFXConfiguration muscleUpConfig =
         new TalonFXConfiguration()
             .withSlot0(muscleUps0c)
@@ -167,15 +152,12 @@ public class ClimberSubsystem extends SubsystemBase {
             .withCurrentLimits(pullUpClimbingClc)
             .withMotorOutput(mocCWPos);
 
-    TalonFXConfigurator muscleUpMotorConfig = muscleUpMotor.getConfigurator();
-    TalonFXConfigurator sitUpMotorConfig = sitUpMotor.getConfigurator();
-    TalonFXConfigurator pullUpLeftMotorConfig = pullUpMotorL.getConfigurator();
-    TalonFXConfigurator pullUpRightMotorConfig = pullUpMotorR.getConfigurator();
+    muscleUpMotor.getConfigurator().apply(muscleUpConfig);
+    sitUpMotor.getConfigurator().apply(sitUpConfig);
+    pullUpMotorL.getConfigurator().apply(pullUpLeftConfig);
+    pullUpMotorR.getConfigurator().apply(pullUpRightConfig);
 
-    muscleUpMotorConfig.apply(muscleUpConfig);
-    sitUpMotorConfig.apply(sitUpConfig);
-    pullUpLeftMotorConfig.apply(pullUpLeftConfig);
-    pullUpRightMotorConfig.apply(pullUpRightConfig);
+    brake = new Servo(Constants.Climber.BRAKE_PORT);
   }
 
   public void setSitUpPosition(double degrees) {
@@ -228,7 +210,6 @@ public class ClimberSubsystem extends SubsystemBase {
             getSitUpCancoderPositionRaw() * Constants.Intake.Arm.ARM_ROTS_PER_CANCODER_ROT));
   }
 
-  // TODO: Verify this is the same used w/ the feedback
   public Rotation2d getSitUpPosition() {
     return new Rotation2d(Units.rotationsToRadians(sitUpMotor.getCachedPositionRotations()));
   }
@@ -270,7 +251,6 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   // Zeroing climb functions (only pull up because it doesn't have an encoder):
-
   public void reducePullUpCurrentLimits() {
     pullUpMotorR.updateCurrentLimits(
         Constants.Climber.PullUp.ZEROING_STATOR_CURRENT_LIMIT,
@@ -304,11 +284,11 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command movePullUpUpWithVoltageCommand() {
-    return startEnd(() -> movePullUpUpWithVoltage(), this::stopPullUp);
+    return startEnd(this::movePullUpUpWithVoltage, this::stopPullUp);
   }
 
   public Command movePullUpDownWithVoltageCommand() {
-    return startEnd(() -> movePullUpDownWithVoltage(), this::stopPullUp);
+    return startEnd(this::movePullUpDownWithVoltage, this::stopPullUp);
   }
 
   public void moveMuscleUpInWithVoltage() {
@@ -324,11 +304,11 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public Command moveMuscleUpOutCommand() {
-    return startEnd(() -> moveMuscleUpOutWithVoltage(), this::stopMuscleUp);
+    return startEnd(this::moveMuscleUpOutWithVoltage, this::stopMuscleUp);
   }
 
   public Command moveMuscleUpInCommand() {
-    return startEnd(() -> moveMuscleUpInWithVoltage(), this::stopMuscleUp);
+    return startEnd(this::moveMuscleUpInWithVoltage, this::stopMuscleUp);
   }
 
   public boolean checkPullUpCurrent() {
@@ -392,7 +372,7 @@ public class ClimberSubsystem extends SubsystemBase {
     return run(() -> setMuscleUpPosition(angle)).until(this::isMuscleUpAtPosition);
   }
 
-  public Command PullUpCommand(double position) {
+  public Command pullUpCommand(double position) {
     return run(() -> setPullUpPosition(position)).until(this::isPullUpAtPosition);
   }
 
@@ -400,7 +380,7 @@ public class ClimberSubsystem extends SubsystemBase {
     return runOnce(() -> this.setPullUpPosition(positionMeters));
   }
 
-  public Command SitUpCommand(double angle) {
+  public Command sitUpCommand(double angle) {
     return run(() -> setSitUpPosition(angle)); // .until(this::isSitUpAtPosition);
   }
 
@@ -409,40 +389,39 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   // separate command groups to incorporate driveToPose
-
   public Command L1ClimbCommand() {
     return Commands.sequence(
-        PullUpCommand(Constants.Climber.PullUp.L1_REACH_POS),
-        SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
-        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
+        pullUpCommand(Constants.Climber.PullUp.L1_REACH_POS),
+        sitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
+        pullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
         brakeCommand());
   }
 
-  public Command L2ClimbCommand() {
+  public Command l2ClimbCommand() {
     return Commands.sequence(
         // rest of L1 climb
-        MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD),
-        SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES),
+        MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD),
+        sitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES),
         // L2 Climb
-        PullUpCommand(Constants.Climber.PullUp.L2_REACH_POS),
-        SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
+        pullUpCommand(Constants.Climber.PullUp.L2_REACH_POS),
+        sitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
         MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
-        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS));
+        pullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS));
   }
 
-  public Command L3ClimbCommand() {
+  public Command l3ClimbCommand() {
     return Commands.sequence(
         // L2 climb & going up to the rung
-        L2ClimbCommand(),
-        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
-        MuscleUpCommand(Constants.Climber.MuscleUp.L1_MUSCLE_UP_FORWARD),
+        l2ClimbCommand(),
+        pullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
+        MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD),
         // L3 climb
-        PullUpCommand(Constants.Climber.PullUp.L3_REACH_POS),
-        SitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
+        pullUpCommand(Constants.Climber.PullUp.L3_REACH_POS),
+        sitUpCommand(Constants.Climber.SitUp.SIT_UP_ANGLE_DEGREES),
         MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK),
-        PullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
-        MuscleUpCommand(Constants.Climber.MuscleUp.L3_MUSCLE_UP_FORWARD),
-        SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
+        pullUpCommand(Constants.Climber.PullUp.PULL_DOWN_POS),
+        MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_FORWARD),
+        sitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE_DEGREES));
   }
 
   public Command abortCommand() {
@@ -469,17 +448,5 @@ public class ClimberSubsystem extends SubsystemBase {
         pullUpMotorR.getCachedPositionRotations()
             / Constants.Climber.PullUp.MOTOR_ROTS_PER_BELT_METERS);
     DogLog.log("Subsystems/Climber/SitUpPositionFromEncoderRots", getSitUpCancoderPositionRaw());
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/MuscleUpStator",
-    //     Math.abs(muscleUpMotor.getCachedStatorCurrentA()));
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/MuscleUpSupply",
-    //     Math.abs(muscleUpMotor.getCachedSupplyCurrentA()));
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/PullUpStator",
-    //     Math.abs(pullUpMotorR.getCachedStatorCurrentA()));
-    // DogLog.log(
-    //     "Subsystems/Climber/CurrentLimits/PullUpSupply",
-    //     Math.abs(pullUpMotorR.getCachedSupplyCurrentA()));
   }
 }

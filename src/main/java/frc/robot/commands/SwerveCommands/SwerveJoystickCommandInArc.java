@@ -24,7 +24,6 @@ public class SwerveJoystickCommandInArc extends Command {
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
   private final SwerveRequest.RobotCentric robotCentricDrive =
       new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
-  private BooleanSupplier redSide;
 
   public SwerveJoystickCommandInArc(
       Pose3d center,
@@ -40,7 +39,6 @@ public class SwerveJoystickCommandInArc extends Command {
     this.speedControlFunction = speedControlFunction;
     this.angleToPointTo = angleToPointTo;
     this.swerveDrivetrain = swerveSubsystem;
-    this.redSide = redside;
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
   }
