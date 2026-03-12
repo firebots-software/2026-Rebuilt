@@ -127,7 +127,6 @@ public final class Constants {
     public static final CANBus CAN_BUS =
         new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
-    public static final double DISTANCE_OVER_BUMP = 3.0; // correct distance is 3 meters
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
@@ -428,6 +427,8 @@ public final class Constants {
 
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
+      public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
+      public static final double TIME_FOR_BUMP_BACKWARDS = 0.80;
 
       public static enum Intake {
         LeftIntakeSweep,
@@ -436,7 +437,8 @@ public final class Constants {
         RightIntakeSweepShort,
         p2IntakeForwardRight,
         p2IntakeForwardLeftShort,
-        p2IntakeSideLeftShort
+        p2IntakeSideLeftShort,
+        p2IntakeSideLeftShortHook
       }
 
       public static enum ShootPos {

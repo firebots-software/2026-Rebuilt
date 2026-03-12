@@ -147,7 +147,7 @@ public class AutoRoutines {
             swerveSubsystem,
             isRedSide);
 
-    return Commands.sequence(shoot.asProxy());
+    return shoot.asProxy();
   }
 
   public Command driveForward(double time) {
@@ -165,7 +165,7 @@ public class AutoRoutines {
   public Command driveBackward(double time) {
     return Commands.run(
             () -> {
-              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5.0, 0, 0), new Feedforwards(4));
+              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5, 0, 0), new Feedforwards(4));
             },
             swerveSubsystem)
         .withTimeout(time)
@@ -557,14 +557,14 @@ public class AutoRoutines {
   public AutoRoutine p2BumpSideLeftShort() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShortHook);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
 
     routine
         .active()
         .onTrue(
             Commands.sequence(
-                driveForward(1),
+                driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS),
                 // aimToHub(redSide).withTimeout(0.4),
                 // Commands.waitUntil(() -> getBestVisionMeasurement())
                 //     .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
@@ -572,7 +572,9 @@ public class AutoRoutines {
                 intake.resetOdometry(),
                 intake.cmd()));
 
-    intake.done().onTrue(Commands.sequence(driveBackward(1), shoot.resetOdometry(), shoot.cmd()));
+    intake.done().onTrue(Commands.sequence(driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS), Commands.waitUntil(() -> getBestVisionMeasurement())
+              .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
+              .withTimeout(0.1), shoot.cmd())); //shoot.resetOdometry()
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4)));
 
@@ -598,7 +600,7 @@ public class AutoRoutines {
 
     shootToBump
         .done()
-        .onTrue(Commands.sequence(driveForward(.8), intake.resetOdometry(), intake.cmd()));
+        .onTrue(Commands.sequence(driveForward(.9), intake.resetOdometry(), intake.cmd()));
 
     intake.done().onTrue(Commands.sequence(driveBackward(1), shoot.resetOdometry(), shoot.cmd()));
 
