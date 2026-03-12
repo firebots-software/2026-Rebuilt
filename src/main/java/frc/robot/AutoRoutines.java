@@ -557,24 +557,32 @@ public class AutoRoutines {
   public AutoRoutine p2BumpSideLeftShort() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShortHook);
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
 
-    routine
-        .active()
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+
+    intake
+        .done()
         .onTrue(
             Commands.sequence(
-                driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS),
-                // aimToHub(redSide).withTimeout(0.4),
-                // Commands.waitUntil(() -> getBestVisionMeasurement())
-                //     .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
-                //     .withTimeout(0.4),
-                intake.resetOdometry(),
-                intake.cmd()));
-
-    intake.done().onTrue(Commands.sequence(driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS), Commands.waitUntil(() -> getBestVisionMeasurement())
-              .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
-              .withTimeout(0.1), shoot.cmd())); //shoot.resetOdometry()
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> shoot.resetOdometry()),
+                shoot.cmd())); // shoot.resetOdometry()
 
     shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4)));
 
@@ -584,27 +592,75 @@ public class AutoRoutines {
   public AutoRoutine p2BumpSideLeftShortTwice() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
     AutoTrajectory shootToBump = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.ShootToBump);
 
-    routine
-        .active()
-        .onTrue(Commands.sequence(driveForward(.8), intake.resetOdometry(), intake.cmd()));
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
 
-    intake.done().onTrue(Commands.sequence(driveBackward(0.8), shoot.resetOdometry(), shoot.cmd()));
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> shoot.resetOdometry()),
+                shoot.cmd()));
 
     shoot
         .done()
         .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4), shootToBump.cmd()));
 
-    shootToBump
+    shootToBump.done().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+
+    intake
         .done()
-        .onTrue(Commands.sequence(driveForward(.9), intake.resetOdometry(), intake.cmd()));
+        .onTrue(
+            Commands.sequence(
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> shoot.resetOdometry()),
+                shoot.cmd()));
 
-    intake.done().onTrue(Commands.sequence(driveBackward(1), shoot.resetOdometry(), shoot.cmd()));
+    shoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4));
 
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4)));
+    return routine;
+  }
+
+  public AutoRoutine fo() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory forward = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.f);
+
+    routine.active().onTrue(Commands.sequence(forward.resetOdometry(), forward.cmd()));
+
+    return routine;
+  }
+
+  public AutoRoutine fofo() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward = redSide.getAsBoolean() ? driveBackward(0.1) : driveForward(0.1);
+    Command backward = redSide.getAsBoolean() ? driveForward(0.1) : driveBackward(0.1);
+
+    routine.active().onTrue(forward);
 
     return routine;
   }
@@ -631,6 +687,9 @@ public class AutoRoutines {
 
     autoChooser.addRoutine("Bump side left short", () -> p2BumpSideLeftShort());
     autoChooser.addRoutine("Bump side left short twice", () -> p2BumpSideLeftShortTwice());
+
+    autoChooser.addRoutine("Choreo forward", () -> fo());
+    autoChooser.addRoutine("forward drive", () -> fofo());
   }
 
   public AutoChooser getAutoChooser() {
