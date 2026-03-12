@@ -656,10 +656,6 @@ public final class Constants {
       HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(53.0, 2.2);
       HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(62.0, 0.88);
     }
-
-    public static class Simulation {
-      public static final double MECHANISM_SIM_MOI_KG_M2 = 0.0008;
-    }
   }
 
   public static class Vision {
