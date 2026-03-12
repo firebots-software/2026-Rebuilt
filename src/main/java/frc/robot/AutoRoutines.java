@@ -15,7 +15,6 @@ import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
-import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.ShootWithAim;
@@ -140,28 +139,15 @@ public class AutoRoutines {
   public Command returnBasicShoot(BooleanSupplier isRedSide) {
     Command shoot =
         new ShootWithAim(
-                () -> 0.0,
-                () -> 0.0,
-                lebronShooterSubsystem,
-                intakeSubsystem,
-                hopperSubsystem,
-                swerveSubsystem,
-                isRedSide)
-            .withTimeout(4);
+            () -> 0.0,
+            () -> 0.0,
+            lebronShooterSubsystem,
+            intakeSubsystem,
+            hopperSubsystem,
+            swerveSubsystem,
+            isRedSide);
 
-    return Commands.sequence(shoot.asProxy());
-    // Command shoot =
-    //     new ShootBasicRetract(
-    //             () ->
-    //                 MiscUtils.computeShootingSpeed(
-    //                     MiscUtils.getDistanceToHub(redSide, swerveSubsystem)),
-    //             () -> lebronShooterSubsystem.isAtSpeed(),
-    //             lebronShooterSubsystem,
-    //             intakeSubsystem,
-    //             hopperSubsystem)
-    //         .withTimeout(4);
-
-    // return Commands.sequence(shoot.asProxy());
+    return shoot.asProxy();
   }
 
   public Command driveForward(double time) {
@@ -179,7 +165,7 @@ public class AutoRoutines {
   public Command driveBackward(double time) {
     return Commands.run(
             () -> {
-              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5.0, 0, 0), new Feedforwards(4));
+              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5, 0, 0), new Feedforwards(4));
             },
             swerveSubsystem)
         .withTimeout(time)
@@ -568,102 +554,57 @@ public class AutoRoutines {
   // }
 
   // Paths for p2
-  public AutoRoutine p2BumpForwardRight() {
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-    BooleanSupplier forward = () -> !redSide.getAsBoolean();
-    BooleanSupplier backward = () -> redSide.getAsBoolean();
-
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeForwardRight);
-    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
-
-    routine
-        .active()
-        .onTrue(
-            Commands.sequence(
-                intake.resetOdometry(),
-                new BumpDTP(swerveSubsystem, forward),
-                intake.resetOdometry(),
-                intake.cmd()));
-
-    intake
-        .done()
-        .onTrue(
-            Commands.sequence(
-                new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
-
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
-
-    return routine;
-  }
-
-  public AutoRoutine p2BumpForwardLeftShort() {
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-    BooleanSupplier forward = () -> !redSide.getAsBoolean();
-    BooleanSupplier backward = () -> redSide.getAsBoolean();
-
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeForwardLeftShort);
-    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
-
-    routine
-        .active()
-        .onTrue(
-            Commands.sequence(
-                intake.resetOdometry(), driveForward(0.5), intake.resetOdometry(), intake.cmd()));
-
-    intake
-        .done()
-        .onTrue(
-            Commands.sequence(
-                new BumpDTP(swerveSubsystem, backward), shoot.resetOdometry(), shoot.cmd()));
-
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
-
-    return routine;
-  }
-
   public AutoRoutine p2BumpSideLeftShort() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    BooleanSupplier forward = () -> !redSide.getAsBoolean();
-    BooleanSupplier backward = () -> redSide.getAsBoolean();
-
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShortHook);
     AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
-
-    // routine
-    //     .active()
-    //     .onTrue(
-    //         Commands.sequence(
-    //             intake.resetOdometry(),
-    //             new BumpDTP(swerveSubsystem, forward),
-    //             intake.resetOdometry(),
-    //             intake.cmd()));
 
     routine
         .active()
         .onTrue(
             Commands.sequence(
-                driveForward(1),
+                driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS),
                 // aimToHub(redSide).withTimeout(0.4),
                 // Commands.waitUntil(() -> getBestVisionMeasurement())
                 //     .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
                 //     .withTimeout(0.4),
                 intake.resetOdometry(),
                 intake.cmd()));
-    // routine
-    //   .active()
-    //     .onTrue(
-    //       Commands.sequence(
-    //           intake.resetOdometry(),
-    //           driveForward(0.75),
-    //           intake.resetOdometry(),
-    //           intake.cmd()));
+
+    intake.done().onTrue(Commands.sequence(driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS), Commands.waitUntil(() -> getBestVisionMeasurement())
+              .andThen(() -> swerveSubsystem.resetPose(bestVisionMeasurement))
+              .withTimeout(0.1), shoot.cmd())); //shoot.resetOdometry()
+
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4)));
+
+    return routine;
+  }
+
+  public AutoRoutine p2BumpSideLeftShortTwice() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
+    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
+    AutoTrajectory shootToBump = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.ShootToBump);
+
+    routine
+        .active()
+        .onTrue(Commands.sequence(driveForward(.8), intake.resetOdometry(), intake.cmd()));
+
+    intake.done().onTrue(Commands.sequence(driveBackward(0.8), shoot.resetOdometry(), shoot.cmd()));
+
+    shoot
+        .done()
+        .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4), shootToBump.cmd()));
+
+    shootToBump
+        .done()
+        .onTrue(Commands.sequence(driveForward(.9), intake.resetOdometry(), intake.cmd()));
 
     intake.done().onTrue(Commands.sequence(driveBackward(1), shoot.resetOdometry(), shoot.cmd()));
 
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide)));
+    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4)));
 
     return routine;
   }
@@ -688,10 +629,8 @@ public class AutoRoutines {
 
     // autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
 
-    autoChooser.addRoutine("Bump forward right long", () -> p2BumpForwardRight());
-    autoChooser.addRoutine("Bump forward left short", () -> p2BumpForwardLeftShort());
-
     autoChooser.addRoutine("Bump side left short", () -> p2BumpSideLeftShort());
+    autoChooser.addRoutine("Bump side left short twice", () -> p2BumpSideLeftShortTwice());
   }
 
   public AutoChooser getAutoChooser() {
