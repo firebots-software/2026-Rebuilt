@@ -14,7 +14,7 @@ import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.BumpDTP;
-import frc.robot.commandGroups.ShootBasicRetract;
+import frc.robot.commandGroups.ShootCommands.ShootBasicRetract;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;

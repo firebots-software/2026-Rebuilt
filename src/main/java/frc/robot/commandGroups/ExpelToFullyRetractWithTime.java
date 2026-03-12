@@ -6,6 +6,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
+@Deprecated
 public class ExpelToFullyRetractWithTime extends SequentialCommandGroup {
   public ExpelToFullyRetractWithTime(
       ShooterSubsystem shooterSubsystem,
