@@ -456,7 +456,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       omega = MathUtil.clamp(omega, -max, max);
     }
     DogLog.log("Swerve/rotationController/clamped", clamp);
-    DogLog.log("Swerve target rotations degrees", targetRotation.getDegrees());
+    DogLog.log("Swerve/targetRotationDegs", targetRotation.getDegrees());
     return omega;
   }
 
@@ -486,7 +486,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     DogLog.log("Swerve/rotationController/omegaFF", omegaFF);
     DogLog.log("Swerve/rotationController/omegaPID", omegaPID);
-    DogLog.log("Swerve target rotation degrees", targetRotation.getDegrees());
+    DogLog.log("Swerve/targetRotationDegs", targetRotation.getDegrees());
     return omega;
   }
   // private void startSimThread() {
