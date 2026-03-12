@@ -15,7 +15,6 @@ import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
-import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.ShootWithAim;
@@ -140,13 +139,13 @@ public class AutoRoutines {
   public Command returnBasicShoot(BooleanSupplier isRedSide) {
     Command shoot =
         new ShootWithAim(
-                () -> 0.0,
-                () -> 0.0,
-                lebronShooterSubsystem,
-                intakeSubsystem,
-                hopperSubsystem,
-                swerveSubsystem,
-                isRedSide);
+            () -> 0.0,
+            () -> 0.0,
+            lebronShooterSubsystem,
+            intakeSubsystem,
+            hopperSubsystem,
+            swerveSubsystem,
+            isRedSide);
 
     return Commands.sequence(shoot.asProxy());
   }
@@ -580,7 +579,7 @@ public class AutoRoutines {
     return routine;
   }
 
-   public AutoRoutine p2BumpSideLeftShortTwice() {
+  public AutoRoutine p2BumpSideLeftShortTwice() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
@@ -589,22 +588,17 @@ public class AutoRoutines {
 
     routine
         .active()
-        .onTrue(
-            Commands.sequence(
-                driveForward(.8),
-                intake.resetOdometry(),
-                intake.cmd()));
+        .onTrue(Commands.sequence(driveForward(.8), intake.resetOdometry(), intake.cmd()));
 
     intake.done().onTrue(Commands.sequence(driveBackward(0.8), shoot.resetOdometry(), shoot.cmd()));
 
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4), shootToBump.cmd()));
+    shoot
+        .done()
+        .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4), shootToBump.cmd()));
 
-    shootToBump.done()
-        .onTrue(
-            Commands.sequence(
-                driveForward(.8),
-                intake.resetOdometry(),
-                intake.cmd()));
+    shootToBump
+        .done()
+        .onTrue(Commands.sequence(driveForward(.8), intake.resetOdometry(), intake.cmd()));
 
     intake.done().onTrue(Commands.sequence(driveBackward(1), shoot.resetOdometry(), shoot.cmd()));
 
