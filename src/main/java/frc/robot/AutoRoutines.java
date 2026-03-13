@@ -9,7 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.Swerve.Auto.ClimbPos;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+// import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
@@ -18,7 +19,7 @@ import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.RetractIntake;
 import frc.robot.commandGroups.ShootWithAim;
-import frc.robot.subsystems.ClimberSubsystem;
+// import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -33,6 +34,7 @@ public class AutoRoutines {
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
+  // private final ClimberSubsystem climberSubsystem;
   private final VisionSubsystem visionFrontLeft;
   private final VisionSubsystem visionFrontRight;
   private final VisionSubsystem visionRearLeft;
@@ -40,19 +42,12 @@ public class AutoRoutines {
   private final BooleanSupplier redSide;
   private Pose2d bestVisionMeasurement = null;
 
-  // private final BooleanSupplier forwardDTP;
-  // private final BooleanSupplier backDTP;
-
-  // private final ClimberSubsystem climberSubsystem;
-
-  // i will figure out alliance side and add supplier to this
-
   public AutoRoutines(
       IntakeSubsystem intake,
       ShooterSubsystem lebron,
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
-      ClimberSubsystem climber,
+      // ClimberSubsystem climber,
       VisionSubsystem visionFrontLeft,
       VisionSubsystem visionFrontRight,
       VisionSubsystem visionRearLeft,
@@ -68,8 +63,6 @@ public class AutoRoutines {
     this.visionRearRight = visionRearRight;
     // this.climberSubsystem = climber;
     this.redSide = redSide;
-    // forwardDTP = () -> !redSide.getAsBoolean();
-    // backDTP = () -> redSide.getAsBoolean();
 
     autoFactory = swerveSubsystem.createAutoFactory();
 
@@ -99,13 +92,13 @@ public class AutoRoutines {
     return traj;
   }
 
-  private AutoTrajectory climb(AutoRoutine routine, ClimbPos type) {
-    if (type == null) return null;
+  // private AutoTrajectory climb(AutoRoutine routine, ClimbPos type) {
+  //   if (type == null) return null;
 
-    AutoTrajectory traj = routine.trajectory(type + ".traj");
+  //   AutoTrajectory traj = routine.trajectory(type + ".traj");
 
-    return traj;
-  }
+  //   return traj;
+  // }
 
   private AutoTrajectory depot(AutoRoutine routine, Depot type) {
     if (type == null) return null;
@@ -194,367 +187,8 @@ public class AutoRoutines {
     return false;
   }
 
-  public Command aimToHub(BooleanSupplier isRedSide) {
-    return Commands.run(
-        () -> {
-          double omega =
-              swerveSubsystem.calculateRequiredRotationalRateWithFF(
-                  isRedSide.getAsBoolean()
-                      ? Constants.Landmarks.RED_HUB_2D.getTranslation()
-                      : Constants.Landmarks.BLUE_HUB_2D.getTranslation());
-
-          swerveSubsystem.applyOneFieldSpeeds(new ChassisSpeeds(0, 0, omega));
-        },
-        swerveSubsystem);
-  }
-
   // // Auto paths without climb
-  // public AutoRoutine PedriMidRight() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweep);
-  //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, forwardDTP), intake.resetOdometry(), intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
-
-  //   shoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine PedriMidLeft() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweep);
-  //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, forwardDTP), intake.resetOdometry(), intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
-
-  //   shoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine PedriShortRight() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShort);
-  //   AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostR);
-  //   AutoTrajectory outpostToShoot = shoot(routine,
-  // Constants.Swerve.Auto.ShootPos.OutpostToShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               intake.resetOdometry(),
-  //               new BumpDTP(swerveSubsystem, forwardDTP),
-  //               intake.resetOdometry(),
-  //               intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP),
-  //               intakeToShoot.resetOdometry(),
-  //               intakeToShoot.cmd()));
-
-  //   intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
-  //   outpostIntake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
-  //               outpostToShoot.cmd()));
-  //   outpostToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine PedriShortLeft() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweepShort);
-  //   AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
-  //   AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotL);
-  //   AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               intake.resetOdometry(),
-  //               new BumpDTP(swerveSubsystem, forwardDTP),
-  //               intake.resetOdometry(),
-  //               intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP),
-  //               intakeToShoot.resetOdometry(),
-  //               intakeToShoot.cmd()));
-
-  //   intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
-  //   depotIntake.done().onTrue(depotToShoot.cmd());
-  //   depotToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine PedriDepotRight() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweep);
-  //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
-  //   AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotL);
-  //   AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               intake.resetOdometry(),
-  //               new BumpDTP(swerveSubsystem, forwardDTP),
-  //               intake.resetOdometry(),
-  //               intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
-
-  //   shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
-  //   depotIntake.done().onTrue(depotToShoot.cmd());
-  //   depotToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine PedriDepotLeft() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweep);
-  //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
-  //   AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotR);
-  //   AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               intake.resetOdometry(),
-  //               new BumpDTP(swerveSubsystem, forwardDTP),
-  //               intake.resetOdometry(),
-  //               intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
-
-  //   shoot.done().onTrue(Commands.sequence(returnBasicShoot(), depotIntake.cmd()));
-  //   depotIntake.done().onTrue(depotToShoot.cmd());
-  //   depotToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine PedriOutpostRight() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweep);
-  //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostL);
-  //   AutoTrajectory outpostToShoot = shoot(routine,
-  // Constants.Swerve.Auto.ShootPos.OutpostToShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               intake.resetOdometry(),
-  //               new BumpDTP(swerveSubsystem, forwardDTP),
-  //               intake.resetOdometry(),
-  //               intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
-
-  //   shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
-  //   outpostIntake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
-  //               outpostToShoot.cmd()));
-  //   outpostToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine PedriOutpostLeft() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweep);
-  //   AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostR);
-  //   AutoTrajectory outpostToShoot = shoot(routine,
-  // Constants.Swerve.Auto.ShootPos.OutpostToShoot);
-
-  //   routine
-  //       .active()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               intake.resetOdometry(),
-  //               new BumpDTP(swerveSubsystem, forwardDTP),
-  //               intake.resetOdometry(),
-  //               intake.cmd()));
-
-  //   intake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new BumpDTP(swerveSubsystem, backDTP), shoot.resetOdometry(), shoot.cmd()));
-
-  //   shoot.done().onTrue(Commands.sequence(returnBasicShoot(), outpostIntake.cmd()));
-  //   outpostIntake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
-  //               outpostToShoot.cmd()));
-  //   outpostToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine DrakeOutpostShort() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
-  //   AutoTrajectory outpostToShoot = shoot(routine,
-  // Constants.Swerve.Auto.ShootPos.OutpostToShoot);
-
-  //   routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(),
-  // outpostIntake.cmd()));
-
-  //   outpostIntake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
-  //               outpostToShoot.cmd()));
-  //   outpostToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine DrakeOutpostLong() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
-  //   AutoTrajectory outpostToShoot = shoot(routine,
-  // Constants.Swerve.Auto.ShootPos.OutpostToShoot);
-  //   AutoTrajectory rightSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightSweep);
-  //   AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotL);
-  //   AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
-
-  //   routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(),
-  // outpostIntake.cmd()));
-
-  //   outpostIntake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
-  //               outpostToShoot.cmd()));
-  //   outpostToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), rightSweep.cmd()));
-  //   rightSweep.done().onTrue(depotIntake.cmd());
-  //   depotIntake.done().onTrue(depotToShoot.cmd());
-  //   depotToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine DrakeDepotShort() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
-  //   AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
-
-  //   routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
-
-  //   depotIntake.done().onTrue(depotToShoot.cmd());
-  //   depotToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine DrakeDepotLong() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
-  //   AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
-  //   AutoTrajectory leftSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftSweep);
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostR);
-  //   AutoTrajectory outpostToShoot = shoot(routine,
-  // Constants.Swerve.Auto.ShootPos.OutpostToShoot);
-
-  //   routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
-
-  //   depotIntake.done().onTrue(depotToShoot.cmd());
-  //   depotToShoot.done().onTrue(Commands.sequence(returnBasicShoot(), leftSweep.cmd()));
-  //   leftSweep.done().onTrue(outpostIntake.cmd());
-  //   outpostIntake
-  //       .done()
-  //       .onTrue(
-  //           Commands.sequence(
-  //               new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
-  //               outpostToShoot.cmd()));
-  //   outpostToShoot.done().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // public AutoRoutine Nike() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-  //   routine.active().onTrue(returnBasicShoot());
-
-  //   return routine;
-  // }
-
-  // Paths for p2
-  public AutoRoutine p2BumpSideLeftShort() {
+  public AutoRoutine PedriMidRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     Command forward =
@@ -566,8 +200,8 @@ public class AutoRoutines {
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
             : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
-    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweep);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
     routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
 
@@ -581,15 +215,15 @@ public class AutoRoutines {
                     .andThen(
                         bestVisionMeasurement != null
                             ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : () -> shoot.resetOdometry()),
-                shoot.cmd())); // shoot.resetOdometry()
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
 
-    shoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4)));
+    intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
 
-  public AutoRoutine p2BumpSideLeftShortTwice() {
+  public AutoRoutine PedriMidLeft() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     Command forward =
@@ -601,9 +235,8 @@ public class AutoRoutines {
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
             : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
 
-    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.p2IntakeSideLeftShort);
-    AutoTrajectory shoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShootSide);
-    AutoTrajectory shootToBump = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.ShootToBump);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweep);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
     routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
 
@@ -617,14 +250,32 @@ public class AutoRoutines {
                     .andThen(
                         bestVisionMeasurement != null
                             ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : () -> shoot.resetOdometry()),
-                shoot.cmd()));
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
 
-    shoot
-        .done()
-        .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4), shootToBump.cmd()));
+    intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
-    shootToBump.done().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+    return routine;
+  }
+
+  public AutoRoutine PedriShortRight() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShort);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostR);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
 
     intake
         .done()
@@ -636,60 +287,336 @@ public class AutoRoutines {
                     .andThen(
                         bestVisionMeasurement != null
                             ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : () -> shoot.resetOdometry()),
-                shoot.cmd()));
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
 
-    shoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4));
-
-    return routine;
-  }
-
-  public AutoRoutine fo() {
-    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
-
-    AutoTrajectory forward = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.f);
-
-    routine.active().onTrue(Commands.sequence(forward.resetOdometry(), forward.cmd()));
+    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
 
-  public AutoRoutine fofo() {
+  public AutoRoutine PedriShortLeft() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    Command forward = redSide.getAsBoolean() ? driveBackward(0.1) : driveForward(0.1);
-    Command backward = redSide.getAsBoolean() ? driveForward(0.1) : driveBackward(0.1);
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
 
-    routine.active().onTrue(forward);
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweepShort);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotL);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
+
+    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine PedriDepotRight() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweep);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotL);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
+
+    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine PedriDepotLeft() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweep);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotR);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
+
+    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine PedriOutpostRight() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweep);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostL);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
+
+    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine PedriOutpostLeft() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweep);
+    AutoTrajectory intakeToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostR);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake.resetOdometry(), intake.cmd()));
+
+    intake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                backward,
+                Commands.waitUntil(() -> getBestVisionMeasurement())
+                    .withTimeout(0.3)
+                    .andThen(
+                        bestVisionMeasurement != null
+                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
+                            : () -> intakeToShoot.resetOdometry()),
+                intakeToShoot.cmd()));
+
+    intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeOutpostShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+
+    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeOutpostLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+    AutoTrajectory rightSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightSweep);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotL);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+
+    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), rightSweep.cmd()));
+    rightSweep.done().onTrue(depotIntake.cmd());
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeDepotShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+
+    routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeDepotLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
+    AutoTrajectory depotToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.DepotToShoot);
+    AutoTrajectory leftSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftSweep);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostR);
+    AutoTrajectory outpostToShoot = shoot(routine, Constants.Swerve.Auto.ShootPos.OutpostToShoot);
+
+    routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+
+    depotIntake.done().onTrue(depotToShoot.cmd());
+    depotToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), leftSweep.cmd()));
+    leftSweep.done().onTrue(outpostIntake.cmd());
+    outpostIntake
+        .done()
+        .onTrue(
+            Commands.sequence(
+                new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
+                outpostToShoot.cmd()));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine Nike() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    routine.active().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
 
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
-    // autoChooser.addRoutine("Depot (Left) Extreme", () -> PedriDepotLeft());
-    // autoChooser.addRoutine("Depot (Right) Extreme", () -> PedriDepotRight());
-    // autoChooser.addRoutine("Outpost (Left) Extreme", () -> PedriOutpostLeft());
-    // autoChooser.addRoutine("Outpost (Right) Extreme", () -> PedriOutpostRight());
+    autoChooser.addRoutine("Depot (Left) Extreme", () -> PedriDepotLeft());
+    autoChooser.addRoutine("Depot (Right) Extreme", () -> PedriDepotRight());
+    autoChooser.addRoutine("Outpost (Left) Extreme", () -> PedriOutpostLeft());
+    autoChooser.addRoutine("Outpost (Right) Extreme", () -> PedriOutpostRight());
 
-    // autoChooser.addRoutine("Right Okay", () -> PedriShortRight());
-    // autoChooser.addRoutine("Left Okay", () -> PedriShortLeft());
+    autoChooser.addRoutine("Right Okay", () -> PedriShortRight());
+    autoChooser.addRoutine("Left Okay", () -> PedriShortLeft());
 
-    // autoChooser.addRoutine("Right Lame", () -> PedriMidRight());
-    // autoChooser.addRoutine("Left Lame", () -> PedriMidLeft());
+    autoChooser.addRoutine("Right Lame", () -> PedriMidRight());
+    autoChooser.addRoutine("Left Lame", () -> PedriMidLeft());
 
-    // autoChooser.addRoutine("DrakeOutpostShort", () -> DrakeOutpostShort());
-    // autoChooser.addRoutine("DrakeOutpostLong", () -> DrakeOutpostLong());
-    // autoChooser.addRoutine("DrakeDepotShort", () -> DrakeDepotShort());
-    // autoChooser.addRoutine("DrakeDepotLong", () -> DrakeDepotLong());
+    autoChooser.addRoutine("DrakeOutpostShort", () -> DrakeOutpostShort());
+    autoChooser.addRoutine("DrakeOutpostLong", () -> DrakeOutpostLong());
+    autoChooser.addRoutine("DrakeDepotShort", () -> DrakeDepotShort());
+    autoChooser.addRoutine("DrakeDepotLong", () -> DrakeDepotLong());
 
-    // autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
-
-    autoChooser.addRoutine("Bump side left short", () -> p2BumpSideLeftShort());
-    autoChooser.addRoutine("Bump side left short twice", () -> p2BumpSideLeftShortTwice());
-
-    autoChooser.addRoutine("Choreo forward", () -> fo());
-    autoChooser.addRoutine("forward drive", () -> fofo());
+    autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
   }
 
   public AutoChooser getAutoChooser() {
