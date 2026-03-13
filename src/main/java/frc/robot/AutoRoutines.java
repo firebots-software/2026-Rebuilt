@@ -168,6 +168,8 @@ public class AutoRoutines {
   }
 
   public boolean getBestVisionMeasurement() {
+    bestVisionMeasurement = null;
+
     if (visionFrontLeft.hasValidMeasurement()) {
       bestVisionMeasurement = visionFrontLeft.getFilteredPose();
       return true;
