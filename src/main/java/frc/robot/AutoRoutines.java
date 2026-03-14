@@ -275,10 +275,10 @@ public class AutoRoutines {
 
     AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShort);
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
-    AutoTrajectory shootToBump = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightShootToBump);
+    AutoTrajectory shootToBump =
+        miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightShootToBump);
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShort);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
-
 
     routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
 
@@ -331,7 +331,8 @@ public class AutoRoutines {
 
     AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweepShort);
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
-    AutoTrajectory shootToBump = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftShootToBump);
+    AutoTrajectory shootToBump =
+        miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftShootToBump);
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweepShort);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
