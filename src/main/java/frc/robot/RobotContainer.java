@@ -49,7 +49,7 @@ public class RobotContainer {
   // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
-  public double interMapSpeed = 71.0;
+  public double interMapSpeed = 45.0;
   private BooleanSupplier redside = () -> setAlliance();
 
   private Field2d field = new Field2d();
