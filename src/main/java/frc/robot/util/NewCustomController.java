@@ -9,8 +9,8 @@ public class NewCustomController extends GenericHID {
 
   public NewCustomController(int port) {
     super(port);
-    skib = new Trigger(() -> this.getRawButton(9));
-    reverseShoot = new Trigger(() -> this.getRawButton(0));
+    skib = new Trigger(() -> this.getRawButton(10));
+    reverseShoot = new Trigger(() -> this.getRawButton(1));
   }
 
   public Trigger Skib() {

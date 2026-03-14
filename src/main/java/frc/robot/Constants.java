@@ -51,7 +51,7 @@ public final class Constants {
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
-      public static final double POWER_RETRACT_TORQUE_CURRENT = 45.0; // TODO: Tune empirically
+      public static final double POWER_RETRACT_TORQUE_CURRENT = 60.0; // TODO: Tune empirically
       public static final double POWER_RETRACT_DELAY = 0.2;
 
       // TODO: Tune
