@@ -184,6 +184,6 @@ public class ShooterSubsystem extends SubsystemBase {
         Targeting.targetingInfo(
                 target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
             .getToF());
-    DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", shooter.getVelocity().getValueAsDouble());
+    // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", shooter.getVelocity().getValueAsDouble());
   }
 }

@@ -179,7 +179,7 @@ public class RobotContainer {
 
     joystick.a().whileTrue(new ArcLock(drivetrain, lebron, leftRightFunction, redside, joystick));
 
-    joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
+    // joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
       // joystick
