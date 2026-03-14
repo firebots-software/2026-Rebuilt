@@ -141,7 +141,7 @@ public class AutoRoutines {
             isRedSide,
             () -> false).withTimeout(4.0);
 
-    return shoot.asProxy();
+    return shoot;
   }
 
   public Command driveForward(double time) {
