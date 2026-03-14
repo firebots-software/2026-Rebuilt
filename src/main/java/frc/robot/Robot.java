@@ -80,7 +80,6 @@ public class Robot extends TimedRobot {
       simulatedTime = 160;
     }
 
-    // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

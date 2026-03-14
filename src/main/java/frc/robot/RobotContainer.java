@@ -34,6 +34,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
@@ -265,6 +266,9 @@ public class RobotContainer {
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
+
+    DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub(redside, drivetrain));
+
   }
 
   public static boolean setAlliance() {
