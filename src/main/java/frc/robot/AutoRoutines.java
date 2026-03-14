@@ -139,7 +139,7 @@ public class AutoRoutines {
             hopperSubsystem,
             swerveSubsystem,
             isRedSide,
-            () -> false);
+            () -> false).withTimeout(4.0);
 
     return shoot.asProxy();
   }
