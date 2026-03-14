@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -45,6 +47,9 @@ public class HopperSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
 
+    ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs();
+    clrc.withVoltageClosedLoopRampPeriod(0.3);
+
     hopperMotor =
         new LoggedTalonFX(
             "HopperFloor",
@@ -55,6 +60,7 @@ public class HopperSubsystem extends SubsystemBase {
     hopperConfig.Slot0 = s0c;
     hopperConfig.CurrentLimits = currentLimitConfigs;
     hopperConfig.MotorOutput = motorOutputConfigs;
+    hopperConfig.ClosedLoopRamps = clrc;
 
     TalonFXConfigurator hopperMotorConfig = hopperMotor.getConfigurator();
     hopperMotorConfig.apply(hopperConfig);
