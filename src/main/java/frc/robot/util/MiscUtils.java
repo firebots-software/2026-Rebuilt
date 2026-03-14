@@ -77,8 +77,7 @@ public class MiscUtils {
     double currentMatchTime = DriverStation.getMatchTime();
     if (DriverStation.isAutonomous()) {
       return currentMatchTime;
-    }
-    else {
+    } else {
       if (currentMatchTime > 140) return currentMatchTime - 140;
       else if (currentMatchTime > 130) return currentMatchTime - 130;
       else if (currentMatchTime > 105) return currentMatchTime - 105;
@@ -112,7 +111,7 @@ public class MiscUtils {
     boolean isActive = areWeActive(currentTimes);
     boolean isAuto = currentShiftName(currentTimes).equals("Auto");
     boolean isTransition = currentShiftName(currentTimes).equals("Transition");
-    
+
     if (isAuto) {
       if (timeUntilNextShift < 2) {
         // Nearly our turn — solid green
@@ -147,7 +146,7 @@ public class MiscUtils {
       SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
       return;
     }
-  
+
     if (isActive) {
       if (timeUntilNextShift > 8) {
         // Plenty of time — solid green
@@ -158,14 +157,12 @@ public class MiscUtils {
         String color = "#000000";
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
         shiftIndicatorSum++;
-      }
-      else if (timeUntilNextShift < 5) {
+      } else if (timeUntilNextShift < 5) {
         // Shift coming up very soon — fast red blink
         String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
         shiftIndicatorSum++;
-      }
-      else if (timeUntilNextShift < 8) {
+      } else if (timeUntilNextShift < 8) {
         // Shift coming up soon — slow red blink
         String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
