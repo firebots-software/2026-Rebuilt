@@ -138,7 +138,8 @@ public class AutoRoutines {
             intakeSubsystem,
             hopperSubsystem,
             swerveSubsystem,
-            isRedSide);
+            isRedSide,
+            () -> false);
 
     return shoot.asProxy();
   }

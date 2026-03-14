@@ -33,6 +33,7 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -58,6 +59,7 @@ public class RobotContainer {
   private final CommandXboxController debugJoystick = new CommandXboxController(1);
   private final CommandXboxController joystick2 = new CommandXboxController(2);
   private final CommandXboxController ronaldoJoystick = new CommandXboxController(3);
+  private final NewCustomController secondController = new NewCustomController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -129,6 +131,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+
     // SWERVE COMMANDS
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
@@ -148,7 +151,8 @@ public class RobotContainer {
                 intakeSubsystem,
                 hopperSubsystem,
                 drivetrain,
-                redside));
+                redside,
+                secondController.Skib()));
 
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
