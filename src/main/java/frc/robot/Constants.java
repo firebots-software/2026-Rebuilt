@@ -110,8 +110,9 @@ public final class Constants {
       public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC =
           DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
 
-      public static final double TARGET_ROLLER_RPM =
-          (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
+      // public static final double TARGET_ROLLER_RPM =
+      //     (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
+      public static final double TARGET_ROLLER_RPM = 2100;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
 
@@ -599,8 +600,8 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kV = 0.124;
 
-    public static final double STATOR_LIMIT_AMPS = 50.0;
-    public static final double SUPPLY_LIMIT_AMPS = 30.0;
+    public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
+    public static final double SUPPLY_LIMIT_AMPS = 50.0; // 30.0
 
     public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
     public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
@@ -901,8 +902,8 @@ public final class Constants {
     public static final double KD = 0.0; // TODO
     public static final double KV = 0.124; // TODO
     public static final double KA = 0.0; // TODO
-    public static final double STATOR_CURRENT_LIMIT = 30.0;
-    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final double STATOR_CURRENT_LIMIT = 120.0;
+    public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
     public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
     public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;

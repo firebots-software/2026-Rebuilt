@@ -55,6 +55,15 @@ public class MiscUtils {
     double currentMatchTime = DriverStation.getMatchTime();
     String allianceChar = DriverStation.getGameSpecificMessage();
 
+    if (allianceChar.isEmpty()) {
+      DogLog.log("SakethGiri", "Empty");
+    }
+    else {
+      if (allianceChar != null) {
+        DogLog.log("SakethGiri", allianceChar);
+      }
+    }
+
     if (allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 

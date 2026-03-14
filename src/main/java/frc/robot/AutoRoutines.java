@@ -132,16 +132,17 @@ public class AutoRoutines {
   public Command returnBasicShoot(BooleanSupplier isRedSide) {
     Command shoot =
         new ShootWithAim(
-            () -> 0.0,
-            () -> 0.0,
-            lebronShooterSubsystem,
-            intakeSubsystem,
-            hopperSubsystem,
-            swerveSubsystem,
-            isRedSide,
-            () -> false);
+                () -> 0.0,
+                () -> 0.0,
+                lebronShooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem,
+                swerveSubsystem,
+                isRedSide,
+                () -> false)
+            .withTimeout(4.0);
 
-    return shoot.asProxy();
+    return shoot;
   }
 
   public Command driveForward(double time) {
@@ -221,7 +222,7 @@ public class AutoRoutines {
                             : () -> intakeToShoot.resetOdometry()),
                 intakeToShoot.cmd()));
 
-    intakeToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -256,7 +257,7 @@ public class AutoRoutines {
                             : () -> intakeToShoot.resetOdometry()),
                 intakeToShoot.cmd()));
 
-    intakeToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -304,9 +305,7 @@ public class AutoRoutines {
                             : () -> intakeToShoot1.resetOdometry()),
                 intakeToShoot1.cmd()));
 
-    intakeToShoot1
-        .done()
-        .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4.0), shootToBump.cmd()));
+    intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide), shootToBump.cmd()));
 
     shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
 
@@ -323,7 +322,7 @@ public class AutoRoutines {
                             : () -> intakeToShoot2.resetOdometry()),
                 intakeToShoot2.cmd()));
 
-    intakeToShoot2.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -371,9 +370,7 @@ public class AutoRoutines {
                             : () -> intakeToShoot1.resetOdometry()),
                 intakeToShoot1.cmd()));
 
-    intakeToShoot1
-        .done()
-        .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4.0), shootToBump.cmd()));
+    intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide), shootToBump.cmd()));
 
     shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
 
@@ -390,7 +387,7 @@ public class AutoRoutines {
                             : () -> intakeToShoot2.resetOdometry()),
                 intakeToShoot2.cmd()));
 
-    intakeToShoot2.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -429,7 +426,7 @@ public class AutoRoutines {
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
-    depotToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -468,7 +465,7 @@ public class AutoRoutines {
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
-    depotToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -506,13 +503,14 @@ public class AutoRoutines {
                 intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
+
     outpostIntake
         .done()
         .onTrue(
             Commands.sequence(
                 new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
                 outpostToShoot.cmd()));
-    outpostToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -556,7 +554,7 @@ public class AutoRoutines {
             Commands.sequence(
                 new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
                 outpostToShoot.cmd()));
-    outpostToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -575,7 +573,7 @@ public class AutoRoutines {
             Commands.sequence(
                 new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
                 outpostToShoot.cmd()));
-    outpostToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -600,7 +598,7 @@ public class AutoRoutines {
     outpostToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), rightSweep.cmd()));
     rightSweep.done().onTrue(depotIntake.cmd());
     depotIntake.done().onTrue(depotToShoot.cmd());
-    depotToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -614,7 +612,7 @@ public class AutoRoutines {
     routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
 
     depotIntake.done().onTrue(depotToShoot.cmd());
-    depotToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    depotToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -639,7 +637,7 @@ public class AutoRoutines {
             Commands.sequence(
                 new WaitCommand(Constants.Swerve.Auto.TIME_FOR_OUTPOST_INTAKE),
                 outpostToShoot.cmd()));
-    outpostToShoot.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    outpostToShoot.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
@@ -651,7 +649,7 @@ public class AutoRoutines {
 
     routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
 
-    move.done().onTrue(returnBasicShoot(redSide).withTimeout(4.0));
+    move.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
