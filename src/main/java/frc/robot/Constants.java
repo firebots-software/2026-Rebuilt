@@ -112,8 +112,7 @@ public final class Constants {
 
       // public static final double TARGET_ROLLER_RPM =
       //     (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
-      public static final double TARGET_ROLLER_RPM =
-          2100;
+      public static final double TARGET_ROLLER_RPM = 2100;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
 

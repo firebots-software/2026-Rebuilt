@@ -17,5 +17,7 @@ public class NewCustomController extends GenericHID {
     return skib;
   }
 
-  public Trigger ReverseShoot() { return reverseShoot; }
+  public Trigger ReverseShoot() {
+    return reverseShoot;
+  }
 }

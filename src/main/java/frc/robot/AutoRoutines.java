@@ -132,14 +132,15 @@ public class AutoRoutines {
   public Command returnBasicShoot(BooleanSupplier isRedSide) {
     Command shoot =
         new ShootWithAim(
-            () -> 0.0,
-            () -> 0.0,
-            lebronShooterSubsystem,
-            intakeSubsystem,
-            hopperSubsystem,
-            swerveSubsystem,
-            isRedSide,
-            () -> false).withTimeout(4.0);
+                () -> 0.0,
+                () -> 0.0,
+                lebronShooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem,
+                swerveSubsystem,
+                isRedSide,
+                () -> false)
+            .withTimeout(4.0);
 
     return shoot.asProxy();
   }

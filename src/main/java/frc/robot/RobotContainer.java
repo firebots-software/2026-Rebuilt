@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
-import frc.robot.commandGroups.ArcLock;
-import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -56,9 +54,9 @@ public class RobotContainer {
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
-//   private final CommandXboxController debugJoystick = new CommandXboxController(1);
-//   private final CommandXboxController joystick2 = new CommandXboxController(2);
-//   private final CommandXboxController ronaldoJoystick = new CommandXboxController(3);
+  //   private final CommandXboxController debugJoystick = new CommandXboxController(1);
+  //   private final CommandXboxController joystick2 = new CommandXboxController(2);
+  //   private final CommandXboxController ronaldoJoystick = new CommandXboxController(3);
   private final NewCustomController secondController = new NewCustomController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -177,10 +175,10 @@ public class RobotContainer {
 
     lebron.setDefaultCommand(Commands.runOnce(lebron::stopShooter, lebron));
 
-    // joystick.a().whileTrue(new ArcLock(drivetrain, lebron, leftRightFunction, redside, joystick));
+    // joystick.a().whileTrue(new ArcLock(drivetrain, lebron, leftRightFunction, redside,
+    // joystick));
 
     secondController.ReverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
-
 
     // joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
 
@@ -208,7 +206,6 @@ public class RobotContainer {
           .whileTrue(
               new ShootBasicRetract(
                   () -> 65.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-
     }
     // joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
