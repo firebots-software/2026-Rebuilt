@@ -624,30 +624,34 @@ public class AutoRoutines {
   public AutoRoutine Nike() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    routine.active().onTrue(returnBasicShoot(redSide));
+    AutoTrajectory move = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.Nike);
+
+    routine.active().onTrue(Commands.sequence(move.resetOdometry(), move.cmd()));
+
+    move.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
   }
 
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
-    autoChooser.addRoutine("Depot (Left) Extreme", () -> PedriDepotLeft());
-    autoChooser.addRoutine("Depot (Right) Extreme", () -> PedriDepotRight());
-    autoChooser.addRoutine("Outpost (Left) Extreme", () -> PedriOutpostLeft());
-    autoChooser.addRoutine("Outpost (Right) Extreme", () -> PedriOutpostRight());
+    autoChooser.addRoutine("Left long depot", () -> PedriDepotLeft());
+    autoChooser.addRoutine("Right Long depot", () -> PedriDepotRight());
+    autoChooser.addRoutine("Left long outpost", () -> PedriOutpostLeft());
+    autoChooser.addRoutine("Right long outpost", () -> PedriOutpostRight());
 
-    autoChooser.addRoutine("Right Okay", () -> PedriShortRight());
-    autoChooser.addRoutine("Left Okay", () -> PedriShortLeft());
+    autoChooser.addRoutine("Right two cycle", () -> PedriShortRight());
+    autoChooser.addRoutine("Left two cycle", () -> PedriShortLeft());
 
-    autoChooser.addRoutine("Right Lame", () -> PedriMidRight());
-    autoChooser.addRoutine("Left Lame", () -> PedriMidLeft());
+    autoChooser.addRoutine("Right long", () -> PedriMidRight());
+    autoChooser.addRoutine("Left long", () -> PedriMidLeft());
 
-    autoChooser.addRoutine("DrakeOutpostShort", () -> DrakeOutpostShort());
-    autoChooser.addRoutine("DrakeOutpostLong", () -> DrakeOutpostLong());
-    autoChooser.addRoutine("DrakeDepotShort", () -> DrakeDepotShort());
-    autoChooser.addRoutine("DrakeDepotLong", () -> DrakeDepotLong());
+    autoChooser.addRoutine("Outpost", () -> DrakeOutpostShort());
+    autoChooser.addRoutine("Depot", () -> DrakeDepotShort());
+    autoChooser.addRoutine("Outpost to depot", () -> DrakeOutpostLong());
+    autoChooser.addRoutine("Depot to outpost", () -> DrakeDepotLong());
 
-    autoChooser.addRoutine("We are genuinely the worst robot on the pitch", () -> Nike());
+    autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
   }
 
   public AutoChooser getAutoChooser() {

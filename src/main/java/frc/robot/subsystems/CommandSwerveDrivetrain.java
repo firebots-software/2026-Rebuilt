@@ -288,6 +288,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withSpeeds(targetSpeeds)
             .withWheelForceFeedforwardsX(sample.moduleForcesX())
             .withWheelForceFeedforwardsY(sample.moduleForcesY()));
+
+    DogLog.log("Subsystems/Swerve/SampleX", sample.x);
+    DogLog.log("Subsystems/Swerve/SampleY", sample.y);
+    DogLog.log("Subsystems/Swerve/SampleHeading", sample.heading);
+    DogLog.log("Subsystems/Swerve/SampleVX", sample.vx);
+    DogLog.log("Subsystems/Swerve/SampleVY", sample.vy);
+    DogLog.log("Subsystems/Swerve/SampleAngularVelocity", sample.omega);
+    DogLog.log("Subsystems/Swerve/SampleAX", sample.ax);
+    DogLog.log("Subsystems/Swerve/SampleAY", sample.ay);
+    DogLog.log("Subsystems/Swerve/SampleAngularAcceleration", sample.alpha);
   }
 
   /**
