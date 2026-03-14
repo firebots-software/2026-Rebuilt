@@ -5,13 +5,17 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class NewCustomController extends GenericHID {
   Trigger skib;
+  Trigger reverseShoot;
 
   public NewCustomController(int port) {
     super(port);
     skib = new Trigger(() -> this.getRawButton(9));
+    reverseShoot = new Trigger(() -> this.getRawButton(0));
   }
 
   public Trigger Skib() {
     return skib;
   }
+
+  public Trigger ReverseShoot() { return reverseShoot; }
 }

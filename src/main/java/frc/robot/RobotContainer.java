@@ -177,7 +177,10 @@ public class RobotContainer {
 
     lebron.setDefaultCommand(Commands.runOnce(lebron::stopShooter, lebron));
 
-    joystick.a().whileTrue(new ArcLock(drivetrain, lebron, leftRightFunction, redside, joystick));
+    // joystick.a().whileTrue(new ArcLock(drivetrain, lebron, leftRightFunction, redside, joystick));
+
+    secondController.ReverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+
 
     // joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
 
@@ -205,6 +208,7 @@ public class RobotContainer {
           .whileTrue(
               new ShootBasicRetract(
                   () -> 65.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
     }
     // joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
