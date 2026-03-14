@@ -71,9 +71,10 @@ public class Robot extends TimedRobot {
     // m_robotContainer.updateFieldPose();
 
     DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
-    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
-    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
-    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
+    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(simulatedTime));
+    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
+    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(simulatedTime));
+    MiscUtils.shiftSwitchIndicator(simulatedTime);
     simulatedTime -= 0.02;
     if (simulatedTime < 0) {
       simulatedTime = 160;
@@ -120,7 +121,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    MiscUtils.shiftSwitchIndicator(simulatedTime);
     if (MiscUtils.isFlashDriveConnected()) {
       DogLog.log("Elastic/FlashDriveConnected", true);
     } else {
