@@ -104,7 +104,7 @@ public class MiscUtils {
 
   public static void shiftSwitchIndicator(double currentTime) {
 
-    //double currentTimes = currentTime;
+    // double currentTimes = currentTime;
     double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
