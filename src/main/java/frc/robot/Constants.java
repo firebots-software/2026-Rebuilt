@@ -903,8 +903,8 @@ public final class Constants {
     public static final double KD = 0.0; // TODO
     public static final double KV = 0.124; // TODO
     public static final double KA = 0.0; // TODO
-    public static final double STATOR_CURRENT_LIMIT = 30.0;
-    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final double STATOR_CURRENT_LIMIT = 120.0;
+    public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
     public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
     public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
