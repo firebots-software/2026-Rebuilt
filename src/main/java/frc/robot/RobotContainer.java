@@ -9,7 +9,6 @@ import static edu.wpi.first.units.Units.*;
 import choreo.auto.AutoChooser;
 import dev.doglog.DogLog;
 import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -22,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ArcLock;
-import frc.robot.commandGroups.BumpDTP;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
@@ -184,10 +182,26 @@ public class RobotContainer {
     // joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
-        secondController.IntermapDown().onTrue(new InstantCommand(() -> {interMapSpeed -= 1; }));
-        secondController.IntermapUp().onTrue(new InstantCommand(() -> {interMapSpeed += 1; }));
+      secondController
+          .IntermapDown()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    interMapSpeed -= 1;
+                  }));
+      secondController
+          .IntermapUp()
+          .onTrue(
+              new InstantCommand(
+                  () -> {
+                    interMapSpeed += 1;
+                  }));
 
-        secondController.IntermapShoot().whileTrue(new ShootBasicRetract(() -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+      secondController
+          .IntermapShoot()
+          .whileTrue(
+              new ShootBasicRetract(
+                  () -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
     } else {
       // joystick
@@ -268,7 +282,6 @@ public class RobotContainer {
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
     DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub(redside, drivetrain));
-
   }
 
   public static boolean setAlliance() {

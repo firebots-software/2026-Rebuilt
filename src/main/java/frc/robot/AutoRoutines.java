@@ -304,7 +304,9 @@ public class AutoRoutines {
                             : () -> intakeToShoot1.resetOdometry()),
                 intakeToShoot1.cmd()));
 
-    intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4.0), shootToBump.cmd()));
+    intakeToShoot1
+        .done()
+        .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4.0), shootToBump.cmd()));
 
     shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
 
@@ -369,7 +371,9 @@ public class AutoRoutines {
                             : () -> intakeToShoot1.resetOdometry()),
                 intakeToShoot1.cmd()));
 
-    intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4.0), shootToBump.cmd()));
+    intakeToShoot1
+        .done()
+        .onTrue(Commands.sequence(returnBasicShoot(redSide).withTimeout(4.0), shootToBump.cmd()));
 
     shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
 

@@ -15,15 +15,12 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
 import frc.robot.util.LoggedTalonFX;
-import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -157,33 +154,35 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
 
-    // TODO: Cache this value
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TargetPlusLead",
-        new Pose2d(
-            Targeting.positionToTarget(
-                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-                .x,
-            Targeting.positionToTarget(
-                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-                .y,
-            new Rotation2d()));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/ShootingSpeed",
-        Targeting.shootingSpeed(
-            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+    // // TODO: Cache this value
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/TargetPlusLead",
+    //     new Pose2d(
+    //         Targeting.positionToTarget(
+    //                 target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
+    //             .x,
+    //         Targeting.positionToTarget(
+    //                 target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
+    //             .y,
+    //         new Rotation2d()));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/ShootingSpeed",
+    //     Targeting.shootingSpeed(
+    //         target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target,
+    // drivetrain));
 
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TimeOfFlight",
-        Targeting.targetingInfo(
-                target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-            .getToF());
-    // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", shooter.getVelocity().getValueAsDouble());
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/TimeOfFlight",
+    //     Targeting.targetingInfo(
+    //             target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
+    //         .getToF());
+    // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
+    // shooter.getVelocity().getValueAsDouble());
   }
 }

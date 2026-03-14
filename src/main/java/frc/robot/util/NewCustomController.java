@@ -19,7 +19,15 @@ public class NewCustomController extends GenericHID {
     return skib;
   }
 
-  public Trigger IntermapDown() { return intermapDown; }
-  public Trigger IntermapUp() { return intermapUp; }
-  public Trigger IntermapShoot() { return intermapShoot; }
+  public Trigger IntermapDown() {
+    return intermapDown;
+  }
+
+  public Trigger IntermapUp() {
+    return intermapUp;
+  }
+
+  public Trigger IntermapShoot() {
+    return intermapShoot;
+  }
 }
