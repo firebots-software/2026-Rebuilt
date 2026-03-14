@@ -890,7 +890,7 @@ public final class Constants {
   // }
   public static final class Shooter {
 
-    public static final boolean INTERMAP_TESTING = false;
+    public static final boolean INTERMAP_TESTING = true;
 
     public static final int WARMUP_1_ID = 35; // TODO
     public static final int WARMUP_2_ID = 34; // TODO

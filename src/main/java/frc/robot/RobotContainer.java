@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ArcLock;
@@ -48,7 +49,7 @@ public class RobotContainer {
   // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
-  public DoubleSubscriber interMapSpeed = DogLog.tunable("Subsystems/Shooter/Speed", 71.0);
+  public double interMapSpeed = 71.0;
   private BooleanSupplier redside = () -> setAlliance();
 
   private Field2d field = new Field2d();
@@ -182,13 +183,11 @@ public class RobotContainer {
     // joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
 
     if (Constants.Shooter.INTERMAP_TESTING) {
-      // joystick
-      // .a()
-      // .whileTrue(
-      // new ShootBasicRetract(
-      // interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-      // } else {
-      //
+        secondController.IntermapDown().onTrue(new InstantCommand(() -> {interMapSpeed -= 1; }));
+        secondController.IntermapUp().onTrue(new InstantCommand(() -> {interMapSpeed += 1; }));
+
+        secondController.IntermapShoot().whileTrue(new ShootBasicRetract(() -> interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+
     } else {
       // joystick
       //         .a()
