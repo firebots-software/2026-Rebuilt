@@ -73,32 +73,40 @@ public class MiscUtils {
   }
 
   public static double countdownTillNextShift(double currentTime) {
-    double currentMatchTime = currentTime;
-    // double currentMatchTime = DriverStation.getMatchTime();
-    if (currentMatchTime > 140) return currentMatchTime - 140;
-    else if (currentMatchTime > 130) return currentMatchTime - 130;
-    else if (currentMatchTime > 105) return currentMatchTime - 105;
-    else if (currentMatchTime > 80) return currentMatchTime - 80;
-    else if (currentMatchTime > 55) return currentMatchTime - 55;
-    else if (currentMatchTime > 30) return currentMatchTime - 30;
-    else return 30 - currentMatchTime;
+    // double currentMatchTime = currentTime;
+    double currentMatchTime = DriverStation.getMatchTime();
+    if (DriverStation.isAutonomous()) {
+      return currentMatchTime;
+    }
+    else {
+      if (currentMatchTime > 140) return currentMatchTime - 140;
+      else if (currentMatchTime > 130) return currentMatchTime - 130;
+      else if (currentMatchTime > 105) return currentMatchTime - 105;
+      else if (currentMatchTime > 80) return currentMatchTime - 80;
+      else if (currentMatchTime > 55) return currentMatchTime - 55;
+      else if (currentMatchTime > 30) return currentMatchTime - 30;
+      else return 30 - currentMatchTime;
+    }
   }
 
   public static String currentShiftName(double currentTime) {
-    double currentMatchTime = currentTime;
-    // double currentMatchTime = DriverStation.getMatchTime();
-    if (currentMatchTime > 140) return "Auto";
-    else if (currentMatchTime > 130) return "Transition";
-    else if (currentMatchTime > 105) return "ALS 1";
-    else if (currentMatchTime > 80) return "ALS 2";
-    else if (currentMatchTime > 55) return "ALS 3";
-    else if (currentMatchTime > 30) return "ALS 4";
-    else return "Endgame";
+    // double currentMatchTime = currentTime;
+    double currentMatchTime = DriverStation.getMatchTime();
+    if (DriverStation.isAutonomous()) return "Auto";
+    else {
+      if (currentMatchTime > 130) return "Transition";
+      else if (currentMatchTime > 105) return "ALS 1";
+      else if (currentMatchTime > 80) return "ALS 2";
+      else if (currentMatchTime > 55) return "ALS 3";
+      else if (currentMatchTime > 30) return "ALS 4";
+      else return "Endgame";
+    }
   }
 
   public static void shiftSwitchIndicator(double currentTime) {
+
     double currentTimes = currentTime;
-    // double currentMatchTime = DriverStation.getMatchTime();
+    double currentMatchTime = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
     boolean isActive = areWeActive(currentTimes);
