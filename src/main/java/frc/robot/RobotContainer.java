@@ -56,9 +56,9 @@ public class RobotContainer {
   // private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CommandXboxController debugJoystick = new CommandXboxController(1);
-  private final CommandXboxController joystick2 = new CommandXboxController(2);
-  private final CommandXboxController ronaldoJoystick = new CommandXboxController(3);
+//   private final CommandXboxController debugJoystick = new CommandXboxController(1);
+//   private final CommandXboxController joystick2 = new CommandXboxController(2);
+//   private final CommandXboxController ronaldoJoystick = new CommandXboxController(3);
   private final NewCustomController secondController = new NewCustomController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
