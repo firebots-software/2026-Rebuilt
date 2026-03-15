@@ -39,7 +39,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     RobotContainer.setAlliance();
     DogLog.setOptions(
-        new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(false));
+        new DogLogOptions().withNtPublish(false).withCaptureDs(true).withLogExtras(false));
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Red Side", RobotContainer.setAlliance());
   }
@@ -64,10 +64,17 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.visionPeriodic();
 
+    // Log odometry pose
+    DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
+
+    // Update Field2d visualization
+    // m_robotContainer.updateFieldPose();
+
     DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
-    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(120));
-    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(120));
-    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(120));
+    DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(simulatedTime));
+    DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
+    DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(simulatedTime));
+    MiscUtils.shiftSwitchIndicator(simulatedTime);
     simulatedTime -= 0.02;
     if (simulatedTime < 0) {
       simulatedTime = 160;
@@ -114,7 +121,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    MiscUtils.shiftSwitchIndicator(simulatedTime);
     if (MiscUtils.isFlashDriveConnected()) {
       DogLog.log("Elastic/FlashDriveConnected", true);
     } else {

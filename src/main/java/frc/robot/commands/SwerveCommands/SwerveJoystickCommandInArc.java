@@ -88,8 +88,8 @@ public class SwerveJoystickCommandInArc extends Command {
     xSpeed = xSpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     ySpeed = ySpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
-    DogLog.log("Commands/joystickCommand/xSpeed", xSpeed);
-    DogLog.log("Commands/joystickCommand/ySpeed", ySpeed);
+    DogLog.log("Commands/arcjoystickCommand/xSpeed", xSpeed);
+    DogLog.log("Commands/arcjoystickCommand/ySpeed", ySpeed);
     DogLog.log("Information/fieldCentric", fieldRelativeFunction.getAsBoolean());
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
@@ -97,7 +97,7 @@ public class SwerveJoystickCommandInArc extends Command {
         swerveDrivetrain.calculateRequiredRotationalRate(
             new Rotation2d(angleToPointTo.getAsDouble()));
 
-    DogLog.log("Commands/joystickCommand/turnReq", turn);
+    DogLog.log("Commands/arcjoystickCommand/turnReq", turn);
 
     SwerveRequest drive =
         !fieldRelativeFunction.getAsBoolean()
