@@ -285,7 +285,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command retractIntakeCommand() {
-    return runOnce(
+    return run(
         () -> {
           setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED);
           stopRollers();

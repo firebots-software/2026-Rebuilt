@@ -129,6 +129,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    secondController.IntakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // SWERVE COMMANDS
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
