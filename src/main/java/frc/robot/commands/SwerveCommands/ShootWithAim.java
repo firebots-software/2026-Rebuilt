@@ -1,4 +1,4 @@
-package frc.robot.commandGroups;
+package frc.robot.commands.SwerveCommands;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;

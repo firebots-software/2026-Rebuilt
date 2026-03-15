@@ -502,7 +502,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public Command brakeSwerve() {
-    return run(setControl(m_brake));
+    return run(() -> setControl(m_brake));
   }
   // private void startSimThread() {
   //   m_lastSimTime = Utils.getCurrentTimeSeconds();
