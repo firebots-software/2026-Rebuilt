@@ -43,11 +43,11 @@ public final class Constants {
       public static final int ENCODER_PORT = 15;
 
       // Current Limits
-      public static final double ARM_POS_RETRACTED = 113; //126.56
-      public static final double ARM_POS_EXTENDED = 16.29; //29.85
+      public static final double ARM_POS_RETRACTED = 113; // 126.56
+      public static final double ARM_POS_EXTENDED = 16.29; // 29.85
       public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
-      public static final double ARM_POS_MIN = 6.14; //19.7
-      public static final double ARM_POS_IDLE = 60.14; //73.7
+      public static final double ARM_POS_MIN = 6.14; // 19.7
+      public static final double ARM_POS_IDLE = 60.14; // 73.7
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
