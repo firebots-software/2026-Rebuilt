@@ -43,11 +43,11 @@ public final class Constants {
       public static final int ENCODER_PORT = 15;
 
       // Current Limits
-      public static final double ARM_POS_RETRACTED = 113; // 126.56
-      public static final double ARM_POS_EXTENDED = 16.29; // 29.85
+      public static final double ARM_POS_RETRACTED = 121; // 126.56
+      public static final double ARM_POS_EXTENDED = 24.29; // 29.85
       public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
-      public static final double ARM_POS_MIN = 6.14; // 19.7
-      public static final double ARM_POS_IDLE = 60.14; // 73.7
+      public static final double ARM_POS_MIN = 14.14; // 19.7
+      public static final double ARM_POS_IDLE = 68.14; // 73.7
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
@@ -75,7 +75,7 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
       public static final double CANCODER_ROTS_PER_ARM_ROT = (8.0 / 3.0);
       public static final double ARM_ROTS_PER_CANCODER_ROT = 1.0 / CANCODER_ROTS_PER_ARM_ROT;
-      public static final double ENCODER_OFFSET = 0.06;
+      public static final double ENCODER_OFFSET = 0.1;
 
       public static final class Simulation {
         public static final double SIM_ARM_POS_MIN = 10.0;
