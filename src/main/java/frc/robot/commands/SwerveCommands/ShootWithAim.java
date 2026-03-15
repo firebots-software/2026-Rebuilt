@@ -1,0 +1,79 @@
+package frc.robot.commandGroups;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.Constants;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.util.MiscUtils;
+import frc.robot.util.Targeting;
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
+public class ShootWithAim extends ParallelCommandGroup {
+
+  public ShootWithAim(
+      DoubleSupplier translationalX,
+      DoubleSupplier translationalY,
+      ShooterSubsystem shooterSubsystem,
+      IntakeSubsystem intakeSubsystem,
+      HopperSubsystem hopperSubsystem,
+      CommandSwerveDrivetrain drivetrain,
+      BooleanSupplier redside,
+      BooleanSupplier manualOverride) {
+
+    addCommands(
+        Commands.either(
+            Commands.parallel(
+
+                shooterSubsystem.shootAtSpeedCommand(45.2),
+                Commands.waitUntil(shooterSubsystem::isAtSpeed)
+                    .andThen(
+                        hopperSubsystem
+                            .runHopperUntilInterruptedCommand()
+                            .alongWith(
+                                intakeSubsystem
+                                    .powerRetractRollersCommand()
+                                    .beforeStarting(
+                                        Commands.waitSeconds(
+                                            Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
+
+
+            Commands.parallel(
+                shooterSubsystem.shootAtSpeedCommand(
+                    () ->
+                        shooterSubsystem.grabTargetShootingSpeed(
+                            MiscUtils.getDistanceToHub(redside, drivetrain))),
+            Commands.either(drivetrain.brakeSwerve(), new SwerveJoystickCommand(
+                    translationalX,
+                    translationalY,
+                    () -> 0.0,
+                    () -> 1.0,
+                    () -> false,
+                    () -> true,
+                    redside,
+                    drivetrain), () -> (drivetrain.getSpeedMagnitude() <= 0.2) && Targeting.pointingAtHub(redside, drivetrain)),
+                Commands.waitUntil(shooterSubsystem::isAtSpeed)
+                    .andThen(
+                        hopperSubsystem
+                            .runHopperUntilInterruptedCommand(
+                                () ->
+                                    hopperSubsystem.grabHopperRecommendedSpeed(
+                                        shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
+                                () ->
+                                    (Targeting.pointingAtHub(redside, drivetrain)
+                                        && (drivetrain.getSpeedMagnitude() <= 0.2)))
+                            .alongWith(
+                                intakeSubsystem
+                                    .powerRetractRollersCommand()
+                                    .beforeStarting(
+                                        Commands.waitSeconds(
+                                            Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
+            manualOverride));
+  }
+}
