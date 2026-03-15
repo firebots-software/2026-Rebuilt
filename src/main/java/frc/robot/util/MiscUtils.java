@@ -57,8 +57,7 @@ public class MiscUtils {
 
     if (allianceChar.isEmpty()) {
       DogLog.log("SakethGiri", "Empty");
-    }
-    else {
+    } else {
       if (allianceChar != null) {
         DogLog.log("SakethGiri", allianceChar);
       }
