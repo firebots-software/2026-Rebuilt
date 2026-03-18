@@ -22,7 +22,7 @@ public class NewCustomController extends GenericHID {
     return reverseShoot;
   }
 
-   public Trigger IntakeOverride() {
+  public Trigger IntakeOverride() {
     return intakeOverride;
   }
 }

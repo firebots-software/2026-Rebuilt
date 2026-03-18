@@ -1,11 +1,8 @@
 package frc.robot.commands.SwerveCommands;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -30,7 +27,6 @@ public class ShootWithAim extends ParallelCommandGroup {
     addCommands(
         Commands.either(
             Commands.parallel(
-
                 shooterSubsystem.shootAtSpeedCommand(45.2),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
@@ -42,22 +38,25 @@ public class ShootWithAim extends ParallelCommandGroup {
                                     .beforeStarting(
                                         Commands.waitSeconds(
                                             Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
-
-
             Commands.parallel(
                 shooterSubsystem.shootAtSpeedCommand(
                     () ->
                         shooterSubsystem.grabTargetShootingSpeed(
                             MiscUtils.getDistanceToHub(redside, drivetrain))),
-            Commands.either(drivetrain.brakeSwerve(), new SwerveJoystickCommand(
-                    translationalX,
-                    translationalY,
-                    () -> 0.0,
-                    () -> 1.0,
-                    () -> false,
-                    () -> true,
-                    redside,
-                    drivetrain), () -> (drivetrain.getSpeedMagnitude() <= 0.2) && Targeting.pointingAtHub(redside, drivetrain)),
+                Commands.either(
+                    drivetrain.brakeSwerve(),
+                    new SwerveJoystickCommand(
+                        translationalX,
+                        translationalY,
+                        () -> 0.0,
+                        () -> 1.0,
+                        () -> false,
+                        () -> true,
+                        redside,
+                        drivetrain),
+                    () ->
+                        (drivetrain.getSpeedMagnitude() <= 0.2)
+                            && Targeting.pointingAtHub(redside, drivetrain)),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         hopperSubsystem
