@@ -43,16 +43,16 @@ public final class Constants {
       public static final int ENCODER_PORT = 15;
 
       // Current Limits
-      public static final double ARM_POS_RETRACTED = 126.56;
-      public static final double ARM_POS_EXTENDED = 29.85;
+      public static final double ARM_POS_RETRACTED = 119;
+      public static final double ARM_POS_EXTENDED = 22.29;
       public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
-      public static final double ARM_POS_MIN = 19.7;
-      public static final double ARM_POS_IDLE = 73.7;
+      public static final double ARM_POS_MIN = 12.14;
+      public static final double ARM_POS_IDLE = 66.14;
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
-      public static final double POWER_RETRACT_TORQUE_CURRENT = 20.0; // TODO: Tune empirically
-      public static final double POWER_RETRACT_DELAY = 0.5;
+      public static final double POWER_RETRACT_TORQUE_CURRENT = 45.0; // TODO: Tune empirically
+      public static final double POWER_RETRACT_DELAY = 0.2;
 
       // TODO: Tune
       public static final double kV = 0.124;
@@ -75,7 +75,7 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
       public static final double CANCODER_ROTS_PER_ARM_ROT = (8.0 / 3.0);
       public static final double ARM_ROTS_PER_CANCODER_ROT = 1.0 / CANCODER_ROTS_PER_ARM_ROT;
-      public static final double ENCODER_OFFSET = 0.06;
+      public static final double ENCODER_OFFSET = 0.1; // -0.55
 
       public static final class Simulation {
         public static final double SIM_ARM_POS_MIN = 10.0;
@@ -110,8 +110,9 @@ public final class Constants {
       public static final double DESIGNED_SURFACE_SPEED_IN_PER_SEC =
           DESIGNED_SURFACE_SPEED_FT_PER_SEC * 12.0;
 
-      public static final double TARGET_ROLLER_RPM =
-          (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
+      // public static final double TARGET_ROLLER_RPM =
+      //     (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
+      public static final double TARGET_ROLLER_RPM = 2100;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
 
@@ -127,7 +128,6 @@ public final class Constants {
     public static final CANBus CAN_BUS =
         new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
-    public static final double DISTANCE_OVER_BUMP = 3.0; // correct distance is 3 meters
 
     public static final double targetPositionError = 0.03;
     public static final double targetAngleError = 0.1;
@@ -245,7 +245,7 @@ public final class Constants {
       SERRANO(0.1d, 0d, 0d, 0.1d, 0d, 0d, 3.867d, 0d, 0d),
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
-      COBRA(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d);
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0);
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -427,98 +427,52 @@ public final class Constants {
         26.971;
 
     public static class Auto {
-      public static enum Maneuver {
-        RedLeftManeuverL,
-        RedLeftManeuverR,
-        RedRightManeuverL,
-        RedRightManeuverR,
-        BlueLeftManeuverL,
-        BlueLeftManeuverR,
-        BlueRightManeuverL,
-        BlueRightManeuverR
-      }
+      public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
+      public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
+      public static final double TIME_FOR_BUMP_BACKWARDS = 0.70;
 
       public static enum Intake {
-        RedLeftIntakeL,
-        RedLeftIntakeM,
-        RedLeftIntakeR,
-        RedLeftIntakeML,
-        RedLeftIntakeMR,
-        RedRightIntakeL,
-        RedRightIntakeM,
-        RedRightIntakeR,
-        RedRightIntakeML,
-        RedRightIntakeMR,
-        BlueLeftIntakeL,
-        BlueLeftIntakeM,
-        BlueLeftIntakeR,
-        BlueLeftIntakeML,
-        BlueLeftIntakeMR,
-        BlueRightIntakeL,
-        BlueRightIntakeM,
-        BlueRightIntakeR,
-        BlueRightIntakeML,
-        BlueRightIntakeMR,
-        RedRightIntakeSweep,
-        RedLeftIntakeSweep,
-        BlueRightIntakeSweep,
-        BlueLeftIntakeSweep,
-        RedRightIntakeSweepShort,
-        RedLeftIntakeSweepShort,
-        BlueRightIntakeSweepShort,
-        BlueLeftIntakeSweepShort,
-        p2Intake,
-        p2IntakeSide
+        LeftIntakeSweep,
+        RightIntakeSweep,
+        LeftIntakeSweepShort,
+        RightIntakeSweepShort,
+        SecondLeftIntakeSweepShort,
+        SecondRightIntakeSweepShort
       }
 
       public static enum ShootPos {
-        RedLeftShoot,
-        RedRightShoot,
-        BlueLeftShoot,
-        BlueRightShoot,
-        RedDepotToShoot,
-        BlueDepotToShoot,
-        RedOutpostToShoot,
-        BlueOutpostToShoot,
-        RedOutpostToShootShort
+        LeftShoot,
+        RightShoot,
+        DepotToShoot,
+        OutpostToShoot,
+        LeftShootSide
       }
 
       public static enum ClimbPos {
-        RedLeftClimbL,
-        RedLeftClimbR,
-        RedRightClimbL,
-        RedRightClimbR,
-        BlueLeftClimbL,
-        BlueLeftClimbR,
-        BlueRightClimbL,
-        BlueRightClimbR
+        LeftClimbL,
+        LeftClimbR,
+        RightClimbL,
+        RightClimbR
       }
 
       public static enum Depot {
-        RedDepotL,
-        RedDepotM,
-        RedDepotR,
-        BlueDepotL,
-        BlueDepotM,
-        BlueDepotR,
-        RedDepotRDrake
+        DepotL,
+        DepotR,
+        DepotStart
       }
 
       public static enum Outpost {
-        RedOutpostL,
-        RedOutpostM,
-        RedOutpostR,
-        RedOutpostRDrake,
-        BlueOutpostL,
-        BlueOutpostM,
-        BlueOutpostR
+        OutpostL,
+        OutpostR,
+        OutpostStart
       }
 
       public static enum MiscPaths {
-        MoveLeft,
-        MoveRight,
-        MoveLeftWithMarker,
-        MoveRightWithMarker
+        LeftSweep,
+        RightSweep,
+        LeftShootToBump,
+        RightShootToBump,
+        Nike
       }
     }
   }
@@ -644,8 +598,8 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kV = 0.124;
 
-    public static final double STATOR_LIMIT_AMPS = 50.0;
-    public static final double SUPPLY_LIMIT_AMPS = 30.0;
+    public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
+    public static final double SUPPLY_LIMIT_AMPS = 50.0; // 30.0
 
     public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
     public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
@@ -946,8 +900,8 @@ public final class Constants {
     public static final double KD = 0.0; // TODO
     public static final double KV = 0.124; // TODO
     public static final double KA = 0.0; // TODO
-    public static final double STATOR_CURRENT_LIMIT = 30.0;
-    public static final double SUPPLY_CURRENT_LIMIT = 30.0;
+    public static final double STATOR_CURRENT_LIMIT = 120.0;
+    public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
     public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
     public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
@@ -969,8 +923,14 @@ public final class Constants {
 
     public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
 
+    public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
+    public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
+    public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
+
     public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
         new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap
+        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
 
     static {
       UPDATE_INTERMAPS();
@@ -988,6 +948,30 @@ public final class Constants {
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.7971 + offset, 55.385920196);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(2.1336 + offset, 57.2957795131);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(3.6576 + offset, 61.1154981473);
+
+      double VIDEO_SECONDS_TO_REGULAR_SECONDS = 1d / 8d;
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, 0d);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              13d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          10d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              50d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              70d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              93d + 1d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          14d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+      TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+          Units.inchesToMeters(
+              102d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
+          15d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
     }
   }
 

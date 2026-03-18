@@ -55,6 +55,14 @@ public class MiscUtils {
     double currentMatchTime = DriverStation.getMatchTime();
     String allianceChar = DriverStation.getGameSpecificMessage();
 
+    if (allianceChar.isEmpty()) {
+      DogLog.log("SakethGiri", "Empty");
+    } else {
+      if (allianceChar != null) {
+        DogLog.log("SakethGiri", allianceChar);
+      }
+    }
+
     if (allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
@@ -73,71 +81,122 @@ public class MiscUtils {
   }
 
   public static double countdownTillNextShift(double currentTime) {
-    double currentMatchTime = currentTime;
-    // double currentMatchTime = DriverStation.getMatchTime();
-    if (currentMatchTime > 140) return currentMatchTime - 140;
-    else if (currentMatchTime > 130) return currentMatchTime - 130;
-    else if (currentMatchTime > 105) return currentMatchTime - 105;
-    else if (currentMatchTime > 80) return currentMatchTime - 80;
-    else if (currentMatchTime > 55) return currentMatchTime - 55;
-    else if (currentMatchTime > 30) return currentMatchTime - 30;
-    else return 30 - currentMatchTime;
+    // double currentMatchTime = currentTime;
+    double currentMatchTime = DriverStation.getMatchTime();
+    if (DriverStation.isAutonomous()) {
+      return currentMatchTime;
+    } else {
+      if (currentMatchTime > 140) return currentMatchTime - 140;
+      else if (currentMatchTime > 130) return currentMatchTime - 130;
+      else if (currentMatchTime > 105) return currentMatchTime - 105;
+      else if (currentMatchTime > 80) return currentMatchTime - 80;
+      else if (currentMatchTime > 55) return currentMatchTime - 55;
+      else if (currentMatchTime > 30) return currentMatchTime - 30;
+      else return 30 - currentMatchTime;
+    }
   }
 
   public static String currentShiftName(double currentTime) {
-    double currentMatchTime = currentTime;
-    // double currentMatchTime = DriverStation.getMatchTime();
-    if (currentMatchTime > 140) return "Auto";
-    else if (currentMatchTime > 130) return "Transition";
-    else if (currentMatchTime > 105) return "ALS 1";
-    else if (currentMatchTime > 80) return "ALS 2";
-    else if (currentMatchTime > 55) return "ALS 3";
-    else if (currentMatchTime > 30) return "ALS 4";
-    else return "Endgame";
+    // double currentMatchTime = currentTime;
+    double currentMatchTime = DriverStation.getMatchTime();
+    if (DriverStation.isAutonomous()) return "Auto";
+    else {
+      if (currentMatchTime > 130) return "Transition";
+      else if (currentMatchTime > 105) return "ALS 1";
+      else if (currentMatchTime > 80) return "ALS 2";
+      else if (currentMatchTime > 55) return "ALS 3";
+      else if (currentMatchTime > 30) return "ALS 4";
+      else return "Endgame";
+    }
   }
 
   public static void shiftSwitchIndicator(double currentTime) {
-    double currentTimes = currentTime;
-    // double currentTimes = DriverStation.getMatchTime();
+
+    // double currentTimes = currentTime;
+    double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
-    if (areWeActive(currentTimes)
-        && !currentShiftName(currentTimes).equals("Endgame")
-        && timeUntilNextShift > 8) {
-      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-    } else if (areWeActive(currentTimes)
-        && !currentShiftName(currentTimes).equals("Endgame")
-        && timeUntilNextShift < 8) {
-      if ((shiftIndicatorSum / 20) % 2 == 1) {
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+    boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
+    boolean isActive = areWeActive(currentTimes);
+    boolean isAuto = currentShiftName(currentTimes).equals("Auto");
+    boolean isTransition = currentShiftName(currentTimes).equals("Transition");
+
+    if (isAuto) {
+      if (timeUntilNextShift < 2) {
+        // Nearly our turn — solid green
+        shiftIndicatorSum = 0;
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      } else if (timeUntilNextShift < 5) {
+        // Very soon — fast yellow blink
+        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+        shiftIndicatorSum++;
+      } else if (timeUntilNextShift < 8) {
+        // Soon — slow yellow blink
+        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+        shiftIndicatorSum++;
       } else {
+        // Plenty of time — solid green
+        shiftIndicatorSum = 0;
         SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
       }
-      shiftIndicatorSum++;
-    } else if ((timeUntilNextShift < 2
-        && !currentShiftName(currentTimes).equals("Endgame")
-        && !areWeActive(currentTimes))) {
-      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
-    } else if (timeUntilNextShift < 5
-        && !currentShiftName(currentTimes).equals("Endgame")
-        && !areWeActive(currentTimes)) {
-      if ((shiftIndicatorSum / 8) % 2 == 1) {
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
-      } else {
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFF00");
-      }
-      shiftIndicatorSum++;
-    } else if (timeUntilNextShift < 8
-        && !currentShiftName(currentTimes).equals("Endgame")
-        && !areWeActive(currentTimes)) {
-      if ((shiftIndicatorSum / 20) % 2 == 1) {
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
-      } else {
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#FFFFFF");
-      }
-      shiftIndicatorSum++;
-    } else {
+    }
+
+    if (isTransition) {
+      shiftIndicatorSum = 0;
+      String color = "#00FF00";
+      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+      return;
+    }
+
+    if (isEndgame) {
       shiftIndicatorSum = 0;
       SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      return;
+    }
+
+    if (isActive) {
+      if (timeUntilNextShift > 8) {
+        // Plenty of time — solid green
+        shiftIndicatorSum = 0;
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      } else if (timeUntilNextShift < 2) {
+        // Shift coming up soon — slow  blink
+        String color = "#000000";
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+        shiftIndicatorSum++;
+      } else if (timeUntilNextShift < 5) {
+        // Shift coming up very soon — fast red blink
+        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+        shiftIndicatorSum++;
+      } else if (timeUntilNextShift < 8) {
+        // Shift coming up soon — slow red blink
+        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+        shiftIndicatorSum++;
+      }
+    } else {
+      // Inactive alliance — warn about upcoming shift
+      if (timeUntilNextShift < 2) {
+        // Nearly our turn — solid green
+        shiftIndicatorSum = 0;
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      } else if (timeUntilNextShift < 5) {
+        // Very soon — fast yellow blink
+        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+        shiftIndicatorSum++;
+      } else if (timeUntilNextShift < 8) {
+        // Soon — slow yellow blink
+        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+        shiftIndicatorSum++;
+      } else {
+        // Plenty of time — solid black
+        shiftIndicatorSum = 0;
+        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
+      }
     }
   }
 
