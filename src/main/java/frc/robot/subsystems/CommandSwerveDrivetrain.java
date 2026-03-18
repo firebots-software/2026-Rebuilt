@@ -76,6 +76,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
       new SwerveRequest.SysIdSwerveRotation();
+  private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
@@ -498,6 +499,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log("Swerve/rotationController/omegaPID", omegaPID);
     DogLog.log("Swerve target rotation degrees", targetRotation.getDegrees());
     return omega;
+  }
+
+  public Command brakeSwerve() {
+    return run(() -> setControl(m_brake));
   }
   // private void startSimThread() {
   //   m_lastSimTime = Utils.getCurrentTimeSeconds();
