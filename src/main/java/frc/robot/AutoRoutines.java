@@ -151,10 +151,10 @@ public class AutoRoutines {
               swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), new Feedforwards(4));
             },
             swerveSubsystem)
-        .withTimeout(time)
-        .andThen(
-            () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
+        .withTimeout(time);
+        // .andThen(
+        //     () ->
+        //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
   public Command driveBackward(double time) {
