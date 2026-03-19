@@ -171,7 +171,7 @@ public class AutoRoutines {
   }
 
   public Command driveToBumpAfterIntake(BooleanSupplier isRedSide) {
-    return new IntakeToBumpDTP(swerveSubsystem, isRedSide);
+    return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
   }
 
   public boolean getBestVisionMeasurement() {
