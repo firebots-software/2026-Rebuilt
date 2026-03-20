@@ -4,8 +4,10 @@ import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.List;
+import java.util.Optional;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class IntakeVision extends SubsystemBase {
 
@@ -35,5 +37,17 @@ public class IntakeVision extends SubsystemBase {
     latestVisionResult = results.get(results.size() - 1);
 
     return (latestVisionResult == null);
+  }
+
+  private void updateVisionResult() {
+    Optional<PhotonTrackedTarget> target = getLargestTarget();
+  }
+
+  private Optional<PhotonTrackedTarget> getLargestTarget() {
+    if (latestVisionResult == null) return Optional.empty();
+    List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
+    if (targets.isEmpty()) return Optional.empty();
+
+    return targets.stream().max((a, b) -> Double.compare(a.getArea(), b.getArea()));
   }
 }
