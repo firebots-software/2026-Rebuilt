@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.utility.LinearPath;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -46,7 +45,8 @@ public class DriveToPoseWithCorrectEndings extends Command {
    * @param swerve Swerve Subsystem.
    * @param targetPoseSupplier Target Pose Supplier (for changing values of pose not just runtime)
    */
-  public DriveToPoseWithCorrectEndings(CommandSwerveDrivetrain swerve, Supplier<Pose2d> targetPoseSupplier) {
+  public DriveToPoseWithCorrectEndings(
+      CommandSwerveDrivetrain swerve, Supplier<Pose2d> targetPoseSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerve = swerve;
     this.targetPoseSupplier = targetPoseSupplier;

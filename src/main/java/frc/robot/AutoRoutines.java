@@ -5,7 +5,6 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -181,11 +180,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                intakeToShoot.resetOdometry(),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
@@ -211,11 +206,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                intakeToShoot.resetOdometry(),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
@@ -342,11 +333,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                intakeToShoot.resetOdometry(),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
@@ -376,11 +363,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                intakeToShoot.resetOdometry(),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
@@ -410,11 +393,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                intakeToShoot.resetOdometry(),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
 
@@ -450,11 +429,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                intakeToShoot.resetOdometry(),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
     outpostIntake

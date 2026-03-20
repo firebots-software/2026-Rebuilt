@@ -99,13 +99,7 @@ public class RobotContainer {
   private DoubleTopic shooterSpeedTopic;
 
   public RobotContainer() {
-    autoRoutines =
-        new AutoRoutines(
-            intakeSubsystem,
-            lebron,
-            hopperSubsystem,
-            drivetrain,
-            redside);
+    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
