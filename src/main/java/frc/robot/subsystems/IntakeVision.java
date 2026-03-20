@@ -14,7 +14,7 @@ public class IntakeVision extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
 
-  public IntakeVision(Constants.FuelGaugeDetection.FuelGaugeCamera cameraID) {
+  public IntakeVision(Constants.IntakeVision.IntakeVisionCamera cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
   }
 
