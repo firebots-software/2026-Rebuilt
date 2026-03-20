@@ -9,14 +9,14 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-public class IntakeVision extends SubsystemBase {
+public class IntakeVisionDetection extends SubsystemBase {
 
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
   private double latestRawArea;
   private double latestRawYaw;
 
-  public IntakeVision(Constants.IntakeVision.IntakeVisionCamera cameraID) {
+  public IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
   }
 

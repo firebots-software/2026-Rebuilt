@@ -29,6 +29,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.NewCustomController;
@@ -93,6 +94,11 @@ public class RobotContainer {
   public final FuelGaugeDetection visionFuelGauge =
       Constants.fuelGaugeOnRobot
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
+          : null;
+
+  public final IntakeVisionDetection intakeVisionDetection =
+      Constants.intakeVisionOnRobot
+          ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAMERA)
           : null;
 
   private DoubleEntry shooterSpeedEntry;
