@@ -105,10 +105,6 @@ public class RobotContainer {
             lebron,
             hopperSubsystem,
             drivetrain,
-            visionFrontLeft,
-            visionFrontRight,
-            visionRearLeft,
-            visionRearRight,
             redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
