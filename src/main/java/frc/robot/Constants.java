@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
@@ -1043,5 +1044,14 @@ public final class Constants {
         new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
     public static Pose2d BLUE_TOWER_L =
         new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
+
+    public static Pose2d RED_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.908942222595215, 2.54630184173584),
+            new Rotation2d(1.5707963267948966));
+    public static Pose2d BLUE_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.6342058181762695, 5.505496978759766),
+            new Rotation2d(-1.5649821399611368));
   }
 }
