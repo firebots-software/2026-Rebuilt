@@ -846,6 +846,42 @@ public final class Constants {
     }
   }
 
+  public static class IntakeVision {
+
+    public static final double INTAKE_X = Units.inchesToMeters(-3.454827);
+    public static final double INTAKE_Y = Units.inchesToMeters(-7.056897);
+    public static final double INTAKE_Z = Units.inchesToMeters(25.105416);
+    public static final double INTAKE_ROLL = Units.degreesToRadians(286.894287);
+    public static final double INTAKE_PITCH = Units.degreesToRadians(55.646896);
+    public static final double INTAKE_YAW = Units.degreesToRadians(23.957651);
+
+    public static enum IntakeVisionCamera {
+
+
+      INTAKE_CAMERA(
+          "intakeCam",
+          new Transform3d(
+              new Translation3d(FUEL_GAUGE_X, FUEL_GAUGE_Y, FUEL_GAUGE_Z),
+              new Rotation3d(FUEL_GAUGE_ROLL, FUEL_GAUGE_PITCH, FUEL_GAUGE_YAW)));
+
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      IntakeVisionCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
+      }
+    }
+  }
+
   // public static final class Shooter {
   // public static final int WARMUP_1_ID = 18;
   // public static final int WARMUP_2_ID = 19;
