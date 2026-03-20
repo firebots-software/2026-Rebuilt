@@ -50,10 +50,7 @@ public class HopperSubsystem extends SubsystemBase {
     clrc.withVoltageClosedLoopRampPeriod(0.3);
 
     hopperMotor =
-        new LoggedTalonFX(
-            "HopperFloor",
-            Constants.Hopper.MOTOR_PORT,
-            Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+        new LoggedTalonFX("HopperFloor", Constants.Hopper.MOTOR_PORT, Constants.Swerve.CAN_BUS);
 
     TalonFXConfiguration hopperConfig = new TalonFXConfiguration();
     hopperConfig.Slot0 = s0c;

@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -148,7 +149,7 @@ public class LoggedTalonFX extends TalonFX {
    * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
    *     identify CAN Bus through string. Check phoenix6 documentation for more details.
    */
-  public LoggedTalonFX(String deviceName, int deviceId, String canbus) {
+  public LoggedTalonFX(String deviceName, int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = "Motors/" + deviceName;
     init();
@@ -169,7 +170,7 @@ public class LoggedTalonFX extends TalonFX {
    * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
    *     identify CAN Bus through string. Check phoenix6 documentation for more details.
    */
-  public LoggedTalonFX(int deviceId, String canbus) {
+  public LoggedTalonFX(int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = "Motors/Motor " + deviceId;
     init();
