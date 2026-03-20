@@ -25,6 +25,8 @@ public class IntakeVision extends SubsystemBase {
     if (!cameraConnected()) return;
 
     if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
+
+    updateVisionResult();
   }
 
   private boolean cameraConnected() {
