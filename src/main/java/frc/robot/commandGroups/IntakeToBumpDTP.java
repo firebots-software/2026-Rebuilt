@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToPoseWithCorrectEndings;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
@@ -19,6 +20,7 @@ public class IntakeToBumpDTP extends SequentialCommandGroup {
                 new Translation2d(5.6342058181762695, 5.505496978759766),
                 new Rotation2d(-1.5649821399611368));
 
-    addCommands(new DriveToPoseWithCorrectEndings(swerve, () -> pose));
+    // addCommands(new DriveToPoseWithCorrectEndings(swerve, () -> pose));
+    addCommands(new DriveToPose(swerve, () -> pose));
   }
 }
