@@ -861,8 +861,8 @@ public final class Constants {
       INTAKE_CAMERA(
           "intakeCam",
           new Transform3d(
-              new Translation3d(FUEL_GAUGE_X, FUEL_GAUGE_Y, FUEL_GAUGE_Z),
-              new Rotation3d(FUEL_GAUGE_ROLL, FUEL_GAUGE_PITCH, FUEL_GAUGE_YAW)));
+              new Translation3d(INTAKE_X, INTAKE_Y, INTAKE_Z),
+              new Rotation3d(INTAKE_ROLL, INTAKE_PITCH, INTAKE_YAW)));
 
       private String loggingName;
       private Transform3d cameraTransform;
