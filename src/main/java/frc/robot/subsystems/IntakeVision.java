@@ -13,6 +13,8 @@ public class IntakeVision extends SubsystemBase {
 
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
+  private double latestRawArea;
+  private double latestRawYaw;
 
   public IntakeVision(Constants.IntakeVision.IntakeVisionCamera cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
@@ -41,6 +43,12 @@ public class IntakeVision extends SubsystemBase {
 
   private void updateVisionResult() {
     Optional<PhotonTrackedTarget> target = getLargestTarget();
+    target.ifPresentOrElse(
+        t -> {
+          latestRawArea = t.getArea();
+          latestRawYaw = t.getYaw();
+        },
+        () -> DogLog.log("Subsystems/IntakeVision/TargetPresent", false));
   }
 
   private Optional<PhotonTrackedTarget> getLargestTarget() {
