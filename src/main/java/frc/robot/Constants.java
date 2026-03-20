@@ -856,8 +856,6 @@ public final class Constants {
     public static final double INTAKE_YAW = Units.degreesToRadians(23.957651);
 
     public static enum IntakeVisionCamera {
-
-
       INTAKE_CAMERA(
           "intakeCam",
           new Transform3d(
