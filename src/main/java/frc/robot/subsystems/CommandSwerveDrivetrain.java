@@ -83,6 +83,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   private final Field2d field = new Field2d();
 
+  private ChassisSpeeds lastCommandedSpeeds = new ChassisSpeeds();
+  private boolean isBeached = false;
+
   // private final StructPublisher<Pose2d> posePublisher =
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
@@ -284,6 +287,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     targetSpeeds.omegaRadiansPerSecond +=
         m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
 
+    lastCommandedSpeeds = targetSpeeds;
+
     setControl(
         m_pathApplyFieldSpeeds
             .withSpeeds(targetSpeeds)
@@ -361,6 +366,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return Math.sqrt((xSpeed * xSpeed) + (ySpeed * ySpeed));
   }
 
+  public double getCommandedSpeedMagnitude() {
+    return Math.hypot(lastCommandedSpeeds.vxMetersPerSecond, lastCommandedSpeeds.vyMetersPerSecond);
+  }
+
   public Pose2d getPose() {
     return currentState.Pose;
   }
@@ -379,6 +388,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     super.resetPose(pose);
   }
 
+  public boolean isBeached() {
+    return isBeached;
+  }
+
   @Override
   public void periodic() {
     /*
@@ -394,6 +407,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     currentState = getState();
     DogLog.log("Subsystems/Swerve/AccumulatedError", headingPIDController.getAccumulatedError());
+
+    double actual = getSpeedMagnitude();
+    double commanded = getCommandedSpeedMagnitude();
+    isBeached =
+        commanded > 1.0 && actual < 0.1; // values subject to change -- maybe turn this into a ratio
+    // (actual/commanded)?
+
+    DogLog.log("Swerve/CommandedSpeed", commanded);
+    DogLog.log("Swerve/ActualSpeed", actual);
+    DogLog.log("Swerve/IsBeached", isBeached);
 
     if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
