@@ -3,6 +3,10 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants;
@@ -10,6 +14,7 @@ import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.Vision.CameraSelectionMethod;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
+import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class VisionUtils {
@@ -231,5 +236,12 @@ public class VisionUtils {
         distance,
         robotSpeed,
         tagCount);
+  }
+
+  public static Pose2d intakeVisionTargetPose(Pose2d currentPose, IntakeVisionDetection intakeVision) {
+    Translation2d translate = new Translation2d(0, 0);
+    Rotation2d rotate = new Rotation2d(intakeVision.getYaw());
+    Transform2d poseManipulation = new Transform2d(translate, rotate);
+    return currentPose.plus(poseManipulation);
   }
 }
