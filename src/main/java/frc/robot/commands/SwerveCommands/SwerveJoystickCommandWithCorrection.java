@@ -2,7 +2,7 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -19,10 +19,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
-  protected final BooleanSupplier fieldRelativeFunction,
-      doPointing,
-      redsideIfPointing,
-      doRotCorrection;
+  protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
   protected final IntakeVisionDetection intakeVision;
@@ -53,11 +50,9 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     this.squaredTurn = true;
     this.swerveDrivetrain = swerveSubsystem;
     this.doPointing = doPointing;
-    this.doRotCorrection = doRotCorrection;
     this.redsideIfPointing = redSideIfPointing;
     this.intakeVision = intakeVision;
     this.doDriveAssist = doDriveAssist;
-
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -141,41 +136,47 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     //                     ? (Constants.Landmarks.RED_HUB_2D)
     //                     : (Constants.Landmarks.BLUE_HUB_2D)))))
     //         : (turningSpeed);
-    double turn = 0d;
-    if (Math.abs(turningSpdFunction.getAsDouble()) > Constants.IntakeVision.OVERRIDE_ROT_INPUT) {
+    double turn = turningSpeed;
+    if (Math.abs(turningSpdFunction.getAsDouble()) > Constants.IntakeVision.OVERRIDE_ROT_INPUT
+        && doDriveAssist.getAsBoolean()) {
       turn =
-          doRotCorrection.getAsBoolean()
-              ? swerveDrivetrain.calculateRequiredRotationalRate(
+          swerveDrivetrain.calculateRequiredRotationalRate(
                   new Rotation2d(
                       Units.degreesToRadians(intakeVision.getYaw())
                           + swerveDrivetrain.getPose().getRotation().getRadians()))
-              : turningSpeed;
+              + turningSpeed;
     }
 
-    turn =
-        (doPointing.getAsBoolean())
-            ? (swerveDrivetrain.calculateRequiredRotationalRateWithFF(
-                redsideIfPointing.getAsBoolean()
-                    ? Constants.Landmarks.RED_HUB_2D.getTranslation()
-                    : Constants.Landmarks.BLUE_HUB_2D.getTranslation()))
-            : (turningSpeed);
-    
-    double xVelocity = (doubleclamp(xSpdFunction.getAsDouble() + translationAssist().x, -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND, Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
-    double yVelocity = ySpdFunction.getAsDouble() + translationAssist().y;
+    double xVelocity =
+        MathUtil.clamp(
+            x + translationAssist().x,
+            -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND,
+            Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+    double yVelocity =
+        MathUtil.clamp(
+            y + translationAssist().y,
+            -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND,
+            Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     SwerveRequest drive =
         !fieldRelativeFunction.getAsBoolean()
-            ? fieldCentricDrive.withVelocityX(xVelocity).withVelocityY(yVelocity).withRotationalRate(turn)
-            : robotCentricDrive.withVelocityX(xVelocity).withVelocityY(yVelocity).withRotationalRate(turn);
+            ? fieldCentricDrive
+                .withVelocityX(xVelocity)
+                .withVelocityY(yVelocity)
+                .withRotationalRate(turn)
+            : robotCentricDrive
+                .withVelocityX(xVelocity)
+                .withVelocityY(yVelocity)
+                .withRotationalRate(turn);
 
     // Applies request
     this.swerveDrivetrain.setControl(drive);
   } // Drive counterclockwise with negative X (left))
 
   public Vector2 translationAssist() {
-    Pose2d targetPose = new Pose2d(); // what sid gives us
+    Pose2d targetPose = new Pose2d(); // TODO: what sid gives us
     int n = 2;
 
     double p1x = swerveDrivetrain.getCurrentState().Pose.getX();
@@ -193,14 +194,13 @@ public class SwerveJoystickCommandWithCorrection extends Command {
                     - ((p2.getX() - p1x) * targetPose.getY())
                     + p2.getX() * p1y
                     - p2.getY() * p1x)
-            / Math.sqrt(
-                Math.pow(((p2.getY() - p1y)), 2) + Math.pow((p2.getX() - p1x), 2));
-    
-    
-    double assistMagnitude = Math.pow((dist * Constants.IntakeVision.kP), 1/n);
+            / Math.sqrt(Math.pow(((p2.getY() - p1y)), 2) + Math.pow((p2.getX() - p1x), 2));
+
+    double assistMagnitude = Math.pow((dist * Constants.IntakeVision.kP), 1 / n);
     double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX());
 
-    return new Vector2(assistMagnitude * Math.cos(assistDirection), assistMagnitude * Math.sin(assistDirection));
+    return new Vector2(
+        assistMagnitude * Math.cos(assistDirection), assistMagnitude * Math.sin(assistDirection));
   }
 
   @Override

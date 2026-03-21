@@ -171,7 +171,18 @@ public class RobotContainer {
             redside,
             drivetrain);
 
-    SwerveJoystickCommandWithCorrection swerveJoystickCommandWithCorrection = new SwerveJoystickCommandWithCorrection(frontBackFunction, leftRightFunction, rotationFunction, speedFunction, () -> false, (() -> joystick.leftTrigger().getAsBoolean()), redside, drivetrain, intakeVisionDetection, (() -> joystick.leftBumper().getAsBoolean()));
+    SwerveJoystickCommandWithCorrection swerveJoystickCommandWithCorrection =
+        new SwerveJoystickCommandWithCorrection(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction,
+            () -> false,
+            (() -> joystick.leftTrigger().getAsBoolean()),
+            redside,
+            drivetrain,
+            intakeVisionDetection,
+            (() -> joystick.leftBumper().getAsBoolean()));
 
     // drivetrain.setDefaultCommand(swerveJoystickCommand);
     drivetrain.setDefaultCommand(swerveJoystickCommandWithCorrection);
