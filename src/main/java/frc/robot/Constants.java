@@ -857,6 +857,9 @@ public final class Constants {
     public static final double INTAKE_YAW = Units.degreesToRadians(23.957651);
     public static final double OVERRIDE_ROT_INPUT = 0.5;
 
+    public static final double kP = .3d;
+    public static final double lookAheadTime = 0.02;
+
     public static enum IntakeVisionCamera {
       INTAKE_CAMERA(
           "intakeCam",

@@ -2,10 +2,13 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.MathUtils.Vector2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeVisionDetection;
 import java.util.function.BooleanSupplier;
@@ -23,6 +26,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
   protected final IntakeVisionDetection intakeVision;
+  protected final BooleanSupplier doDriveAssist;
 
   private final SwerveRequest.FieldCentric fieldCentricDrive =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
@@ -37,10 +41,10 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       DoubleSupplier speedControlFunction,
       BooleanSupplier fieldRelativeFunction,
       BooleanSupplier doPointing,
-      BooleanSupplier doRotCorrection,
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
-      IntakeVisionDetection intakeVision) {
+      IntakeVisionDetection intakeVision,
+      BooleanSupplier doDriveAssist) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
@@ -52,6 +56,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     this.doRotCorrection = doRotCorrection;
     this.redsideIfPointing = redSideIfPointing;
     this.intakeVision = intakeVision;
+    this.doDriveAssist = doDriveAssist;
+
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -74,9 +80,9 @@ public class SwerveJoystickCommandWithCorrection extends Command {
         () -> false,
         () -> false,
         () -> false,
-        () -> false,
         swerveSubsystem,
-        intakeVision);
+        intakeVision,
+        () -> false);
   }
 
   @Override
@@ -153,17 +159,49 @@ public class SwerveJoystickCommandWithCorrection extends Command {
                     ? Constants.Landmarks.RED_HUB_2D.getTranslation()
                     : Constants.Landmarks.BLUE_HUB_2D.getTranslation()))
             : (turningSpeed);
+    
+    double xVelocity = (doubleclamp(xSpdFunction.getAsDouble() + translationAssist().x, -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND, Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+    double yVelocity = ySpdFunction.getAsDouble() + translationAssist().y;
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     SwerveRequest drive =
         !fieldRelativeFunction.getAsBoolean()
-            ? fieldCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)
-            : robotCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn);
+            ? fieldCentricDrive.withVelocityX(xVelocity).withVelocityY(yVelocity).withRotationalRate(turn)
+            : robotCentricDrive.withVelocityX(xVelocity).withVelocityY(yVelocity).withRotationalRate(turn);
 
     // Applies request
     this.swerveDrivetrain.setControl(drive);
   } // Drive counterclockwise with negative X (left))
+
+  public Vector2 translationAssist() {
+    Pose2d targetPose = new Pose2d(); // what sid gives us
+    int n = 2;
+
+    double p1x = swerveDrivetrain.getCurrentState().Pose.getX();
+    double p1y = swerveDrivetrain.getCurrentState().Pose.getY();
+
+    Pose2d p2 =
+        new Pose2d(
+            p1x + Constants.IntakeVision.lookAheadTime * xSpdFunction.getAsDouble(),
+            p1y + Constants.IntakeVision.lookAheadTime * ySpdFunction.getAsDouble(),
+            new Rotation2d());
+
+    double dist =
+        Math.abs(
+                ((p2.getY() - p1y) * targetPose.getX())
+                    - ((p2.getX() - p1x) * targetPose.getY())
+                    + p2.getX() * p1y
+                    - p2.getY() * p1x)
+            / Math.sqrt(
+                Math.pow(((p2.getY() - p1y)), 2) + Math.pow((p2.getX() - p1x), 2));
+    
+    
+    double assistMagnitude = Math.pow((dist * Constants.IntakeVision.kP), 1/n);
+    double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX());
+
+    return new Vector2(assistMagnitude * Math.cos(assistDirection), assistMagnitude * Math.sin(assistDirection));
+  }
 
   @Override
   public void end(boolean interrupted) {

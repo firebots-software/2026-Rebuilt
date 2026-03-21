@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithCorrection;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -170,7 +171,11 @@ public class RobotContainer {
             redside,
             drivetrain);
 
-    drivetrain.setDefaultCommand(swerveJoystickCommand);
+    SwerveJoystickCommandWithCorrection swerveJoystickCommandWithCorrection = new SwerveJoystickCommandWithCorrection(frontBackFunction, leftRightFunction, rotationFunction, speedFunction, () -> false, (() -> joystick.leftTrigger().getAsBoolean()), redside, drivetrain, intakeVisionDetection, (() -> joystick.leftBumper().getAsBoolean()));
+
+    // drivetrain.setDefaultCommand(swerveJoystickCommand);
+    drivetrain.setDefaultCommand(swerveJoystickCommandWithCorrection);
+
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
     // climberSubsystem.setDefaultCommand(climberSubsystem.runOnce(climberSubsystem::stopClimbWithoutBrake));
 
