@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -274,6 +275,8 @@ public class RobotContainer {
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
+
+    Pose2d intakeVisionTarget = VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
   }
 
   public static boolean setAlliance() {
