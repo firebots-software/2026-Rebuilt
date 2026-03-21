@@ -16,8 +16,6 @@ public class IntakeVisionDetection extends SubsystemBase {
   private PhotonPipelineResult latestVisionResult;
   private double latestRawArea;
   private double latestRawYaw;
-  private double latestRawConf;
-  private Transform3d poseEstTest;
 
   public IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
@@ -55,10 +53,8 @@ public class IntakeVisionDetection extends SubsystemBase {
           DogLog.log("Subsystems/IntakeVision/TargetPresent", true);
           latestRawArea = t.getArea();
           latestRawYaw = t.getYaw();
-          latestRawConf = t.getDetectedObjectConfidence();
           DogLog.log("Subsystems/IntakeVision/Area", latestRawArea);
           DogLog.log("Subsystems/IntakeVision/Yaw", latestRawYaw);
-          DogLog.log("Subsystems/IntakeVision/Conf", latestRawConf);
 
         },
         () -> DogLog.log("Subsystems/IntakeVision/TargetPresent", false));
@@ -79,5 +75,4 @@ public class IntakeVisionDetection extends SubsystemBase {
 
   public double getArea() { return latestRawArea; }
 
-  public double getConfidence() { return latestRawConf; }
 }
