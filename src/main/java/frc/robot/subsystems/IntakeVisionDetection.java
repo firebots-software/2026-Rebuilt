@@ -60,4 +60,8 @@ public class IntakeVisionDetection extends SubsystemBase {
 
     return targets.stream().max((a, b) -> Double.compare(a.getArea(), b.getArea()));
   }
+
+  public double getYaw() {
+    return latestRawYaw;
+  }
 }
