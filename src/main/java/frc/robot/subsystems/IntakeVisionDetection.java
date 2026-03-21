@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.List;
@@ -15,6 +16,7 @@ public class IntakeVisionDetection extends SubsystemBase {
   private PhotonPipelineResult latestVisionResult;
   private double latestRawArea;
   private double latestRawYaw;
+  private Transform3d poseEstTest;
 
   public IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
@@ -31,7 +33,7 @@ public class IntakeVisionDetection extends SubsystemBase {
 
   private boolean cameraConnected() {
     boolean cameraConnected = photonCamera.isConnected();
-    DogLog.log("Subsystems/FuelGauge/CameraStatus", cameraConnected);
+    DogLog.log("Subsystems/IntakeVision/CameraStatus", cameraConnected);
     return cameraConnected;
   }
 
@@ -40,24 +42,37 @@ public class IntakeVisionDetection extends SubsystemBase {
 
     latestVisionResult = results.get(results.size() - 1);
 
-    return (latestVisionResult == null);
+    DogLog.log("Subsystems/IntakeVision/ResultExists", latestVisionResult != null);
+
+    return (latestVisionResult != null);
   }
 
   private void updateVisionResult() {
     Optional<PhotonTrackedTarget> target = getLargestTarget();
     target.ifPresentOrElse(
         t -> {
+          DogLog.log("Subsystems/IntakeVision/TargetPresent", true);
           latestRawArea = t.getArea();
           latestRawYaw = t.getYaw();
+          DogLog.log("Subsystems/IntakeVision/Area", latestRawArea);
+          DogLog.log("Subsystems/IntakeVision/Yaw", latestRawYaw);
+          poseEstTest = t.getBestCameraToTarget();
+          DogLog.log("Subsystems/IntakeVision/PoseEstTestTransform", poseEstTest);
+
         },
         () -> DogLog.log("Subsystems/IntakeVision/TargetPresent", false));
   }
 
   private Optional<PhotonTrackedTarget> getLargestTarget() {
     if (latestVisionResult == null) return Optional.empty();
+
     List<PhotonTrackedTarget> targets = latestVisionResult.getTargets();
+    DogLog.log("Subsystems/IntakeVision/TargetsLength", targets.size());
+
     if (targets.isEmpty()) return Optional.empty();
 
     return targets.stream().max((a, b) -> Double.compare(a.getArea(), b.getArea()));
   }
+
+  public double getYaw() { return latestRawYaw; }
 }
