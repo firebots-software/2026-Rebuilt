@@ -2,8 +2,11 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -167,5 +170,34 @@ public class SwerveJoystickCommand extends Command {
   @Override
   public boolean isFinished() {
     return false;
+  }
+
+  public Vector3 translationAssist() {
+    double lookAheadTime = 0.02;
+    Pose2d targetPose = new Pose2d(); // what sid gives us
+    int n = 2;
+
+    double p1x = swerveDrivetrain.getCurrentState().Pose.getX();
+    double p1y = swerveDrivetrain.getCurrentState().Pose.getY();
+
+    Pose2d p2 =
+        new Pose2d(
+            p1x + lookAheadTime * xSpdFunction.getAsDouble(),
+            p1y + lookAheadTime * ySpdFunction.getAsDouble(),
+            new Rotation2d());
+
+    double dist =
+        Math.abs(
+                ((p2.getY() - p1y) * targetPose.getX())
+                    - ((p2.getX() - p1x) * targetPose.getY())
+                    + p2.getX() * p1y
+                    - p2.getY() * p1x)
+            / Math.sqrt(
+                Math.pow(((p2.getY() - p1y)), 2) + Math.pow((p2.getX() - p1x), 2));
+    
+    double assistMagnitude = Math.pow((dist * kP), 1/n);
+    double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX());
+
+    return new Vector3(assistedX, assistedY, 0f);
   }
 }
