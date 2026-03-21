@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.List;
@@ -55,7 +54,6 @@ public class IntakeVisionDetection extends SubsystemBase {
           latestRawYaw = t.getYaw();
           DogLog.log("Subsystems/IntakeVision/Area", latestRawArea);
           DogLog.log("Subsystems/IntakeVision/Yaw", latestRawYaw);
-
         },
         () -> DogLog.log("Subsystems/IntakeVision/TargetPresent", false));
   }
@@ -71,8 +69,11 @@ public class IntakeVisionDetection extends SubsystemBase {
     return targets.stream().max((a, b) -> Double.compare(a.getArea(), b.getArea()));
   }
 
-  public double getYaw() { return latestRawYaw; }
+  public double getYaw() {
+    return latestRawYaw;
+  }
 
-  public double getArea() { return latestRawArea; }
-
+  public double getArea() {
+    return latestRawArea;
+  }
 }
