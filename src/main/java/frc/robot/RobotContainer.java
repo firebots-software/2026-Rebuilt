@@ -166,7 +166,7 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            () -> false,
+            () -> true,
             (() -> joystick.leftTrigger().getAsBoolean()), // joystick.a().getAsBoolean()
             redside,
             drivetrain);
@@ -177,7 +177,7 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction,
-            () -> false,
+            () -> true,
             (() -> joystick.leftTrigger().getAsBoolean()),
             redside,
             drivetrain,
