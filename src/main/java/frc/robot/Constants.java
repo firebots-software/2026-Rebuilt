@@ -577,8 +577,7 @@ public final class Constants {
       private static final double Z = Units.inchesToMeters(17.891914);
       private static final double ROLL = Units.degreesToRadians(0.0); // 352.904
       private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
-      private static final double YAW =
-          Units.degreesToRadians(200);
+      private static final double YAW = Units.degreesToRadians(200);
     }
 
     private class RearLeft {

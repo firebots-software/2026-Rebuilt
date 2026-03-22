@@ -88,7 +88,8 @@ public class DriveToPose extends Command {
 
     DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseX", targetPose.getX());
     DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseY", targetPose.getY());
-    DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
+    DogLog.log(
+        "Subsystems/Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
