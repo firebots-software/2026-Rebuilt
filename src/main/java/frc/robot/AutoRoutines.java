@@ -5,24 +5,21 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-// import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
+import frc.robot.commandGroups.IntakeToBumpDTP;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
-// import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 import java.util.function.BooleanSupplier;
 
 public class AutoRoutines {
@@ -32,38 +29,21 @@ public class AutoRoutines {
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
-  // private final ClimberSubsystem climberSubsystem;
-  private final VisionSubsystem visionFrontLeft;
-  private final VisionSubsystem visionFrontRight;
-  private final VisionSubsystem visionRearLeft;
-  private final VisionSubsystem visionRearRight;
   private final BooleanSupplier redSide;
-  private Pose2d bestVisionMeasurement = null;
 
   public AutoRoutines(
       IntakeSubsystem intake,
       ShooterSubsystem lebron,
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
-      // ClimberSubsystem climber,
-      VisionSubsystem visionFrontLeft,
-      VisionSubsystem visionFrontRight,
-      VisionSubsystem visionRearLeft,
-      VisionSubsystem visionRearRight,
       BooleanSupplier redSide) {
     this.intakeSubsystem = intake;
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
-    this.visionFrontLeft = visionFrontLeft;
-    this.visionFrontRight = visionFrontRight;
-    this.visionRearLeft = visionRearLeft;
-    this.visionRearRight = visionRearRight;
-    // this.climberSubsystem = climber;
     this.redSide = redSide;
 
     autoFactory = swerveSubsystem.createAutoFactory();
-
     autoChooser = new AutoChooser();
     addCommandstoAutoChooser();
   }
@@ -134,10 +114,10 @@ public class AutoRoutines {
     return Commands.run(
             () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
-        .withTimeout(time)
-        .andThen(
-            () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
+        .withTimeout(time);
+    // .andThen(
+    //     () ->
+    //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
   public Command driveBackward(double time) {
@@ -145,32 +125,15 @@ public class AutoRoutines {
             () ->
                 swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
-        .withTimeout(time)
-        .andThen(
-            () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
+        .withTimeout(time);
+    // .andThen(
+    //     () ->
+    //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
-  public boolean getBestVisionMeasurement() {
-    bestVisionMeasurement = null;
-
-    if (visionFrontLeft.hasValidMeasurement()) {
-      bestVisionMeasurement = visionFrontLeft.getFilteredPose();
-      return true;
-    }
-    if (visionFrontRight.hasValidMeasurement()) {
-      bestVisionMeasurement = visionFrontRight.getFilteredPose();
-      return true;
-    }
-    if (visionRearLeft.hasValidMeasurement()) {
-      bestVisionMeasurement = visionRearLeft.getFilteredPose();
-      return true;
-    }
-    if (visionRearRight.hasValidMeasurement()) {
-      bestVisionMeasurement = visionRearRight.getFilteredPose();
-      return true;
-    }
-    return false;
+  public Command driveToBumpAfterIntake(BooleanSupplier isRedSide) {
+    // return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
+    return new IntakeToBumpDTP(swerveSubsystem, isRedSide);
   }
 
   // Auto paths without climb
@@ -193,16 +156,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot::resetOdometry),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
@@ -228,16 +182,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot::resetOdometry),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(returnBasicShoot(redSide));
 
@@ -269,23 +214,14 @@ public class AutoRoutines {
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
     AutoTrajectory shootToBump =
         miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightShootToBump);
-    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShort);
+    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightSecondDip);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
     routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : () -> intakeToShoot1.resetOdometry()),
-                intakeToShoot1.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot1.resetOdometry(), intakeToShoot1.cmd()));
 
     intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide), shootToBump.cmd()));
 
@@ -293,16 +229,7 @@ public class AutoRoutines {
 
     intake2
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward2,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot2::resetOdometry),
-                intakeToShoot2.cmd()));
+        .onTrue(Commands.sequence(backward2, intakeToShoot2.resetOdometry(), intakeToShoot2.cmd()));
 
     intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
 
@@ -334,7 +261,7 @@ public class AutoRoutines {
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
     AutoTrajectory shootToBump =
         miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftShootToBump);
-    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweepShort);
+    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftSecondDip);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
     routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
@@ -343,13 +270,9 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
+                driveToBumpAfterIntake(redSide),
                 backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot1::resetOdometry),
+                intakeToShoot1.resetOdometry(),
                 intakeToShoot1.cmd()));
 
     intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide), shootToBump.cmd()));
@@ -358,16 +281,7 @@ public class AutoRoutines {
 
     intake2
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward2,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : () -> intakeToShoot2.resetOdometry()),
-                intakeToShoot2.cmd()));
+        .onTrue(Commands.sequence(backward2, intakeToShoot2.resetOdometry(), intakeToShoot2.cmd()));
 
     intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
 
@@ -395,16 +309,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot::resetOdometry),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
@@ -434,16 +339,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot::resetOdometry),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
     depotIntake.done().onTrue(depotToShoot.cmd());
@@ -473,16 +369,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot::resetOdometry),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
 
@@ -518,16 +405,7 @@ public class AutoRoutines {
 
     intake
         .done()
-        .onTrue(
-            Commands.sequence(
-                backward,
-                Commands.waitUntil(this::getBestVisionMeasurement)
-                    .withTimeout(0.3)
-                    .andThen(
-                        bestVisionMeasurement != null
-                            ? () -> swerveSubsystem.resetPose(bestVisionMeasurement)
-                            : intakeToShoot::resetOdometry),
-                intakeToShoot.cmd()));
+        .onTrue(Commands.sequence(backward, intakeToShoot.resetOdometry(), intakeToShoot.cmd()));
 
     intakeToShoot.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
     outpostIntake

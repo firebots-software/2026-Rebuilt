@@ -72,17 +72,7 @@ public class RobotContainer {
           : null;
 
   public RobotContainer() {
-    autoRoutines =
-        new AutoRoutines(
-            intakeSubsystem,
-            lebron,
-            hopperSubsystem,
-            drivetrain,
-            visionFrontLeft,
-            visionFrontRight,
-            visionRearLeft,
-            visionRearRight,
-            redside);
+    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Elastic/Field2d", field);
