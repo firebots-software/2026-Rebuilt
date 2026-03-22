@@ -5,7 +5,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -239,12 +238,22 @@ public class VisionUtils {
         tagCount);
   }
 
-  public static Pose2d intakeVisionTargetPose(
-      Pose2d currentPose, IntakeVisionDetection intakeVision) {
-    Rotation2d rotate = new Rotation2d(Units.degreesToRadians(-intakeVision.getYaw()));
-    Translation2d translate = new Translation2d(0, rotate);
+  public static Pose2d intakeVisionTargetPose(Pose2d pose, IntakeVisionDetection vision) {
+    double degYaw = vision.getYaw();
+    double degPitch = vision.getPitch();
+    double distance = estimateDistanceFromPitch(degPitch);
 
-    Transform2d poseManipulation = new Transform2d(translate, rotate);
-    return currentPose.plus(poseManipulation);
+    Rotation2d heading = pose.getRotation().plus(Rotation2d.fromDegrees(degYaw));
+    Translation2d poseManipulation = new Translation2d(distance, heading);
+
+    return new Pose2d(pose.getTranslation().plus(poseManipulation), pose.getRotation());
+  }
+
+  private static double estimateDistanceFromPitch(double degPitch) {
+    double targetHeight = 0.0;
+    double pitch = Units.degreesToRadians(degPitch);
+    double slope = Math.tan(Constants.IntakeVision.INTAKE_PITCH + pitch);
+    if (Math.abs(slope) < 0.01) return Double.MAX_VALUE;
+    return (targetHeight - Constants.IntakeVision.INTAKE_Z) / slope;
   }
 }
