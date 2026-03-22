@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootCommandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
@@ -107,6 +106,14 @@ public class RobotContainer {
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+    joystick
+        .a()
+        .whileTrue(
+            intakeSubsystem
+                .outtakeUntilInterruptedCommand()
+                .alongWith(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
+                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // Hopper
@@ -114,13 +121,6 @@ public class RobotContainer {
 
     // Shooter
     lebron.setDefaultCommand(lebron.runOnce(lebron::stopShooter));
-    joystick
-        .a()
-        .whileTrue(
-            Constants.Shooter.INTERMAP_TESTING
-                ? new ShootBasicRetract(
-                    interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem)
-                : intakeSubsystem.powerRetractRollersCommand());
     joystick
         .rightTrigger()
         .whileTrue(

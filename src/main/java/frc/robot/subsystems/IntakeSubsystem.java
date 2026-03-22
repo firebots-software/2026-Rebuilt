@@ -263,6 +263,15 @@ public class IntakeSubsystem extends SubsystemBase {
         this::stopRollers);
   }
 
+  public Command outtakeUntilInterruptedCommand() {
+    return runEnd(
+        () -> {
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
+          runRollers(-Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+        },
+        this::stopRollers);
+  }
+
   public Command intakeDefault() {
     return runOnce(
         () -> {
