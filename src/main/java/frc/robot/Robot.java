@@ -64,7 +64,7 @@ public class Robot extends TimedRobot {
     elasticLogging();
     MiscUtils.shiftSwitchIndicator(simulatedTime);
   }
-  
+
   private void elasticLogging() {
     simulatedTime -= 0.02;
     if (simulatedTime < 0) simulatedTime = 160;

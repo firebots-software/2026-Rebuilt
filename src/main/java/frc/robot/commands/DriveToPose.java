@@ -129,7 +129,8 @@ public class DriveToPose extends Command {
             <= Constants.Swerve.targetPositionError
         && Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
             <= Constants.Swerve.targetPositionError
-        && Math.abs(swerve.getCurrentState().Pose.getRotation().getRadians()
+        && Math.abs(
+                swerve.getCurrentState().Pose.getRotation().getRadians()
                     - targetPose.getRotation().getRadians())
             <= Constants.Swerve.targetAngleError;
   }

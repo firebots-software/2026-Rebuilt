@@ -78,20 +78,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           0); // -13 was good
   // 15, 0, 0 w/o FF
   public DoubleSubscriber headingKPTunable =
-      DogLog.tunable(
-          "Subsystems/Swerve/kPHeading",
-          15.0,
-          headingPIDController::setP);
+      DogLog.tunable("Subsystems/Swerve/kPHeading", 15.0, headingPIDController::setP);
   public DoubleSubscriber headingKITunable =
-      DogLog.tunable(
-          "Subsystems/Swerve/kIHeading",
-          0.0,
-          headingPIDController::setI);
+      DogLog.tunable("Subsystems/Swerve/kIHeading", 0.0, headingPIDController::setI);
   public DoubleSubscriber headingKIDunable =
-      DogLog.tunable(
-          "Subsystems/Swerve/kDHeading",
-          0.0,
-          headingPIDController::setD);
+      DogLog.tunable("Subsystems/Swerve/kDHeading", 0.0, headingPIDController::setD);
 
   /**
    * Constructs a CTRE SwerveDrivetrain using the specified constants.

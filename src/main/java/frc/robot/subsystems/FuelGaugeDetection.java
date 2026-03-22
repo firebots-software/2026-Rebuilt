@@ -142,7 +142,7 @@ public class FuelGaugeDetection extends SubsystemBase {
       case MULTIPLE_BALLS:
         return multipleBallsArea;
       case SMOOTHED_MULTIPLE_BALLS:
-       return smoothedMultipleBallsArea;
+        return smoothedMultipleBallsArea;
     }
   }
 

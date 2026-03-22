@@ -72,11 +72,12 @@ public class ShooterSubsystem extends SubsystemBase {
     VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
     // Apply full TalonFXConfiguration to ensure factory defaults
-    TalonFXConfiguration config = new TalonFXConfiguration()
-      .withSlot0(s0c)
-      .withCurrentLimits(clc)
-      .withMotorOutput(motorOutputConfigs)
-      .withVoltage(vConfigs);
+    TalonFXConfiguration config =
+        new TalonFXConfiguration()
+            .withSlot0(s0c)
+            .withCurrentLimits(clc)
+            .withMotorOutput(motorOutputConfigs)
+            .withVoltage(vConfigs);
 
     TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
     TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
@@ -175,6 +176,6 @@ public class ShooterSubsystem extends SubsystemBase {
         "Subsystems/Shooter/Targeting/TimeOfFlight",
         Targeting.targetingInfo(
                 target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-            .getToF());  
+            .getToF());
   }
 }

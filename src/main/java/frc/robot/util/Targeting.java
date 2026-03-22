@@ -18,8 +18,8 @@ public class Targeting {
         targetAngle(targetNoOffset, drivetrain) + (2 * Math.PI) % (2 * Math.PI);
 
     double robotHullAngle =
-        drivetrain.getCurrentState().Pose.getRotation().getRadians() + (2 * Math.PI)
-            % (2 * Math.PI);
+        drivetrain.getCurrentState().Pose.getRotation().getRadians()
+            + (2 * Math.PI) % (2 * Math.PI);
 
     double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
     if (diff > Math.PI) diff = 2 * Math.PI - diff;
@@ -97,7 +97,8 @@ public class Targeting {
   public static DoubleSupplier amtToRumble(CommandSwerveDrivetrain drivetrain, Pose3d target) {
     return () ->
         Units.metersToFeet(distMeters(drivetrain, target)) > Constants.Shooter.MAX_DIST_FT
-            || Units.metersToFeet(distMeters(drivetrain, target)) < Constants.Shooter.MIN_DIST_FT
+                || Units.metersToFeet(distMeters(drivetrain, target))
+                    < Constants.Shooter.MIN_DIST_FT
             ? .5d
             : 0d;
   }

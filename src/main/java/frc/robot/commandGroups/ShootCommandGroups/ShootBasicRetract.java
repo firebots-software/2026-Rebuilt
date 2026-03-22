@@ -1,6 +1,5 @@
 package frc.robot.commandGroups.ShootCommandGroups;
 
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
@@ -20,9 +19,10 @@ public class ShootBasicRetract extends ParallelCommandGroup {
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(speed),
         new ParallelCommandGroup(
-            hopperSubsystem.runHopperUntilInterruptedCommand(),
-            intakeSubsystem.powerRetractRollersCommand()
-                .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY))
-        ).onlyIf(() -> shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()));
+                hopperSubsystem.runHopperUntilInterruptedCommand(),
+                intakeSubsystem
+                    .powerRetractRollersCommand()
+                    .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))
+            .onlyIf(() -> shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()));
   }
 }

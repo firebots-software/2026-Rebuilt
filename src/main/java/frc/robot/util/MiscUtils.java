@@ -49,16 +49,17 @@ public class MiscUtils {
     // teleop is enabled
     double currentMatchTime = DriverStation.getMatchTime();
     String allianceChar = DriverStation.getGameSpecificMessage();
-    
+
     DogLog.log("Elastic/AllianceChar", allianceChar.isEmpty() ? "Empty" : allianceChar);
 
     if (allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
-    boolean shift1Active = switch (alliance.get()) {
-        case Red -> !redInactiveFirst;
-        case Blue -> redInactiveFirst;
-      };
+    boolean shift1Active =
+        switch (alliance.get()) {
+          case Red -> !redInactiveFirst;
+          case Blue -> redInactiveFirst;
+        };
 
     if (currentMatchTime > 130) return true;
     else if (currentMatchTime > 105) return shift1Active;

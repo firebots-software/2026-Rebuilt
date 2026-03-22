@@ -59,7 +59,9 @@ public class LEDSubsystem extends SubsystemBase {
   public void updateAlliance() {
     if (DriverStation.getAlliance().isEmpty()) return;
     RGBWColor allianceColor =
-        (DriverStation.getAlliance().get() == Alliance.Red) ? new RGBWColor(255, 0, 0) : new RGBWColor(0, 0, 255);
+        (DriverStation.getAlliance().get() == Alliance.Red)
+            ? new RGBWColor(255, 0, 0)
+            : new RGBWColor(0, 0, 255);
     MATCH_IDLE.Color = allianceColor;
     BLINK.Color = allianceColor;
     SOLID.Color = allianceColor;

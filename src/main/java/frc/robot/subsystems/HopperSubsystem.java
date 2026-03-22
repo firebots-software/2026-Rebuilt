@@ -43,17 +43,17 @@ public class HopperSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
 
-    ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs()
-      .withVoltageClosedLoopRampPeriod(0.3);
+    ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3);
 
     hopperMotor =
         new LoggedTalonFX("HopperFloor", Constants.Hopper.MOTOR_PORT, Constants.Swerve.CAN_BUS);
 
-    TalonFXConfiguration hopperConfig = new TalonFXConfiguration()
-      .withSlot0(s0c)
-      .withCurrentLimits(currentLimitConfigs)
-      .withMotorOutput(motorOutputConfigs)
-      .withClosedLoopRamps(clrc);
+    TalonFXConfiguration hopperConfig =
+        new TalonFXConfiguration()
+            .withSlot0(s0c)
+            .withCurrentLimits(currentLimitConfigs)
+            .withMotorOutput(motorOutputConfigs)
+            .withClosedLoopRamps(clrc);
 
     TalonFXConfigurator hopperMotorConfig = hopperMotor.getConfigurator();
     hopperMotorConfig.apply(hopperConfig);
@@ -129,7 +129,7 @@ public class HopperSubsystem extends SubsystemBase {
   // Stops the Hopper when interrupted
   // Ruth's Version
   public Command runHopperUntilInterruptedCommand(
-    DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
+      DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps, readyToRun), this::stop);
   }
 

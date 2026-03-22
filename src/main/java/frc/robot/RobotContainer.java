@@ -113,7 +113,7 @@ public class RobotContainer {
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickCommand);
-            
+
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
@@ -124,20 +124,25 @@ public class RobotContainer {
 
     // Shooter
     lebron.setDefaultCommand(lebron.runOnce(lebron::stopShooter));
-    joystick.a().whileTrue(
-        Constants.Shooter.INTERMAP_TESTING
-        ? new ShootBasicRetract(interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem)
-        : intakeSubsystem.powerRetractRollersCommand());  
-    joystick.rightTrigger().whileTrue(
-        new ShootWithAim(
-            frontBackFunction,
-            leftRightFunction,
-            lebron,
-            intakeSubsystem,
-            hopperSubsystem,
-            drivetrain,
-            redside,
-            secondController.skib()));
+    joystick
+        .a()
+        .whileTrue(
+            Constants.Shooter.INTERMAP_TESTING
+                ? new ShootBasicRetract(
+                    interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem)
+                : intakeSubsystem.powerRetractRollersCommand());
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new ShootWithAim(
+                frontBackFunction,
+                leftRightFunction,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem,
+                drivetrain,
+                redside,
+                secondController.skib()));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
   }
 

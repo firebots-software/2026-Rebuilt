@@ -26,21 +26,37 @@ public class ShootWithAim extends ParallelCommandGroup {
     addCommands(
         Commands.either(
             new ParallelCommandGroup(
-                shooterSubsystem.shootAtSpeedCommand(Constants.Shooter.SHOOT_FOR_AIM),
-                hopperSubsystem.runHopperUntilInterruptedCommand(),
-                intakeSubsystem.powerRetractRollersCommand())
-                    .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY))
-                    .onlyIf(shooterSubsystem::isAtSpeed),
+                    shooterSubsystem.shootAtSpeedCommand(Constants.Shooter.SHOOT_FOR_AIM),
+                    hopperSubsystem.runHopperUntilInterruptedCommand(),
+                    intakeSubsystem.powerRetractRollersCommand())
+                .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY))
+                .onlyIf(shooterSubsystem::isAtSpeed),
             new ParallelCommandGroup(
-                shooterSubsystem.shootAtSpeedCommand(() -> shooterSubsystem.grabTargetShootingSpeed(MiscUtils.getDistanceToHub(redside, drivetrain))),
-                new SwerveJoystickCommand(translationalX, translationalY, () -> 0.0, () -> 1.0, () -> false, () -> true, redside, drivetrain),
-                hopperSubsystem.runHopperUntilInterruptedCommand(
-                    () -> hopperSubsystem.grabHopperRecommendedSpeed(shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
-                    () -> Targeting.pointingAtHub(redside, drivetrain) && drivetrain.getSpeedMagnitude() <= 0.2
-                ),
-                intakeSubsystem.powerRetractRollersCommand()
-                    .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY))
-            ).onlyIf(shooterSubsystem::isAtSpeed),
+                    shooterSubsystem.shootAtSpeedCommand(
+                        () ->
+                            shooterSubsystem.grabTargetShootingSpeed(
+                                MiscUtils.getDistanceToHub(redside, drivetrain))),
+                    new SwerveJoystickCommand(
+                        translationalX,
+                        translationalY,
+                        () -> 0.0,
+                        () -> 1.0,
+                        () -> false,
+                        () -> true,
+                        redside,
+                        drivetrain),
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
+                        () ->
+                            hopperSubsystem.grabHopperRecommendedSpeed(
+                                shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
+                        () ->
+                            Targeting.pointingAtHub(redside, drivetrain)
+                                && drivetrain.getSpeedMagnitude() <= 0.2),
+                    intakeSubsystem
+                        .powerRetractRollersCommand()
+                        .beforeStarting(
+                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))
+                .onlyIf(shooterSubsystem::isAtSpeed),
             manualOverride));
   }
 }

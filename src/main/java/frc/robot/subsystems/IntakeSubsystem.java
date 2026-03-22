@@ -103,20 +103,24 @@ public class IntakeSubsystem extends SubsystemBase {
                     / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
             .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
 
-    TalonFXConfiguration rollersConfig = new TalonFXConfiguration()
-      .withSlot0(rollersSlot0Configs)
-      .withCurrentLimits(rollersCurrentLimitsConfigs)
-      .withMotorOutput(new MotorOutputConfigs()
-        .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast));
+    TalonFXConfiguration rollersConfig =
+        new TalonFXConfiguration()
+            .withSlot0(rollersSlot0Configs)
+            .withCurrentLimits(rollersCurrentLimitsConfigs)
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Coast));
 
-    TalonFXConfiguration armConfig = new TalonFXConfiguration()
-      .withSlot0(armSlot0Configs)
-      .withCurrentLimits(armCurrentLimitsConfigs)
-      .withFeedback(feedbackConfigs)
-      .withMotorOutput(new MotorOutputConfigs()
-        .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Brake));
+    TalonFXConfiguration armConfig =
+        new TalonFXConfiguration()
+            .withSlot0(armSlot0Configs)
+            .withCurrentLimits(armCurrentLimitsConfigs)
+            .withFeedback(feedbackConfigs)
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake));
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
     TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();
@@ -185,15 +189,21 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void applyCoastConfigArm() {
-    armMotor.getConfigurator().apply(new MotorOutputConfigs()
-        .withNeutralMode(NeutralModeValue.Coast)
-        .withInverted(InvertedValue.Clockwise_Positive));
+    armMotor
+        .getConfigurator()
+        .apply(
+            new MotorOutputConfigs()
+                .withNeutralMode(NeutralModeValue.Coast)
+                .withInverted(InvertedValue.Clockwise_Positive));
   }
 
   public void applyBrakeConfigArm() {
-    armMotor.getConfigurator().apply(new MotorOutputConfigs()
-        .withNeutralMode(NeutralModeValue.Brake)
-        .withInverted(InvertedValue.Clockwise_Positive));
+    armMotor
+        .getConfigurator()
+        .apply(
+            new MotorOutputConfigs()
+                .withNeutralMode(NeutralModeValue.Brake)
+                .withInverted(InvertedValue.Clockwise_Positive));
   }
 
   public double getCancoderPositionRaw() {
@@ -255,10 +265,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command intakeDefault() {
-    return runOnce(() -> {
-        runRollers(5.0);
-        setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
-      });
+    return runOnce(
+        () -> {
+          runRollers(5.0);
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
+        });
   }
 
   @Override
