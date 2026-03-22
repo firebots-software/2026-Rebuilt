@@ -77,7 +77,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKI(Constants.Intake.Arm.kI)
             .withKD(Constants.Intake.Arm.kD)
             .withKG(Constants.Intake.Arm.kG)
-            .withGravityArmPositionOffset(10.0 / 360.0)
+            .withGravityArmPositionOffset(-2.0 / 360.0)
             .withKS(Constants.Intake.Arm.kS)
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
@@ -309,6 +309,15 @@ public class IntakeSubsystem extends SubsystemBase {
         () -> {
           setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
           runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+        },
+        this::stopRollers);
+  }
+
+  public Command outtakeUntilInterruptedCommand() {
+    return runEnd(
+        () -> {
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
+          runRollers(-Constants.Intake.Rollers.TARGET_ROLLER_RPS);
         },
         this::stopRollers);
   }
