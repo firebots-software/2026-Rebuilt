@@ -37,11 +37,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
-    RobotContainer.setAlliance();
+    RobotContainer.isRedAlliance();
     DogLog.setOptions(
         new DogLogOptions().withNtPublish(true).withCaptureDs(true).withLogExtras(false));
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
-    DogLog.log("Red Side", RobotContainer.setAlliance());
+    DogLog.log("Elastic/RedSide", RobotContainer.isRedAlliance());
   }
 
   /**
@@ -59,35 +59,25 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
 
     CommandScheduler.getInstance().run();
-
     LoggedTalonFX.periodic_static();
-
     m_robotContainer.visionPeriodic();
-
-    // Log odometry pose
+    elasticLogging();
+    MiscUtils.shiftSwitchIndicator(simulatedTime);
+  }
+  
+  private void elasticLogging() {
+    simulatedTime -= 0.02;
+    if (simulatedTime < 0) simulatedTime = 160;
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
-
-    // Update Field2d visualization
-    // m_robotContainer.updateFieldPose();
-
     DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(simulatedTime));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(simulatedTime));
-    MiscUtils.shiftSwitchIndicator(simulatedTime);
-    simulatedTime -= 0.02;
-    if (simulatedTime < 0) {
-      simulatedTime = 160;
-    }
-
-    // DogLog.log("Distance to Hub", MiscUtils.getDistanceToHub());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {
-    m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -95,15 +85,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    RobotContainer.setAlliance();
-
-    m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
-    }
+    if (m_autonomousCommand != null) CommandScheduler.getInstance().schedule(m_autonomousCommand);
   }
 
   /** This function is called periodically during autonomous. */
@@ -117,20 +102,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-
-    if (MiscUtils.isFlashDriveConnected()) {
-      DogLog.log("Elastic/FlashDriveConnected", true);
-    } else {
-      DogLog.log("Elastic/FlashDriveConnected", false);
-    }
-
-    // // stow climber
-    // new ZeroPullUp(climberSubsystem);
-    // climberSubsystem.SitUpCommand(Constants.Climber.SitUp.SIT_BACK_ANGLE);
-    // climberSubsystem.MuscleUpCommand(Constants.Climber.MuscleUp.MUSCLE_UP_BACK);
+    if (m_autonomousCommand != null) m_autonomousCommand.cancel();
+    DogLog.log("Elastic/FlashDriveConnected", MiscUtils.isFlashDriveConnected());
   }
 
   /** This function is called periodically during operator control. */

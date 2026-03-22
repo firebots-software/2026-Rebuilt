@@ -53,7 +53,6 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem) {
-
     this(
         frontBackFunction,
         leftRightFunction,
@@ -72,7 +71,6 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
       boolean squaredTurn) {
-
     this(
         frontBackFunction,
         leftRightFunction,

@@ -10,13 +10,12 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.LEDSubsystem.LEDState;
-import java.util.Optional;
 
 public class LEDSubsystem extends SubsystemBase {
-  private static final int STRIP_LENGTH = 41;
+  private static final int STRIP_LENGTH = 41; // TODO
 
   private static FireAnimation FLAME =
       new FireAnimation(8, STRIP_LENGTH).withFrameRate(15).withSparking(0.4).withCooling(0.4);
@@ -31,8 +30,8 @@ public class LEDSubsystem extends SubsystemBase {
   private LEDStateGroup currentStateGroup;
 
   public LEDSubsystem() {
-    candle = new CANdle(39);
-
+    candle = new CANdle(39); // TODO: change when the bot gets LEDs
+    updateAlliance();
     // reset all leds on init
     LEDStateGroup.LEDS_OFF.run(candle);
   }
@@ -41,9 +40,9 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     if (currentState != null) currentState.run(candle);
     if (currentStateGroup != null) currentStateGroup.run(candle);
-    DogLog.log("Subsystems/LEDs/runningAnimation", currentState != null ? currentState.name : null);
+    DogLog.log("Subsystems/LEDs/RunningAnimation", currentState != null ? currentState.name : null);
     DogLog.log(
-        "Subsystems/LEDs/runningAnimationGroup",
+        "Subsystems/LEDs/RunningAnimationGroup",
         currentStateGroup != null ? currentStateGroup.name : null);
   }
 
@@ -57,19 +56,13 @@ public class LEDSubsystem extends SubsystemBase {
     currentState = null;
   }
 
-  public void updateAlliance(Optional<Alliance> alliance) {
-    if (alliance.isEmpty()) return;
-    if (alliance.get() == Alliance.Red) {
-      RGBWColor red = new RGBWColor(255, 0, 0);
-      MATCH_IDLE.Color = red;
-      BLINK.Color = red;
-      SOLID.Color = red;
-    } else if (alliance.get() == Alliance.Blue) {
-      RGBWColor blue = new RGBWColor(0, 0, 255);
-      MATCH_IDLE.Color = blue;
-      BLINK.Color = blue;
-      SOLID.Color = blue;
-    }
+  public void updateAlliance() {
+    if (DriverStation.getAlliance().isEmpty()) return;
+    RGBWColor allianceColor =
+        (DriverStation.getAlliance().get() == Alliance.Red) ? new RGBWColor(255, 0, 0) : new RGBWColor(0, 0, 255);
+    MATCH_IDLE.Color = allianceColor;
+    BLINK.Color = allianceColor;
+    SOLID.Color = allianceColor;
   }
 
   /** Enum for animation info */

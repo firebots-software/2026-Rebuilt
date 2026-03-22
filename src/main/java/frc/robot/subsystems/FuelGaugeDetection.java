@@ -15,7 +15,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class FuelGaugeDetection extends SubsystemBase {
-
   private static ArrayList<Double> latestRawMeasurements = new ArrayList<>();
   private static ArrayList<Double> latestMultipleMeasurements = new ArrayList<>();
 
@@ -39,7 +38,6 @@ public class FuelGaugeDetection extends SubsystemBase {
   @Override
   public void periodic() {
     if (!cameraConnected()) return;
-
     if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
 
     updateVisionResult();
@@ -52,11 +50,7 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   private boolean validVisionResult(List<PhotonPipelineResult> results) {
-    if (results.isEmpty()) return false;
-
-    latestVisionResult = results.get(results.size() - 1);
-
-    return (latestVisionResult == null);
+    return results.isEmpty() ? false : results.get(results.size() - 1) == null;
   }
 
   private void updateVisionResult() {
@@ -89,9 +83,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     double smoothedArea = 0.0;
 
     list.add(area);
-    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
-      list.remove(0);
-    }
+    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) list.remove(0);
 
     if (!list.isEmpty()) {
       for (double rawArea : list) smoothedArea += rawArea;
@@ -123,15 +115,10 @@ public class FuelGaugeDetection extends SubsystemBase {
   private FuelGauge setFuelGauge(double area) {
     FuelGauge gauge;
 
-    if (area < FuelGauge.EMPTY.getThreshold()) {
-      gauge = FuelGauge.EMPTY;
-    } else if (area < FuelGauge.LOW.getThreshold()) {
-      gauge = FuelGauge.LOW;
-    } else if (area < FuelGauge.MEDIUM.getThreshold()) {
-      gauge = FuelGauge.MEDIUM;
-    } else {
-      gauge = FuelGauge.FULL;
-    }
+    if (area < FuelGauge.EMPTY.getThreshold()) gauge = FuelGauge.EMPTY;
+    else if (area < FuelGauge.LOW.getThreshold()) gauge = FuelGauge.LOW;
+    else if (area < FuelGauge.MEDIUM.getThreshold()) gauge = FuelGauge.MEDIUM;
+    else gauge = FuelGauge.FULL;
 
     return gauge;
   }
@@ -155,7 +142,7 @@ public class FuelGaugeDetection extends SubsystemBase {
       case MULTIPLE_BALLS:
         return multipleBallsArea;
       case SMOOTHED_MULTIPLE_BALLS:
-        return smoothedMultipleBallsArea;
+       return smoothedMultipleBallsArea;
     }
   }
 
@@ -185,9 +172,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     numBalls = Math.min(numBalls, targets.size());
 
-    for (int i = 0; i < numBalls; i++) {
-      sum += targets.get(i).getArea();
-    }
+    for (int i = 0; i < numBalls; i++) sum += targets.get(i).getArea();
 
     return sum / numBalls;
   }

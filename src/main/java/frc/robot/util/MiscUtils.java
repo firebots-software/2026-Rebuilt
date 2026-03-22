@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public class MiscUtils {
-
   public static int shiftIndicatorSum = 0;
 
   public static Pose2d plus(Pose2d a, Translation2d b) {
@@ -33,14 +32,11 @@ public class MiscUtils {
   public static Alliance getSecondAlliance() {
     String allianceChar = DriverStation.getGameSpecificMessage();
     if (allianceChar.isEmpty()) return null;
-    switch (allianceChar.charAt(0)) {
-      case 'B':
-        return Alliance.Blue;
-      case 'R':
-        return Alliance.Red;
-      default:
-        return null;
-    }
+    return switch (allianceChar.charAt(0)) {
+      case 'B' -> Alliance.Blue;
+      case 'R' -> Alliance.Red;
+      default -> null;
+    };
   }
 
   public static boolean areWeActive(double currentTime) {
@@ -51,26 +47,18 @@ public class MiscUtils {
     if (!DriverStation.isTeleopEnabled()) return false;
 
     // teleop is enabled
-    // double currentMatchTime = currentTime;
     double currentMatchTime = DriverStation.getMatchTime();
     String allianceChar = DriverStation.getGameSpecificMessage();
-
-    if (allianceChar.isEmpty()) {
-      DogLog.log("SakethGiri", "Empty");
-    } else {
-      if (allianceChar != null) {
-        DogLog.log("SakethGiri", allianceChar);
-      }
-    }
+    
+    DogLog.log("Elastic/AllianceChar", allianceChar.isEmpty() ? "Empty" : allianceChar);
 
     if (allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
-    boolean shift1Active =
-        switch (alliance.get()) {
-          case Red -> !redInactiveFirst;
-          case Blue -> redInactiveFirst;
-        };
+    boolean shift1Active = switch (alliance.get()) {
+        case Red -> !redInactiveFirst;
+        case Blue -> redInactiveFirst;
+      };
 
     if (currentMatchTime > 130) return true;
     else if (currentMatchTime > 105) return shift1Active;
@@ -100,18 +88,16 @@ public class MiscUtils {
     // double currentMatchTime = currentTime;
     double currentMatchTime = DriverStation.getMatchTime();
     if (DriverStation.isAutonomous()) return "Auto";
-    else {
-      if (currentMatchTime > 130) return "Transition";
-      else if (currentMatchTime > 105) return "ALS 1";
-      else if (currentMatchTime > 80) return "ALS 2";
-      else if (currentMatchTime > 55) return "ALS 3";
-      else if (currentMatchTime > 30) return "ALS 4";
-      else return "Endgame";
-    }
+
+    if (currentMatchTime > 130) return "Transition";
+    else if (currentMatchTime > 105) return "ALS 1";
+    else if (currentMatchTime > 80) return "ALS 2";
+    else if (currentMatchTime > 55) return "ALS 3";
+    else if (currentMatchTime > 30) return "ALS 4";
+    else return "Endgame";
   }
 
   public static void shiftSwitchIndicator(double currentTime) {
-
     // double currentTimes = currentTime;
     double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
@@ -227,30 +213,16 @@ public class MiscUtils {
   }
 
   public static boolean isFlashDriveConnected() {
-    String[] possiblePaths = {"/u"};
-
-    for (String path : possiblePaths) {
-      // Check if /u/logs exists and is writable (indicates USB is actually mounted)
-      File logsDir = new File(path + "/logs");
-      DogLog.log("Elastic/logsDirExists", logsDir.exists());
-      DogLog.log("Elastic/logsDirIsDirectory", logsDir.isDirectory());
-      DogLog.log("Elastic/logsDirCanWrite", logsDir.canWrite());
-      if (logsDir.exists() && logsDir.isDirectory() && logsDir.canWrite()) {
-        return true;
-      }
-    }
-    return false;
+    // Check if /u/logs exists and is writable (indicates USB is actually mounted)
+    File logsDir = new File("/u/logs");
+    DogLog.log("Elastic/logsDirExists", logsDir.exists());
+    DogLog.log("Elastic/logsDirIsDirectory", logsDir.isDirectory());
+    DogLog.log("Elastic/logsDirCanWrite", logsDir.canWrite());
+    return logsDir.exists() && logsDir.isDirectory() && logsDir.canWrite();
   }
 
   public static File getFlashDriveDirectory() {
-    String[] possiblePaths = {"/u"};
-
-    for (String path : possiblePaths) {
-      File usbDrive = new File(path);
-      if (usbDrive.exists() && usbDrive.isDirectory()) {
-        return usbDrive;
-      }
-    }
-    return null;
+    File usbDrive = new File("/u");
+    return usbDrive.exists() && usbDrive.isDirectory() ? usbDrive : null;
   }
 }

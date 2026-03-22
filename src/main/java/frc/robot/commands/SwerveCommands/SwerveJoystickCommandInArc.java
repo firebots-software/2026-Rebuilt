@@ -24,7 +24,6 @@ public class SwerveJoystickCommandInArc extends Command {
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
   private final SwerveRequest.RobotCentric robotCentricDrive =
       new SwerveRequest.RobotCentric().withDriveRequestType(DriveRequestType.Velocity);
-  private BooleanSupplier redSide;
 
   public SwerveJoystickCommandInArc(
       Pose3d center,
@@ -40,7 +39,6 @@ public class SwerveJoystickCommandInArc extends Command {
     this.speedControlFunction = speedControlFunction;
     this.angleToPointTo = angleToPointTo;
     this.swerveDrivetrain = swerveSubsystem;
-    this.redSide = redside;
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
   }
@@ -57,10 +55,10 @@ public class SwerveJoystickCommandInArc extends Command {
             Vector3.subtract(new Vector3(swerveDrivetrain.getState().Pose), new Vector3(center)).x);
     double tangentialSpeed = tangentSpdFunction.getAsDouble();
     tangentialSpeed =
-        Math.abs(tangentialSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? tangentialSpeed : 0.0;
+        (Math.abs(tangentialSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND) ? tangentialSpeed : 0.0;
 
     double driveSpeed =
-        (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.getAsDouble()))
+        Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.getAsDouble())
             + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
 
     double xSpeed = tangentialSpeed * Math.cos(thetaFromCenter + Math.PI / 2f);

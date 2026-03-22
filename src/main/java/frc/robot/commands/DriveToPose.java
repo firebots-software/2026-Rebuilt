@@ -86,10 +86,9 @@ public class DriveToPose extends Command {
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
 
-    DogLog.log("Swerve/Drive To Pose/Init Target Pose X", targetPose.getX());
-    DogLog.log("Swerve/Drive To Pose/Init Target Pose Y", targetPose.getY());
-    DogLog.log(
-        "Swerve/Drive To Pose/Init Target Pose Rotation", targetPose.getRotation().getRadians());
+    DogLog.log("Swerve/DTP/InitTargetPoseX", targetPose.getX());
+    DogLog.log("Swerve/DTP/InitTargetPoseY", targetPose.getY());
+    DogLog.log("Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -119,17 +118,6 @@ public class DriveToPose extends Command {
     swerve.applyOneFieldSpeeds(speeds);
   }
 
-  private boolean atPosition() {
-    return (Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
-            <= Constants.Swerve.targetPositionError)
-        && (Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
-            <= Constants.Swerve.targetPositionError)
-        && (Math.abs(
-                swerve.getCurrentState().Pose.getRotation().getRadians()
-                    - targetPose.getRotation().getRadians())
-            <= Constants.Swerve.targetAngleError);
-  }
-
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
@@ -137,6 +125,12 @@ public class DriveToPose extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return atPosition();
+    return Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
+            <= Constants.Swerve.targetPositionError
+        && Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
+            <= Constants.Swerve.targetPositionError
+        && Math.abs(swerve.getCurrentState().Pose.getRotation().getRadians()
+                    - targetPose.getRotation().getRadians())
+            <= Constants.Swerve.targetAngleError;
   }
 }

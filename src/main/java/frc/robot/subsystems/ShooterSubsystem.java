@@ -72,11 +72,11 @@ public class ShooterSubsystem extends SubsystemBase {
     VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
     // Apply full TalonFXConfiguration to ensure factory defaults
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0 = s0c;
-    config.CurrentLimits = clc;
-    config.MotorOutput = motorOutputConfigs;
-    config.Voltage = vConfigs;
+    TalonFXConfiguration config = new TalonFXConfiguration()
+      .withSlot0(s0c)
+      .withCurrentLimits(clc)
+      .withMotorOutput(motorOutputConfigs)
+      .withVoltage(vConfigs);
 
     TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
     TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
@@ -110,10 +110,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    if (shooter.getCachedVelocityRps() == 0) {
-      return false;
-    }
-    return Math.abs(targetShooterWheelRPS - (getCurrentShooterWheelSpeedRPS())) <= TOLERANCE_RPS;
+    if (shooter.getCachedVelocityRps() == 0) return false;
+    return Math.abs(targetShooterWheelRPS - getCurrentShooterWheelSpeedRPS()) <= TOLERANCE_RPS;
   }
 
   public double getCurrentShooterWheelSpeedRPS() {
@@ -125,7 +123,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)) - 0.5;
+    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget) - 0.5;
   }
 
   // Commands
@@ -177,8 +175,6 @@ public class ShooterSubsystem extends SubsystemBase {
         "Subsystems/Shooter/Targeting/TimeOfFlight",
         Targeting.targetingInfo(
                 target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-            .getToF());
-    // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
-    // shooter.getVelocity().getValueAsDouble());
+            .getToF());  
   }
 }

@@ -1,4 +1,4 @@
-package frc.robot.commandGroups;
+package frc.robot.commandGroups.ShootCommandGroups;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
@@ -7,6 +7,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+/** don't use this - use {@link ShootBasic} or {@link ShootBasicRetract} instead */
+@Deprecated
 public class WarmUpAndShoot extends SequentialCommandGroup {
   public WarmUpAndShoot(
       DoubleSupplier speed,
@@ -15,7 +17,6 @@ public class WarmUpAndShoot extends SequentialCommandGroup {
       HopperSubsystem hopperSubsystem) {
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(speed),
-        hopperSubsystem.runHopperUntilInterruptedCommand(
-            Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
+        hopperSubsystem.runHopperUntilInterruptedCommand(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
   }
 }
