@@ -86,9 +86,9 @@ public class DriveToPose extends Command {
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
 
-    DogLog.log("Swerve/DTP/InitTargetPoseX", targetPose.getX());
-    DogLog.log("Swerve/DTP/InitTargetPoseY", targetPose.getY());
-    DogLog.log("Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
+    DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseX", targetPose.getX());
+    DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseY", targetPose.getY());
+    DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -353,8 +353,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     double omega = omegaFF + omegaPID;
 
-    DogLog.log("Swerve/RotationController/omegaFF", omegaFF);
-    DogLog.log("Swerve/RotationController/omegaPID", omegaPID);
+    DogLog.log("Subsystems/Swerve/RotationController/omegaFF", omegaFF);
+    DogLog.log("Subsystems/Swerve/RotationController/omegaPID", omegaPID);
     DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
     return omega;
   }

@@ -183,7 +183,6 @@ public class IntakeSubsystem extends SubsystemBase {
             getCancoderPositionRaw() * Constants.Intake.Arm.ARM_ROTS_PER_CANCODER_ROT));
   }
 
-  // TODO: Verify this is the same used w/ the feedback
   public Rotation2d getArmPosition() {
     return new Rotation2d(Units.rotationsToRadians(armMotor.getCachedPositionRotations()));
   }

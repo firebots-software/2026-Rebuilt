@@ -216,9 +216,9 @@ public class MiscUtils {
   public static boolean isFlashDriveConnected() {
     // Check if /u/logs exists and is writable (indicates USB is actually mounted)
     File logsDir = new File("/u/logs");
-    DogLog.log("Elastic/logsDirExists", logsDir.exists());
-    DogLog.log("Elastic/logsDirIsDirectory", logsDir.isDirectory());
-    DogLog.log("Elastic/logsDirCanWrite", logsDir.canWrite());
+    DogLog.log("Elastic/LogsDirExists", logsDir.exists());
+    DogLog.log("Elastic/LogsDirIsDirectory", logsDir.isDirectory());
+    DogLog.log("Elastic/LogsDirCanWrite", logsDir.canWrite());
     return logsDir.exists() && logsDir.isDirectory() && logsDir.canWrite();
   }
 

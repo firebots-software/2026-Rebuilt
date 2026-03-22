@@ -516,11 +516,9 @@ public final class Constants {
   }
 
   public static class Vision {
-    // TODO: be able to set this at the start of the match
     public static VisionCamera FALLBACK_CAMERA = VisionCamera.FRONT_LEFT_CAM;
     public static boolean SKIP_TO_FALLBACK = false;
 
-    // TODO: move this somewhere else
     public static void updateFallbackCamera(VisionCamera cam) {
       FALLBACK_CAMERA = cam;
     }
@@ -552,8 +550,6 @@ public final class Constants {
     public static final double TIMESTAMP_THRESHOLD = 0.5;
     public static final double TIMESTAMP_FPGA_CORRECTION = -0.03;
 
-    // TODO: SID: update all vals
-
     private class FrontRight {
       private static final double X = Units.inchesToMeters(-4.775894);
       private static final double Y = Units.inchesToMeters(-7.880312);
@@ -579,7 +575,7 @@ public final class Constants {
       private static final double ROLL = Units.degreesToRadians(0.0); // 352.904
       private static final double PITCH = Units.degreesToRadians(340.0); // 288.882
       private static final double YAW =
-          Units.degreesToRadians(200); // 190 TODO: verify swapped yaws
+          Units.degreesToRadians(200);
     }
 
     private class RearLeft {
