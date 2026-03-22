@@ -239,9 +239,11 @@ public class VisionUtils {
         tagCount);
   }
 
-  public static Pose2d intakeVisionTargetPose(Pose2d currentPose, IntakeVisionDetection intakeVision) {
-    Translation2d translate = new Translation2d(0, 0);
+  public static Pose2d intakeVisionTargetPose(
+      Pose2d currentPose, IntakeVisionDetection intakeVision) {
     Rotation2d rotate = new Rotation2d(Units.degreesToRadians(-intakeVision.getYaw()));
+    Translation2d translate = new Translation2d(0, rotate);
+
     Transform2d poseManipulation = new Transform2d(translate, rotate);
     return currentPose.plus(poseManipulation);
   }

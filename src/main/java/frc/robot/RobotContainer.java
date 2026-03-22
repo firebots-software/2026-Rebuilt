@@ -276,7 +276,8 @@ public class RobotContainer {
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
-    Pose2d intakeVisionTarget = VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
+    Pose2d intakeVisionTarget =
+        VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
   }
 
   public static boolean setAlliance() {
