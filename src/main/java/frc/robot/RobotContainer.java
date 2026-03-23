@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.IntakeVision.TargetingMode;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
@@ -37,7 +35,6 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
 import frc.robot.util.VisionUtils.VisionTargetResult;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -280,8 +277,7 @@ public class RobotContainer {
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
     VisionTargetResult intakeVisionResult =
-        VisionUtils.intakeVisionTargetPose(
-            drivetrain.getPose(), intakeVisionDetection);
+        VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
   }
 
   public static boolean setAlliance() {
