@@ -36,6 +36,8 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
+import frc.robot.util.VisionUtils.VisionTargetResult;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -102,9 +104,6 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAMERA)
           : null;
-
-  public TargetingMode intakeTargetingMode =
-      Constants.intakeVisionOnRobot ? TargetingMode.HDG_SEL : null;
 
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
@@ -280,9 +279,9 @@ public class RobotContainer {
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
-    Pose2d intakeVisionTarget =
+    VisionTargetResult intakeVisionResult =
         VisionUtils.intakeVisionTargetPose(
-            drivetrain.getPose(), intakeVisionDetection, intakeTargetingMode);
+            drivetrain.getPose(), intakeVisionDetection);
   }
 
   public static boolean setAlliance() {
