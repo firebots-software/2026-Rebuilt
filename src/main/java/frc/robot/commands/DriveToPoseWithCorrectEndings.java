@@ -41,13 +41,8 @@ public class DriveToPoseWithCorrectEndings extends Command {
 
   double startTime;
 
-  /**
-   * @param swerve Swerve Subsystem.
-   * @param targetPoseSupplier Target Pose Supplier (for changing values of pose not just runtime)
-   */
   public DriveToPoseWithCorrectEndings(
       CommandSwerveDrivetrain swerve, Supplier<Pose2d> targetPoseSupplier) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.swerve = swerve;
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
@@ -79,17 +74,14 @@ public class DriveToPoseWithCorrectEndings extends Command {
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    if (targetPoseSupplier != null) {
-      targetPose = targetPoseSupplier.get();
-    }
+    if (targetPoseSupplier != null) targetPose = targetPoseSupplier.get();
 
     pathState =
         new TunedLinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
 
-    DogLog.log("Swerve/Drive To Pose/Init Target Pose X", targetPose.getX());
-    DogLog.log("Swerve/Drive To Pose/Init Target Pose Y", targetPose.getY());
-    DogLog.log(
-        "Swerve/Drive To Pose/Init Target Pose Rotation", targetPose.getRotation().getRadians());
+    DogLog.log("Swerve/DTP/InitTargetPose X", targetPose.getX());
+    DogLog.log("Swerve/DTP/InitTargetPose Y", targetPose.getY());
+    DogLog.log("Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -101,7 +93,6 @@ public class DriveToPoseWithCorrectEndings extends Command {
 
     pathState = path.calculate(currTime, pathState, targetPose);
 
-    // Generate the next speeds for the robot
     // Generate the next speeds for the robot
     ChassisSpeeds speeds =
         new ChassisSpeeds(
@@ -119,7 +110,13 @@ public class DriveToPoseWithCorrectEndings extends Command {
     swerve.applyOneFieldSpeeds(speeds);
   }
 
-  private boolean atPosition() {
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
     return (Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
             <= Constants.Swerve.targetPositionError)
         && (Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
@@ -128,15 +125,5 @@ public class DriveToPoseWithCorrectEndings extends Command {
                 swerve.getCurrentState().Pose.getRotation().getRadians()
                     - targetPose.getRotation().getRadians())
             <= Constants.Swerve.targetAngleError);
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return atPosition();
   }
 }

@@ -28,8 +28,10 @@ public class ShootWithAim extends ParallelCommandGroup {
             new ParallelCommandGroup(
                     shooterSubsystem.shootAtSpeedCommand(Constants.Shooter.SHOOT_FOR_AIM),
                     hopperSubsystem.runHopperUntilInterruptedCommand(),
-                    intakeSubsystem.powerRetractRollersCommand())
-                .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY))
+                    intakeSubsystem
+                        .powerRetractRollersCommand()
+                        .beforeStarting(
+                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))
                 .onlyIf(shooterSubsystem::isAtSpeed),
             new ParallelCommandGroup(
                     shooterSubsystem.shootAtSpeedCommand(
