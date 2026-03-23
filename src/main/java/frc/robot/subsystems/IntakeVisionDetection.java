@@ -73,6 +73,7 @@ public class IntakeVisionDetection extends SubsystemBase {
   }
 
   public double getYaw() {
+    DogLog.log("Subsystems/IntakeVision/LatestRetrivedYaw", -latestRawYaw);
     return -latestRawYaw;
   }
 
@@ -81,6 +82,7 @@ public class IntakeVisionDetection extends SubsystemBase {
   }
 
   public double getPitch() {
+    DogLog.log("Subsystems/IntakeVision/LatestRetrivedPitch", latestRawPitch);
     return latestRawPitch;
   }
 }
