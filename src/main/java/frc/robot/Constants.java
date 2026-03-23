@@ -18,13 +18,13 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
-  public static final boolean hopperOnRobot = false;
-  public static final boolean intakeOnRobot = false;
-  public static final boolean visionOnRobot = false;
-  public static final boolean fuelGaugeOnRobot = false;
+  public static final boolean hopperOnRobot = true;
+  public static final boolean intakeOnRobot = true;
+  public static final boolean visionOnRobot = true;
+  public static final boolean fuelGaugeOnRobot = true;
   public static final boolean intakeVisionOnRobot = true;
-  public static final boolean shooterOnRobot = false;
-  public static final boolean climberOnRobot = false;
+  public static final boolean shooterOnRobot = true;
+  public static final boolean climberOnRobot = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -857,7 +857,7 @@ public final class Constants {
     public static final double INTAKE_YAW = Units.degreesToRadians(23.957651);
 
     public static enum IntakeVisionCamera {
-      INTAKE_CAMERA(
+      INTAKE_CAM(
           "intakeCam",
           new Transform3d(
               new Translation3d(INTAKE_X, INTAKE_Y, INTAKE_Z),

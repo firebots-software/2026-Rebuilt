@@ -73,7 +73,7 @@ public class IntakeVisionDetection extends SubsystemBase {
   }
 
   public double getYaw() {
-    return latestRawYaw;
+    return -latestRawYaw;
   }
 
   public double getArea() {

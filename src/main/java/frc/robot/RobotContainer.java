@@ -99,7 +99,7 @@ public class RobotContainer {
 
   public final IntakeVisionDetection intakeVisionDetection =
       Constants.intakeVisionOnRobot
-          ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAMERA)
+          ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
   private DoubleEntry shooterSpeedEntry;
@@ -278,6 +278,8 @@ public class RobotContainer {
 
     VisionTargetResult intakeVisionResult =
         VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
+
+    DogLog.log("Subsystems/IntakeVision/Pose", intakeVisionResult.pose());
   }
 
   public static boolean setAlliance() {
