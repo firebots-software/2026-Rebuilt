@@ -252,7 +252,7 @@ public class VisionUtils {
       Translation2d poseManipulation = new Translation2d(distance, heading);
       return new VisionTargetResult(new Pose2d(pose.getTranslation().plus(poseManipulation), heading), TargetingMode.LOC_SEL);
     } else {
-      return new VisionTargetResult(new Pose2d(pose.getTranslation(), heading), TargetingMode.LOC_SEL);
+      return new VisionTargetResult(new Pose2d(pose.getTranslation(), heading), TargetingMode.HDG_SEL);
     }
     
 
