@@ -185,8 +185,9 @@ public class RobotContainer {
             intakeVisionDetection,
             (() -> joystick.leftBumper().getAsBoolean()));
 
-    // drivetrain.setDefaultCommand(swerveJoystickCommand);
-    drivetrain.setDefaultCommand(swerveJoystickCommandWithCorrection);
+    drivetrain.setDefaultCommand(swerveJoystickCommand);
+
+    joystick.a().whileTrue(swerveJoystickCommandWithCorrection);
 
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
     // climberSubsystem.setDefaultCommand(climberSubsystem.runOnce(climberSubsystem::stopClimbWithoutBrake));
