@@ -40,14 +40,13 @@ public class DriveToPose extends Command {
           Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kIR,
           Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kDR);
 
-  double startTime;
+  private double startTime;
 
   /**
    * @param swerve Swerve Subsystem.
    * @param targetPoseSupplier Target Pose Supplier (for changing values of pose not just runtime)
    */
   public DriveToPose(CommandSwerveDrivetrain swerve, Supplier<Pose2d> targetPoseSupplier) {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.swerve = swerve;
     this.targetPoseSupplier = targetPoseSupplier;
     this.targetPose = targetPoseSupplier.get();
@@ -72,16 +71,13 @@ public class DriveToPose extends Command {
     addRequirements(swerve);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     headingController.enableContinuousInput(-Math.PI, Math.PI);
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    if (targetPoseSupplier != null) {
-      targetPose = targetPoseSupplier.get();
-    }
+    if (targetPoseSupplier != null) targetPose = targetPoseSupplier.get();
 
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
@@ -92,7 +88,6 @@ public class DriveToPose extends Command {
         "Subsystems/Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currTime = Utils.getCurrentTimeSeconds() - startTime;
@@ -101,7 +96,6 @@ public class DriveToPose extends Command {
 
     pathState = path.calculate(currTime, pathState, targetPose);
 
-    // Generate the next speeds for the robot
     // Generate the next speeds for the robot
     ChassisSpeeds speeds =
         new ChassisSpeeds(
@@ -119,20 +113,18 @@ public class DriveToPose extends Command {
     swerve.applyOneFieldSpeeds(speeds);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
-            <= Constants.Swerve.targetPositionError
+            <= Constants.Swerve.TARGET_POS_ERROR
         && Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
-            <= Constants.Swerve.targetPositionError
+            <= Constants.Swerve.TARGET_POS_ERROR
         && Math.abs(
                 swerve.getCurrentState().Pose.getRotation().getRadians()
                     - targetPose.getRotation().getRadians())
-            <= Constants.Swerve.targetAngleError;
+            <= Constants.Swerve.TARGET_ANGLE_ERROR;
   }
 }

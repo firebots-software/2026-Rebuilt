@@ -4,13 +4,11 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ShootBasic extends ParallelCommandGroup {
   public ShootBasic(
       DoubleSupplier speed,
-      BooleanSupplier readyToShoot,
       ShooterSubsystem shooterSubsystem,
       IntakeSubsystem intakeSubsystem,
       HopperSubsystem hopperSubsystem) {
@@ -18,6 +16,6 @@ public class ShootBasic extends ParallelCommandGroup {
         shooterSubsystem.shootAtSpeedCommand(speed),
         hopperSubsystem
             .runHopperUntilInterruptedCommand()
-            .onlyIf(() -> shooterSubsystem.isAtSpeed() && readyToShoot.getAsBoolean()));
+            .onlyIf(shooterSubsystem::isAtSpeed));
   }
 }

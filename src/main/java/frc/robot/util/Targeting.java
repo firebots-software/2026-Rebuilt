@@ -5,9 +5,10 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
-import frc.robot.MathUtils.MiscMath;
-import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.MathUtils.MiscMath;
+import frc.robot.util.MathUtils.Vector3;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 

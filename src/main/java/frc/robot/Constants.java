@@ -109,8 +109,8 @@ public final class Constants {
         new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
 
-    public static final double targetPositionError = 0.03;
-    public static final double targetAngleError = 0.1;
+    public static final double TARGET_POS_ERROR = 0.03;
+    public static final double TARGET_ANGLE_ERROR = 0.1;
     public static final double MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND = 4;
 
     public static enum SwerveLevel {

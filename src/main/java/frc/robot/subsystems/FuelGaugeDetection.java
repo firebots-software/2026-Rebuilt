@@ -113,14 +113,10 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   private FuelGauge setFuelGauge(double area) {
-    FuelGauge gauge;
-
-    if (area < FuelGauge.EMPTY.getThreshold()) gauge = FuelGauge.EMPTY;
-    else if (area < FuelGauge.LOW.getThreshold()) gauge = FuelGauge.LOW;
-    else if (area < FuelGauge.MEDIUM.getThreshold()) gauge = FuelGauge.MEDIUM;
-    else gauge = FuelGauge.FULL;
-
-    return gauge;
+    if (area < FuelGauge.EMPTY.getThreshold()) return FuelGauge.EMPTY;
+    if (area < FuelGauge.LOW.getThreshold()) return FuelGauge.LOW;
+    if (area < FuelGauge.MEDIUM.getThreshold()) return FuelGauge.MEDIUM;
+    return FuelGauge.FULL;  
   }
 
   private Optional<PhotonTrackedTarget> getLargestBall() {
@@ -196,14 +192,9 @@ public class FuelGaugeDetection extends SubsystemBase {
   public FuelGauge getCurrentFuelGaugeState() {
     double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
 
-    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
-      return FuelGauge.EMPTY;
-    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
-      return FuelGauge.LOW;
-    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
-      return FuelGauge.MEDIUM;
-    } else {
-      return FuelGauge.FULL;
-    }
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) return FuelGauge.EMPTY;
+    if (currentMeasurement <= FuelGauge.LOW.getThreshold()) return FuelGauge.LOW;
+    if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) return FuelGauge.MEDIUM;
+    return FuelGauge.FULL;
   }
 }

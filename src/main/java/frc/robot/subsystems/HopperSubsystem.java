@@ -137,7 +137,7 @@ public class HopperSubsystem extends SubsystemBase {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
-  public double grabHopperRecommendedSpeed(double speedOfShooter) {
+  public double getHopperRecommendedSpeed(double speedOfShooter) {
     return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(speedOfShooter);
   }
 

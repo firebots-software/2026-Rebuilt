@@ -104,87 +104,36 @@ public class MiscUtils {
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
     boolean isActive = areWeActive(currentTimes);
-    boolean isAuto = currentShiftName(currentTimes).equals("Auto");
     boolean isTransition = currentShiftName(currentTimes).equals("Transition");
 
-    if (isAuto) {
-      if (timeUntilNextShift < 2) {
-        // Nearly our turn — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      } else if (timeUntilNextShift < 5) {
-        // Very soon — fast yellow blink
-        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 8) {
-        // Soon — slow yellow blink
-        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else {
-        // Plenty of time — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      }
-    }
-
-    if (isTransition) {
-      shiftIndicatorSum = 0;
-      String color = "#00FF00";
-      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-      return;
-    }
-
-    if (isEndgame) {
+    if (isTransition || isEndgame) {
       shiftIndicatorSum = 0;
       SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
       return;
     }
 
+    String color = "";
     if (isActive) {
-      if (timeUntilNextShift > 8) {
-        // Plenty of time — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      } else if (timeUntilNextShift < 2) {
-        // Shift coming up soon — slow  blink
-        String color = "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 5) {
-        // Shift coming up very soon — fast red blink
-        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 8) {
-        // Shift coming up soon — slow red blink
-        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      }
+      shiftIndicatorSum = timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
+      if (timeUntilNextShift >= 8) color = "#00FF00";
+      else if (timeUntilNextShift < 2) color = "#000000";
+      // fast blink
+      else if (timeUntilNextShift < 5) 
+        color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
+        // slow blink
+      else if (timeUntilNextShift < 8)
+        color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
     } else {
-      // Inactive alliance — warn about upcoming shift
-      if (timeUntilNextShift < 2) {
-        // Nearly our turn — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      } else if (timeUntilNextShift < 5) {
-        // Very soon — fast yellow blink
-        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 8) {
-        // Soon — slow yellow blink
-        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else {
-        // Plenty of time — solid black
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
-      }
+      // alliance hub inactive
+      shiftIndicatorSum = timeUntilNextShift < 2 || timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
+      if (timeUntilNextShift < 2) color = "#00FF00";
+      // fast blink
+      else if (timeUntilNextShift < 5) color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
+      // slow blink
+      else if (timeUntilNextShift < 8) color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
+      else color = "#000000";
     }
+    SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
   }
 
   public static double get3dDistance(Transform3d transform) {

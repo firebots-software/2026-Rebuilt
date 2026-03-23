@@ -25,40 +25,36 @@ public class ShootWithAim extends ParallelCommandGroup {
       BooleanSupplier manualOverride) {
     addCommands(
         Commands.either(
-            new ParallelCommandGroup(
-                    shooterSubsystem.shootAtSpeedCommand(Constants.Shooter.SHOOT_FOR_AIM),
-                    hopperSubsystem.runHopperUntilInterruptedCommand(),
-                    intakeSubsystem
-                        .powerRetractRollersCommand()
-                        .beforeStarting(
-                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))
-                .onlyIf(shooterSubsystem::isAtSpeed),
-            new ParallelCommandGroup(
-                    shooterSubsystem.shootAtSpeedCommand(
-                        () ->
-                            shooterSubsystem.grabTargetShootingSpeed(
-                                MiscUtils.getDistanceToHub(redside, drivetrain))),
-                    new SwerveJoystickCommand(
-                        translationalX,
-                        translationalY,
-                        () -> 0.0,
-                        () -> 1.0,
-                        () -> false,
-                        () -> true,
-                        redside,
-                        drivetrain),
-                    hopperSubsystem.runHopperUntilInterruptedCommand(
-                        () ->
-                            hopperSubsystem.grabHopperRecommendedSpeed(
-                                shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
-                        () ->
-                            Targeting.pointingAtHub(redside, drivetrain)
-                                && drivetrain.getSpeedMagnitude() <= 0.2),
-                    intakeSubsystem
-                        .powerRetractRollersCommand()
-                        .beforeStarting(
-                            Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY)))
-                .onlyIf(shooterSubsystem::isAtSpeed),
+            Commands.parallel(
+                shooterSubsystem.shootAtSpeedCommand(Constants.Shooter.SHOOT_FOR_AIM),
+                Commands.parallel(
+                        hopperSubsystem.runHopperUntilInterruptedCommand(),
+                        intakeSubsystem.powerRetractRollersCommand())
+                    .onlyIf(shooterSubsystem::isAtSpeed)),
+            Commands.parallel(
+                shooterSubsystem.shootAtSpeedCommand(
+                    () ->
+                        shooterSubsystem.getTargetShootingSpeed(
+                            MiscUtils.getDistanceToHub(redside, drivetrain))),
+                new SwerveJoystickCommand(
+                    translationalX,
+                    translationalY,
+                    () -> 0.0,
+                    () -> 1.0,
+                    () -> false,
+                    () -> true,
+                    redside,
+                    drivetrain),
+                Commands.parallel(
+                        hopperSubsystem.runHopperUntilInterruptedCommand(
+                            () ->
+                                hopperSubsystem.getHopperRecommendedSpeed(
+                                    shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
+                            () ->
+                                Targeting.pointingAtHub(redside, drivetrain)
+                                    && drivetrain.getSpeedMagnitude() <= 0.2),
+                        intakeSubsystem.powerRetractRollersCommand())
+                    .onlyIf(shooterSubsystem::isAtSpeed)),
             manualOverride));
   }
 }

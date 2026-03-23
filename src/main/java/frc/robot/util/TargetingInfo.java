@@ -1,6 +1,6 @@
 package frc.robot.util;
 
-import frc.robot.MathUtils.Vector3;
+import frc.robot.util.MathUtils.Vector3;
 
 public class TargetingInfo {
   private double speed;

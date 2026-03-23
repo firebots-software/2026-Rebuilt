@@ -13,7 +13,6 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class VisionUtils {
-
   private static VisionSubsystem visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft;
   private static VisionSubsystem preferredVision;
   private static CommandSwerveDrivetrain drivetrain;
@@ -24,7 +23,6 @@ public class VisionUtils {
       VisionSubsystem rearRight,
       VisionSubsystem rearLeft,
       CommandSwerveDrivetrain swerve) {
-
     if (!Constants.visionOnRobot
         || frontRight == null
         || frontLeft == null

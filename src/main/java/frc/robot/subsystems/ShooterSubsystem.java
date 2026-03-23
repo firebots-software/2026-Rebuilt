@@ -71,7 +71,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
-    // Apply full TalonFXConfiguration to ensure factory defaults
     TalonFXConfiguration config =
         new TalonFXConfiguration()
             .withSlot0(s0c)
@@ -79,13 +78,9 @@ public class ShooterSubsystem extends SubsystemBase {
             .withMotorOutput(motorOutputConfigs)
             .withVoltage(vConfigs);
 
-    TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
-    TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
-    TalonFXConfigurator m3config = warmUpMotor3.getConfigurator();
-
-    m1config.apply(config);
-    m2config.apply(config);
-    m3config.apply(config);
+    warmUpMotor1.getConfigurator().apply(config);
+    warmUpMotor2.getConfigurator().apply(config);
+    warmUpMotor3.getConfigurator().apply(config);
 
     // Set motors 1 and 2 to follow motor 3 (the leader)
     Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
@@ -123,7 +118,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetShooterWheelRPS;
   }
 
-  public double grabTargetShootingSpeed(double distanceToTarget) {
+  public double getTargetShootingSpeed(double distanceToTarget) {
     return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget) - 3;
   }
 
@@ -150,7 +145,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
 
-    // TODO: Cache this value
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         new Pose2d(

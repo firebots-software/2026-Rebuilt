@@ -123,14 +123,13 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean resultValid() {
     DogLog.log(loggingPath + "/addFilteredPoseRunning", true);
 
-    boolean resultExists =
-        (!(latestVisionResult == null) && !(latestVisionResult.getTargets().isEmpty()));
+    boolean resultExists = latestVisionResult != null && !latestVisionResult.getTargets().isEmpty();
     DogLog.log(loggingPath + "/HasResultsTargets", resultExists);
 
     boolean hasEstimate = !visionEstimate.isEmpty();
     DogLog.log(loggingPath + "/HasEstimate", hasEstimate);
 
-    return (resultExists && hasEstimate);
+    return resultExists && hasEstimate;
   }
 
   private boolean tagsValid() {
@@ -139,20 +138,20 @@ public class VisionSubsystem extends SubsystemBase {
     boolean tagsValid = !tags.isEmpty();
     DogLog.log(loggingPath + "/Tags", tagsValid);
 
-    if (tagsValid) {
-      for (PhotonTrackedTarget tag : tags) {
-        DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
-        DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
-      }
-      latestTagCount = tags.size();
-      DogLog.log("Subsystems/Vision/tagCount", latestTagCount);
-    }
+    if (!tagsValid) return false;
 
-    return tagsValid;
+    for (PhotonTrackedTarget tag : tags) {
+      DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
+      DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
+    }
+    latestTagCount = tags.size();
+    DogLog.log("Subsystems/Vision/tagCount", latestTagCount);
+
+    return true;
   }
 
   private boolean throwOutDistance(double min) {
-    boolean thrownOut = (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE);
+    boolean thrownOut = Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE;
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
   }
@@ -185,7 +184,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getMaxDistance() {
     double maxDist =
-        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())

@@ -39,7 +39,7 @@ public class DriveToPoseWithCorrectEndings extends Command {
           Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kIR,
           Constants.Swerve.WHICH_SWERVE_ROBOT.SWERVE_DRIVE_TO_POSE_PID_VALUES.kDR);
 
-  double startTime;
+  private double startTime;
 
   public DriveToPoseWithCorrectEndings(
       CommandSwerveDrivetrain swerve, Supplier<Pose2d> targetPoseSupplier) {
@@ -67,7 +67,6 @@ public class DriveToPoseWithCorrectEndings extends Command {
     addRequirements(swerve);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     headingController.enableContinuousInput(-Math.PI, Math.PI);
@@ -79,12 +78,11 @@ public class DriveToPoseWithCorrectEndings extends Command {
     pathState =
         new TunedLinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
 
-    DogLog.log("Swerve/DTP/InitTargetPose X", targetPose.getX());
-    DogLog.log("Swerve/DTP/InitTargetPose Y", targetPose.getY());
-    DogLog.log("Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
+    DogLog.log("Subsystems/Swerve/DTP/InitTargetPose X", targetPose.getX());
+    DogLog.log("Subsystems/Swerve/DTP/InitTargetPose Y", targetPose.getY());
+    DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double currTime = Utils.getCurrentTimeSeconds() - startTime;
@@ -110,20 +108,18 @@ public class DriveToPoseWithCorrectEndings extends Command {
     swerve.applyOneFieldSpeeds(speeds);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
-            <= Constants.Swerve.targetPositionError)
-        && (Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
-            <= Constants.Swerve.targetPositionError)
-        && (Math.abs(
+    return Math.abs(swerve.getCurrentState().Pose.getX() - targetPose.getX())
+            <= Constants.Swerve.TARGET_POS_ERROR
+        && Math.abs(swerve.getCurrentState().Pose.getY() - targetPose.getY())
+            <= Constants.Swerve.TARGET_POS_ERROR
+        && Math.abs(
                 swerve.getCurrentState().Pose.getRotation().getRadians()
                     - targetPose.getRotation().getRadians())
-            <= Constants.Swerve.targetAngleError);
+            <= Constants.Swerve.TARGET_ANGLE_ERROR;
   }
 }

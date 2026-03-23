@@ -5,7 +5,6 @@ import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-@Deprecated
 public class ReverseIntakeAndHopper extends ParallelCommandGroup {
   public ReverseIntakeAndHopper(IntakeSubsystem intakeSubsystem, HopperSubsystem hopperSubsystem) {
     addCommands(

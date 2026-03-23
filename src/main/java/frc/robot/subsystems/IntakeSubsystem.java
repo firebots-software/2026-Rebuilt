@@ -26,6 +26,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -155,8 +156,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command stopRollersCommand() {
-    targetRollersRPS = 0;
-    return runOnce(() -> rollersMotor.setControl(m_velocityRequest.withVelocity(0)));
+    return runOnce(this::stopRollers);
   }
 
   public void stopArm() {
@@ -168,7 +168,7 @@ public class IntakeSubsystem extends SubsystemBase {
         MathUtil.clamp(
             angleDeg,
             Constants.Intake.Arm.ARM_POS_MIN,
-            Constants.Intake.Arm.ARM_POS_RETRACTED); // change to retracted, not max
+            Constants.Intake.Arm.ARM_POS_RETRACTED);
     double targetArmRotations = targetAngleDeg / 360.0;
     armMotor.setControl(m_motionMagicRequest.withPosition(targetArmRotations));
   }
@@ -188,21 +188,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void applyCoastConfigArm() {
-    armMotor
-        .getConfigurator()
-        .apply(
-            new MotorOutputConfigs()
-                .withNeutralMode(NeutralModeValue.Coast)
-                .withInverted(InvertedValue.Clockwise_Positive));
+    armMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   public void applyBrakeConfigArm() {
-    armMotor
-        .getConfigurator()
-        .apply(
-            new MotorOutputConfigs()
-                .withNeutralMode(NeutralModeValue.Brake)
-                .withInverted(InvertedValue.Clockwise_Positive));
+    armMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public double getCancoderPositionRaw() {
@@ -223,15 +213,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command runRollersUntilInterruptedCommand() {
     return startEnd(
-        () -> this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
+        () -> runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
   }
 
   public Command runRollersUntilInterruptedCommand(double targetRollers_RPS) {
-    return startEnd(() -> this.runRollers(targetRollers_RPS), this::stopRollers);
+    return startEnd(() -> runRollers(targetRollers_RPS), this::stopRollers);
   }
 
   public Command setArmToDegreesCommand(double degrees) {
-    return runOnce(() -> this.setArmDegrees(degrees));
+    return runOnce(() -> setArmDegrees(degrees));
   }
 
   public Command retractIntakeCommand() {
@@ -244,10 +234,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command powerRetractRollersCommand() {
     return runOnce(
-        () -> {
-          setPowerRetract();
-          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
-        });
+            () -> {
+              setPowerRetract();
+              runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+            })
+        .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
   }
 
   public Command torqueRetractCommand() {
