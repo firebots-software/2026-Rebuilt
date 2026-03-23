@@ -12,6 +12,30 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Targeting {
+  public static class TargetingInfo {
+    private double speed;
+    private double tof;
+    private Vector3 pos;
+
+    public TargetingInfo(double speed, double tof, Vector3 pos) {
+      this.speed = speed;
+      this.tof = tof;
+      this.pos = pos;
+    }
+
+    public double getSpeed() {
+      return speed;
+    }
+
+    public double getToF() {
+      return tof;
+    }
+
+    public Vector3 getPosition() {
+      return pos;
+    }
+  }
+
   public static boolean pointingAtTarget(
       Pose3d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
     double desiredRobotHullAngle =
