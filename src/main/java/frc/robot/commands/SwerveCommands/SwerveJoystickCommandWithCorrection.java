@@ -12,6 +12,8 @@ import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.util.VisionUtils;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -129,23 +131,24 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     final double x = xSpeed;
     final double y = ySpeed;
 
-    Pose2d targetPose = new Pose2d(); // sid stuff
-
     Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
-    double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS / Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
-    targetPose =
-        new Pose2d(
-            curPose.getX()
-                + distToTarget
-                    * Math.cos(
-                        Units.degreesToRadians(intakeVision.getYaw())
-                            + curPose.getRotation().getRadians()),
-            curPose.getY()
-                + distToTarget
-                    * Math.sin(
-                        Units.degreesToRadians(intakeVision.getYaw())
-                            + curPose.getRotation().getRadians()),
-            new Rotation2d());
+
+    Pose2d targetPose = VisionUtils.intakeVisionTargetPose(curPose, intakeVision); // sid stuff
+    
+    // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS / Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
+    // targetPose =
+    //     new Pose2d(
+    //         curPose.getX()
+    //             + distToTarget
+    //                 * Math.cos(
+    //                     Units.degreesToRadians(intakeVision.getYaw())
+    //                         + curPose.getRotation().getRadians()),
+    //         curPose.getY()
+    //             + distToTarget
+    //                 * Math.sin(
+    //                     Units.degreesToRadians(intakeVision.getYaw())
+    //                         + curPose.getRotation().getRadians()),
+    //         new Rotation2d());
 
     double turn =
         (doPointing.getAsBoolean())
