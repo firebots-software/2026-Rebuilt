@@ -3,13 +3,18 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.Vision.CameraSelectionMethod;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
+import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class VisionUtils {
@@ -231,5 +236,24 @@ public class VisionUtils {
         distance,
         robotSpeed,
         tagCount);
+  }
+
+  public static Pose2d intakeVisionTargetPose(Pose2d pose, IntakeVisionDetection vision) {
+    double degYaw = vision.getYaw();
+    double degPitch = vision.getPitch();
+    double distance = estimateDistanceFromPitch(degPitch);
+
+    Rotation2d heading = pose.getRotation().plus(Rotation2d.fromDegrees(degYaw));
+    Translation2d poseManipulation = new Translation2d(distance, heading);
+
+    return new Pose2d(pose.getTranslation().plus(poseManipulation), pose.getRotation());
+  }
+
+  private static double estimateDistanceFromPitch(double degPitch) {
+    double targetHeight = 0.0;
+    double pitch = Units.degreesToRadians(degPitch);
+    double slope = Math.tan(Constants.IntakeVision.INTAKE_PITCH + pitch);
+    if (Math.abs(slope) < 0.01) return Double.MAX_VALUE;
+    return (targetHeight - Constants.IntakeVision.INTAKE_Z) / slope;
   }
 }
