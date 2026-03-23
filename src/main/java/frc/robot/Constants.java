@@ -879,6 +879,11 @@ public final class Constants {
         return cameraTransform;
       }
     }
+
+    public static enum TargetingMode {
+      HDG_SEL(),
+      LOC_SEL();
+    }
   }
 
   // public static final class Shooter {

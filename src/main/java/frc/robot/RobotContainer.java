@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.IntakeVision.TargetingMode;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
@@ -101,6 +102,9 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAMERA)
           : null;
+
+  public TargetingMode intakeTargetingMode =
+      Constants.intakeVisionOnRobot ? TargetingMode.HDG_SEL : null;
 
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
@@ -277,7 +281,8 @@ public class RobotContainer {
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
     Pose2d intakeVisionTarget =
-        VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
+        VisionUtils.intakeVisionTargetPose(
+            drivetrain.getPose(), intakeVisionDetection, intakeTargetingMode);
   }
 
   public static boolean setAlliance() {

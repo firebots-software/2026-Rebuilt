@@ -11,6 +11,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
+import frc.robot.Constants.IntakeVision.TargetingMode;
 import frc.robot.Constants.Vision.CameraSelectionMethod;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
@@ -238,7 +239,8 @@ public class VisionUtils {
         tagCount);
   }
 
-  public static Pose2d intakeVisionTargetPose(Pose2d pose, IntakeVisionDetection vision) {
+  public static Pose2d intakeVisionTargetPose(
+      Pose2d pose, IntakeVisionDetection vision, TargetingMode mode) {
     double degYaw = vision.getYaw();
     double degPitch = vision.getPitch();
     double distance = estimateDistanceFromPitch(degPitch);
