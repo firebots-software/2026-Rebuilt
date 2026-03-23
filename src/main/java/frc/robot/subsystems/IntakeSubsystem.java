@@ -166,9 +166,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setArmDegrees(double angleDeg) {
     targetAngleDeg =
         MathUtil.clamp(
-            angleDeg,
-            Constants.Intake.Arm.ARM_POS_MIN,
-            Constants.Intake.Arm.ARM_POS_RETRACTED);
+            angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_RETRACTED);
     double targetArmRotations = targetAngleDeg / 360.0;
     armMotor.setControl(m_motionMagicRequest.withPosition(targetArmRotations));
   }

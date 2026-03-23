@@ -14,8 +14,6 @@ public class ShootBasic extends ParallelCommandGroup {
       HopperSubsystem hopperSubsystem) {
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(speed),
-        hopperSubsystem
-            .runHopperUntilInterruptedCommand()
-            .onlyIf(shooterSubsystem::isAtSpeed));
+        hopperSubsystem.runHopperUntilInterruptedCommand().onlyIf(shooterSubsystem::isAtSpeed));
   }
 }

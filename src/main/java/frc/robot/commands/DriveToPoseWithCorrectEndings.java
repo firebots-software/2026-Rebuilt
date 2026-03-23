@@ -80,7 +80,8 @@ public class DriveToPoseWithCorrectEndings extends Command {
 
     DogLog.log("Subsystems/Swerve/DTP/InitTargetPose X", targetPose.getX());
     DogLog.log("Subsystems/Swerve/DTP/InitTargetPose Y", targetPose.getY());
-    DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
+    DogLog.log(
+        "Subsystems/Swerve/DTP/InitTargetPoseRotation", targetPose.getRotation().getRadians());
   }
 
   @Override

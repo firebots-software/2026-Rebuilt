@@ -118,19 +118,22 @@ public class MiscUtils {
       if (timeUntilNextShift >= 8) color = "#00FF00";
       else if (timeUntilNextShift < 2) color = "#000000";
       // fast blink
-      else if (timeUntilNextShift < 5) 
+      else if (timeUntilNextShift < 5)
         color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
-        // slow blink
+      // slow blink
       else if (timeUntilNextShift < 8)
         color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
     } else {
       // alliance hub inactive
-      shiftIndicatorSum = timeUntilNextShift < 2 || timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
+      shiftIndicatorSum =
+          timeUntilNextShift < 2 || timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
       if (timeUntilNextShift < 2) color = "#00FF00";
       // fast blink
-      else if (timeUntilNextShift < 5) color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
+      else if (timeUntilNextShift < 5)
+        color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
       // slow blink
-      else if (timeUntilNextShift < 8) color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
+      else if (timeUntilNextShift < 8)
+        color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
       else color = "#000000";
     }
     SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);

@@ -116,7 +116,7 @@ public class FuelGaugeDetection extends SubsystemBase {
     if (area < FuelGauge.EMPTY.getThreshold()) return FuelGauge.EMPTY;
     if (area < FuelGauge.LOW.getThreshold()) return FuelGauge.LOW;
     if (area < FuelGauge.MEDIUM.getThreshold()) return FuelGauge.MEDIUM;
-    return FuelGauge.FULL;  
+    return FuelGauge.FULL;
   }
 
   private Optional<PhotonTrackedTarget> getLargestBall() {
