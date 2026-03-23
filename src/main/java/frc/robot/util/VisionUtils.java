@@ -246,6 +246,7 @@ public class VisionUtils {
     double degYaw = vision.getYaw();
     double degPitch = vision.getPitch();
     double distance = estimateDistanceFromPitch(degPitch);
+    DogLog.log("Subsystems/IntakeVision/EstimatedDistance", distance);
     Rotation2d heading = pose.getRotation().plus(Rotation2d.fromDegrees(degYaw));
 
     if (distance >= 0 && distance < Double.MAX_VALUE) {
@@ -262,6 +263,7 @@ public class VisionUtils {
     double targetHeight = 0.0;
     double pitch = Units.degreesToRadians(degPitch);
     double slope = Math.tan(Constants.IntakeVision.INTAKE_PITCH + pitch);
+    DogLog.log("Subsystems/IntakeVision/CalculatedSlope", slope);
     if (Math.abs(slope) < 0.01) return Double.MAX_VALUE;
     return (targetHeight - Constants.IntakeVision.INTAKE_Z) / slope;
   }
