@@ -15,6 +15,7 @@ public class IntakeVisionDetection extends SubsystemBase {
   private PhotonPipelineResult latestVisionResult;
   private double latestRawArea;
   private double latestRawYaw;
+  private double latestRawPitch;
 
   public IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera cameraID) {
     photonCamera = new PhotonCamera(cameraID.toString());
@@ -49,6 +50,7 @@ public class IntakeVisionDetection extends SubsystemBase {
         t -> {
           latestRawArea = t.getArea();
           latestRawYaw = t.getYaw();
+          latestRawPitch = t.getPitch();
         },
         () -> DogLog.log("Subsystems/IntakeVision/TargetPresent", false));
   }
@@ -63,5 +65,9 @@ public class IntakeVisionDetection extends SubsystemBase {
 
   public double getYaw() {
     return latestRawYaw;
+  }
+
+  public double getPitch() {
+    return latestRawPitch;
   }
 }

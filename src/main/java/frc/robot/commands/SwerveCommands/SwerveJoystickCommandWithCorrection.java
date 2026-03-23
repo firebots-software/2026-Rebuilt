@@ -2,9 +2,11 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
@@ -129,6 +131,22 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     Pose2d targetPose = new Pose2d(); // sid stuff
 
+    Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
+    double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS / Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
+    targetPose =
+        new Pose2d(
+            curPose.getX()
+                + distToTarget
+                    * Math.cos(
+                        Units.degreesToRadians(intakeVision.getYaw())
+                            + curPose.getRotation().getRadians()),
+            curPose.getY()
+                + distToTarget
+                    * Math.sin(
+                        Units.degreesToRadians(intakeVision.getYaw())
+                            + curPose.getRotation().getRadians()),
+            new Rotation2d());
+
     double turn =
         (doPointing.getAsBoolean())
             ? (swerveDrivetrain.calculateRequiredRotationalRate(
@@ -141,12 +159,13 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     if (Math.abs(turningSpdFunction.getAsDouble()) > Constants.IntakeVision.OVERRIDE_ROT_INPUT
         && doDriveAssist.getAsBoolean()
         && !doPointing.getAsBoolean()) {
-      Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
+      DogLog.log("Commands/correctedJoystickCommand/clumpPos", targetPose);
+      DogLog.log("Commands/correctedJoystickCommand/yawFromCam", intakeVision.getYaw());
       turn +=
           swerveDrivetrain.calculateRequiredRotationalRate(
               new Rotation2d(
-                  Math.atan2(
-                      targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX())));
+                  Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX())
+                      + curPose.getRotation().getRadians()));
     }
 
     double velocityX = x;
