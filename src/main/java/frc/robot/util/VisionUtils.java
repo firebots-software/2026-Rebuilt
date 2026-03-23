@@ -244,11 +244,18 @@ public class VisionUtils {
     double degYaw = vision.getYaw();
     double degPitch = vision.getPitch();
     double distance = estimateDistanceFromPitch(degPitch);
-
     Rotation2d heading = pose.getRotation().plus(Rotation2d.fromDegrees(degYaw));
-    Translation2d poseManipulation = new Translation2d(distance, heading);
 
-    return new Pose2d(pose.getTranslation().plus(poseManipulation), pose.getRotation());
+    if (distance >= 0 && distance < Double.MAX_VALUE) {
+      mode = TargetingMode.LOC_SEL;
+      Translation2d poseManipulation = new Translation2d(distance, heading);
+      return new Pose2d(pose.getTranslation().plus(poseManipulation), heading);
+    } else {
+      mode = TargetingMode.HDG_SEL;
+      return new Pose2d(pose.getTranslation(), heading);
+    }
+    
+
   }
 
   private static double estimateDistanceFromPitch(double degPitch) {
