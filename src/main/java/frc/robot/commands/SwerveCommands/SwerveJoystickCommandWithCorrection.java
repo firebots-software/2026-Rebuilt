@@ -6,7 +6,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
@@ -166,16 +165,16 @@ public class SwerveJoystickCommandWithCorrection extends Command {
                         : (Constants.Landmarks.BLUE_HUB_2D)))))
             : (turningSpeed);
 
-    if (Math.abs(turningSpdFunction.getAsDouble()) < Constants.IntakeVision.OVERRIDE_ROT_INPUT && doDriveAssist.getAsBoolean()
+    if (Math.abs(turningSpdFunction.getAsDouble()) < Constants.IntakeVision.OVERRIDE_ROT_INPUT
+        && doDriveAssist.getAsBoolean()
         && !doPointing.getAsBoolean()) {
       double omegaAssist =
           Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX());
-      turn += swerveDrivetrain.calculateRequiredRotationalRate(new Rotation2d(
-                  omegaAssist));
-        //   swerveDrivetrain.calculateRequiredRotationalRateWithFF(new Translation2d(targetPose.getX() ,targetPose.getY()));
-;
+      turn += swerveDrivetrain.calculateRequiredRotationalRate(new Rotation2d(omegaAssist));
+      //   swerveDrivetrain.calculateRequiredRotationalRateWithFF(new
+      // Translation2d(targetPose.getX() ,targetPose.getY()));
+      ;
       DogLog.log("AssistHeading", omegaAssist);
-      
     }
 
     double velocityX = x;
