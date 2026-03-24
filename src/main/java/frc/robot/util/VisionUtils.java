@@ -249,7 +249,8 @@ public class VisionUtils {
     DogLog.log("Subsystems/IntakeVision/EstimatedDistance", distance);
     Rotation2d heading = pose.getRotation().plus(Rotation2d.fromDegrees(degYaw));
 
-    if (distance >= 0 && distance < Double.MAX_VALUE) {
+    if (distance > Constants.IntakeVision.MIN_DETECTION_DIST
+        && distance < Constants.IntakeVision.MAX_DETECTION_DIST) {
       Translation2d poseManipulation = new Translation2d(distance, heading);
       return new IntakeVisionTarget(
           new Pose2d(pose.getTranslation().plus(poseManipulation), heading), TargetingMode.LOC_SEL);
@@ -264,7 +265,8 @@ public class VisionUtils {
     double pitch = Units.degreesToRadians(degPitch);
     double slope = Math.tan(Constants.IntakeVision.INTAKE_PITCH + pitch);
     DogLog.log("Subsystems/IntakeVision/CalculatedSlope", slope);
-    if (Math.abs(slope) < 0.01) return Double.MAX_VALUE;
-    return (-(targetHeight - Constants.IntakeVision.INTAKE_Z) / slope) - Constants.IntakeVision.INTAKE_Y;
+    if (Math.abs(slope) < Constants.IntakeVision.MIN_DETECTION_SLOPE) return Double.MAX_VALUE;
+    return (-(targetHeight - Constants.IntakeVision.INTAKE_Z) / slope)
+        - Constants.IntakeVision.INTAKE_Y;
   }
 }

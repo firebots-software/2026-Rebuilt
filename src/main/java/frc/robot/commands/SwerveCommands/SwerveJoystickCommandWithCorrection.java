@@ -180,7 +180,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
           MathUtil.clamp(
               y + translationAssist.y,
               -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND,
-              Constants.Swerve .PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+              Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
     }
 
     // 5. Applying the drive request on the swerve drivetrain
