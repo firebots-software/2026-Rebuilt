@@ -117,15 +117,15 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     // 4. Make the driving smoother
     // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and
     // TELE_DRIVE_FAST_MODE_SPEED_PERCENT
-    double driveSpeed =
-        (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.getAsDouble()))
-            + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
+    // double driveSpeed =
+    //     (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.getAsDouble()))
+    //         + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
 
     // Applies slew rate limiter
-    xSpeed = xSpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
-    ySpeed = ySpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
+    xSpeed = xSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND; //driveSpeed *
+    ySpeed = ySpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND; //driveSpeed *
     turningSpeed =
-        turningSpeed * driveSpeed * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
+        turningSpeed * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND; //driveSpeed *
 
     // Final values to apply to drivetrain
     final double x = xSpeed;
