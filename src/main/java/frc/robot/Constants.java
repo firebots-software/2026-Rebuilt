@@ -855,6 +855,11 @@ public final class Constants {
     public static final double INTAKE_ROLL = Units.degreesToRadians(286.894287);
     public static final double INTAKE_PITCH = Units.degreesToRadians(9.0);
     public static final double INTAKE_YAW = Units.degreesToRadians(23.957651);
+    public static final double OVERRIDE_ROT_INPUT = 0.5;
+
+    public static final double kP = .3d;
+    public static final double lookAheadTime = 0.02;
+    // public static final double CAM_HEIGHT_METERS = 1;
 
     public static enum IntakeVisionCamera {
       INTAKE_CAM(

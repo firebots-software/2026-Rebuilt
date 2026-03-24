@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithCorrection;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -166,12 +168,28 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-            () -> false,
+            () -> true,
             (() -> joystick.leftTrigger().getAsBoolean()), // joystick.a().getAsBoolean()
             redside,
             drivetrain);
 
-    drivetrain.setDefaultCommand(swerveJoystickCommand);
+    SwerveJoystickCommandWithCorrection swerveJoystickCommandWithCorrection =
+        new SwerveJoystickCommandWithCorrection(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction,
+            () -> true,
+            (() -> joystick.leftTrigger().getAsBoolean()),
+            redside,
+            drivetrain,
+            intakeVisionDetection,
+            (() -> joystick.leftBumper().getAsBoolean()));
+
+    drivetrain.setDefaultCommand(swerveJoystickCommandWithCorrection);
+
+    // joystick.a().whileTrue(swerveJoystickCommandWithCorrection);
+
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
     // climberSubsystem.setDefaultCommand(climberSubsystem.runOnce(climberSubsystem::stopClimbWithoutBrake));
 
