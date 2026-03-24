@@ -24,7 +24,6 @@ import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithCorrection;
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -36,7 +35,7 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
-import frc.robot.util.VisionUtils.VisionTargetResult;
+import frc.robot.util.VisionUtils.IntakeVisionTarget;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -103,7 +102,7 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
-  private VisionTargetResult intakeVisionResult = null;
+  private IntakeVisionTarget intakeVisionResult = null;
 
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;

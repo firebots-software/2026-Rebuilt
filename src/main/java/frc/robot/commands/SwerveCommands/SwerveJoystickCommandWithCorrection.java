@@ -2,19 +2,14 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.IntakeVisionDetection;
-import frc.robot.util.VisionUtils;
-import frc.robot.util.VisionUtils.VisionTargetResult;
-
+import frc.robot.util.VisionUtils.IntakeVisionTarget;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -28,7 +23,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
   protected final CommandSwerveDrivetrain swerveDrivetrain;
   protected final BooleanSupplier doDriveAssist;
 
-  private final VisionTargetResult targetResult;
+  private final IntakeVisionTarget targetResult;
 
   private final SwerveRequest.FieldCentric fieldCentricDrive =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
@@ -45,7 +40,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       BooleanSupplier doPointing,
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
-      VisionTargetResult targetResult,
+      IntakeVisionTarget targetResult,
       BooleanSupplier doDriveAssist) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
@@ -70,7 +65,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
-      VisionTargetResult targetResult) {
+      IntakeVisionTarget targetResult) {
 
     this(
         frontBackFunction,
@@ -136,8 +131,9 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
 
     Pose2d targetPose = targetResult.pose();
-    
-    // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS / Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
+
+    // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS /
+    // Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
     // targetPose =
     //     new Pose2d(
     //         curPose.getX()

@@ -239,9 +239,9 @@ public class VisionUtils {
         tagCount);
   }
 
-  public static record VisionTargetResult(Pose2d pose, TargetingMode mode) {}
+  public static record IntakeVisionTarget(Pose2d pose, TargetingMode mode) {}
 
-  public static VisionTargetResult intakeVisionTargetPose(
+  public static IntakeVisionTarget intakeVisionTargetPose(
       Pose2d pose, IntakeVisionDetection vision) {
     double degYaw = vision.getYaw();
     double degPitch = vision.getPitch();
@@ -251,10 +251,10 @@ public class VisionUtils {
 
     if (distance >= 0 && distance < Double.MAX_VALUE) {
       Translation2d poseManipulation = new Translation2d(distance, heading);
-      return new VisionTargetResult(
+      return new IntakeVisionTarget(
           new Pose2d(pose.getTranslation().plus(poseManipulation), heading), TargetingMode.LOC_SEL);
     } else {
-      return new VisionTargetResult(
+      return new IntakeVisionTarget(
           new Pose2d(pose.getTranslation(), heading), TargetingMode.HDG_SEL);
     }
   }
