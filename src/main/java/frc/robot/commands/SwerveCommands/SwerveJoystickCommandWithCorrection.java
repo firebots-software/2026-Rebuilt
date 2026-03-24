@@ -187,7 +187,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
           MathUtil.clamp(
               y + translationAssist.y,
               -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND,
-              Constants.Swerve .PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+              Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
     }
 
     DogLog.log("AssistVelocityX", translationAssist.x);
