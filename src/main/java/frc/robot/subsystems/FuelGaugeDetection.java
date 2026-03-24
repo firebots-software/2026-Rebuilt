@@ -56,7 +56,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     latestVisionResult = results.get(results.size() - 1);
 
-    return (latestVisionResult == null);
+    return latestVisionResult != null;
   }
 
   private void updateVisionResult() {
