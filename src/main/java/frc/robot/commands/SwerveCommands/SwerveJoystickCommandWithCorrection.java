@@ -13,6 +13,7 @@ import frc.robot.MathUtils.Vector2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.util.VisionUtils;
+import frc.robot.util.VisionUtils.VisionTargetResult;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -133,7 +134,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
 
-    Pose2d targetPose = VisionUtils.intakeVisionTargetPose(curPose, intakeVision); // sid stuff
+    VisionTargetResult targetResult = VisionUtils.intakeVisionTargetPose(curPose, intakeVision); // sid stuff
+    Pose2d targetPose = targetResult.pose();
     
     // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS / Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
     // targetPose =
