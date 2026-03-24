@@ -167,7 +167,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     if (Math.abs(turningSpdFunction.getAsDouble()) < Constants.IntakeVision.OVERRIDE_ROT_INPUT
         && doDriveAssist.getAsBoolean()
-        && !doPointing.getAsBoolean() && (targetPose.getX() - currPose.getX() >= 0.01  || targetPose.getY() - currPose.getY() >= 0.01)) {
+        && !doPointing.getAsBoolean() && (Math.abs(targetPose.getX() - currPose.getX()) >= 0.01  || Math.abs(targetPose.getY() - currPose.getY()) >= 0.01)) {
       double omegaAssist =
           Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX());
       turn += Constants.IntakeVision.headingPIDDampen * swerveDrivetrain.calculateRequiredRotationalRate(new Rotation2d(
