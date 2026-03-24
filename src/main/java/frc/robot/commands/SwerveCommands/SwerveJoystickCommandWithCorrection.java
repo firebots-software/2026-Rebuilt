@@ -167,11 +167,14 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     if (Math.abs(turningSpdFunction.getAsDouble()) < Constants.IntakeVision.OVERRIDE_ROT_INPUT
         && doDriveAssist.getAsBoolean()
-        && !doPointing.getAsBoolean() && (Math.abs(targetPose.getX() - currPose.getX()) >= 0.01  || Math.abs(targetPose.getY() - currPose.getY()) >= 0.01)) {
+        && !doPointing.getAsBoolean()
+        && (Math.abs(targetPose.getX() - currPose.getX()) >= 0.01
+            || Math.abs(targetPose.getY() - currPose.getY()) >= 0.01)) {
       double omegaAssist =
           Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX());
-      turn += Constants.IntakeVision.headingPIDDampen * swerveDrivetrain.calculateRequiredRotationalRate(new Rotation2d(
-                  omegaAssist));
+      turn +=
+          Constants.IntakeVision.headingPIDDampen
+              * swerveDrivetrain.calculateRequiredRotationalRate(new Rotation2d(omegaAssist));
       DogLog.log("AssistHeading", omegaAssist);
     }
 
@@ -234,9 +237,9 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     DogLog.log("AssistDistance", dist);
 
     double assistMagnitude = Math.pow((dist * Constants.IntakeVision.kP), 1.0 / n);
-    // double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX()); incorrect
+    // double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX());
+    // incorrect
     double assistDirection = Math.atan2(targetPose.getY() - p1y, targetPose.getX() - p1x);
-
 
     DogLog.log("AssistMag", assistMagnitude);
     DogLog.log("AssistDir", assistDirection);

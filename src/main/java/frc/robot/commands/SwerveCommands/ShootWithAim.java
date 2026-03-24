@@ -22,7 +22,7 @@ public class ShootWithAim extends ParallelCommandGroup {
       HopperSubsystem hopperSubsystem,
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside,
-      BooleanSupplier manualOverride) {
+      BooleanSupplier autoAimLockout) {
 
     addCommands(
         Commands.either(
@@ -73,6 +73,6 @@ public class ShootWithAim extends ParallelCommandGroup {
                                     .beforeStarting(
                                         Commands.waitSeconds(
                                             Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
-            manualOverride));
+            autoAimLockout));
   }
 }

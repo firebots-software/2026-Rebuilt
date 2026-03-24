@@ -24,6 +24,7 @@ import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithCorrection;
+import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -184,7 +185,21 @@ public class RobotContainer {
             intakeVisionDetection,
             (() -> joystick.leftBumper().getAsBoolean()));
 
-    drivetrain.setDefaultCommand(swerveJoystickCommandWithCorrection);
+    SwerveJoystickDefaultCommand swerveJoystickDefaultCommand =
+        new SwerveJoystickDefaultCommand(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction,
+            () -> true,
+            (() -> joystick.leftTrigger().getAsBoolean()),
+            redside,
+            drivetrain,
+            intakeVisionDetection,
+            (() -> joystick.leftBumper().getAsBoolean()),
+            secondController.IntakeVisionLockout());
+
+    drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // joystick.a().whileTrue(swerveJoystickCommandWithCorrection);
 
