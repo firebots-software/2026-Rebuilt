@@ -169,17 +169,18 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     double velocityX = x;
     double velocityY = y;
+    Vector2 translationAssist = translationAssist(targetPose);
     if (doDriveAssist.getAsBoolean()) {
       velocityX =
           MathUtil.clamp(
-              x + translationAssist(targetPose).x,
+              x + translationAssist.x,
               -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND,
               Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
       velocityY =
           MathUtil.clamp(
-              y + translationAssist(targetPose).y,
+              y + translationAssist.y,
               -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND,
-              Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+              Constants.Swerve .PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
     }
 
     // 5. Applying the drive request on the swerve drivetrain
