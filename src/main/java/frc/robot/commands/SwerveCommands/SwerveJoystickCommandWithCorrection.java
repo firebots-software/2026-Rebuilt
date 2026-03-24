@@ -129,9 +129,11 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     final double x = xSpeed;
     final double y = ySpeed;
 
-    Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
+    Pose2d currPose = swerveDrivetrain.getCurrentState().Pose;
 
-    Pose2d targetPose = targetResult != null ? targetResult.pose() : curPose;
+    DogLog.log("Subsystems/Swerve/IntakeNull", targetResult == null);
+
+    Pose2d targetPose = targetResult != null ? targetResult.pose() : currPose;
 
     // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS /
     // Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
@@ -162,12 +164,12 @@ public class SwerveJoystickCommandWithCorrection extends Command {
         && doDriveAssist.getAsBoolean()
         && !doPointing.getAsBoolean()) {
       double omegaAssist =
-          Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX());
+          Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX());
       turn +=
           swerveDrivetrain.calculateRequiredRotationalRate(
               new Rotation2d(
-                  Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX())
-                      + curPose.getRotation().getRadians()));
+                  Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX())
+                      + currPose.getRotation().getRadians()));
       DogLog.log("AssistHeading", omegaAssist);
     }
 
