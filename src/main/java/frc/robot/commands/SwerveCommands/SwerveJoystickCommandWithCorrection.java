@@ -235,6 +235,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     DogLog.log("AssistMag", assistMagnitude);
     DogLog.log("AssistDir", assistDirection);
+    DogLog.log("AssistP2", p2);
 
     return new Vector2(
         assistMagnitude * Math.cos(assistDirection), assistMagnitude * Math.sin(assistDirection));
