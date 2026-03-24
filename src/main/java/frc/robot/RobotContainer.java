@@ -108,17 +108,7 @@ public class RobotContainer {
   private DoubleTopic shooterSpeedTopic;
 
   public RobotContainer() {
-    autoRoutines =
-        new AutoRoutines(
-            intakeSubsystem,
-            lebron,
-            hopperSubsystem,
-            drivetrain,
-            visionFrontLeft,
-            visionFrontRight,
-            visionRearLeft,
-            visionRearRight,
-            redside);
+    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -138,6 +128,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    joystick.a().whileTrue(intakeSubsystem.outtakeUntilInterruptedCommand().alongWith(hopperSubsystem.runHopperUntilInterruptedCommand(-Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
     secondController.IntakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // SWERVE COMMANDS

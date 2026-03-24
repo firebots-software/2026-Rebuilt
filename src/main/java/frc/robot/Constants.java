@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
@@ -44,11 +45,11 @@ public final class Constants {
       public static final int ENCODER_PORT = 15;
 
       // Current Limits
-      public static final double ARM_POS_RETRACTED = 119;
-      public static final double ARM_POS_EXTENDED = 22.29;
+      public static final double ARM_POS_RETRACTED = 122.0;
+      public static final double ARM_POS_EXTENDED = 27.0;
       public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
-      public static final double ARM_POS_MIN = 12.14;
-      public static final double ARM_POS_IDLE = 66.14;
+      public static final double ARM_POS_MIN = 16.4;
+      public static final double ARM_POS_IDLE = 72.0;
 
       public static final double POSITION_TOLERANCE_DEGREES = 1.0;
 
@@ -57,11 +58,11 @@ public final class Constants {
 
       // TODO: Tune
       public static final double kV = 0.124;
-      public static final double kP = 63.0;
-      public static final double kI = 0.1;
+      public static final double kP = 63.0; // 63.0;
+      public static final double kI = 0.1;//0.1;
       public static final double kD = 0.0;
-      public static final double kG = 1.15; // 0.69 recalc
-      public static final double kS = 0.4;
+      public static final double kG = 1.15;//1.15; // 0.69 recalc
+      public static final double kS = 0.4;//0.4;
 
       public static final double mmcV = 6.0;
       public static final double mmcA = 14.0;
@@ -76,7 +77,7 @@ public final class Constants {
       public static final double MOTOR_ROTS_PER_ARM_DEGREE = MOTOR_ROTS_PER_ARM_ROT / 360.0;
       public static final double CANCODER_ROTS_PER_ARM_ROT = (8.0 / 3.0);
       public static final double ARM_ROTS_PER_CANCODER_ROT = 1.0 / CANCODER_ROTS_PER_ARM_ROT;
-      public static final double ENCODER_OFFSET = 0.1; // -0.55
+      public static final double ENCODER_OFFSET = 0.18; // -0.55
 
       public static final class Simulation {
         public static final double SIM_ARM_POS_MIN = 10.0;
@@ -103,7 +104,7 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 80.0; // TODO: Verify
 
       public static final double ROLLER_CIRCUMFERENCE_INCHES = 3.0 * Math.PI;
-      public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 8.0 / 3.0;
+      public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 2.0; //8.0 / 3.0;
       public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
       public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
@@ -113,7 +114,7 @@ public final class Constants {
 
       // public static final double TARGET_ROLLER_RPM =
       //     (DESIGNED_SURFACE_SPEED_IN_PER_SEC * 60.0) / ROLLER_CIRCUMFERENCE_INCHES;
-      public static final double TARGET_ROLLER_RPM = 2100;
+      public static final double TARGET_ROLLER_RPM = 2700;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
 
@@ -224,7 +225,7 @@ public final class Constants {
       SERRANO(2, 2, 2, 2),
       PROTO(0.5, 0.5, 0.2, 0.2),
       JAMES_HARDEN(0.5, 0.5, 0.2, 0.2),
-      COBRA(0.5, 0.5, 0.5, 0.5); // 5.67, 8.67, 1.9, 1.9
+      COBRA(5, 8, 1.9, 10);
       public final double maxVelocityLinear,
           maxAccelerationLinear,
           maxVelocityAngular,
@@ -438,7 +439,9 @@ public final class Constants {
         LeftIntakeSweepShort,
         RightIntakeSweepShort,
         SecondLeftIntakeSweepShort,
-        SecondRightIntakeSweepShort
+        SecondRightIntakeSweepShort,
+        LeftSecondDip,
+        RightSecondDip
       }
 
       public static enum ShootPos {
@@ -589,7 +592,7 @@ public final class Constants {
     public static final int MOTOR_PORT = 17;
 
     public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
-    public static final double TARGET_SURFACE_SPEED_MPS = TARGET_SURFACE_SPEED_FPS * 0.3048;
+    public static final double TARGET_SURFACE_SPEED_MPS = 2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
@@ -1081,5 +1084,14 @@ public final class Constants {
         new Pose2d(1.6428194046020508, 3.320095539093017, new Rotation2d(Math.PI));
     public static Pose2d BLUE_TOWER_L =
         new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
+
+    public static Pose2d RED_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.908942222595215, 2.54630184173584),
+            new Rotation2d(1.5707963267948966));
+    public static Pose2d BLUE_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.6342058181762695, 5.505496978759766),
+            new Rotation2d(-1.5649821399611368));
   }
 }
