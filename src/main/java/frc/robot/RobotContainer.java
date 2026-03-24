@@ -103,6 +103,7 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
+  private VisionTargetResult intakeVisionResult = null;
 
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
@@ -183,7 +184,7 @@ public class RobotContainer {
             (() -> joystick.leftTrigger().getAsBoolean()),
             redside,
             drivetrain,
-            intakeVisionDetection,
+            intakeVisionResult,
             (() -> joystick.leftBumper().getAsBoolean()));
 
     drivetrain.setDefaultCommand(swerveJoystickCommandWithCorrection);
@@ -294,7 +295,7 @@ public class RobotContainer {
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
-    VisionTargetResult intakeVisionResult =
+    intakeVisionResult =
         VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
 
     DogLog.log("Subsystems/IntakeVision/Pose", intakeVisionResult.pose());

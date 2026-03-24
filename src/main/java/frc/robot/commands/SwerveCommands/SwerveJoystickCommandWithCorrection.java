@@ -26,8 +26,9 @@ public class SwerveJoystickCommandWithCorrection extends Command {
   protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
-  protected final IntakeVisionDetection intakeVision;
   protected final BooleanSupplier doDriveAssist;
+
+  private final VisionTargetResult targetResult;
 
   private final SwerveRequest.FieldCentric fieldCentricDrive =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
@@ -44,7 +45,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       BooleanSupplier doPointing,
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
-      IntakeVisionDetection intakeVision,
+      VisionTargetResult targetResult,
       BooleanSupplier doDriveAssist) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
@@ -55,7 +56,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     this.swerveDrivetrain = swerveSubsystem;
     this.doPointing = doPointing;
     this.redsideIfPointing = redSideIfPointing;
-    this.intakeVision = intakeVision;
+    this.targetResult = targetResult;
     this.doDriveAssist = doDriveAssist;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
@@ -69,7 +70,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
-      IntakeVisionDetection intakeVision) {
+      VisionTargetResult targetResult) {
 
     this(
         frontBackFunction,
@@ -80,7 +81,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
         () -> false,
         () -> false,
         swerveSubsystem,
-        intakeVision,
+        targetResult,
         () -> false);
   }
 
@@ -134,7 +135,6 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
 
-    VisionTargetResult targetResult = VisionUtils.intakeVisionTargetPose(curPose, intakeVision); // sid stuff
     Pose2d targetPose = targetResult.pose();
     
     // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS / Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
@@ -164,8 +164,6 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     if (Math.abs(turningSpdFunction.getAsDouble()) > Constants.IntakeVision.OVERRIDE_ROT_INPUT
         && doDriveAssist.getAsBoolean()
         && !doPointing.getAsBoolean()) {
-      DogLog.log("Commands/correctedJoystickCommand/clumpPos", targetPose);
-      DogLog.log("Commands/correctedJoystickCommand/yawFromCam", intakeVision.getYaw());
       turn +=
           swerveDrivetrain.calculateRequiredRotationalRate(
               new Rotation2d(
