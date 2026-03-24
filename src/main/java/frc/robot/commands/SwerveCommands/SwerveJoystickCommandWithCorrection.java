@@ -1,6 +1,9 @@
 package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+
+import dev.doglog.DogLog;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -10,6 +13,8 @@ import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.VisionUtils.IntakeVisionTarget;
+
+import java.util.Currency;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -130,7 +135,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
 
-    Pose2d targetPose = targetResult.pose();
+    Pose2d targetPose = targetResult != null ? targetResult.pose() : curPose;
 
     // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS /
     // Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
@@ -160,11 +165,13 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     if (Math.abs(turningSpdFunction.getAsDouble()) > Constants.IntakeVision.OVERRIDE_ROT_INPUT
         && doDriveAssist.getAsBoolean()
         && !doPointing.getAsBoolean()) {
+      double omegaAssist = Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX());
       turn +=
           swerveDrivetrain.calculateRequiredRotationalRate(
               new Rotation2d(
                   Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX())
                       + curPose.getRotation().getRadians()));
+      DogLog.log("AssistHeading", omegaAssist);
     }
 
     double velocityX = x;
@@ -182,6 +189,9 @@ public class SwerveJoystickCommandWithCorrection extends Command {
               -Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND,
               Constants.Swerve .PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
     }
+
+    DogLog.log("AssistVelocityX", translationAssist.x);
+    DogLog.log("AssistVelocityY", translationAssist.y);
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
