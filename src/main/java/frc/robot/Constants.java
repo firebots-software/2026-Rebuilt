@@ -851,9 +851,9 @@ public final class Constants {
 
     public static final double INTAKE_X = Units.inchesToMeters(-3.454827);
     public static final double INTAKE_Y = Units.inchesToMeters(-7.056897);
-    public static final double INTAKE_Z = Units.inchesToMeters(25.105416);
+    public static final double INTAKE_Z = Units.inchesToMeters(14.0);
     public static final double INTAKE_ROLL = Units.degreesToRadians(286.894287);
-    public static final double INTAKE_PITCH = Units.degreesToRadians(55.646896);
+    public static final double INTAKE_PITCH = Units.degreesToRadians(9.0);
     public static final double INTAKE_YAW = Units.degreesToRadians(23.957651);
 
     public static enum IntakeVisionCamera {

@@ -265,6 +265,6 @@ public class VisionUtils {
     double slope = Math.tan(Constants.IntakeVision.INTAKE_PITCH + pitch);
     DogLog.log("Subsystems/IntakeVision/CalculatedSlope", slope);
     if (Math.abs(slope) < 0.01) return Double.MAX_VALUE;
-    return (targetHeight - Constants.IntakeVision.INTAKE_Z) / slope;
+    return -(targetHeight - Constants.IntakeVision.INTAKE_Z) / slope;
   }
 }
