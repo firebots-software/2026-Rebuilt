@@ -158,7 +158,7 @@ public class RobotContainer {
                 hopperSubsystem,
                 drivetrain,
                 redside,
-                secondController.Skib()));
+                secondController.VisionShootingLockout()));
 
     SwerveJoystickCommand swerveJoystickCommand =
         new SwerveJoystickCommand(
