@@ -170,10 +170,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
         && !doPointing.getAsBoolean()) {
       double omegaAssist =
           Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX());
-      turn += swerveDrivetrain.calculateRequiredRotationalRate(new Rotation2d(
+      turn += Constants.IntakeVision.headingPIDDampen * swerveDrivetrain.calculateRequiredRotationalRate(new Rotation2d(
                   omegaAssist));
-        //   swerveDrivetrain.calculateRequiredRotationalRateWithFF(new Translation2d(targetPose.getX() ,targetPose.getY()));
-;
       DogLog.log("AssistHeading", omegaAssist);
       
     }
