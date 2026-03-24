@@ -868,8 +868,8 @@ public final class Constants {
     // public static final double CAM_HEIGHT_METERS = 1;
 
     public static final double MIN_DETECTION_DIST = 0.72;
-    public static final double MAX_DETECTION_DIST = 3.52;
-    public static final double MIN_DETECTION_SLOPE = 0.01;
+    public static final double MAX_DETECTION_DIST = 8.07;
+    public static final double MIN_DETECTION_SLOPE = 0.05;
 
     public static enum IntakeVisionCamera {
       INTAKE_CAM(
