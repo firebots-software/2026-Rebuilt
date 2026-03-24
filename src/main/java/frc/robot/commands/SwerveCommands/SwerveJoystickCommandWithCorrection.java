@@ -136,6 +136,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     Pose2d curPose = swerveDrivetrain.getCurrentState().Pose;
 
     Pose2d targetPose = targetResult != null ? targetResult.pose() : curPose;
+    DogLog.log("AssistTargetPose", targetPose);
 
     // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS /
     // Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
@@ -162,8 +163,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
                         : (Constants.Landmarks.BLUE_HUB_2D)))))
             : (turningSpeed);
 
-    if (Math.abs(turningSpdFunction.getAsDouble()) > Constants.IntakeVision.OVERRIDE_ROT_INPUT
-        && doDriveAssist.getAsBoolean()
+    if (Math.abs(turningSpdFunction.getAsDouble()) < Constants.IntakeVision.OVERRIDE_ROT_INPUT && doDriveAssist.getAsBoolean()
         && !doPointing.getAsBoolean()) {
       double omegaAssist = Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX());
       turn +=
@@ -172,6 +172,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
                   Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX())
                       + curPose.getRotation().getRadians()));
       DogLog.log("AssistHeading", omegaAssist);
+      
     }
 
     double velocityX = x;
@@ -230,8 +231,13 @@ public class SwerveJoystickCommandWithCorrection extends Command {
                     - p2.getY() * p1x)
             / Math.sqrt(Math.pow(((p2.getY() - p1y)), 2) + Math.pow((p2.getX() - p1x), 2));
 
+    DogLog.log("AssistDistance", dist);
+
     double assistMagnitude = Math.pow((dist * Constants.IntakeVision.kP), 1.0 / n);
     double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX());
+
+    DogLog.log("AssistMag", assistMagnitude);
+    DogLog.log("AssistDir", assistDirection);
 
     return new Vector2(
         assistMagnitude * Math.cos(assistDirection), assistMagnitude * Math.sin(assistDirection));
