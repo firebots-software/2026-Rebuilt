@@ -237,7 +237,9 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     DogLog.log("AssistDistance", dist);
 
     double assistMagnitude = Math.pow((dist * Constants.IntakeVision.kP), 1.0 / n);
-    double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX());
+    // double assistDirection = Math.atan2(p1y - targetPose.getY(), p1x - targetPose.getX()); incorrect
+    double assistDirection = Math.atan2(targetPose.getY() - p1y, targetPose.getX() - p1x);
+
 
     DogLog.log("AssistMag", assistMagnitude);
     DogLog.log("AssistDir", assistDirection);
