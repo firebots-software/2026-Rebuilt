@@ -6,6 +6,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
@@ -165,10 +166,10 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       double omegaAssist =
           Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX());
       turn +=
-          swerveDrivetrain.calculateRequiredRotationalRate(
-              new Rotation2d(
-                  Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX())
-                      + currPose.getRotation().getRadians()));
+          swerveDrivetrain.calculateRequiredRotationalRateWithFF(new Translation2d(targetPose.getX() ,targetPose.getY()));
+            //   new Rotation2d(
+            //       Math.atan2(targetPose.getY() - currPose.getY(), targetPose.getX() - currPose.getX())
+            //           + currPose.getRotation().getRadians()));
       DogLog.log("AssistHeading", omegaAssist);
       
     }
