@@ -181,7 +181,7 @@ public class RobotContainer {
             (() -> joystick.leftTrigger().getAsBoolean()),
             redside,
             drivetrain,
-            intakeVisionResult,
+            intakeVisionDetection,
             (() -> joystick.leftBumper().getAsBoolean()));
 
     drivetrain.setDefaultCommand(swerveJoystickCommandWithCorrection);

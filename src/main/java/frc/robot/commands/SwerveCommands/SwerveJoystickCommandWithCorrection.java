@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.util.VisionUtils;
 import frc.robot.util.VisionUtils.IntakeVisionTarget;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -24,7 +26,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
   protected final CommandSwerveDrivetrain swerveDrivetrain;
   protected final BooleanSupplier doDriveAssist;
 
-  private final IntakeVisionTarget targetResult;
+  private final IntakeVisionDetection intakeVision;
 
   private final SwerveRequest.FieldCentric fieldCentricDrive =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
@@ -41,7 +43,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       BooleanSupplier doPointing,
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
-      IntakeVisionTarget targetResult,
+      IntakeVisionDetection intakeVision,
       BooleanSupplier doDriveAssist) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
@@ -52,7 +54,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     this.swerveDrivetrain = swerveSubsystem;
     this.doPointing = doPointing;
     this.redsideIfPointing = redSideIfPointing;
-    this.targetResult = targetResult;
+    this.intakeVision = intakeVision;
     this.doDriveAssist = doDriveAssist;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
@@ -66,7 +68,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
-      IntakeVisionTarget targetResult) {
+      IntakeVisionDetection intakeVision) {
 
     this(
         frontBackFunction,
@@ -77,7 +79,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
         () -> false,
         () -> false,
         swerveSubsystem,
-        targetResult,
+        intakeVision,
         () -> false);
   }
 
@@ -130,6 +132,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     final double y = ySpeed;
 
     Pose2d currPose = swerveDrivetrain.getCurrentState().Pose;
+    IntakeVisionTarget targetResult = VisionUtils.intakeVisionTargetPose(currPose, intakeVision);
 
     DogLog.log("Subsystems/Swerve/IntakeNull", targetResult == null);
 
