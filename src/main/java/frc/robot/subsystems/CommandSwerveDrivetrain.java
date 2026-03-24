@@ -375,12 +375,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return new Rotation2d(Math.atan2(deltaY, deltaX));
   }
 
-  public void resetPose(Pose2d pose) { // new
+  public void resetPose(Pose2d pose) {
     super.resetPose(pose);
   }
 
   @Override
   public void periodic() {
+    DogLog.log("SpeedMagnitude", getSpeedMagnitude());
     /*
      * Periodically try to apply the operator perspective.
      * If we haven't applied the operator perspective before, then we should apply

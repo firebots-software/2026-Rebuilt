@@ -865,7 +865,7 @@ public final class Constants {
     public static final double kP = 0.2d;
     public static final double lookAheadTime = 0.02;
 
-    public static final double headingPIDDampen = 0.2;
+    public static final double headingPIDDampen = 0.4;
 
     // public static final double CAM_HEIGHT_METERS = 1;
 
