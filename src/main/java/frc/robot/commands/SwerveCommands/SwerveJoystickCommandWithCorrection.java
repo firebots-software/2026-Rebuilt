@@ -1,10 +1,8 @@
 package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-
-import dev.doglog.DogLog;
-
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,8 +11,6 @@ import frc.robot.Constants;
 import frc.robot.MathUtils.Vector2;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.VisionUtils.IntakeVisionTarget;
-
-import java.util.Currency;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -165,7 +161,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     if (Math.abs(turningSpdFunction.getAsDouble()) > Constants.IntakeVision.OVERRIDE_ROT_INPUT
         && doDriveAssist.getAsBoolean()
         && !doPointing.getAsBoolean()) {
-      double omegaAssist = Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX());
+      double omegaAssist =
+          Math.atan2(targetPose.getY() - curPose.getY(), targetPose.getX() - curPose.getX());
       turn +=
           swerveDrivetrain.calculateRequiredRotationalRate(
               new Rotation2d(
