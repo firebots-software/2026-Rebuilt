@@ -305,7 +305,12 @@ public class AutoRoutines {
 
     intake2
         .done()
-        .onTrue(Commands.sequence(backward2, intakeToShoot2.resetOdometry(), intakeToShoot2.cmd()));
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide),
+                backward2,
+                intakeToShoot2.resetOdometry(),
+                intakeToShoot2.cmd()));
 
     intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
 

@@ -58,10 +58,10 @@ public final class Constants {
       // TODO: Tune
       public static final double kV = 0.124;
       public static final double kP = 63.0; // 63.0;
-      public static final double kI = 0.1;//0.1;
+      public static final double kI = 0.1; // 0.1;
       public static final double kD = 0.0;
-      public static final double kG = 1.15;//1.15; // 0.69 recalc
-      public static final double kS = 0.4;//0.4;
+      public static final double kG = 1.15; // 1.15; // 0.69 recalc
+      public static final double kS = 0.4; // 0.4;
 
       public static final double mmcV = 6.0;
       public static final double mmcA = 14.0;
@@ -103,7 +103,7 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 80.0; // TODO: Verify
 
       public static final double ROLLER_CIRCUMFERENCE_INCHES = 3.0 * Math.PI;
-      public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 2.0; //8.0 / 3.0;
+      public static final double MOTOR_ROTS_PER_ROLLERS_ROT = 2.0; // 8.0 / 3.0;
       public static final double ROLLER_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_ROLLERS_ROT;
       public static final double DESIGNED_SURFACE_SPEED_FT_PER_SEC = 25.0;
       public static final double DESIGNED_SURFACE_SPEED_METERS_PER_SEC =
@@ -130,7 +130,7 @@ public final class Constants {
         new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
 
-    public static final double targetPositionError = 0.03;
+    public static final double targetPositionError = 0.07;
     public static final double targetAngleError = 0.1;
     public static final double MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND = 4;
 
@@ -591,7 +591,8 @@ public final class Constants {
     public static final int MOTOR_PORT = 17;
 
     public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
-    public static final double TARGET_SURFACE_SPEED_MPS = 2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
+    public static final double TARGET_SURFACE_SPEED_MPS =
+        2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
