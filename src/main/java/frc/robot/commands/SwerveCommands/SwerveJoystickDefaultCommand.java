@@ -44,6 +44,6 @@ public class SwerveJoystickDefaultCommand extends ParallelCommandGroup {
                 swerveSubsystem,
                 intakeVision,
                 doDriveAssist),
-            () -> !intakeVisionLockout.getAsBoolean()));
+            () -> intakeVisionLockout.getAsBoolean()));
   }
 }
