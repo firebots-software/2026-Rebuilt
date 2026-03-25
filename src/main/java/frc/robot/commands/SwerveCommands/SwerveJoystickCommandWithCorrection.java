@@ -124,9 +124,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     // Applies slew rate limiter
     xSpeed = xSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     ySpeed = ySpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
-    turningSpeed =
-        turningSpeed
-            * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
+    turningSpeed = turningSpeed * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
 
     // Final values to apply to drivetrain
     final double x = xSpeed;
