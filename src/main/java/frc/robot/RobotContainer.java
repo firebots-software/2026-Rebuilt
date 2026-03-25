@@ -194,31 +194,18 @@ public class RobotContainer {
 
     // joystick.b().whileTrue(new BumpDTP(drivetrain, () -> !redside.getAsBoolean()));
 
-    if (Constants.Shooter.INTERMAP_TESTING) {
-      // joystick
-      // .a()
-      // .whileTrue(
-      // new ShootBasicRetract(
-      // interMapSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-      // } else {
-      //
-    } else {
-      // joystick
-      //         .a()
-      //         .whileTrue(intakeSubsystem.powerRetractRollersCommand());
+    joystick
+        .b()
+        .whileTrue(
+            new ShootBasicRetract(
+                () -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-      joystick
-          .b()
-          .whileTrue(
-              new ShootBasicRetract(
-                  () -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    joystick
+        .y()
+        .whileTrue(
+            new ShootBasicRetract(
+                () -> 65.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-      joystick
-          .y()
-          .whileTrue(
-              new ShootBasicRetract(
-                  () -> 65.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
-    }
     // joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
     // joystick2.x().whileTrue(new ZeroPullUp(climberSubsystem));
