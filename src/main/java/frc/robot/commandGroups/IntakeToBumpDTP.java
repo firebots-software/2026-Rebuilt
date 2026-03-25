@@ -14,7 +14,6 @@ public class IntakeToBumpDTP extends SequentialCommandGroup {
             ? Constants.Landmarks.RED_INTAKE_TO_BUMP
             : Constants.Landmarks.BLUE_INTAKE_TO_BUMP;
 
-    // addCommands(new DriveToPoseWithCorrectEndings(swerve, () -> pose));
     addCommands(new DriveToPose(swerve, () -> pose));
   }
 }
