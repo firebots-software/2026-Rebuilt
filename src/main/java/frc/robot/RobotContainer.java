@@ -176,8 +176,6 @@ public class RobotContainer {
 
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
-    // joystick.a().whileTrue(swerveJoystickCommandWithCorrection);
-
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
     // climberSubsystem.setDefaultCommand(climberSubsystem.runOnce(climberSubsystem::stopClimbWithoutBrake));
 
