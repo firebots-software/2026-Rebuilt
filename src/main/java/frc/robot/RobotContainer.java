@@ -22,8 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootWithAim;
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithCorrection;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -308,10 +306,10 @@ public class RobotContainer {
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
-    intakeVisionResult =
-        VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
+    // intakeVisionResult =
+    //     VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
 
-    DogLog.log("Subsystems/IntakeVision/Pose", intakeVisionResult.pose());
+    // DogLog.log("Subsystems/IntakeVision/Pose", intakeVisionResult.pose());
   }
 
   public static boolean setAlliance() {
