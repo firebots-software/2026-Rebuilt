@@ -221,4 +221,18 @@ public class FuelGaugeDetection extends SubsystemBase {
       return FuelGauge.FULL;
     }
   }
+
+  public String getCurrentFuelGaugeStateAsHex() {
+    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
+
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
+      return "#000000";
+    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
+      return "#FF0000";
+    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
+      return "#FFFF00";
+    } else {
+      return "#00FF00";
+    }
+  }
 }

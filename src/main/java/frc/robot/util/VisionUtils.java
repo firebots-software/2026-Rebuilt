@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
@@ -140,10 +141,13 @@ public class VisionUtils {
   public static void fuelGaugeLogs(FuelGaugeDetection visionFuelGauge) {
     if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
       FuelGauge gaugeState = visionFuelGauge.getCurrentFuelGaugeState();
+      String gaugeStateHex = visionFuelGauge.getCurrentFuelGaugeStateAsHex();
       DogLog.log("Elastic/FuelGauge", gaugeState.toString());
+      SmartDashboard.putString("Elastic/FuelGaugeHex", gaugeStateHex);
       DogLog.log("Elastic/FuelGauge/CameraConnected", true);
     } else {
       DogLog.log("Elastic/FuelGauge", "N/A");
+      SmartDashboard.putString("Elastic/FuelGaugeHex", "#00FFFF");
       DogLog.log("Elastic/FuelGauge/CameraConnected", false);
     }
   }
