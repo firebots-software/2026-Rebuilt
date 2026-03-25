@@ -121,10 +121,11 @@ public class SwerveJoystickCommand extends Command {
     //         + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
 
     // Applies slew rate limiter
-    xSpeed = xSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND; //driveSpeed * 
-    ySpeed = ySpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND; //driveSpeed * 
+    xSpeed = xSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND; // driveSpeed *
+    ySpeed = ySpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND; // driveSpeed *
     turningSpeed =
-        turningSpeed * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND; //driveSpeed * 
+        turningSpeed
+            * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND; // driveSpeed *
 
     // Final values to apply to drivetrain
     final double x = xSpeed;

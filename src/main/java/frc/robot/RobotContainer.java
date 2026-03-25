@@ -160,7 +160,31 @@ public class RobotContainer {
                 drivetrain,
                 redside,
                 secondController.VisionShootingLockout()));
-                
+
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> true,
+            (() -> joystick.leftTrigger().getAsBoolean()), // joystick.a().getAsBoolean()
+            redside,
+            drivetrain);
+
+    SwerveJoystickCommandWithCorrection swerveJoystickCommandWithCorrection =
+        new SwerveJoystickCommandWithCorrection(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction,
+            () -> true,
+            (() -> joystick.leftTrigger().getAsBoolean()),
+            redside,
+            drivetrain,
+            intakeVisionDetection,
+            (() -> joystick.leftBumper().getAsBoolean()));
+
     SwerveJoystickDefaultCommand swerveJoystickDefaultCommand =
         new SwerveJoystickDefaultCommand(
             frontBackFunction,
@@ -176,6 +200,8 @@ public class RobotContainer {
             secondController.IntakeVisionLockout());
 
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
+
+    // joystick.a().whileTrue(swerveJoystickCommandWithCorrection);
 
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
     // climberSubsystem.setDefaultCommand(climberSubsystem.runOnce(climberSubsystem::stopClimbWithoutBrake));
