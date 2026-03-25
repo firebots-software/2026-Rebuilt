@@ -262,7 +262,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean atExtendedPosition() {
-    return Math.abs(getArmPosition().getDegrees() - Constants.Intake.Arm.ARM_POS_EXTENDED) <= Constants.Intake.Arm.POSITION_TOLERANCE_DEGREES;
+    return Math.abs(getArmPosition().getDegrees() - Constants.Intake.Arm.ARM_POS_EXTENDED)
+        <= Constants.Intake.Arm.POSITION_TOLERANCE_DEGREES;
   }
 
   public boolean atTargetSpeed() {

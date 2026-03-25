@@ -21,7 +21,10 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
-  protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing, intakeExtended;
+  protected final BooleanSupplier fieldRelativeFunction,
+      doPointing,
+      redsideIfPointing,
+      intakeExtended;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
   protected final BooleanSupplier doDriveAssist;
@@ -143,7 +146,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     DogLog.log("Subsystems/Swerve/IntakeNull", targetResult == null);
 
-    Pose2d targetPose = (targetResult != null) && (intakeExtended.getAsBoolean()) ? targetResult.pose() : currPose;
+    Pose2d targetPose =
+        (targetResult != null) && (intakeExtended.getAsBoolean()) ? targetResult.pose() : currPose;
 
     // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS /
     // Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
