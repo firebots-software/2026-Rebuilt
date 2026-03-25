@@ -306,10 +306,10 @@ public class RobotContainer {
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
-    intakeVisionResult =
-        VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
+    // intakeVisionResult =
+    //     VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
 
-    DogLog.log("Subsystems/IntakeVision/Pose", intakeVisionResult.pose());
+    // DogLog.log("Subsystems/IntakeVision/Pose", intakeVisionResult.pose());
   }
 
   public static boolean setAlliance() {
