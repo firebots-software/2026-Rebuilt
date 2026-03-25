@@ -91,21 +91,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           0, //
           0); // -13 was good
   // 15, 0, 0 w/o FF
-  public DoubleSubscriber headingKPTunable =
+  private DoubleSubscriber headingKPTunable =
       DogLog.tunable(
           "Subsystems/Swerve/kPHeading",
           15.0,
           (x) -> {
             headingPIDController.setP(x);
           });
-  public DoubleSubscriber headingKITunable =
+  private DoubleSubscriber headingKITunable =
       DogLog.tunable(
           "Subsystems/Swerve/kIHeading",
           0.0,
           (x) -> {
             headingPIDController.setI(x);
           });
-  public DoubleSubscriber headingKIDunable =
+  private DoubleSubscriber headingKDTunable =
       DogLog.tunable(
           "Subsystems/Swerve/kDHeading",
           0.0,
