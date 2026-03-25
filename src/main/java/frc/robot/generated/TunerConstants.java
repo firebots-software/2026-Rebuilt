@@ -307,8 +307,8 @@ public class TunerConstants {
         double odometryUpdateFrequency,
         SwerveModuleConstants<?, ?, ?>... modules) {
       super(
-          TalonFX::new,
-          TalonFX::new,
+          LoggedTalonFX::new,
+          LoggedTalonFX::new,
           CANcoder::new,
           drivetrainConstants,
           odometryUpdateFrequency,
@@ -337,8 +337,8 @@ public class TunerConstants {
         Matrix<N3, N1> visionStandardDeviation,
         SwerveModuleConstants<?, ?, ?>... modules) {
       super(
-          TalonFX::new,
-          TalonFX::new,
+          LoggedTalonFX::new,
+          LoggedTalonFX::new,
           CANcoder::new,
           drivetrainConstants,
           odometryUpdateFrequency,
