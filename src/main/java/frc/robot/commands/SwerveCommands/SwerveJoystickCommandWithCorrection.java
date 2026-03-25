@@ -142,7 +142,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     Pose2d currPose = swerveDrivetrain.getCurrentState().Pose;
     IntakeVisionTarget targetResult = VisionUtils.intakeVisionTargetPose(currPose, intakeVision);
     DogLog.log("Subsystems/IntakeVision/RetrievedPose", targetResult.pose());
-    DogLog.log("Subsystems.IntakeVision/RetievedMode", targetResult.mode());
+    DogLog.log("Subsystems/IntakeVision/RetievedMode", targetResult.mode());
 
     DogLog.log("Subsystems/Swerve/IntakeNull", targetResult == null);
 
