@@ -159,30 +159,6 @@ public class RobotContainer {
                 redside,
                 secondController.VisionShootingLockout()));
 
-    // SwerveJoystickCommand swerveJoystickCommand =
-    //     new SwerveJoystickCommand(
-    //         frontBackFunction,
-    //         leftRightFunction,
-    //         rotationFunction,
-    //         speedFunction, // slowmode when left shoulder is pressed, otherwise fast
-    //         () -> true,
-    //         (() -> joystick.leftTrigger().getAsBoolean()), // joystick.a().getAsBoolean()
-    //         redside,
-    //         drivetrain);
-
-    // SwerveJoystickCommandWithCorrection swerveJoystickCommandWithCorrection =
-    //     new SwerveJoystickCommandWithCorrection(
-    //         frontBackFunction,
-    //         leftRightFunction,
-    //         rotationFunction,
-    //         speedFunction,
-    //         () -> true,
-    //         (() -> joystick.leftTrigger().getAsBoolean()),
-    //         redside,
-    //         drivetrain,
-    //         intakeVisionDetection,
-    //         (() -> joystick.leftBumper().getAsBoolean()));
-
     SwerveJoystickDefaultCommand swerveJoystickDefaultCommand =
         new SwerveJoystickDefaultCommand(
             frontBackFunction,
