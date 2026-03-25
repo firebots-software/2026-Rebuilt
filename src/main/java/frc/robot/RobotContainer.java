@@ -197,7 +197,8 @@ public class RobotContainer {
             drivetrain,
             intakeVisionDetection,
             (() -> joystick.leftBumper().getAsBoolean()),
-            secondController.IntakeVisionLockout());
+            secondController.IntakeVisionLockout(),
+            () -> intakeSubsystem.atExtendedPosition());
 
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 

@@ -20,7 +20,8 @@ public class SwerveJoystickDefaultCommand extends ParallelCommandGroup {
       CommandSwerveDrivetrain swerveSubsystem,
       IntakeVisionDetection intakeVision,
       BooleanSupplier doDriveAssist,
-      BooleanSupplier intakeVisionLockout) {
+      BooleanSupplier intakeVisionLockout,
+      BooleanSupplier intakeExtended) {
 
     addCommands(
         Commands.either(
@@ -43,7 +44,8 @@ public class SwerveJoystickDefaultCommand extends ParallelCommandGroup {
                 redSideIfPointing,
                 swerveSubsystem,
                 intakeVision,
-                doDriveAssist),
+                doDriveAssist,
+                intakeExtended),
             () -> !intakeVisionLockout.getAsBoolean()));
   }
 }

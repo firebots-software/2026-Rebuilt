@@ -21,7 +21,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
-  protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing;
+  protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing, intakeExtended;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
   protected final BooleanSupplier doDriveAssist;
@@ -44,7 +44,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
       IntakeVisionDetection intakeVision,
-      BooleanSupplier doDriveAssist) {
+      BooleanSupplier doDriveAssist,
+      BooleanSupplier intakeExtended) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
@@ -56,6 +57,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     this.redsideIfPointing = redSideIfPointing;
     this.intakeVision = intakeVision;
     this.doDriveAssist = doDriveAssist;
+    this.intakeExtended = intakeExtended;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -68,7 +70,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
-      IntakeVisionDetection intakeVision) {
+      IntakeVisionDetection intakeVision,
+      BooleanSupplier intakeExtended) {
 
     this(
         frontBackFunction,
@@ -80,7 +83,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
         () -> false,
         swerveSubsystem,
         intakeVision,
-        () -> false);
+        () -> false,
+        intakeExtended);
   }
 
   @Override
@@ -139,7 +143,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
 
     DogLog.log("Subsystems/Swerve/IntakeNull", targetResult == null);
 
-    Pose2d targetPose = targetResult != null ? targetResult.pose() : currPose;
+    Pose2d targetPose = (targetResult != null) && (intakeExtended.getAsBoolean()) ? targetResult.pose() : currPose;
 
     // double distToTarget = Constants.IntakeVision.CAM_HEIGHT_METERS /
     // Math.tan(Units.degreesToRadians(intakeVision.getPitch()));
