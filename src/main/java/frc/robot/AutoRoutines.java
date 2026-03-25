@@ -155,9 +155,9 @@ public class AutoRoutines {
     //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
-  public Command driveToBumpAfterIntake(BooleanSupplier isRedSide) {
+  public Command driveToBumpAfterIntake(BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {
     // return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
-    return new IntakeToBumpDTP(swerveSubsystem, isRedSide);
+    return new IntakeToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
   }
 
   // Auto paths without climb
@@ -247,7 +247,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                driveToBumpAfterIntake(redSide),
+                driveToBumpAfterIntake(redSide, () -> false),
                 backward,
                 intakeToShoot1.resetOdometry(),
                 intakeToShoot1.cmd()));
@@ -260,7 +260,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                driveToBumpAfterIntake(redSide),
+                driveToBumpAfterIntake(redSide, () -> false),
                 backward2,
                 intakeToShoot2.resetOdometry(),
                 intakeToShoot2.cmd()));
@@ -304,7 +304,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                driveToBumpAfterIntake(redSide),
+                driveToBumpAfterIntake(redSide, () -> true),
                 backward,
                 intakeToShoot1.resetOdometry(),
                 intakeToShoot1.cmd()));
@@ -317,7 +317,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                driveToBumpAfterIntake(redSide),
+                driveToBumpAfterIntake(redSide, () -> true),
                 backward2,
                 intakeToShoot2.resetOdometry(),
                 intakeToShoot2.cmd()));
