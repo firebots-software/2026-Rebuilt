@@ -1,13 +1,13 @@
 package frc.robot.commands.SwerveCommands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeVisionDetection;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-public class SwerveJoystickDefaultCommand extends ParallelCommandGroup {
+public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
 
   public SwerveJoystickDefaultCommand(
       DoubleSupplier frontBackFunction,
