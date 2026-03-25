@@ -146,8 +146,7 @@ public class LoggedTalonFX extends TalonFX {
   /**
    * @param deviceName Designated name of this LoggedTalonFX
    * @param deviceId Motor ID of this LoggedTalonFX
-   * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
-   *     identify CAN Bus through string. Check phoenix6 documentation for more details.
+   * @param canbus CAN Bus object Associated with this LoggedTalonFX.
    */
   public LoggedTalonFX(String deviceName, int deviceId, CANBus canbus) {
     super(deviceId, canbus);
@@ -167,8 +166,7 @@ public class LoggedTalonFX extends TalonFX {
 
   /**
    * @param deviceId Motor ID of this LoggedTalonFX
-   * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
-   *     identify CAN Bus through string. Check phoenix6 documentation for more details.
+   * @param canbus CAN Bus object Associated with this LoggedTalonFX.
    */
   public LoggedTalonFX(int deviceId, CANBus canbus) {
     super(deviceId, canbus);
