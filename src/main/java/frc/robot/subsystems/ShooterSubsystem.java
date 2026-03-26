@@ -18,6 +18,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -35,6 +36,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private double targetShooterWheelRPS = 0;
   private static final double TOLERANCE_RPS = 2.0; // tolerance in rotations per second
+
+  private final DoubleSubscriber shooterSpeed =
+      DogLog.tunable("Tuning/ShooterSpeedRPS", 0.0);
 
   public ShooterSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
     this.drivetrain = drivetrain;
@@ -123,9 +127,15 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getTargetShooterWheelSpeedRPS() {
     return targetShooterWheelRPS;
   }
-
+  
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)) - 0.4;
+    double mappedSpeed = (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
+    double tunedSpeed = shooterSpeed.get();
+
+    if (Math.abs(tunedSpeed) > 1e-6) {
+      return tunedSpeed;
+    }
+    return mappedSpeed;
   }
 
   // Commands

@@ -48,7 +48,7 @@ public class RobotContainer {
   // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
-  public DoubleSubscriber interMapSpeed = DogLog.tunable("Subsystems/Shooter/Speed", 71.0);
+//   public DoubleSubscriber interMapSpeed = DogLog.tunable("Tunable/Speed", 71.0);
   private BooleanSupplier redside = () -> setAlliance();
 
   private Field2d field = new Field2d();
