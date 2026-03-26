@@ -7,9 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import choreo.auto.AutoChooser;
-import dev.doglog.DogLog;
 import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -32,6 +30,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
 import frc.robot.util.VisionUtils.IntakeVisionTarget;
@@ -48,7 +47,7 @@ public class RobotContainer {
   // DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   // private final SwerveRequest.SwerveDriveBrake brake = new
   // SwerveRequest.SwerveDriveBrake();
-//   public DoubleSubscriber interMapSpeed = DogLog.tunable("Tunable/Speed", 71.0);
+  //   public DoubleSubscriber interMapSpeed = DogLog.tunable("Tunable/Speed", 71.0);
   private BooleanSupplier redside = () -> setAlliance();
 
   private Field2d field = new Field2d();
@@ -97,7 +96,7 @@ public class RobotContainer {
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
 
-  public final IntakeVisionDetection intakeVisionDetection =
+  public final IntakeVisionDetection visionIntake =
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
@@ -171,7 +170,7 @@ public class RobotContainer {
             (() -> joystick.leftTrigger().getAsBoolean()),
             redside,
             drivetrain,
-            intakeVisionDetection,
+            visionIntake,
             (() -> joystick.leftBumper().getAsBoolean()),
             secondController.IntakeVisionLockout(),
             () -> intakeSubsystem.atExtendedPosition());
@@ -263,18 +262,12 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
     visionFuelGauge.periodic();
 
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
-
-    // intakeVisionResult =
-    //     VisionUtils.intakeVisionTargetPose(drivetrain.getPose(), intakeVisionDetection);
-
-    // DogLog.log("Subsystems/IntakeVision/Pose", intakeVisionResult.pose());
   }
 
   public static boolean setAlliance() {
