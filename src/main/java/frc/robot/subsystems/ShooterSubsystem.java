@@ -18,7 +18,6 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -127,7 +126,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    double mappedSpeed = (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
+    double mappedSpeed =
+        (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
 
     return mappedSpeed;
   }

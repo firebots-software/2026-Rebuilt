@@ -31,7 +31,6 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.util.MiscUtils;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
 import frc.robot.util.VisionUtils.IntakeVisionTarget;
@@ -106,7 +105,7 @@ public class RobotContainer {
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
 
-  private double tunerShooterSpeed = 50;
+  private double tunerShooterSpeed = 55;
 
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
@@ -129,7 +128,8 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    joystick.a().onTrue(new InstantCommand(() -> tunerShooterSpeed+=0.2));
+    joystick.a().onTrue(new InstantCommand(() -> tunerShooterSpeed += 0.2));
+    joystick.y().onTrue(new InstantCommand(() -> tunerShooterSpeed -= 0.2));
 
     // joystick
     //     .a()
@@ -204,11 +204,11 @@ public class RobotContainer {
             new ShootBasicRetract(
                 () -> tunerShooterSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
-    joystick
-        .y()
-        .whileTrue(
-            new ShootBasicRetract(
-                () -> 65.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+    // joystick
+    //     .y()
+    //     .whileTrue(
+    //         new ShootBasicRetract(
+    //             () -> 65.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
     // joystick2.b().whileTrue(climberSubsystem.movePullUpUpWithVoltageCommand());
     // joystick2.b().whileTrue(climberSubsystem.PullUpToCertainPositionCommand(0.1));
