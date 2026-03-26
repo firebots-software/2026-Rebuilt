@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import frc.robot.commandGroups.ReverseIntakeAndHopper;
 import frc.robot.commandGroups.ShootBasicRetract;
@@ -30,6 +31,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
 import frc.robot.util.VisionUtils.IntakeVisionTarget;
@@ -104,6 +106,8 @@ public class RobotContainer {
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
 
+  private double tunerShooterSpeed = 50;
+
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
@@ -125,14 +129,16 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    joystick
-        .a()
-        .whileTrue(
-            intakeSubsystem
-                .outtakeUntilInterruptedCommand()
-                .alongWith(
-                    hopperSubsystem.runHopperUntilInterruptedCommand(
-                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+    joystick.a().onTrue(new InstantCommand(() -> tunerShooterSpeed+=0.2));
+
+    // joystick
+    //     .a()
+    //     .whileTrue(
+    //         intakeSubsystem
+    //             .outtakeUntilInterruptedCommand()
+    //             .alongWith(
+    //                 hopperSubsystem.runHopperUntilInterruptedCommand(
+    //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
     secondController.IntakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // SWERVE COMMANDS
@@ -196,7 +202,7 @@ public class RobotContainer {
         .b()
         .whileTrue(
             new ShootBasicRetract(
-                () -> 85.0, () -> true, lebron, intakeSubsystem, hopperSubsystem));
+                () -> tunerShooterSpeed, () -> true, lebron, intakeSubsystem, hopperSubsystem));
 
     joystick
         .y()
@@ -259,7 +265,6 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
