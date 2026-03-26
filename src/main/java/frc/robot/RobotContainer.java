@@ -106,6 +106,8 @@ public class RobotContainer {
   private DoubleEntry shooterSpeedEntry;
   private DoubleTopic shooterSpeedTopic;
 
+  private double tunerShooterSpeed = 50;
+
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
