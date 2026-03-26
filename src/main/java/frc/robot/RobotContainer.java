@@ -128,17 +128,17 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    joystick.a().onTrue(new InstantCommand(() -> tunerShooterSpeed += 0.2));
-    joystick.y().onTrue(new InstantCommand(() -> tunerShooterSpeed -= 0.2));
+    // joystick.a().onTrue(new InstantCommand(() -> tunerShooterSpeed += 0.2));
+    // joystick.y().onTrue(new InstantCommand(() -> tunerShooterSpeed -= 0.2));
 
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         intakeSubsystem
-    //             .outtakeUntilInterruptedCommand()
-    //             .alongWith(
-    //                 hopperSubsystem.runHopperUntilInterruptedCommand(
-    //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+    joystick
+        .a()
+        .whileTrue(
+            intakeSubsystem
+                .outtakeUntilInterruptedCommand()
+                .alongWith(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
+                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
     secondController.IntakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // SWERVE COMMANDS
