@@ -206,8 +206,19 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   public FuelGauge getGaugeDefault() {
-    return getGauge(GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS);
-  }
+    // return getGauge(GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS);
+
+    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
+
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
+      return FuelGauge.EMPTY;
+    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
+      return FuelGauge.LOW;
+    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
+      return FuelGauge.MEDIUM;
+    } else {
+      return FuelGauge.FULL;
+  }}
 
   public String getCurrentFuelGaugeStateAsHex() {
     double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
