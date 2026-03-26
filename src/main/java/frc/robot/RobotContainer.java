@@ -265,6 +265,8 @@ public class RobotContainer {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
+    visionFuelGauge.periodic();
+
     VisionUtils.fuelGaugeLogs(visionFuelGauge);
 
     // intakeVisionResult =
