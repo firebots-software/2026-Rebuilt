@@ -115,9 +115,6 @@ public class FuelGaugeDetection extends SubsystemBase {
     DogLog.log(
         "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
-
-    SmartDashboard.putString(
-        "Elastic/FuelGaugeLevel", VisionUtils.getColorOrDefault(latestSmoothedMultipleBallsGauge));
   }
 
   private FuelGauge setFuelGauge(double area) {
@@ -208,18 +205,8 @@ public class FuelGaugeDetection extends SubsystemBase {
     return getLargestBall().map(PhotonTrackedTarget::getSkew);
   }
 
-  public FuelGauge getCurrentFuelGaugeState() {
-    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
-
-    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
-      return FuelGauge.EMPTY;
-    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
-      return FuelGauge.LOW;
-    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
-      return FuelGauge.MEDIUM;
-    } else {
-      return FuelGauge.FULL;
-    }
+  public FuelGauge getGaugeDefault() {
+    return getGauge(GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS);
   }
 
   public String getCurrentFuelGaugeStateAsHex() {

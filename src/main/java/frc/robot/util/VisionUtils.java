@@ -140,8 +140,8 @@ public class VisionUtils {
 
   public static void fuelGaugeLogs(FuelGaugeDetection visionFuelGauge) {
     if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
-      FuelGauge gaugeState = visionFuelGauge.getCurrentFuelGaugeState();
-      String gaugeStateHex = visionFuelGauge.getCurrentFuelGaugeStateAsHex();
+      FuelGauge gaugeState = visionFuelGauge.getGaugeDefault();
+      String gaugeStateHex = getColorOrDefault(gaugeState);
       DogLog.log("Elastic/FuelGauge", gaugeState.toString());
       SmartDashboard.putString("Elastic/FuelGaugeHex", gaugeStateHex);
       DogLog.log("Elastic/FuelGauge/CameraConnected", true);
@@ -152,7 +152,7 @@ public class VisionUtils {
     }
   }
 
-  public static String getColorOrDefault(FuelGauge gauge) {
+  private static String getColorOrDefault(FuelGauge gauge) {
     return gauge == null ? "#FFFFFF" : gauge.getColor();
   }
 
@@ -200,7 +200,6 @@ public class VisionUtils {
 
     double baseNoise = Constants.Vision.BASE_NOISE_THETA;
     double distanceCoefficient = Constants.Vision.DISTANCE_COEFFICIENT_THETA;
-    double angleCoefficient = Constants.Vision.ANGLE_COEFFICIENT_THETA;
     double speedCoefficient = Constants.Vision.SPEED_COEFFICIENT_THETA;
     double maximumRobotSpeed = Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
 
