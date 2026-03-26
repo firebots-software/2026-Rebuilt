@@ -125,7 +125,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public double getTargetShooterWheelSpeedRPS() {
     return targetShooterWheelRPS;
   }
-  
+
   public double grabTargetShootingSpeed(double distanceToTarget) {
     double mappedSpeed = (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
 
