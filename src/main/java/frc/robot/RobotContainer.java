@@ -32,6 +32,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.NewCustomController;
 import frc.robot.util.VisionUtils;
 import frc.robot.util.VisionUtils.IntakeVisionTarget;
@@ -261,7 +262,6 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 

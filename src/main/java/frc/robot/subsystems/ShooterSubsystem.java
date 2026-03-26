@@ -37,9 +37,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private double targetShooterWheelRPS = 0;
   private static final double TOLERANCE_RPS = 2.0; // tolerance in rotations per second
 
-  private final DoubleSubscriber shooterSpeed =
-      DogLog.tunable("Tuning/ShooterSpeedRPS", 0.0);
-
   public ShooterSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
     this.drivetrain = drivetrain;
     this.redside = redside;
@@ -110,7 +107,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void stopShooter() {
-    setShooterWheelRPS(0);
+    targetShooterWheelRPS = 0;
+    shooter.stopMotor();
   }
 
   public boolean isAtSpeed() {
@@ -130,11 +128,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   public double grabTargetShootingSpeed(double distanceToTarget) {
     double mappedSpeed = (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
-    double tunedSpeed = shooterSpeed.get();
 
-    if (Math.abs(tunedSpeed) > 1e-6) {
-      return tunedSpeed;
-    }
     return mappedSpeed;
   }
 

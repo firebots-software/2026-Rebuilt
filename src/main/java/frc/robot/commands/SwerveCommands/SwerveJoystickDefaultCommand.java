@@ -46,6 +46,6 @@ public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
                 intakeVision,
                 doDriveAssist,
                 intakeExtended),
-            () -> !intakeVisionLockout.getAsBoolean()));
+            () -> intakeVisionLockout.getAsBoolean()));
   }
 }
