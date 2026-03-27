@@ -87,7 +87,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
       new PIDController(
-          3.9, // 4 was good
+          4.67, // 4 was good
           0, //
           0); // -13 was good
   // 15, 0, 0 w/o FF
@@ -494,7 +494,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         headingPIDController.calculate(
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
 
-    double omega = omegaFF + omegaPID;
+    double sign = 1;
+    if (omegaPID < 0) {
+      sign = -1;
+    }
+
+    double angleDifference = Math.atan2(Math.sin(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()), Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
+
+    if ((Math.abs(angleDifference) < 0.87) && Math.abs(omegaPID) >= 1.295) {
+      omegaPID = Math.abs(angleDifference)*(3.7)*sign;
+    }
+
+    double omega = (omegaFF) + omegaPID;
 
     DogLog.log("Swerve/rotationController/omegaFF", omegaFF);
     DogLog.log("Swerve/rotationController/omegaPID", omegaPID);

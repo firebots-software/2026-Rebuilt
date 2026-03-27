@@ -431,7 +431,7 @@ public final class Constants {
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
       public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
-      public static final double TIME_FOR_BUMP_BACKWARDS = 0.80;
+      public static final double TIME_FOR_BUMP_BACKWARDS = 0.95;
 
       public static enum Intake {
         LeftIntakeSweep,
