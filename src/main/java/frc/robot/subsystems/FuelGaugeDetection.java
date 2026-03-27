@@ -1,12 +1,10 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
-import frc.robot.util.VisionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +54,7 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     latestVisionResult = results.get(results.size() - 1);
 
-    return (latestVisionResult == null);
+    return latestVisionResult != null;
   }
 
   private void updateVisionResult() {
@@ -115,9 +113,6 @@ public class FuelGaugeDetection extends SubsystemBase {
     DogLog.log(
         "Subsystems/FuelGauge/Gauge/SmoothedMultipleBallsGauge",
         latestSmoothedMultipleBallsGauge.toString());
-
-    SmartDashboard.putString(
-        "Elastic/FuelGaugeLevel", VisionUtils.getColorOrDefault(latestSmoothedMultipleBallsGauge));
   }
 
   private FuelGauge setFuelGauge(double area) {
@@ -208,7 +203,9 @@ public class FuelGaugeDetection extends SubsystemBase {
     return getLargestBall().map(PhotonTrackedTarget::getSkew);
   }
 
-  public FuelGauge getCurrentFuelGaugeState() {
+  public FuelGauge getGaugeDefault() {
+    // return getGauge(GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS);
+
     double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
 
     if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
@@ -219,6 +216,20 @@ public class FuelGaugeDetection extends SubsystemBase {
       return FuelGauge.MEDIUM;
     } else {
       return FuelGauge.FULL;
+    }
+  }
+
+  public String getCurrentFuelGaugeStateAsHex() {
+    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
+
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
+      return "#000000";
+    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
+      return "#FF0000";
+    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
+      return "#FFFF00";
+    } else {
+      return "#00FF00";
     }
   }
 }

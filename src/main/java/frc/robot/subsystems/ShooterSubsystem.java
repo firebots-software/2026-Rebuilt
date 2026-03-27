@@ -106,7 +106,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void stopShooter() {
-    setShooterWheelRPS(0);
+    targetShooterWheelRPS = 0;
+    shooter.stopMotor();
   }
 
   public boolean isAtSpeed() {
@@ -125,7 +126,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)) - 0.5;
+    double mappedSpeed =
+        (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
+
+    return mappedSpeed;
   }
 
   // Commands

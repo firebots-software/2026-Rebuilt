@@ -27,7 +27,7 @@ public class ShootWithAim extends ParallelCommandGroup {
 
     addCommands(
         Commands.either(
-            Commands.parallel(
+            Commands.parallel( // shoot without aim
                 shooterSubsystem.shootAtSpeedCommand(45.2),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
@@ -39,7 +39,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                                     .beforeStarting(
                                         Commands.waitSeconds(
                                             Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
-            Commands.parallel(
+            Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedCommand(
                     () ->
                         shooterSubsystem.grabTargetShootingSpeed(
