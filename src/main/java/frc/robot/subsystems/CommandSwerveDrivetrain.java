@@ -499,10 +499,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       sign = -1;
     }
 
-    double angleDifference = Math.atan2(Math.sin(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()), Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
+    double angleDifference =
+        Math.atan2(
+            Math.sin(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()),
+            Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
 
     if ((Math.abs(angleDifference) < 0.87) && Math.abs(omegaPID) >= 1.295) {
-      omegaPID = Math.abs(angleDifference)*(3.7)*sign;
+      omegaPID = Math.abs(angleDifference) * (3.7) * sign;
     }
 
     double omega = (omegaFF) + omegaPID;

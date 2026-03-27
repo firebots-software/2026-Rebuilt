@@ -1,12 +1,10 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
-import frc.robot.util.VisionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -218,7 +216,8 @@ public class FuelGaugeDetection extends SubsystemBase {
       return FuelGauge.MEDIUM;
     } else {
       return FuelGauge.FULL;
-  }}
+    }
+  }
 
   public String getCurrentFuelGaugeStateAsHex() {
     double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
