@@ -78,7 +78,8 @@ public class Robot extends TimedRobot {
     DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(simulatedTime));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
-    SmartDashboard.putNumber("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
+    SmartDashboard.putNumber(
+        "Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(simulatedTime));
     MiscUtils.shiftSwitchIndicator(simulatedTime);
     simulatedTime -= 0.02;
