@@ -442,6 +442,7 @@ public final class Constants {
         SecondRightIntakeSweepShort,
         LeftSecondDip,
         RightSecondDip,
+        LeftSecondDipLong,
         RightSecondDipLong
       }
 
