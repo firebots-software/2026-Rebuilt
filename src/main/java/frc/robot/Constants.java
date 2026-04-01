@@ -20,6 +20,7 @@ public final class Constants {
   public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = true;
   public static final boolean fuelGaugeOnRobot = true;
+  public static final boolean intakeVisionOnRobot = true;
   public static final boolean shooterOnRobot = true;
 
   public static class OperatorConstants {
@@ -109,7 +110,7 @@ public final class Constants {
         new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
 
-    public static final double TARGET_POS_ERROR = 0.03;
+    public static final double TARGET_POS_ERROR = 0.07;
     public static final double TARGET_ANGLE_ERROR = 0.1;
     public static final double MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND = 4;
 
@@ -408,7 +409,7 @@ public final class Constants {
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
       public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
-      public static final double TIME_FOR_BUMP_BACKWARDS = 0.70;
+      public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
 
       public static enum Intake {
         LeftIntakeSweep,
@@ -418,7 +419,9 @@ public final class Constants {
         SecondLeftIntakeSweepShort,
         SecondRightIntakeSweepShort,
         LeftSecondDip,
-        RightSecondDip
+        RightSecondDip,
+        LeftSecondDipLong,
+        RightSecondDipLong
       }
 
       public static enum ShootPos {
@@ -714,6 +717,57 @@ public final class Constants {
     }
   }
 
+  public static class IntakeVision {
+    public static final double INTAKE_X = Units.inchesToMeters(0.0);
+    public static final double INTAKE_Y = Units.inchesToMeters(22.342);
+    public static final double INTAKE_Z = Units.inchesToMeters(18.9);
+    public static final double INTAKE_ROLL = Units.degreesToRadians(0.0);
+    public static final double INTAKE_PITCH = Units.degreesToRadians(9.789);
+    public static final double INTAKE_YAW = Units.degreesToRadians(0.0);
+
+    public static final double OVERRIDE_ROT_INPUT = 0.5;
+
+    public static final double kP = 0.2d;
+    public static final double lookAheadTime = 0.02;
+
+    public static final double headingPIDDampen = 0.5;
+
+    // public static final double CAM_HEIGHT_METERS = 1;
+
+    public static final double MIN_DETECTION_DIST = 0.72;
+    public static final double MAX_DETECTION_DIST = 8.07;
+    public static final double MIN_DETECTION_SLOPE = 0.05;
+
+    public static enum IntakeVisionCamera {
+      INTAKE_CAM(
+          "intakeCam",
+          new Transform3d(
+              new Translation3d(INTAKE_X, INTAKE_Y, INTAKE_Z),
+              new Rotation3d(INTAKE_ROLL, INTAKE_PITCH, INTAKE_YAW)));
+
+      private String loggingName;
+      private Transform3d cameraTransform;
+
+      IntakeVisionCamera(String name, Transform3d transform) {
+        loggingName = name;
+        cameraTransform = transform;
+      }
+
+      public String getLoggingName() {
+        return loggingName;
+      }
+
+      public Transform3d getCameraTransform() {
+        return cameraTransform;
+      }
+    }
+
+    public static enum TargetingMode {
+      HDG_SEL(),
+      LOC_SEL();
+    }
+  }
+
   public static final class Shooter {
     public static final boolean INTERMAP_TESTING = false;
 
@@ -721,7 +775,7 @@ public final class Constants {
     public static final int WARMUP_2_ID = 34;
     public static final int WARMUP_3_ID = 33;
 
-    public static final double KP = 0.8;
+    public static final double KP = 0.85;
     public static final double KI = 0.0;
     public static final double KD = 0.0;
     public static final double KV = 0.124;
@@ -766,6 +820,7 @@ public final class Constants {
 
       final double offset = 1.0429875;
 
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(offset, 44.2);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.2111 + offset, 45.2000038381);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.6108 + offset, 46.4732433828);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.0478 + offset, 50.9295817894);
@@ -867,13 +922,21 @@ public final class Constants {
     public static Pose2d BLUE_TOWER_L =
         new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
 
-    public static Pose2d RED_INTAKE_TO_BUMP =
+    public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
         new Pose2d(
             new Translation2d(10.908942222595215, 2.54630184173584),
             new Rotation2d(1.5707963267948966));
-    public static Pose2d BLUE_INTAKE_TO_BUMP =
+    public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.921140670776367, 5.613290309906006),
+            new Rotation2d(-1.5707963267948966));
+    public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
         new Pose2d(
             new Translation2d(5.6342058181762695, 5.505496978759766),
             new Rotation2d(-1.5649821399611368));
+    public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.624283313751221, 2.4593770503997803),
+            new Rotation2d(1.57873264137917));
   }
 }

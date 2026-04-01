@@ -8,13 +8,17 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
 
 public class IntakeToBumpDTP extends SequentialCommandGroup {
-  public IntakeToBumpDTP(CommandSwerveDrivetrain swerve, BooleanSupplier isRedSide) {
+  public IntakeToBumpDTP(
+      CommandSwerveDrivetrain swerve, BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {
     Pose2d pose =
         isRedSide.getAsBoolean()
-            ? Constants.Landmarks.RED_INTAKE_TO_BUMP
-            : Constants.Landmarks.BLUE_INTAKE_TO_BUMP;
+            ? isLeftSide.getAsBoolean()
+                ? Constants.Landmarks.RED_LEFT_INTAKE_TO_BUMP
+                : Constants.Landmarks.RED_RIGHT_INTAKE_TO_BUMP
+            : isLeftSide.getAsBoolean()
+                ? Constants.Landmarks.BLUE_LEFT_INTAKE_TO_BUMP
+                : Constants.Landmarks.BLUE_RIGHT_INTAKE_TO_BUMP;
 
-    // addCommands(new DriveToPoseWithCorrectEndings(swerve, () -> pose));
     addCommands(new DriveToPose(swerve, () -> pose));
   }
 }

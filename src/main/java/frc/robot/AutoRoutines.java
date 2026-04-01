@@ -131,9 +131,9 @@ public class AutoRoutines {
     //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
-  public Command driveToBumpAfterIntake(BooleanSupplier isRedSide) {
+  public Command driveToBumpAfterIntake(BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {
     // return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
-    return new IntakeToBumpDTP(swerveSubsystem, isRedSide);
+    return new IntakeToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
   }
 
   // Auto paths without climb
@@ -214,14 +214,19 @@ public class AutoRoutines {
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
     AutoTrajectory shootToBump =
         miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightShootToBump);
-    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightSecondDip);
+    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightSecondDipLong);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
     routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
-        .onTrue(Commands.sequence(backward, intakeToShoot1.resetOdometry(), intakeToShoot1.cmd()));
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide, () -> false),
+                backward,
+                intakeToShoot1.resetOdometry(),
+                intakeToShoot1.cmd()));
 
     intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide), shootToBump.cmd()));
 
@@ -229,7 +234,12 @@ public class AutoRoutines {
 
     intake2
         .done()
-        .onTrue(Commands.sequence(backward2, intakeToShoot2.resetOdometry(), intakeToShoot2.cmd()));
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide, () -> false),
+                backward2,
+                intakeToShoot2.resetOdometry(),
+                intakeToShoot2.cmd()));
 
     intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
 
@@ -261,7 +271,7 @@ public class AutoRoutines {
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
     AutoTrajectory shootToBump =
         miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftShootToBump);
-    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftSecondDip);
+    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftSecondDipLong);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
     routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
@@ -270,7 +280,7 @@ public class AutoRoutines {
         .done()
         .onTrue(
             Commands.sequence(
-                driveToBumpAfterIntake(redSide),
+                driveToBumpAfterIntake(redSide, () -> true),
                 backward,
                 intakeToShoot1.resetOdometry(),
                 intakeToShoot1.cmd()));
@@ -281,7 +291,12 @@ public class AutoRoutines {
 
     intake2
         .done()
-        .onTrue(Commands.sequence(backward2, intakeToShoot2.resetOdometry(), intakeToShoot2.cmd()));
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide, () -> true),
+                backward2,
+                intakeToShoot2.resetOdometry(),
+                intakeToShoot2.cmd()));
 
     intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
 
