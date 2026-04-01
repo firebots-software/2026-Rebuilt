@@ -967,6 +967,12 @@ public final class Constants {
     public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
       public static final double MIN_HOOD_POSITION = 0;
       public static final double MAX_HOOD_POSITION = 50;
+
+    public static final int MOTOR_ROTS_PER_ENCODER_ROT = 0;
+
+    public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
+
+    public static final int ENCODER_PORT = 0;
     }
 
     public static final double TOLERANCE_RPS = 2.0;

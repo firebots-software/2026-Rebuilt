@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -9,6 +10,8 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -32,6 +35,7 @@ public class HoodedShooterSubsystem extends SubsystemBase {
   private final CommandSwerveDrivetrain drivetrain;
   private final BooleanSupplier redside;
   private final LoggedTalonFX warmup1, warmup2, warmup3, shooter, hood;
+  private final CANcoder hoodEncoder;
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
   private double targetShooterSpeedRPS = 0;
@@ -80,6 +84,9 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     warmup1.setControl(follower);
     warmup2.setControl(follower);
 
+    hoodEncoder = new CANcoder(Constants.Shooter.Hood.ENCODER_PORT, Constants.Swerve.CAN_BUS);
+
+
     // TODO: Verify all this
     Slot0Configs hoodS0c =
         new Slot0Configs()
@@ -97,6 +104,7 @@ public class HoodedShooterSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
     VoltageConfigs hoodVoltageConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
+    FeedbackConfigs hoodFeedbackConfigs = new FeedbackConfigs().withFeedbackRemoteSensorID(hoodEncoder.getDeviceID()).withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder).withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_ARM_ROT).withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
     hoodConfig.Slot0 = hoodS0c;
