@@ -787,7 +787,7 @@ public final class Constants {
     public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 67.0;
-    public static final double SHOOT_FOR_AIM = 45.2;
+    public static final double SHOOT_FOR_AIM = 44.2;
 
     public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
 
