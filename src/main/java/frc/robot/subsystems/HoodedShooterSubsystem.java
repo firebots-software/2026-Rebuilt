@@ -128,6 +128,11 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     return new  Rotation2d(Units.rotationsToRadians(hood.getCachedPositionRotations()));
   }
 
+  public void stopHood() {
+    hoodTargetDeg = hood.getCachedPositionRotations();
+    setHoodPosition(hoodTargetDeg);
+  }
+
   public boolean hoodAtTarget() {
     return Math.abs(hood.getCachedPositionRotations() * Constants.Shooter.Hood.HOOD_DEGREES_PER_MOTOR_ROT - hoodTargetDeg) <= Constants.Shooter.Hood.HOOD_TOLERANCE;
   }
