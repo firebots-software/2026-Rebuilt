@@ -13,6 +13,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -120,7 +121,7 @@ public class HoodedShooterSubsystem extends SubsystemBase {
 
   public void setHoodPosition(double degrees) {
     hoodTargetDeg = degrees;
-    hood.setControl(m_positionRequest.withPosition(degrees / 360.0));
+    hood.setControl(m_positionRequest.withPosition(MathUtil.clamp(degrees / 360.0, Constants.Shooter.Hood.MIN_HOOD_POSITION, Constants.Shooter.Hood.MAX_HOOD_POSITION)));
   }
 
   public Rotation2d getHoodPosition() {

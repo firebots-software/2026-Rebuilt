@@ -965,6 +965,8 @@ public final class Constants {
     public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
 
     public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
+      public static final double MIN_HOOD_POSITION = 0;
+      public static final double MAX_HOOD_POSITION = 50;
     }
 
     public static final double TOLERANCE_RPS = 2.0;
