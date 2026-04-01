@@ -323,7 +323,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
     double max = Constants.Swerve.MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND;
     boolean clamp = Math.abs(omega) > max;
-    if (clamp) omega = MathUtil.clamp(omega, -max, max);
+    if (clamp) {
+      omega = MathUtil.clamp(omega, -max, max);
+    }
     DogLog.log("Subsystems/Swerve/RotationController/clamped", clamp);
     DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
     return omega;

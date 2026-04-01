@@ -73,7 +73,9 @@ public class DriveToPoseWithCorrectEndings extends Command {
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    if (targetPoseSupplier != null) targetPose = targetPoseSupplier.get();
+    if (targetPoseSupplier != null) {
+      targetPose = targetPoseSupplier.get();
+    }
 
     pathState =
         new TunedLinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
@@ -87,7 +89,6 @@ public class DriveToPoseWithCorrectEndings extends Command {
   @Override
   public void execute() {
     double currTime = Utils.getCurrentTimeSeconds() - startTime;
-
     if (pathState == null) return;
 
     pathState = path.calculate(currTime, pathState, targetPose);

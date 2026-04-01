@@ -83,7 +83,9 @@ public class FuelGaugeDetection extends SubsystemBase {
     double smoothedArea = 0.0;
 
     list.add(area);
-    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) list.remove(0);
+    while (list.size() > Constants.FuelGaugeDetection.MAX_FUEL_GAUGE_MEASUREMENTS) {
+      list.remove(0);
+    }
 
     if (!list.isEmpty()) {
       for (double rawArea : list) smoothedArea += rawArea;
@@ -168,7 +170,9 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     numBalls = Math.min(numBalls, targets.size());
 
-    for (int i = 0; i < numBalls; i++) sum += targets.get(i).getArea();
+    for (int i = 0; i < numBalls; i++) {
+      sum += targets.get(i).getArea();
+    }
 
     return sum / numBalls;
   }

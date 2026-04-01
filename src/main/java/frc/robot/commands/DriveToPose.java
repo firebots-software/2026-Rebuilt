@@ -77,7 +77,9 @@ public class DriveToPose extends Command {
 
     startTime = Utils.getCurrentTimeSeconds();
 
-    if (targetPoseSupplier != null) targetPose = targetPoseSupplier.get();
+    if (targetPoseSupplier != null) {
+      targetPose = targetPoseSupplier.get();
+    }
 
     pathState =
         new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
