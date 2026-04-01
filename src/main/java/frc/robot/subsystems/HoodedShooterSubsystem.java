@@ -28,9 +28,10 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     public HoodedShooterSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
         this.drivetrain = drivetrain;
         this.redside = redside;
-        warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.WARMUP_1_ID, Constants.Swerve.CAN_BUS);
-        warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.WARMUP_2_ID, Constants.Swerve.CAN_BUS);
-        warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.WARMUP_3_ID, Constants.Swerve.CAN_BUS);
+        CANBus canbus = Constants.Swerve.CAN_BUS;
+        warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.WARMUP_1_ID, canbus);
+        warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.WARMUP_2_ID, canbus);
+        warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.WARMUP_3_ID, canbus);
         shooter = warmup3;
         // TODO: fix hood id constant
         hood = new LoggedTalonFX("ShooterHood", Constants.Shooter.HOOD_ID, Constants.Swerve.CAN_BUS);
