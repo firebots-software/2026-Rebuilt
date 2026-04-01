@@ -8,8 +8,10 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.VoltageConfigs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,6 +48,14 @@ public class HoodedShooterSubsystem extends SubsystemBase {
         config.CurrentLimits = clc;
         config.MotorOutput = motorOutputConfigs;
         config.Voltage =voltageConfigs;
+
+        warmup1.getConfigurator().apply(config);
+        warmup2.getConfigurator().apply(config);
+        warmup3.getConfigurator().apply(config);
+
+        Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
+        warmup1.setControl(follower);
+        warmup2.setControl(follower);
     }
     
 }
