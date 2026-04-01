@@ -85,10 +85,9 @@ public class VisionSubsystem extends SubsystemBase {
     if (results.isEmpty()) return;
     latestVisionResult = results.get(results.size() - 1);
 
-    visionEstimate =
-        visionEstimate.isEmpty()
-            ? poseEstimator.estimateLowestAmbiguityPose(latestVisionResult)
-            : poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
+    visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
+    if (visionEstimate.isEmpty())
+      visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
   }
 
   public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {

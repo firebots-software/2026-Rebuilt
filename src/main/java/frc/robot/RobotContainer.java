@@ -105,7 +105,7 @@ public class RobotContainer {
             leftRightFunction,
             rotationFunction,
             speedFunction,
-            () -> false,
+            () -> true,
             joystick.leftTrigger()::getAsBoolean,
             redside,
             drivetrain);
