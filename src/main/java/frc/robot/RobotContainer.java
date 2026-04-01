@@ -14,7 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
-import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
@@ -30,7 +31,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
-  public DoubleSubscriber interMapSpeed = DogLog.tunable("Subsystems/Shooter/Speed", 71.0);
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
   private Field2d field = new Field2d();
@@ -71,14 +71,10 @@ public class RobotContainer {
       Constants.fuelGaugeOnRobot
           ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
           : null;
-
   public final IntakeVisionDetection visionIntake =
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
-  private IntakeVisionTarget intakeVisionResult = null;
-
-  private double tunerShooterSpeed = 55;
 
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
@@ -99,8 +95,8 @@ public class RobotContainer {
     DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
     DoubleSupplier rotationFunction = () -> -joystick.getRightX();
     DoubleSupplier speedFunction = () -> 1d;
-    SwerveJoystickCommand swerveJoystickCommand =
-        new SwerveJoystickCommand(
+    SwerveJoystickDefaultCommand swerveJoystickDefaultCommand =
+        new SwerveJoystickDefaultCommand(
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
@@ -108,10 +104,14 @@ public class RobotContainer {
             () -> true,
             joystick.leftTrigger()::getAsBoolean,
             redside,
-            drivetrain);
+            drivetrain,
+            visionIntake,
+            joystick.leftBumper()::getAsBoolean,
+            secondController.intakeVisionLockout(),
+            intakeSubsystem::atExtendedPosition);
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    drivetrain.setDefaultCommand(swerveJoystickCommand);
+    drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -127,7 +127,7 @@ public class RobotContainer {
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // Hopper
-    hopperSubsystem.setDefaultCommand(hopperSubsystem.runOnce(hopperSubsystem::stop));
+    hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
 
     // Shooter
     lebron.setDefaultCommand(lebron.runOnce(lebron::stopShooter));
@@ -142,7 +142,7 @@ public class RobotContainer {
                 hopperSubsystem,
                 drivetrain,
                 redside,
-                secondController.skib()));
+                secondController.visionShootingLockout()));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
   }
 

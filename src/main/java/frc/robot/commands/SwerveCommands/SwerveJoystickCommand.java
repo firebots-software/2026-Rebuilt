@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -53,6 +53,7 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem) {
+
     this(
         frontBackFunction,
         leftRightFunction,
@@ -71,6 +72,7 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
       boolean squaredTurn) {
+
     this(
         frontBackFunction,
         leftRightFunction,

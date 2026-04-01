@@ -10,7 +10,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class IntakeVisionDetection extends SubsystemBase {
-
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
   private double latestRawArea;
@@ -43,7 +42,7 @@ public class IntakeVisionDetection extends SubsystemBase {
 
     DogLog.log("Subsystems/IntakeVision/ResultExists", latestVisionResult != null);
 
-    return (latestVisionResult != null);
+    return latestVisionResult != null;
   }
 
   private void updateVisionResult() {

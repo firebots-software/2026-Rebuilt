@@ -2,7 +2,6 @@ package frc.robot.commands.SwerveCommands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.SwerveJoystickCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeVisionDetection;
 import java.util.function.BooleanSupplier;
