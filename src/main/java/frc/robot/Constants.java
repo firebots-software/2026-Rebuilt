@@ -951,14 +951,14 @@ public final class Constants {
     public static final class Hood {
       public static final int HOOD_ID = 0; // TODO
 
-    public static final double KP = 0.85; // TODO
-    public static final double KI = 0.0; // TODO
-    public static final double KD = 0.0; // TODO
-    public static final double KV = 0.124; // TODO
-    public static final double KA = 0.0; // TODO
-    public static final double STATOR_CURRENT_LIMIT = 120.0;
-    public static final double SUPPLY_CURRENT_LIMIT = 40.0;
-
+      public static final double KP = 0.85; // TODO
+      public static final double KI = 0.0; // TODO
+      public static final double KD = 0.0; // TODO
+      public static final double KV = 0.124; // TODO
+      public static final double KA = 0.0; // TODO
+      public static final double STATOR_CURRENT_LIMIT = 120.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+      public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
     }
 
     public static final double TOLERANCE_RPS = 2.0;
