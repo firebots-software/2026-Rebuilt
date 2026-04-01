@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -36,7 +37,7 @@ public class HoodedShooterSubsystem extends SubsystemBase {
         warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.WARMUP_3_ID, canbus);
         shooter = warmup3;
         // TODO: fix hood id constant
-        hood = new LoggedTalonFX("ShooterHood", Constants.Shooter.HOOD_ID, Constants.Swerve.CAN_BUS);
+        hood = new LoggedTalonFX("ShooterHood", Constants.Shooter.Hood.HOOD_ID, Constants.Swerve.CAN_BUS);
 
         Slot0Configs s0c = new Slot0Configs().withKP(Constants.Shooter.KP).withKI(Constants.Shooter.KI).withKD(Constants.Shooter.KD).withKV(Constants.Shooter.KV).withKA(Constants.Shooter.KA);
         CurrentLimitsConfigs clc = new CurrentLimitsConfigs().withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT).withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
@@ -47,7 +48,7 @@ public class HoodedShooterSubsystem extends SubsystemBase {
         config.Slot0 = s0c;
         config.CurrentLimits = clc;
         config.MotorOutput = motorOutputConfigs;
-        config.Voltage =voltageConfigs;
+        config.Voltage = voltageConfigs;
 
         warmup1.getConfigurator().apply(config);
         warmup2.getConfigurator().apply(config);
@@ -56,6 +57,26 @@ public class HoodedShooterSubsystem extends SubsystemBase {
         Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
         warmup1.setControl(follower);
         warmup2.setControl(follower);
+
+        //TODO: Verify all this
+        Slot0Configs hoodS0c = new Slot0Configs().withKP(Constants.Shooter.Hood.KP).withKI(Constants.Shooter.Hood.KI).withKD(Constants.Shooter.Hood.KD).withKV(Constants.Shooter.Hood.KV).withKA(Constants.Shooter.Hood.KA);
+        CurrentLimitsConfigs hoodClc = new CurrentLimitsConfigs().withStatorCurrentLimit(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT).withSupplyCurrentLimit(Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
+        MotorOutputConfigs hoodMotorOutputConfigs = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive).withNeutralMode(NeutralModeValue.Brake);
+        VoltageConfigs hoodVoltageConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
+
+        TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+        hoodConfig.Slot0 = hoodS0c;
+        hoodConfig.CurrentLimits = hoodClc;
+        hoodConfig.MotorOutput = hoodMotorOutputConfigs;
+        hoodConfig.Voltage = hoodVoltageConfigs;
+
+        hood.getConfigurator().apply(hoodConfig);
+
+        DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.KP);
+        DogLog.log("Subsystems/Shooter/Gains/kI", Constants.Shooter.KI);
+        DogLog.log("Subsystems/Shooter/Gains/kD", Constants.Shooter.KD);
+        DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.KV);
+        DogLog.log("Subsystems/Shooter/Gains/kA", Constants.Shooter.KA);
     }
     
 }
