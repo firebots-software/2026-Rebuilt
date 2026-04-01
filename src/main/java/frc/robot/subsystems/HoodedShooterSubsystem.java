@@ -16,6 +16,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -33,7 +34,7 @@ public class HoodedShooterSubsystem extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
   private double targetShooterSpeedRPS = 0;
-  private double targetHoodPosition = 0;
+  private double hoodTargetDeg = 0;
 
   public HoodedShooterSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
     this.drivetrain = drivetrain;
@@ -117,12 +118,27 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Hood/Gains/kA", Constants.Shooter.Hood.KA);
   }
 
-  public void setHoodPosition(double hoodPosition) {
-    targetHoodPosition = hoodPosition;
-    hood.setControl(
-        m_positionRequest.withPosition(
-            hoodPosition * Constants.Shooter.Hood.MOTOR_ROTS_PER_DEGREE));
+  public void setHoodPosition(double degrees) {
+    hoodTargetDeg = degrees;
+    hood.setControl(m_positionRequest.withPosition(degrees / 360.0));
   }
+
+  public Rotation2d getHoodPosition() {
+    return new  Rotation2d(Units.rotationsToRadians(hood.getCachedPositionRotations()));
+  }
+
+  public boolean hoodAtTarget() {
+    return Math.abs(hood.getCachedPositionRotations() * Constants.Shooter.Hood.HOOD_DEGREES_PER_MOTOR_ROT - hoodTargetDeg) <= Constants.Shooter.Hood.HOOD_TOLERANCE;
+  }
+
+//   public double getHoodCancoderPositionRaw() {
+//     return hoodEncoder.getAbsolutePosition().getValueAsDouble();
+//   }
+
+// public Rotation2d getHoodUnfusedPosition() {
+//     return new Rotation2d(Units.rotationsToRadians(getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_CANCODER_ROT));
+// }
+
 
   public void setShooterSpeedRPS(double shooterSpeedRPS) {
     targetShooterSpeedRPS = shooterSpeedRPS;

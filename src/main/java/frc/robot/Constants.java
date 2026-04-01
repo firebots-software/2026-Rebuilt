@@ -959,6 +959,12 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
       public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
+
+    public static final int HOOD_TOLERANCE = 0;
+
+    public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
+
+    public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
     }
 
     public static final double TOLERANCE_RPS = 2.0;
