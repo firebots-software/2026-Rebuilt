@@ -9,6 +9,7 @@ import frc.robot.Constants.Landmarks;
 import frc.robot.MathUtils.Vector2;
 import frc.robot.MathUtils.Vector3;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommandInArc;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -16,6 +17,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
+
+import java.lang.annotation.Target;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -30,6 +33,7 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
       HopperSubsystem hopperSubsystem,
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside,
+      BooleanSupplier arcing,
       BooleanSupplier manualOverride) {
     
     Pose3d targetNoOffset = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
@@ -66,13 +70,24 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                     () ->
                         shooterSubsystem.getTargetHoodAngle(
                             dist)),
-                new SwerveJoystickCommandWithPointing(
-                    translationalX,
-                    translationalY,
-                    (DoubleSupplier) () -> 0.0,
-                    (BooleanSupplier) () -> false,
-                    (Supplier<Translation2d>) () -> Vector3.toTranslation2d(Targeting.positionToTarget(targetNoOffset, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
-                    drivetrain
+                Commands.either(
+                    new SwerveJoystickCommandInArc(
+                        targetNoOffset,
+                        translationalX,
+                        translationalY,
+                        (BooleanSupplier) () -> false,
+                        (Supplier<Translation2d>) () -> Vector3.toTranslation2d(Targeting.positionToTarget(targetNoOffset, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                        drivetrain
+                    ),
+                    new SwerveJoystickCommandWithPointing(
+                        translationalX,
+                        translationalY,
+                        (DoubleSupplier) () -> 0.0,
+                        (BooleanSupplier) () -> false,
+                        (Supplier<Translation2d>) () -> Vector3.toTranslation2d(Targeting.positionToTarget(targetNoOffset, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                        drivetrain
+                    ),
+                    arcing
                 ),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
