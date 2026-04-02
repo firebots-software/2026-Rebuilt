@@ -990,6 +990,8 @@ public final class Constants {
     public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
 
     public static final double HORIZONTAL_VELOCITY_OF_PROJECTILE = 5.0; //TUNE
+    public static final double PRECISION = 5.0; //TUNE
+
 
     public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
         new InterpolatingDoubleTreeMap();

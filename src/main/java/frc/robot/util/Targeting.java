@@ -82,7 +82,7 @@ public class Targeting {
     double tof = initialDistance / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE + radialDistance);
     double distance = distToTarget;
 
-    for (int i = 0; i < Constants.Shooter.Hood.PRECISION; i++) {
+    for (int i = 0; i < Constants.Shooter.PRECISION; i++) {
       double distX = (initDX) - currSpeeds.vxMetersPerSecond * tof;
       double distY = (initDY) - currSpeeds.vyMetersPerSecond * tof;
 
