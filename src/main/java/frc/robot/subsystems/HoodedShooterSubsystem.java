@@ -98,9 +98,7 @@ public class HoodedShooterSubsystem extends SubsystemBase {
         new Slot0Configs()
             .withKP(Constants.Shooter.Hood.KP)
             .withKI(Constants.Shooter.Hood.KI)
-            .withKD(Constants.Shooter.Hood.KD)
-            .withKV(Constants.Shooter.Hood.KV)
-            .withKA(Constants.Shooter.Hood.KA);
+            .withKD(Constants.Shooter.Hood.KD);
     CurrentLimitsConfigs hoodClc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT)
@@ -134,8 +132,6 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Hood/Gains/kP", Constants.Shooter.Hood.KP);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kI", Constants.Shooter.Hood.KI);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kD", Constants.Shooter.Hood.KD);
-    DogLog.log("Subsystems/Shooter/Hood/Gains/kV", Constants.Shooter.Hood.KV);
-    DogLog.log("Subsystems/Shooter/Hood/Gains/kA", Constants.Shooter.Hood.KA);
   }
 
   public void setHoodPosition(double degrees) {
@@ -204,6 +200,10 @@ public Rotation2d getHoodUnfusedPosition() {
   public Command shootAtSpeedCommand() {
     return runEnd(() -> setShooterSpeedRPS(67.0), this::stopShooter);
   }
+
+//   public Command shootAtSpeedHoodCommand(double shooterSpeedRPS, double hoodAngle) {
+//     return runEnd(())
+//   }
 
   public Command shootAtSpeedCommand(double shooterSpeedRPS) {
     return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter);
