@@ -34,36 +34,36 @@ public class Targeting {
     return hullAimed;
   }
 
-  public static TargetingInfo targetingInfo(
-      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-    Vector3 relativeVel =
-        Vector3.mult(
-            new Vector3(
-                drivetrain.getFieldSpeeds().vxMetersPerSecond,
-                drivetrain.getFieldSpeeds().vyMetersPerSecond,
-                0),
-            -1);
+  // public static TargetingInfo targetingInfo(
+  //     Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
+  //   Vector3 relativeVel =
+  //       Vector3.mult(
+  //           new Vector3(
+  //               drivetrain.getFieldSpeeds().vxMetersPerSecond,
+  //               drivetrain.getFieldSpeeds().vyMetersPerSecond,
+  //               0),
+  //           -1);
 
-    Vector3 shooterPos = new Vector3(drivetrain.getCurrentState().Pose);
-    Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
+  //   Vector3 shooterPos = new Vector3(drivetrain.getCurrentState().Pose);
+  //   Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
 
-    double correctedSpeed = speedForDist(relativePos.magnitude());
-    double prevTof = 0;
-    Vector3 correctedPos = new Vector3(target);
+  //   double correctedSpeed = speedForDist(relativePos.magnitude());
+  //   double prevTof = 0;
+  //   Vector3 correctedPos = new Vector3(target);
 
-    for (int i = 0; i < precision; i++) {
-      double dist = Vector3.subtract(correctedPos, shooterPos).magnitude();
-      double tof = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(dist);
-      correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
-      correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
-      prevTof = tof;
-    }
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/shootspeed", correctedSpeed);
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/Tof", prevTof);
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/targetPlusLead", Vector3.toPose2d(correctedPos));
+  //   for (int i = 0; i < precision; i++) {
+  //     double dist = Vector3.subtract(correctedPos, shooterPos).magnitude();
+  //     double tof = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(dist);
+  //     correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
+  //     correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
+  //     prevTof = tof;
+  //   }
+  //   DogLog.log("Subsystems/ShooterSubsystem/Shoot/shootspeed", correctedSpeed);
+  //   DogLog.log("Subsystems/ShooterSubsystem/Shoot/Tof", prevTof);
+  //   DogLog.log("Subsystems/ShooterSubsystem/Shoot/targetPlusLead", Vector3.toPose2d(correctedPos));
 
-    return new TargetingInfo(correctedSpeed, prevTof, correctedPos);
-  }
+  //   return new TargetingInfo(correctedSpeed, prevTof, correctedPos);
+  // }
 
   public static double newtonTargetingDistance(Pose3d target, CommandSwerveDrivetrain swerve) {
     //Load basic stuff in
@@ -82,7 +82,7 @@ public class Targeting {
     double tof = initialDistance / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE + radialDistance);
     double distance = distToTarget;
 
-    for (int i = 0; i < Constants.Shooter.PRECISION; i++) {
+    for (int i = 0; i < Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
       double distX = (initDX) - currSpeeds.vxMetersPerSecond * tof;
       double distY = (initDY) - currSpeeds.vyMetersPerSecond * tof;
 
@@ -97,14 +97,32 @@ public class Targeting {
     return distance;
   }
 
+  public static TargetingInfo newtonTargetingInfo(Pose3d target, CommandSwerveDrivetrain drivetrain) {
+    double distance = newtonTargetingDistance(target, drivetrain);
+    double timeOfFlight =
+    Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
+
+    Vector3 relativeVel =
+    Vector3.mult(
+        new Vector3(
+            drivetrain.getFieldSpeeds().vxMetersPerSecond,
+            drivetrain.getFieldSpeeds().vyMetersPerSecond,
+            0),
+        -1);
+    Vector3 targetPlusOffset =
+    Vector3.add(new Vector3(target), Vector3.mult(relativeVel, timeOfFlight));
+
+    return new TargetingInfo(Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distance), timeOfFlight, targetPlusOffset);
+  }
+
   public static double shootingSpeed(
       Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-    return targetingInfo(target, drivetrain, precision).getSpeed();
+    return newtonTargetingInfo(target, drivetrain).getSpeed();
   }
 
   public static Vector3 positionToTarget(
       Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-    return targetingInfo(target, drivetrain, precision).getPosition();
+    return newtonTargetingInfo(target, drivetrain).getPosition();
   }
 
   public static double speedForDist(double d) {
