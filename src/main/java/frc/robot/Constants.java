@@ -950,23 +950,24 @@ public final class Constants {
       public static final double KP = 0.85; // TODO
       public static final double KI = 0.0; // TODO
       public static final double KD = 0.0; // TODO
-      public static final double KV = 0.124; // TODO
-      public static final double KA = 0.0; // TODO
+
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
       public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
 
-    public static final int HOOD_TOLERANCE = 0;
+      public static final int HOOD_TOLERANCE = 0;
 
-    public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
+      public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
 
-    public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
+      public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
       public static final double MIN_HOOD_POSITION = 0;
       public static final double MAX_HOOD_POSITION = 50;
 
-    public static final int MOTOR_ROTS_PER_ENCODER_ROT = 0;
+      public static final int MOTOR_ROTS_PER_ENCODER_ROT = 0;
 
-    public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
+      public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
+
+      public static double ENCODER_OFFSET = 0.0d;
 
     public static final int ENCODER_PORT = 0;
 
