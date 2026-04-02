@@ -255,19 +255,22 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void reduceHoodCurrentLimits() {
-    hood.updateCurrentLimits(Constants.Shooter.Hood.ZERO_STATOR_CURRENT_LIMIT, Constants.Shooter.Hood.ZERO_SUPPLY_CURRENT_LIMIT);
+    hood.updateCurrentLimits(
+        Constants.Shooter.Hood.ZERO_STATOR_CURRENT_LIMIT,
+        Constants.Shooter.Hood.ZERO_SUPPLY_CURRENT_LIMIT);
   }
 
   public void resetHoodCurrentLimits() {
-    hood.updateCurrentLimits(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT, Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
+    hood.updateCurrentLimits(
+        Constants.Shooter.Hood.STATOR_CURRENT_LIMIT, Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
   }
 
   public boolean checkHoodCurrent() {
     double supply = Math.abs(hood.getSupplyCurrent().getValue().magnitude());
     double stator = Math.abs(hood.getStatorCurrent().getValue().magnitude());
 
-    return supply > Constants.Shooter.Hood.ZERO_MAX_SUPPLY && stator > Constants.Shooter.Hood.ZERO_MAX_STATOR;
-
+    return supply > Constants.Shooter.Hood.ZERO_MAX_SUPPLY
+        && stator > Constants.Shooter.Hood.ZERO_MAX_STATOR;
   }
 
   @Override
