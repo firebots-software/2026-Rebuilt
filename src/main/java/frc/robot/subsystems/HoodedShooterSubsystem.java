@@ -205,13 +205,16 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     return targetShooterSpeedRPS;
   }
 
-  public double grabTargetShootingSpeed(double distanceToTarget) {
+  public double getTargetShootingSpeed(double distanceToTarget) {
     double mappedSpeed =
-        (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
+        Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget); // -0.4
 
     return mappedSpeed;
   }
 
+//   public double getTargetShootingSpeed(double distanceToTarget) {
+//     double mappedAngle = Constants.Shooter.Hood.HOOD_ANGLE_FOR_DISTANCE_METERS.get(distanceToTarget);
+//   }
   // Commands
   public Command shootAtSpeedCommand() {
     return runEnd(() -> setShooterSpeedRPS(67.0), this::stopShooter);
