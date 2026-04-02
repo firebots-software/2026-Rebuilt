@@ -592,7 +592,7 @@ public final class Constants {
 
   public static class Hopper {
     public static final int MOTOR_PORT_MASTER = 17;
-    public static final int MOTOR_PORT_SLAVE = 0; //GET ID
+    public static final int MOTOR_PORT_SLAVE = 0; // GET ID
 
     public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
     public static final double TARGET_SURFACE_SPEED_MPS =
@@ -945,6 +945,8 @@ public final class Constants {
 
       public static final double ZERO_MAX_STATOR = 0;
 
+      public static final int MAX_TIMES_EXCEEDED = 10;
+
       public static void UPDATE_INTERMAPS() {
         HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
         HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION);
@@ -989,9 +991,8 @@ public final class Constants {
     public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
     public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
 
-    public static final double HORIZONTAL_VELOCITY_OF_PROJECTILE = 5.0; //TUNE
-    public static final double PRECISION = 5; //TUNE
-
+    public static final double HORIZONTAL_VELOCITY_OF_PROJECTILE = 5.0; // TUNE
+    public static final double PRECISION = 5; // TUNE
 
     public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
         new InterpolatingDoubleTreeMap();
