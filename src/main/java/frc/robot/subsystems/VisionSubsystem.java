@@ -24,7 +24,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class VisionSubsystem extends SubsystemBase {
-
   private final Constants.Vision.VisionCamera cameraID;
   private final PhotonCamera photonCamera;
   private final AprilTagFieldLayout fieldLayout;
@@ -34,18 +33,18 @@ public class VisionSubsystem extends SubsystemBase {
   private String cameraTitle;
   private String loggingPath;
 
-  Optional<EstimatedRobotPose> visionEstimate;
+  private Optional<EstimatedRobotPose> visionEstimate;
 
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
-  Pose2d latestMeasuredPose;
-  Pose2d previousPose;
-  ArrayList<Double> latestJitterMeasurements;
-  double latestFinalTimestamp;
-  Matrix<N3, N1> latestNoiseVector;
-  double latestMinDistance;
-  double latestAvgDistance;
-  int latestTagCount;
+  private Pose2d latestMeasuredPose;
+  private Pose2d previousPose;
+  private ArrayList<Double> latestJitterMeasurements;
+  private double latestFinalTimestamp;
+  private Matrix<N3, N1> latestNoiseVector;
+  private double latestMinDistance;
+  private double latestAvgDistance;
+  private int latestTagCount;
 
   public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
     this.cameraID = cameraID;
@@ -95,7 +94,6 @@ public class VisionSubsystem extends SubsystemBase {
     hasValidMeasurement = false;
 
     if (!resultValid()) return;
-
     if (!tagsValid()) return;
 
     EstimatedRobotPose estimatedPose = visionEstimate.get();
@@ -115,56 +113,51 @@ public class VisionSubsystem extends SubsystemBase {
 
     latestNoiseVector =
         VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
-
     latestFinalTimestamp = calculateTimestamp(estimatedPose.timestampSeconds);
-
     hasValidMeasurement = true;
 
     DogLog.log(loggingPath + "/measuredPoseAvailable", latestMeasuredPose == null);
   }
 
   private boolean resultValid() {
-
     DogLog.log(loggingPath + "/addFilteredPoseRunning", true);
 
-    boolean resultExists =
-        (!(latestVisionResult == null) && !(latestVisionResult.getTargets().isEmpty()));
+    boolean resultExists = latestVisionResult != null && !latestVisionResult.getTargets().isEmpty();
     DogLog.log(loggingPath + "/HasResultsTargets", resultExists);
 
     boolean hasEstimate = !visionEstimate.isEmpty();
     DogLog.log(loggingPath + "/HasEstimate", hasEstimate);
 
-    return (resultExists && hasEstimate);
+    return resultExists && hasEstimate;
   }
 
   private boolean tagsValid() {
-
     List<PhotonTrackedTarget> tags = latestVisionResult.getTargets();
 
     boolean tagsValid = !tags.isEmpty();
     DogLog.log(loggingPath + "/Tags", tagsValid);
 
-    if (tagsValid) {
-      for (PhotonTrackedTarget tag : tags) {
-        DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
-        DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
-      }
-      latestTagCount = tags.size();
-      DogLog.log("Subsystems/Vision/tagCount", latestTagCount);
-    }
+    if (!tagsValid) return false;
 
-    return tagsValid;
+    for (PhotonTrackedTarget tag : tags) {
+      DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Area", tag.getArea());
+      DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
+    }
+    latestTagCount = tags.size();
+    DogLog.log("Subsystems/Vision/tagCount", latestTagCount);
+
+    return true;
   }
 
   private boolean throwOutDistance(double min) {
-    boolean thrownOut = (Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE);
+    boolean thrownOut = Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE;
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
   }
 
   public double getMinDistance() {
     double minDist =
-        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
@@ -177,7 +170,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getAverageDistance() {
     double avgDist =
-        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
@@ -190,7 +183,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getMaxDistance() {
     double maxDist =
-        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
@@ -203,7 +196,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getPoseAmbiguity() {
     double poseAmbiguity =
-        (latestVisionResult == null || latestVisionResult.getTargets().isEmpty())
+        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(PhotonTrackedTarget::getPoseAmbiguity)
@@ -221,16 +214,15 @@ public class VisionSubsystem extends SubsystemBase {
         Math.hypot(
             latestMeasuredPose.getX() - previousPose.getX(),
             latestMeasuredPose.getY() - previousPose.getY()));
-    if (latestJitterMeasurements.size() > Constants.Vision.MAX_JITTER_MEASUREMENTS) {
+    if (latestJitterMeasurements.size() > Constants.Vision.MAX_JITTER_MEASUREMENTS)
       latestJitterMeasurements.remove(0);
-    }
-    Double sum = 0.0;
-    for (Double j : latestJitterMeasurements) sum += j;
+
+    double sum = 0.0;
+    for (double j : latestJitterMeasurements) sum += j;
     return sum;
   }
 
   public boolean hasValidMeasurement() {
-
     return hasValidMeasurement;
   }
 
@@ -238,7 +230,7 @@ public class VisionSubsystem extends SubsystemBase {
     double fpgaTimestamp = Timer.getFPGATimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
-        (timestampDiff > Constants.Vision.TIMESTAMP_THRESHOLD)
+        timestampDiff > Constants.Vision.TIMESTAMP_THRESHOLD
             ? fpgaTimestamp + Constants.Vision.TIMESTAMP_FPGA_CORRECTION
             : timestamp;
 

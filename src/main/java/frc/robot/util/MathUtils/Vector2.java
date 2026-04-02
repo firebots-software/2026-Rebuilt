@@ -1,4 +1,4 @@
-package frc.robot.MathUtils;
+package frc.robot.util.MathUtils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;

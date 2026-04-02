@@ -1,4 +1,4 @@
-package frc.robot.commandGroups;
+package frc.robot.commandGroups.ShootCommandGroups;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -14,7 +14,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ShootWithAim extends ParallelCommandGroup {
-
   public ShootWithAim(
       DoubleSupplier translationalX,
       DoubleSupplier translationalY,
@@ -24,7 +23,6 @@ public class ShootWithAim extends ParallelCommandGroup {
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside,
       BooleanSupplier manualOverride) {
-
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
@@ -32,14 +30,9 @@ public class ShootWithAim extends ParallelCommandGroup {
                     44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
-                        hopperSubsystem
-                            .runHopperUntilInterruptedCommand()
-                            .alongWith(
-                                intakeSubsystem
-                                    .powerRetractRollersCommand()
-                                    .beforeStarting(
-                                        Commands.waitSeconds(
-                                            Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
+                        Commands.parallel(
+                            hopperSubsystem.runHopperUntilInterruptedCommand(),
+                            intakeSubsystem.powerRetractRollersCommand()))),
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () ->
@@ -59,20 +52,15 @@ public class ShootWithAim extends ParallelCommandGroup {
                     drivetrain),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
-                        hopperSubsystem
-                            .runHopperUntilInterruptedCommand(
+                        Commands.parallel(
+                            hopperSubsystem.runHopperUntilInterruptedCommand(
                                 () ->
-                                    hopperSubsystem.grabHopperRecommendedSpeed(
+                                    hopperSubsystem.getHopperRecommendedSpeed(
                                         shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
                                 () ->
-                                    (Targeting.pointingAtHub(redside, drivetrain)
-                                        && (drivetrain.getSpeedMagnitude() <= 0.2)))
-                            .alongWith(
-                                intakeSubsystem
-                                    .powerRetractRollersCommand()
-                                    .beforeStarting(
-                                        Commands.waitSeconds(
-                                            Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
+                                    Targeting.pointingAtHub(redside, drivetrain)
+                                        && drivetrain.getSpeedMagnitude() <= 0.2),
+                            intakeSubsystem.powerRetractRollersCommand()))),
             manualOverride));
   }
 }
