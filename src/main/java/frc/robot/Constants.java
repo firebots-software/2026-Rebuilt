@@ -635,10 +635,6 @@ public final class Constants {
     public static final InterpolatingDoubleTreeMap HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS =
         new InterpolatingDoubleTreeMap();
 
-    static {
-      UPDATE_INTERMAPS();
-    }
-
     public static void UPDATE_INTERMAPS() {
       HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
 
@@ -971,9 +967,18 @@ public final class Constants {
 
       public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
 
-      public static final int ENCODER_PORT = 0;
+      public static double ENCODER_OFFSET = 0.0d;
 
-      public static final double ENCODER_OFFSET = 0;
+    public static final int ENCODER_PORT = 0;
+
+    public static final InterpolatingDoubleTreeMap
+        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
+
+    public static void UPDATE_INTERMAPS() {
+      HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+      HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION);
+    }
+
     }
 
     public static final double TOLERANCE_RPS = 2.0;
@@ -1020,10 +1025,6 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap
         TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
-
-    static {
-      UPDATE_INTERMAPS();
-    }
 
     public static void UPDATE_INTERMAPS() {
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();
@@ -1148,5 +1149,15 @@ public final class Constants {
         new Pose2d(
             new Translation2d(5.624283313751221, 2.4593770503997803),
             new Rotation2d(1.57873264137917));
+  }
+  
+  static {
+    UPDATE_ALL_INTERMAPS();
+  }
+
+  public static void UPDATE_ALL_INTERMAPS() {
+    Shooter.UPDATE_INTERMAPS();
+    Shooter.Hood.UPDATE_INTERMAPS();
+    Hopper.UPDATE_INTERMAPS();
   }
 }
