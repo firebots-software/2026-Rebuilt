@@ -37,7 +37,7 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
       BooleanSupplier manualOverride) {
     
     Pose3d targetNoOffset = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
-    Vector2 target =
+    Supplier<Vector2> target = () ->
         Vector3.toVector2(
             Targeting.positionToTarget(
                 targetNoOffset,
@@ -45,7 +45,7 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                 Constants.Shooter.TARGETING_CALCULATION_PRECISION));
     Vector2 curPose = Vector2.fromPose2d(drivetrain.getCurrentState().Pose);
 
-    double dist = Vector2.dist(target, curPose);
+    DoubleSupplier dist = () -> Vector2.dist(target.get(), curPose);
 
     addCommands(
         Commands.either(
@@ -66,10 +66,10 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () ->
                         shooterSubsystem.getTargetShootingSpeed(
-                            dist),
+                            dist.getAsDouble()),
                     () ->
                         shooterSubsystem.getTargetHoodAngle(
-                            dist)),
+                            dist.getAsDouble())),
                 Commands.either(
                     new SwerveJoystickCommandInArc(
                         targetNoOffset,
