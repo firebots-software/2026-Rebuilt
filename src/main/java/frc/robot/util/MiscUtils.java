@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public class MiscUtils {
-
   public static int shiftIndicatorSum = 0;
 
   public static Pose2d plus(Pose2d a, Translation2d b) {
@@ -33,14 +32,11 @@ public class MiscUtils {
   public static Alliance getSecondAlliance() {
     String allianceChar = DriverStation.getGameSpecificMessage();
     if (allianceChar.isEmpty()) return null;
-    switch (allianceChar.charAt(0)) {
-      case 'B':
-        return Alliance.Blue;
-      case 'R':
-        return Alliance.Red;
-      default:
-        return null;
-    }
+    return switch (allianceChar.charAt(0)) {
+      case 'B' -> Alliance.Blue;
+      case 'R' -> Alliance.Red;
+      default -> null;
+    };
   }
 
   public static boolean areWeActive(double currentTime) {
@@ -51,17 +47,10 @@ public class MiscUtils {
     if (!DriverStation.isTeleopEnabled()) return false;
 
     // teleop is enabled
-    // double currentMatchTime = currentTime;
     double currentMatchTime = DriverStation.getMatchTime();
     String allianceChar = DriverStation.getGameSpecificMessage();
 
-    if (allianceChar.isEmpty()) {
-      DogLog.log("SakethGiri", "Empty");
-    } else {
-      if (allianceChar != null) {
-        DogLog.log("SakethGiri", allianceChar);
-      }
-    }
+    DogLog.log("Elastic/AllianceChar", allianceChar.isEmpty() ? "Empty" : allianceChar);
 
     if (allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
@@ -100,104 +89,54 @@ public class MiscUtils {
     // double currentMatchTime = currentTime;
     double currentMatchTime = DriverStation.getMatchTime();
     if (DriverStation.isAutonomous()) return "Auto";
-    else {
-      if (currentMatchTime > 130) return "Transition";
-      else if (currentMatchTime > 105) return "ALS 1";
-      else if (currentMatchTime > 80) return "ALS 2";
-      else if (currentMatchTime > 55) return "ALS 3";
-      else if (currentMatchTime > 30) return "ALS 4";
-      else return "Endgame";
-    }
+
+    if (currentMatchTime > 130) return "Transition";
+    else if (currentMatchTime > 105) return "ALS 1";
+    else if (currentMatchTime > 80) return "ALS 2";
+    else if (currentMatchTime > 55) return "ALS 3";
+    else if (currentMatchTime > 30) return "ALS 4";
+    else return "Endgame";
   }
 
   public static void shiftSwitchIndicator(double currentTime) {
-
     // double currentTimes = currentTime;
     double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
     boolean isActive = areWeActive(currentTimes);
-    boolean isAuto = currentShiftName(currentTimes).equals("Auto");
     boolean isTransition = currentShiftName(currentTimes).equals("Transition");
 
-    if (isAuto) {
-      if (timeUntilNextShift < 2) {
-        // Nearly our turn — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      } else if (timeUntilNextShift < 5) {
-        // Very soon — fast yellow blink
-        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 8) {
-        // Soon — slow yellow blink
-        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else {
-        // Plenty of time — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      }
-    }
-
-    if (isTransition) {
-      shiftIndicatorSum = 0;
-      String color = "#00FF00";
-      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-      return;
-    }
-
-    if (isEndgame) {
+    if (isTransition || isEndgame) {
       shiftIndicatorSum = 0;
       SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
       return;
     }
 
+    String color = "";
     if (isActive) {
-      if (timeUntilNextShift > 8) {
-        // Plenty of time — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      } else if (timeUntilNextShift < 2) {
-        // Shift coming up soon — slow  blink
-        String color = "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 5) {
-        // Shift coming up very soon — fast red blink
-        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 8) {
-        // Shift coming up soon — slow red blink
-        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      }
+      shiftIndicatorSum = timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
+      if (timeUntilNextShift >= 8) color = "#00FF00";
+      else if (timeUntilNextShift < 2) color = "#000000";
+      // fast blink
+      else if (timeUntilNextShift < 5)
+        color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
+      // slow blink
+      else if (timeUntilNextShift < 8)
+        color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
     } else {
-      // Inactive alliance — warn about upcoming shift
-      if (timeUntilNextShift < 2) {
-        // Nearly our turn — solid green
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
-      } else if (timeUntilNextShift < 5) {
-        // Very soon — fast yellow blink
-        String color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else if (timeUntilNextShift < 8) {
-        // Soon — slow yellow blink
-        String color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
-        shiftIndicatorSum++;
-      } else {
-        // Plenty of time — solid black
-        shiftIndicatorSum = 0;
-        SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#000000");
-      }
+      // alliance hub inactive
+      shiftIndicatorSum =
+          timeUntilNextShift < 2 || timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
+      if (timeUntilNextShift < 2) color = "#00FF00";
+      // fast blink
+      else if (timeUntilNextShift < 5)
+        color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
+      // slow blink
+      else if (timeUntilNextShift < 8)
+        color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
+      else color = "#000000";
     }
+    SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
   }
 
   public static double get3dDistance(Transform3d transform) {
@@ -227,30 +166,16 @@ public class MiscUtils {
   }
 
   public static boolean isFlashDriveConnected() {
-    String[] possiblePaths = {"/u"};
-
-    for (String path : possiblePaths) {
-      // Check if /u/logs exists and is writable (indicates USB is actually mounted)
-      File logsDir = new File(path + "/logs");
-      DogLog.log("Elastic/logsDirExists", logsDir.exists());
-      DogLog.log("Elastic/logsDirIsDirectory", logsDir.isDirectory());
-      DogLog.log("Elastic/logsDirCanWrite", logsDir.canWrite());
-      if (logsDir.exists() && logsDir.isDirectory() && logsDir.canWrite()) {
-        return true;
-      }
-    }
-    return false;
+    // Check if /u/logs exists and is writable (indicates USB is actually mounted)
+    File logsDir = new File("/u/logs");
+    DogLog.log("Elastic/LogsDirExists", logsDir.exists());
+    DogLog.log("Elastic/LogsDirIsDirectory", logsDir.isDirectory());
+    DogLog.log("Elastic/LogsDirCanWrite", logsDir.canWrite());
+    return logsDir.exists() && logsDir.isDirectory() && logsDir.canWrite();
   }
 
   public static File getFlashDriveDirectory() {
-    String[] possiblePaths = {"/u"};
-
-    for (String path : possiblePaths) {
-      File usbDrive = new File(path);
-      if (usbDrive.exists() && usbDrive.isDirectory()) {
-        return usbDrive;
-      }
-    }
-    return null;
+    File usbDrive = new File("/u");
+    return usbDrive.exists() && usbDrive.isDirectory() ? usbDrive : null;
   }
 }

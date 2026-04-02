@@ -7,7 +7,6 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -71,20 +70,16 @@ public class ShooterSubsystem extends SubsystemBase {
 
     VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
-    // Apply full TalonFXConfiguration to ensure factory defaults
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0 = s0c;
-    config.CurrentLimits = clc;
-    config.MotorOutput = motorOutputConfigs;
-    config.Voltage = vConfigs;
+    TalonFXConfiguration config =
+        new TalonFXConfiguration()
+            .withSlot0(s0c)
+            .withCurrentLimits(clc)
+            .withMotorOutput(motorOutputConfigs)
+            .withVoltage(vConfigs);
 
-    TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
-    TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
-    TalonFXConfigurator m3config = warmUpMotor3.getConfigurator();
-
-    m1config.apply(config);
-    m2config.apply(config);
-    m3config.apply(config);
+    warmUpMotor1.getConfigurator().apply(config);
+    warmUpMotor2.getConfigurator().apply(config);
+    warmUpMotor3.getConfigurator().apply(config);
 
     // Set motors 1 and 2 to follow motor 3 (the leader)
     Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
@@ -111,10 +106,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isAtSpeed() {
-    if (shooter.getCachedVelocityRps() == 0) {
-      return false;
-    }
-    return Math.abs(targetShooterWheelRPS - (getCurrentShooterWheelSpeedRPS())) <= TOLERANCE_RPS;
+    if (shooter.getCachedVelocityRps() == 0) return false;
+    return Math.abs(targetShooterWheelRPS - getCurrentShooterWheelSpeedRPS()) <= TOLERANCE_RPS;
   }
 
   public double getCurrentShooterWheelSpeedRPS() {
@@ -125,11 +118,8 @@ public class ShooterSubsystem extends SubsystemBase {
     return targetShooterWheelRPS;
   }
 
-  public double grabTargetShootingSpeed(double distanceToTarget) {
-    double mappedSpeed =
-        (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
-
-    return mappedSpeed;
+  public double getTargetShootingSpeed(double distanceToTarget) {
+    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget);
   }
 
   // Commands
@@ -155,7 +145,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
 
-    // TODO: Cache this value
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         new Pose2d(
@@ -182,7 +171,5 @@ public class ShooterSubsystem extends SubsystemBase {
         Targeting.targetingInfo(
                 target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
             .getToF());
-    // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
-    // shooter.getVelocity().getValueAsDouble());
   }
 }

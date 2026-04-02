@@ -5,27 +5,51 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
-import frc.robot.MathUtils.MiscMath;
-import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.MathUtils.MiscMath;
+import frc.robot.util.MathUtils.Vector3;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class Targeting {
+  public static class TargetingInfo {
+    private double speed;
+    private double tof;
+    private Vector3 pos;
+
+    public TargetingInfo(double speed, double tof, Vector3 pos) {
+      this.speed = speed;
+      this.tof = tof;
+      this.pos = pos;
+    }
+
+    public double getSpeed() {
+      return speed;
+    }
+
+    public double getToF() {
+      return tof;
+    }
+
+    public Vector3 getPosition() {
+      return pos;
+    }
+  }
+
   public static boolean pointingAtTarget(
       Pose3d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
     double desiredRobotHullAngle =
-        (targetAngle(targetNoOffset, drivetrain) + (2 * Math.PI)) % (2 * Math.PI);
+        targetAngle(targetNoOffset, drivetrain) + (2 * Math.PI) % (2 * Math.PI);
 
     double robotHullAngle =
-        (drivetrain.getCurrentState().Pose.getRotation().getRadians() + (2 * Math.PI))
-            % (2 * Math.PI);
+        drivetrain.getCurrentState().Pose.getRotation().getRadians()
+            + (2 * Math.PI) % (2 * Math.PI);
 
     double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
     if (diff > Math.PI) diff = 2 * Math.PI - diff;
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/rotationalErrorRadians", diff);
+    DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
     boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/pointing", hullAimed);
+    DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
     return hullAimed;
   }
 
@@ -58,9 +82,9 @@ public class Targeting {
       correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
       prevTof = tof;
     }
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/shootspeed", correctedSpeed);
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/Tof", prevTof);
-    DogLog.log("Subsystems/ShooterSubsystem/Shoot/targetPlusLead", Vector3.toPose2d(correctedPos));
+    DogLog.log("Subsystems/Shooter/Shoot/ShootSpeed", correctedSpeed);
+    DogLog.log("Subsystems/Shooter/Shoot/TOF", prevTof);
+    DogLog.log("Subsystems/Shooter/Shoot/TargetPlusLead", Vector3.toPose2d(correctedPos));
 
     return new TargetingInfo(correctedSpeed, prevTof, correctedPos);
   }
@@ -77,33 +101,7 @@ public class Targeting {
 
   public static double speedForDist(double d) {
     return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(d);
-    // return Math.sqrt(
-    //     d
-    //         * 9.81
-    //         / Math.sin(
-    //             Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
   }
-
-  //   public static Vector3 positionToTarget(
-  //       Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-  //     double timeOfFlight =
-  //         Constants.Shooter.TOF_FOR_MOTOR_SPEED_INTERMAP.get(
-  //             shootingSpeed(target, drivetrain, precision));
-
-  //     Vector3 relativeVel =
-  //         Vector3.mult(
-  //             new Vector3(
-  //                 drivetrain.getFieldSpeeds().vxMetersPerSecond,
-  //                 drivetrain.getFieldSpeeds().vyMetersPerSecond,
-  //                 0),
-  //             -1);
-  //     Vector3 targetPlusOffset =
-  //         Vector3.add(new Vector3(target), Vector3.mult(relativeVel, timeOfFlight));
-  //     DogLog.log(
-  //         "Subsystems/ShooterSubsystem/Shoot/targetPlusOffset",
-  //         new Pose2d(targetPlusOffset.x, targetPlusOffset.y, new Rotation2d()));
-  //     return targetPlusOffset;
-  //   }
 
   public static double targetAngle(Pose3d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
     Vector3 target =
@@ -122,9 +120,9 @@ public class Targeting {
 
   public static DoubleSupplier amtToRumble(CommandSwerveDrivetrain drivetrain, Pose3d target) {
     return () ->
-        (Units.metersToFeet(distMeters(drivetrain, target)) > Constants.Shooter.MAX_DIST_FT
+        Units.metersToFeet(distMeters(drivetrain, target)) > Constants.Shooter.MAX_DIST_FT
                 || Units.metersToFeet(distMeters(drivetrain, target))
-                    < Constants.Shooter.MIN_DIST_FT)
+                    < Constants.Shooter.MIN_DIST_FT
             ? .5d
             : 0d;
   }

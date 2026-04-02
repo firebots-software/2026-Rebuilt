@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
-
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
@@ -39,11 +37,6 @@ import java.util.function.Supplier;
  * be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-  // private static final double kSimLoopPeriod = Constants.Simulation.SIM_LOOP_PERIOD_SECONDS; // 5
-  // ms
-  // private Notifier m_simNotifier = null;
-  // private double m_lastSimTime;
-
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -69,13 +62,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   private SwerveDriveState currentState;
 
-  /* Swerve requests to apply during SysId characterization */
-  private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
-      new SwerveRequest.SysIdSwerveTranslation();
-  private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization =
-      new SwerveRequest.SysIdSwerveSteerGains();
-  private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
-      new SwerveRequest.SysIdSwerveRotation();
   private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
@@ -91,88 +77,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           0, //
           0); // -13 was good
   // 15, 0, 0 w/o FF
-  private DoubleSubscriber headingKPTunable =
-      DogLog.tunable(
-          "Subsystems/Swerve/kPHeading",
-          15.0,
-          (x) -> {
-            headingPIDController.setP(x);
-          });
-  private DoubleSubscriber headingKITunable =
-      DogLog.tunable(
-          "Subsystems/Swerve/kIHeading",
-          0.0,
-          (x) -> {
-            headingPIDController.setI(x);
-          });
-  private DoubleSubscriber headingKDTunable =
-      DogLog.tunable(
-          "Subsystems/Swerve/kDHeading",
-          0.0,
-          (x) -> {
-            headingPIDController.setD(x);
-          });
-
-  /*
-   * SysId routine for characterizing translation. This is used to find PID gains
-   * for the drive motors.
-  //  */
-  // private final SysIdRoutine m_sysIdRoutineTranslation =
-  //     new SysIdRoutine(
-  //         new SysIdRoutine.Config(
-  //             null, // Use default ramp rate (1 V/s)
-  //             Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-  //             null, // Use default timeout (10 s)
-  //             // Log state with SignalLogger class
-  //             state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
-  //         new SysIdRoutine.Mechanism(
-  //             output -> setControl(m_translationCharacterization.withVolts(output)), null,
-  // this));
-
-  // /*
-  //  * SysId routine for characterizing steer. This is used to find PID gains for
-  //  * the steer motors.
-  //  */
-  // private final SysIdRoutine m_sysIdRoutineSteer =
-  //     new SysIdRoutine(
-  //         new SysIdRoutine.Config(
-  //             null, // Use default ramp rate (1 V/s)
-  //             Volts.of(7), // Use dynamic voltage of 7 V
-  //             null, // Use default timeout (10 s)
-  //             // Log state with SignalLogger class
-  //             state -> SignalLogger.writeString("SysIdSteer_State", state.toString())),
-  //         new SysIdRoutine.Mechanism(
-  //             volts -> setControl(m_steerCharacterization.withVolts(volts)), null, this));
-
-  // /*
-  //  * SysId routine for characterizing rotation.
-  //  * This is used to find PID gains for the FieldCentricFacingAngle
-  //  * HeadingController.
-  //  * See the documentation of SwerveRequest.SysIdSwerveRotation for info on
-  //  * importing the log to SysId.
-  //  */
-  // private final SysIdRoutine m_sysIdRoutineRotation =
-  //     new SysIdRoutine(
-  //         new SysIdRoutine.Config(
-  //             /* This is in radians per second², but SysId only supports "volts per second" */
-  //             Volts.of(Math.PI / 6).per(Second),
-  //             /* This is in radians per second, but SysId only supports "volts" */
-  //             Volts.of(Math.PI),
-  //             null, // Use default timeout (10 s)
-  //             // Log state with SignalLogger class
-  //             state -> SignalLogger.writeString("SysIdRotation_State", state.toString())),
-  //         new SysIdRoutine.Mechanism(
-  //             output -> {
-  //               /* output is actually radians per second, but SysId only supports "volts" */
-  //               setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
-  //               /* also log the requested output for SysId */
-  //               SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
-  //             },
-  //             null,
-  //             this));
-
-  // /* The SysId routine to test */
-  // private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+  public DoubleSubscriber headingKPTunable =
+      DogLog.tunable("Subsystems/Swerve/kPHeading", 15.0, headingPIDController::setP);
+  public DoubleSubscriber headingKITunable =
+      DogLog.tunable("Subsystems/Swerve/kIHeading", 0.0, headingPIDController::setI);
+  public DoubleSubscriber headingKIDunable =
+      DogLog.tunable("Subsystems/Swerve/kDHeading", 0.0, headingPIDController::setD);
 
   /**
    * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -189,9 +99,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     currentState = getState();
 
-    // if (Utils.isSimulation()) {
-    //   startSimThread();
-    // }
     headingPIDController.setIZone(0.14);
     headingPIDController.setIntegratorRange(0.0, Math.PI / 4); // 0.3 before
     headingPIDController.enableContinuousInput(-Math.PI, Math.PI); // 0.3 before
@@ -216,11 +123,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       double odometryUpdateFrequency,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(drivetrainConstants, odometryUpdateFrequency, modules);
-
-    // if (Utils.isSimulation()) {
-    //   startSimThread();
-    // }
-
     SmartDashboard.putData(field);
   }
 
@@ -251,11 +153,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         odometryStandardDeviation,
         visionStandardDeviation,
         modules);
-
-    // if (Utils.isSimulation()) {
-    //   startSimThread();
-    // }
-
     SmartDashboard.putData(field);
   }
 
@@ -276,9 +173,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public void followPath(SwerveSample sample) {
     m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI); // every run?
 
-    var pose = getState().Pose;
+    Pose2d pose = getState().Pose;
 
-    var targetSpeeds = sample.getChassisSpeeds();
+    ChassisSpeeds targetSpeeds = sample.getChassisSpeeds();
     targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
     targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
     targetSpeeds.omegaRadiansPerSecond +=
@@ -310,28 +207,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
     return run(() -> this.setControl(requestSupplier.get()));
   }
-
-  // /**
-  //  * Runs the SysId Quasistatic test in the given direction for the routine specified by {@link
-  //  * #m_sysIdRoutineToApply}.
-  //  *
-  //  * @param direction Direction of the SysId Quasistatic test
-  //  * @return Command to run
-  //  */
-  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  //   return m_sysIdRoutineToApply.quasistatic(direction);
-  // }
-
-  // /**
-  //  * Runs the SysId Dynamic test in the given direction for the routine specified by {@link
-  //  * #m_sysIdRoutineToApply}.
-  //  *
-  //  * @param direction Direction of the SysId Dynamic test
-  //  * @return Command to run
-  //  */
-  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  //   return m_sysIdRoutineToApply.dynamic(direction);
-  // }
 
   public SwerveDriveState getCurrentState() {
     return currentState;
@@ -409,7 +284,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     if (this.getCurrentCommand() != null) {
-      DogLog.log("Subsystems/Swerve/Current Command", this.getCurrentCommand().toString());
+      DogLog.log("Subsystems/Swerve/CurrentCommand", this.getCurrentCommand().toString());
     }
     DogLog.log("Subsystems/Swerve/Pose", getCurrentState().Pose);
 
@@ -421,7 +296,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     DogLog.log(
         "Subsystems/Swerve/DistanceToHub",
-        MiscUtils.getDistanceToHub(() -> RobotContainer.setAlliance(), this));
+        MiscUtils.getDistanceToHub(RobotContainer::isRedAlliance, this));
     DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
 
@@ -436,21 +311,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     super.addVisionMeasurement(
         visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
   }
-
-  // private void startSimThread() {
-  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-  //     /* Run simulation at a faster rate so PID gains behave more reasonably */
-  //     m_simNotifier = new Notifier(() -> {
-  //         final double currentTime = Utils.getCurrentTimeSeconds();
-  //         double deltaTime = currentTime - m_lastSimTime;
-  //         m_lastSimTime = currentTime;
-
-  //         /* use the measured time delta, get battery voltage from WPILib */
-  //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
-  //     });
-  //     m_simNotifier.startPeriodic(kSimLoopPeriod);
-  // }
 
   public ChassisSpeeds getFieldSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -467,8 +327,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (clamp) {
       omega = MathUtil.clamp(omega, -max, max);
     }
-    DogLog.log("Swerve/rotationController/clamped", clamp);
-    DogLog.log("Swerve target rotations degrees", targetRotation.getDegrees());
+    DogLog.log("Subsystems/Swerve/RotationController/clamped", clamp);
+    DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
     return omega;
   }
 
@@ -510,29 +370,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     double omega = (omegaFF) + omegaPID;
 
-    DogLog.log("Swerve/rotationController/omegaFF", omegaFF);
-    DogLog.log("Swerve/rotationController/omegaPID", omegaPID);
-    DogLog.log("Swerve target rotation degrees", targetRotation.getDegrees());
+    DogLog.log("Subsystems/Swerve/RotationController/omegaFF", omegaFF);
+    DogLog.log("Subsystems/Swerve/RotationController/omegaPID", omegaPID);
+    DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
     return omega;
   }
 
   public Command brakeSwerve() {
     return run(() -> setControl(m_brake));
   }
-  // private void startSimThread() {
-  //   m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-  //   /* Run simulation at a faster rate so PID gains behave more reasonably */
-  //   m_simNotifier =
-  //       new Notifier(
-  //           () -> {
-  //             final double currentTime = Utils.getCurrentTimeSeconds();
-  //             double deltaTime = currentTime - m_lastSimTime;
-  //             m_lastSimTime = currentTime;
-
-  //             /* use the measured time delta, get battery voltage from WPILib */
-  //             updateSimState(deltaTime, RobotController.getBatteryVoltage());
-  //           });
-  //   m_simNotifier.startPeriodic(kSimLoopPeriod);
-  // }
 }
