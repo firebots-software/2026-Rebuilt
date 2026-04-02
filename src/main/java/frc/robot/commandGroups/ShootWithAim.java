@@ -25,6 +25,8 @@ public class ShootWithAim extends ParallelCommandGroup {
       BooleanSupplier redside,
       BooleanSupplier manualOverride) {
 
+    double distanceToHub = MiscUtils.getDistanceToHub(redside, drivetrain);
+
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
@@ -43,7 +45,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                 shooterSubsystem.shootAtSpeedCommand(
                     () ->
                         shooterSubsystem.grabTargetShootingSpeed(
-                            MiscUtils.getDistanceToHub(redside, drivetrain))),
+                            distanceToHub)),
                 new SwerveJoystickCommand(
                     translationalX,
                     translationalY,
