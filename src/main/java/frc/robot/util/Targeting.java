@@ -69,25 +69,19 @@ public class Targeting {
   public static double newtonTargetingDistance(Pose3d target, CommandSwerveDrivetrain swerve) {
     // Load basic stuff in
     ChassisSpeeds currSpeeds = swerve.getFieldSpeeds();
-    Pose2d offsetCurrentState =
+    Pose2d currState =
         swerve
-            .getPose()
-            .plus(
-                new Transform2d(
-                    0.0,
-                    0.0,
-                    new Rotation2d())); // get transform for length to bumper, or wherever we take
-    // measurements from
+            .getPose();
     double distToTarget =
         target
             .getTranslation()
             .getDistance(
                 new Translation3d(
-                    new Translation2d(offsetCurrentState.getX(), offsetCurrentState.getY())));
+                    new Translation2d(currState.getX(), currState.getY())));
 
     // initial guess
-    double initDX = target.getX() - offsetCurrentState.getX();
-    double initDY = target.getY() - offsetCurrentState.getY();
+    double initDX = target.getX() - currState.getX();
+    double initDY = target.getY() - currState.getY();
 
     double initialDistance = Math.pow(initDX * initDX + initDY * initDY, 0.5);
     double radialDistance =
