@@ -914,21 +914,21 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
       public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
 
-      public static final int HOOD_TOLERANCE = 0;
+      public static final double HOOD_TOLERANCE = 0;
 
       public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
 
-      public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
+      public static final double HOOD_ROTS_PER_CANCODER_ROT = 0;
       public static final double MIN_HOOD_POSITION = 0;
       public static final double MAX_HOOD_POSITION = 50;
 
-      public static final int MOTOR_ROTS_PER_ENCODER_ROT = 0;
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 0;
 
-      public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
+      public static final double ENCODER_ROTS_PER_ARM_ROT = 0;
 
       public static double ENCODER_OFFSET = 0.0d;
 
-      public static final int ENCODER_PORT = 0;
+      public static final double ENCODER_PORT = 0;
 
       public static final InterpolatingDoubleTreeMap
           HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
