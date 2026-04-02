@@ -69,27 +69,29 @@ public class Targeting {
     //Load basic stuff in
     ChassisSpeeds currSpeeds = swerve.getFieldSpeeds();
     Pose2d offsetCurrentState = swerve.getPose().plus(new Transform2d(0.0, 0.0, new Rotation2d())); //get transform for length to bumper, or wherever we take measurements from
-    double distToTarget = target.getTranslation().getDistance(new Translation3d(new Translation2d(offsetCurrentState.getX(), offsetCurrentState.getY())));
     
     //initial guess
     double initDX = target.getX() - offsetCurrentState.getX();
     double initDY = target.getY() - offsetCurrentState.getY();
 
     double initialDistance = Math.pow(initDX * initDX + initDY * initDY, 0.5);
+    if (initialDistance < 1e-6) return 0.0;
     double radialDistance = (initDX * currSpeeds.vxMetersPerSecond + initDY * currSpeeds.vyMetersPerSecond) / initialDistance;
     
     //shit we need
-    double tof = initialDistance / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE + radialDistance);
-    double distance = distToTarget;
+    double tof = initialDistance / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE - radialDistance);
+    if (tof < 1e-3) tof = 1e-3;
+    double distance = 0;
 
     for (int i = 0; i < Constants.Shooter.PRECISION; i++) {
       double distX = (initDX) - currSpeeds.vxMetersPerSecond * tof;
       double distY = (initDY) - currSpeeds.vyMetersPerSecond * tof;
 
       distance = Math.pow(distX * distX + distY * distY, 0.5);
+      if (distance < 1e-6) break;
 
       double error = tof - Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
-      double errorDerivative = 1 - ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond) / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE * distance));
+      double errorDerivative = 1 + ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond) / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE * distance));
 
       tof -= (error/errorDerivative);
     }
