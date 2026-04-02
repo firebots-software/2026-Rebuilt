@@ -928,7 +928,7 @@ public final class Constants {
 
       public static double ENCODER_OFFSET = 0.0d;
 
-      public static final double ENCODER_PORT = 0;
+      public static final int ENCODER_PORT = 0;
 
       public static final InterpolatingDoubleTreeMap
           HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
