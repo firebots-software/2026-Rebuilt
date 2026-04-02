@@ -201,9 +201,12 @@ public Rotation2d getHoodUnfusedPosition() {
     return runEnd(() -> setShooterSpeedRPS(67.0), this::stopShooter);
   }
 
-//   public Command shootAtSpeedHoodCommand(double shooterSpeedRPS, double hoodAngle) {
-//     return runEnd(())
-//   }
+  public Command shootAtSpeedHoodCommand(double shooterSpeedRPS, double hoodAngle) {
+
+    
+     return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter)
+     .alongWith(run(() -> setHoodPosition(hoodAngle)));
+  }
 
   public Command shootAtSpeedCommand(double shooterSpeedRPS) {
     return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter);
