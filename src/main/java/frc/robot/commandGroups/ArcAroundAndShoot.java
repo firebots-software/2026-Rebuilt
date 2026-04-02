@@ -36,7 +36,11 @@ public class ArcAroundAndShoot extends ParallelCommandGroup {
             tangentialVelocitySupplier,
             () -> 1f,
             (BooleanSupplier) () -> false,
-            (Supplier<Translation2d>) () -> Vector3.toTranslation2d(Targeting.positionToTarget(target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+            (Supplier<Translation2d>)
+                () ->
+                    Vector3.toTranslation2d(
+                        Targeting.positionToTarget(
+                            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
             drivetrain),
         Commands.runEnd(
             () ->
