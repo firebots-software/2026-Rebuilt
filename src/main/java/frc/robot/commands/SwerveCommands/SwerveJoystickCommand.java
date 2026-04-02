@@ -136,7 +136,8 @@ public class SwerveJoystickCommand extends Command {
             ? swerveDrivetrain.calculateRequiredRotationalRateWithFF(
                 redsideIfPointing.getAsBoolean()
                     ? Constants.Landmarks.RED_HUB_2D.getTranslation()
-                    : Constants.Landmarks.BLUE_HUB_2D.getTranslation(), Constants.Shooter.SHOOTS_BACKWARDS)
+                    : Constants.Landmarks.BLUE_HUB_2D.getTranslation(),
+                Constants.Shooter.SHOOTS_BACKWARDS)
             : turningSpeed;
 
     // 5. Applying the drive request on the swerve drivetrain

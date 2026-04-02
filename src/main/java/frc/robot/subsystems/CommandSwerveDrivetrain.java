@@ -473,7 +473,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return omega;
   }
 
-  public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint, boolean shooterFacingForward) {
+  public double calculateRequiredRotationalRateWithFF(
+      Translation2d targetPoint, boolean shooterFacingForward) {
     Translation2d robotPos = getCurrentState().Pose.getTranslation();
     double dx = targetPoint.getX() - robotPos.getX();
     double dy = targetPoint.getY() - robotPos.getY();
@@ -492,7 +493,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx));
 
-    if (!shooterFacingForward) targetRotation = targetRotation.plus(new Rotation2d(Units.degreesToRadians(180)));
+    if (!shooterFacingForward)
+      targetRotation = targetRotation.plus(new Rotation2d(Units.degreesToRadians(180)));
 
     double omegaPID =
         headingPIDController.calculate(
