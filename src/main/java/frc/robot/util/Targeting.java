@@ -3,8 +3,6 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -69,15 +67,11 @@ public class Targeting {
   public static double newtonTargetingDistance(Pose3d target, CommandSwerveDrivetrain swerve) {
     // Load basic stuff in
     ChassisSpeeds currSpeeds = swerve.getFieldSpeeds();
-    Pose2d currState =
-        swerve
-            .getPose();
+    Pose2d currState = swerve.getPose();
     double distToTarget =
         target
             .getTranslation()
-            .getDistance(
-                new Translation3d(
-                    new Translation2d(currState.getX(), currState.getY())));
+            .getDistance(new Translation3d(new Translation2d(currState.getX(), currState.getY())));
 
     // initial guess
     double initDX = target.getX() - currState.getX();
