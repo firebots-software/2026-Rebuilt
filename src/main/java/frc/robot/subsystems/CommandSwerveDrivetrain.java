@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -472,7 +473,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return omega;
   }
 
-  public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint) {
+  public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint, boolean shooterFacingForward) {
     Translation2d robotPos = getCurrentState().Pose.getTranslation();
     double dx = targetPoint.getX() - robotPos.getX();
     double dy = targetPoint.getY() - robotPos.getY();
@@ -490,6 +491,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx));
+
+    if (!shooterFacingForward) targetRotation = targetRotation.plus(new Rotation2d(Units.degreesToRadians(180)));
+
     double omegaPID =
         headingPIDController.calculate(
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
