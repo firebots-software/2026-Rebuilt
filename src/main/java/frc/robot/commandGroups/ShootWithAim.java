@@ -43,9 +43,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                                             Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedCommand(
-                    () ->
-                        shooterSubsystem.grabTargetShootingSpeed(
-                            distanceToHub)),
+                    () -> shooterSubsystem.getTargetShootingSpeed(distanceToHub)),
                 new SwerveJoystickCommand(
                     translationalX,
                     translationalY,
