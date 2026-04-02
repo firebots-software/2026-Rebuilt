@@ -20,7 +20,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -92,7 +91,6 @@ public class HoodedShooterSubsystem extends SubsystemBase {
 
     hoodEncoder = new CANcoder(Constants.Shooter.Hood.ENCODER_PORT, Constants.Swerve.CAN_BUS);
 
-
     // TODO: Verify all this
     Slot0Configs hoodS0c =
         new Slot0Configs()
@@ -108,7 +106,12 @@ public class HoodedShooterSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
     VoltageConfigs hoodVoltageConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
-    FeedbackConfigs hoodFeedbackConfigs = new FeedbackConfigs().withFeedbackRemoteSensorID(hoodEncoder.getDeviceID()).withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder).withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_ARM_ROT).withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
+    FeedbackConfigs hoodFeedbackConfigs =
+        new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+            .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_ARM_ROT)
+            .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
     hoodConfig.Slot0 = hoodS0c;
@@ -119,7 +122,11 @@ public class HoodedShooterSubsystem extends SubsystemBase {
 
     hood.getConfigurator().apply(hoodConfig);
 
-    MagnetSensorConfigs hoodCANcoderConfig = new CANcoderConfiguration().MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1)).withSensorDirection(SensorDirectionValue.Clockwise_Positive).withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
+    MagnetSensorConfigs hoodCANcoderConfig =
+        new CANcoderConfiguration()
+            .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
+                .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+                .withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
 
     hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
 
@@ -136,11 +143,16 @@ public class HoodedShooterSubsystem extends SubsystemBase {
 
   public void setHoodPosition(double degrees) {
     hoodTargetDeg = degrees;
-    hood.setControl(m_positionRequest.withPosition(MathUtil.clamp(degrees / 360.0, Constants.Shooter.Hood.MIN_HOOD_POSITION, Constants.Shooter.Hood.MAX_HOOD_POSITION)));
+    hood.setControl(
+        m_positionRequest.withPosition(
+            MathUtil.clamp(
+                degrees / 360.0,
+                Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                Constants.Shooter.Hood.MAX_HOOD_POSITION)));
   }
 
   public Rotation2d getHoodPosition() {
-    return new  Rotation2d(Units.rotationsToRadians(hood.getCachedPositionRotations()));
+    return new Rotation2d(Units.rotationsToRadians(hood.getCachedPositionRotations()));
   }
 
   public void stopHood() {
@@ -149,17 +161,21 @@ public class HoodedShooterSubsystem extends SubsystemBase {
   }
 
   public boolean hoodAtTarget() {
-    return Math.abs(hood.getCachedPositionRotations() * Constants.Shooter.Hood.HOOD_DEGREES_PER_MOTOR_ROT - hoodTargetDeg) <= Constants.Shooter.Hood.HOOD_TOLERANCE;
+    return Math.abs(
+            hood.getCachedPositionRotations() * Constants.Shooter.Hood.HOOD_DEGREES_PER_MOTOR_ROT
+                - hoodTargetDeg)
+        <= Constants.Shooter.Hood.HOOD_TOLERANCE;
   }
 
   public double getHoodCancoderPositionRaw() {
     return hoodEncoder.getAbsolutePosition().getValueAsDouble();
   }
 
-public Rotation2d getHoodUnfusedPosition() {
-    return new Rotation2d(Units.rotationsToRadians(getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_CANCODER_ROT));
-}
-
+  public Rotation2d getHoodUnfusedPosition() {
+    return new Rotation2d(
+        Units.rotationsToRadians(
+            getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_CANCODER_ROT));
+  }
 
   public void setShooterSpeedRPS(double shooterSpeedRPS) {
     targetShooterSpeedRPS = shooterSpeedRPS;
@@ -202,10 +218,8 @@ public Rotation2d getHoodUnfusedPosition() {
   }
 
   public Command shootAtSpeedHoodCommand(double shooterSpeedRPS, double hoodAngle) {
-
-    
-     return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter)
-     .alongWith(run(() -> setHoodPosition(hoodAngle)));
+    return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter)
+        .alongWith(run(() -> setHoodPosition(hoodAngle)));
   }
 
   public Command shootAtSpeedCommand(double shooterSpeedRPS) {
