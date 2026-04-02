@@ -945,6 +945,8 @@ public final class Constants {
 
       public static final double ZERO_MAX_STATOR = 0;
 
+      public static final int MAX_TIMES_EXCEEDED = 10;
+
       public static void UPDATE_INTERMAPS() {
         HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
         HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION);

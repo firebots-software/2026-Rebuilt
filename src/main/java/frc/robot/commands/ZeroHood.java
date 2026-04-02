@@ -1,11 +1,12 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.ShooterSubsystem;
 
 public class ZeroHood extends Command {
   private final ShooterSubsystem shooterSubsystem;
-  private double timesExceededCurrent;
+  private int timesExceededCurrent;
 
   public ZeroHood(ShooterSubsystem shooterSubsystem) {
     this.shooterSubsystem = shooterSubsystem;
@@ -39,6 +40,6 @@ public class ZeroHood extends Command {
     } else {
       timesExceededCurrent = 0;
     }
-    return timesExceededCurrent >= 10;
+    return timesExceededCurrent >= Constants.Shooter.Hood.MAX_TIMES_EXCEEDED;
   }
 }

@@ -108,6 +108,7 @@ public class Targeting {
       double distY = (initDY) - currSpeeds.vyMetersPerSecond * tof;
 
       distance = Math.pow(distX * distX + distY * distY, 0.5);
+      if (distance < 1e-6) break;
 
       double error =
           tof - Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
