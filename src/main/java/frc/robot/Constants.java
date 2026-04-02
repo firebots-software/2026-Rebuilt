@@ -1006,7 +1006,7 @@ public final class Constants {
 
     public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
-    public static final boolean SHOOTS_BACKWARDS = false;
+    public static final boolean SHOOTS_BACKWARDS = true;
 
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
