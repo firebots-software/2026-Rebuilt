@@ -303,9 +303,6 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
 
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TimeOfFlight",
-        Targeting.newtonTargetingInfo(target, drivetrain).getToF());
     // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
     // shooter.getVelocity().getValueAsDouble());
   }

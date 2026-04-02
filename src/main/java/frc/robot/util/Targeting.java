@@ -3,12 +3,11 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
+import frc.robot.MathUtils.MiscMath;
 import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
@@ -32,92 +31,50 @@ public class Targeting {
     return hullAimed;
   }
 
-  // public static TargetingInfo targetingInfo(
-  //     Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-  //   Vector3 relativeVel =
-  //       Vector3.mult(
-  //           new Vector3(
-  //               drivetrain.getFieldSpeeds().vxMetersPerSecond,
-  //               drivetrain.getFieldSpeeds().vyMetersPerSecond,
-  //               0),
-  //           -1);
+  public static double shootingSpeed(
+      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) { // meters per sec
+    Vector3 relativeVel =
+        Vector3.mult(
+            new Vector3(
+                drivetrain.getFieldSpeeds().vxMetersPerSecond,
+                drivetrain.getFieldSpeeds().vyMetersPerSecond,
+                0),
+            -1);
+    Vector3 shooterPos = new Vector3(drivetrain.getCurrentState().Pose);
+    Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
 
-  //   Vector3 shooterPos = new Vector3(drivetrain.getCurrentState().Pose);
-  //   Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
-
-  //   double correctedSpeed = speedForDist(relativePos.magnitude());
-  //   double prevTof = 0;
-  //   Vector3 correctedPos = new Vector3(target);
-
-  //   for (int i = 0; i < precision; i++) {
-  //     double dist = Vector3.subtract(correctedPos, shooterPos).magnitude();
-  //     double tof = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(dist);
-  //     correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
-  //     correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
-  //     prevTof = tof;
-  //   }
-  //   DogLog.log("Subsystems/ShooterSubsystem/Shoot/shootspeed", correctedSpeed);
-  //   DogLog.log("Subsystems/ShooterSubsystem/Shoot/Tof", prevTof);
-  //   DogLog.log("Subsystems/ShooterSubsystem/Shoot/targetPlusLead",
-  // Vector3.toPose2d(correctedPos));
-
-  //   return new TargetingInfo(correctedSpeed, prevTof, correctedPos);
-  // }
-
-  public static double newtonTargetingDistance(Pose3d target, CommandSwerveDrivetrain swerve) {
-    // Load basic stuff in
-    ChassisSpeeds currSpeeds = swerve.getFieldSpeeds();
-    Pose2d currState = swerve.getPose();
-    double distToTarget =
-        target
-            .getTranslation()
-            .getDistance(new Translation3d(new Translation2d(currState.getX(), currState.getY())));
-
-    // initial guess
-    double initDX = target.getX() - currState.getX();
-    double initDY = target.getY() - currState.getY();
-
-    double initialDistance = Math.pow(initDX * initDX + initDY * initDY, 0.5);
-    double radialDistance =
-        (initDX * currSpeeds.vxMetersPerSecond + initDY * currSpeeds.vyMetersPerSecond)
-            / initialDistance;
-
-    // shit we need
-    double distance = distToTarget;
-    double tof =
-        initialDistance
-            / (distance
-                    / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
-                        distance)
-                + radialDistance);
-
-    for (int i = 0; i < Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
-      double distX = (initDX) - currSpeeds.vxMetersPerSecond * tof;
-      double distY = (initDY) - currSpeeds.vyMetersPerSecond * tof;
-
-      distance = Math.pow(distX * distX + distY * distY, 0.5);
-      if (distance < 1e-6) break;
-
-      double error =
-          tof - Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
-      double errorDerivative =
-          1
-              - ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
-                  / (distance
-                      / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
-                          distance)));
-
-      tof -= (error / errorDerivative);
+    Vector3 correctedPos = new Vector3(target);
+    double correctedSpeed = speedForDist(relativePos.magnitude());
+    double prevTof = 0;
+    for (int i = 0; i < precision; i++) {
+      double tof =
+          2
+              * correctedSpeed
+              * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+              / 9.81;
+      correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
+      correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
+      prevTof = tof;
     }
-
-    return distance;
+    DogLog.log("Subsystems/ShooterSubsystem/Shoot/shootspeed", correctedSpeed);
+    return correctedSpeed;
   }
 
-  public static TargetingInfo newtonTargetingInfo(
-      Pose3d target, CommandSwerveDrivetrain drivetrain) {
-    double distance = newtonTargetingDistance(target, drivetrain);
+  public static double speedForDist(double d) {
+    return Math.sqrt(
+        d
+            * 9.81
+            / Math.sin(
+                Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
+  }
+
+  public static Vector3 positionToTarget(
+      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
     double timeOfFlight =
-        Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
+        2
+            * shootingSpeed(target, drivetrain, precision)
+            * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+            / 9.81;
 
     Vector3 relativeVel =
         Vector3.mult(
@@ -128,52 +85,11 @@ public class Targeting {
             -1);
     Vector3 targetPlusOffset =
         Vector3.add(new Vector3(target), Vector3.mult(relativeVel, timeOfFlight));
-
-    return new TargetingInfo(
-        Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distance),
-        timeOfFlight,
-        targetPlusOffset);
+    DogLog.log(
+        "Subsystems/ShooterSubsystem/Shoot/targetPlusOffset",
+        new Pose2d(targetPlusOffset.x, targetPlusOffset.y, new Rotation2d()));
+    return targetPlusOffset;
   }
-
-  public static double shootingSpeed(
-      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-    return newtonTargetingInfo(target, drivetrain).getSpeed();
-  }
-
-  public static Vector3 positionToTarget(
-      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-    return newtonTargetingInfo(target, drivetrain).getPosition();
-  }
-
-  public static double speedForDist(double d) {
-    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(d);
-    // return Math.sqrt(
-    //     d
-    //         * 9.81
-    //         / Math.sin(
-    //             Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
-  }
-
-  //   public static Vector3 positionToTarget(
-  //       Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-  //     double timeOfFlight =
-  //         Constants.Shooter.TOF_FOR_MOTOR_SPEED_INTERMAP.get(
-  //             shootingSpeed(target, drivetrain, precision));
-
-  //     Vector3 relativeVel =
-  //         Vector3.mult(
-  //             new Vector3(
-  //                 drivetrain.getFieldSpeeds().vxMetersPerSecond,
-  //                 drivetrain.getFieldSpeeds().vyMetersPerSecond,
-  //                 0),
-  //             -1);
-  //     Vector3 targetPlusOffset =
-  //         Vector3.add(new Vector3(target), Vector3.mult(relativeVel, timeOfFlight));
-  //     DogLog.log(
-  //         "Subsystems/ShooterSubsystem/Shoot/targetPlusOffset",
-  //         new Pose2d(targetPlusOffset.x, targetPlusOffset.y, new Rotation2d()));
-  //     return targetPlusOffset;
-  //   }
 
   public static double targetAngle(Pose3d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
     Vector3 target =
