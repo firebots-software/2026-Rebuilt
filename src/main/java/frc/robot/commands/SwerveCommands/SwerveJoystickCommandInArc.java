@@ -4,7 +4,6 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -16,7 +15,7 @@ import java.util.function.Supplier;
 
 public class SwerveJoystickCommandInArc extends Command {
   protected final DoubleSupplier tangentSpdFunction, speedControlFunction;
-  
+
   protected final Supplier<Translation2d> poseToTarget;
 
   private final Pose3d center;
@@ -36,8 +35,7 @@ public class SwerveJoystickCommandInArc extends Command {
       DoubleSupplier speedControlFunction,
       BooleanSupplier fieldRelativeFunction,
       Supplier<Translation2d> poseToTarget,
-      CommandSwerveDrivetrain swerveSubsystem
-    ) {
+      CommandSwerveDrivetrain swerveSubsystem) {
     this.center = center;
     this.tangentSpdFunction = tangentSpeedFunction;
     this.fieldRelativeFunction = fieldRelativeFunction;
@@ -97,7 +95,8 @@ public class SwerveJoystickCommandInArc extends Command {
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     double turn =
-        swerveDrivetrain.calculateRequiredRotationalRateWithFF(poseToTarget.get(), !Constants.Shooter.SHOOTS_BACKWARDS);
+        swerveDrivetrain.calculateRequiredRotationalRateWithFF(
+            poseToTarget.get(), !Constants.Shooter.SHOOTS_BACKWARDS);
 
     DogLog.log("Commands/arcjoystickCommand/turnReq", turn);
 

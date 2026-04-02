@@ -6,8 +6,8 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -52,9 +52,13 @@ public class HopperSubsystem extends SubsystemBase {
     clrc.withVoltageClosedLoopRampPeriod(0.3);
 
     hopperMotorMaster =
-        new LoggedTalonFX("HopperFloorMaster", Constants.Hopper.MOTOR_PORT_MASTER, Constants.Swerve.CAN_BUS);
-    hopperMotorSlave = new LoggedTalonFX("HopperFloorSlave", Constants.Hopper.MOTOR_PORT_SLAVE, Constants.Swerve.CAN_BUS);
-    hopperMotorSlave.setControl(new Follower(hopperMotorMaster.getDeviceID(), MotorAlignmentValue.Aligned));
+        new LoggedTalonFX(
+            "HopperFloorMaster", Constants.Hopper.MOTOR_PORT_MASTER, Constants.Swerve.CAN_BUS);
+    hopperMotorSlave =
+        new LoggedTalonFX(
+            "HopperFloorSlave", Constants.Hopper.MOTOR_PORT_SLAVE, Constants.Swerve.CAN_BUS);
+    hopperMotorSlave.setControl(
+        new Follower(hopperMotorMaster.getDeviceID(), MotorAlignmentValue.Aligned));
 
     TalonFXConfiguration hopperConfig = new TalonFXConfiguration();
     hopperConfig.Slot0 = s0c;
@@ -181,7 +185,8 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
         targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
-    DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotorMaster.getCachedVelocityRps());
+    DogLog.log(
+        "Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotorMaster.getCachedVelocityRps());
   }
 
   // @Override
