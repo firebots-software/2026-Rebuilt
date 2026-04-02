@@ -1,8 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -15,6 +19,8 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -111,8 +117,13 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     hoodConfig.CurrentLimits = hoodClc;
     hoodConfig.MotorOutput = hoodMotorOutputConfigs;
     hoodConfig.Voltage = hoodVoltageConfigs;
+    hoodConfig.Feedback = hoodFeedbackConfigs;
 
     hood.getConfigurator().apply(hoodConfig);
+
+    MagnetSensorConfigs hoodCANcoderConfig = new CANcoderConfiguration().MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1)).withSensorDirection(SensorDirectionValue.Clockwise_Positive).withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
+
+    hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
 
     DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.KP);
     DogLog.log("Subsystems/Shooter/Gains/kI", Constants.Shooter.KI);
@@ -145,13 +156,13 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     return Math.abs(hood.getCachedPositionRotations() * Constants.Shooter.Hood.HOOD_DEGREES_PER_MOTOR_ROT - hoodTargetDeg) <= Constants.Shooter.Hood.HOOD_TOLERANCE;
   }
 
-//   public double getHoodCancoderPositionRaw() {
-//     return hoodEncoder.getAbsolutePosition().getValueAsDouble();
-//   }
+  public double getHoodCancoderPositionRaw() {
+    return hoodEncoder.getAbsolutePosition().getValueAsDouble();
+  }
 
-// public Rotation2d getHoodUnfusedPosition() {
-//     return new Rotation2d(Units.rotationsToRadians(getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_CANCODER_ROT));
-// }
+public Rotation2d getHoodUnfusedPosition() {
+    return new Rotation2d(Units.rotationsToRadians(getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_CANCODER_ROT));
+}
 
 
   public void setShooterSpeedRPS(double shooterSpeedRPS) {

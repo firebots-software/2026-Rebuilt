@@ -973,6 +973,8 @@ public final class Constants {
     public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
 
     public static final int ENCODER_PORT = 0;
+
+    public static final double ENCODER_OFFSET = 0;
     }
 
     public static final double TOLERANCE_RPS = 2.0;
