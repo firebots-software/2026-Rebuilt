@@ -1002,8 +1002,6 @@ public final class Constants {
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 67.0;
 
-    public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
-
     public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
     public static final boolean SHOOTS_BACKWARDS = true;
