@@ -961,21 +961,24 @@ public final class Constants {
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
       public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
 
-    public static final int HOOD_TOLERANCE = 0;
+      public static final int HOOD_TOLERANCE = 0;
 
-    public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
+      public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
 
-    public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
+      public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
+      
       public static final double MIN_HOOD_POSITION = 0;
-      public static final double MAX_HOOD_POSITION = 50;
+      public static final double MAX_HOOD_POSITION = 15;
 
-    public static final int MOTOR_ROTS_PER_ENCODER_ROT = 0;
+      public static final int MOTOR_ROTS_PER_ENCODER_ROT = 0;
 
-    public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
+      public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
 
-    public static final int ENCODER_PORT = 0;
+      public static final int ENCODER_PORT = 0;
 
-    public static final double ENCODER_OFFSET = 0;
+      public static final double ENCODER_OFFSET = 0;
+      
+      public static final double PRECISION = 5;
     }
 
     public static final double TOLERANCE_RPS = 2.0;
@@ -1017,6 +1020,8 @@ public final class Constants {
     public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
     public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
     public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
+
+    public static final double HORIZONTAL_VELOCITY_OF_PROJECTILE = 5.0; //TUNE
 
     public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
         new InterpolatingDoubleTreeMap();

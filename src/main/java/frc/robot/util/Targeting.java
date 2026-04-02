@@ -1,7 +1,13 @@
 package frc.robot.util;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
@@ -63,6 +69,38 @@ public class Targeting {
     DogLog.log("Subsystems/ShooterSubsystem/Shoot/targetPlusLead", Vector3.toPose2d(correctedPos));
 
     return new TargetingInfo(correctedSpeed, prevTof, correctedPos);
+  }
+
+  public static double newtonTargetingDistance(Pose3d target, CommandSwerveDrivetrain swerve) {
+    //Load basic stuff in
+    ChassisSpeeds currSpeeds = swerve.getFieldSpeeds();
+    Pose2d offsetCurrentState = swerve.getPose().plus(new Transform2d(0.0, 0.0, new Rotation2d())); //get transform for length to bumper, or wherever we take measurements from
+    double distToTarget = target.getTranslation().getDistance(new Translation3d(new Translation2d(offsetCurrentState.getX(), offsetCurrentState.getY())));
+    
+    //initial guess
+    double initDX = target.getX() - offsetCurrentState.getX();
+    double initDY = target.getY() - offsetCurrentState.getY();
+
+    double initialDistance = Math.pow(initDX * initDX + initDY * initDY, 0.5);
+    double radialDistance = (initDX * currSpeeds.vxMetersPerSecond + initDY * currSpeeds.vyMetersPerSecond) / initialDistance;
+    
+    //shit we need
+    double tof = initialDistance / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE + radialDistance);
+    double distance = distToTarget;
+
+    for (int i = 0; i < Constants.Shooter.Hood.PRECISION; i++) {
+      double distX = (initDX) - currSpeeds.vxMetersPerSecond * tof;
+      double distY = (initDY) - currSpeeds.vyMetersPerSecond * tof;
+
+      distance = Math.pow(distX * distX + distY * distY, 0.5);
+
+      double error = tof - Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
+      double errorDerivative = 1 - ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond) / (Constants.Shooter.HORIZONTAL_VELOCITY_OF_PROJECTILE * distance));
+
+      tof -= (error/errorDerivative);
+    }
+
+    return distance;
   }
 
   public static double shootingSpeed(
