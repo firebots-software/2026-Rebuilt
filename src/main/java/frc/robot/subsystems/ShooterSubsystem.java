@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -43,6 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final CANcoder hoodEncoder;
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
+  private final VoltageOut m_voltageRequest = new VoltageOut(0);
   private double targetShooterSpeedRPS = 0;
   private double hoodTargetDeg = 0;
 
@@ -242,6 +244,33 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command shootAtSpeedCommand(DoubleSupplier shooterSpeedRPS) {
     DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterSpeedRPS.getAsDouble());
     return runEnd(() -> this.setShooterSpeedRPS(shooterSpeedRPS.getAsDouble()), this::stopShooter);
+  }
+
+  public void moveHoodWithVoltage() {
+    hood.setControl(m_voltageRequest.withOutput(Constants.Shooter.Hood.ZERO_VOLTAGE));
+  }
+
+  public void resetHoodPositionToZero() {
+    hood.setPosition(0);
+  }
+
+  public void reduceHoodCurrentLimits() {
+    hood.updateCurrentLimits(
+        Constants.Shooter.Hood.ZERO_STATOR_CURRENT_LIMIT,
+        Constants.Shooter.Hood.ZERO_SUPPLY_CURRENT_LIMIT);
+  }
+
+  public void resetHoodCurrentLimits() {
+    hood.updateCurrentLimits(
+        Constants.Shooter.Hood.STATOR_CURRENT_LIMIT, Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
+  }
+
+  public boolean checkHoodCurrent() {
+    double supply = Math.abs(hood.getSupplyCurrent().getValue().magnitude());
+    double stator = Math.abs(hood.getStatorCurrent().getValue().magnitude());
+
+    return supply > Constants.Shooter.Hood.ZERO_MAX_SUPPLY
+        && stator > Constants.Shooter.Hood.ZERO_MAX_STATOR;
   }
 
   @Override
