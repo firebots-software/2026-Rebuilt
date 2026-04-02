@@ -8,6 +8,7 @@ import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.util.LoggedTalonFX;
@@ -77,6 +78,8 @@ public class Robot extends TimedRobot {
     DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/areWeActive", MiscUtils.areWeActive(simulatedTime));
     DogLog.log("Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
+    SmartDashboard.putNumber(
+        "Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
     DogLog.log("Elastic/currentShiftName", MiscUtils.currentShiftName(simulatedTime));
     MiscUtils.shiftSwitchIndicator(simulatedTime);
     simulatedTime -= 0.02;

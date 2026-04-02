@@ -505,7 +505,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
 
     if ((Math.abs(angleDifference) < 0.87) && Math.abs(omegaPID) >= 1.295) {
-      omegaPID = Math.abs(angleDifference) * (3.7) * sign;
+      omegaPID = Math.abs(angleDifference) * (3.6) * sign;
     }
 
     double omega = (omegaFF) + omegaPID;

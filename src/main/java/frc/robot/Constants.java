@@ -431,7 +431,7 @@ public final class Constants {
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
       public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
-      public static final double TIME_FOR_BUMP_BACKWARDS = 0.95;
+      public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
 
       public static enum Intake {
         LeftIntakeSweep,
@@ -442,6 +442,7 @@ public final class Constants {
         SecondRightIntakeSweepShort,
         LeftSecondDip,
         RightSecondDip,
+        LeftSecondDipLong,
         RightSecondDipLong
       }
 
@@ -999,6 +1000,7 @@ public final class Constants {
 
       final double offset = 1.0429875;
 
+      SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(offset, 44.2);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.2111 + offset, 45.2000038381);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(0.6108 + offset, 46.4732433828);
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(1.0478 + offset, 50.9295817894);

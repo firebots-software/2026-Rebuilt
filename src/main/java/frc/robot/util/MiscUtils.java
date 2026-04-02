@@ -92,7 +92,7 @@ public class MiscUtils {
       else if (currentMatchTime > 80) return currentMatchTime - 80;
       else if (currentMatchTime > 55) return currentMatchTime - 55;
       else if (currentMatchTime > 30) return currentMatchTime - 30;
-      else return 30 - currentMatchTime;
+      else return currentMatchTime;
     }
   }
 
