@@ -25,12 +25,11 @@ public class ShootWithAim extends ParallelCommandGroup {
       BooleanSupplier redside,
       BooleanSupplier manualOverride) {
 
-    double distanceToHub = MiscUtils.getDistanceToHub(redside, drivetrain);
-
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
-                shooterSubsystem.shootAtSpeedHoodCommand(44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION),
+                shooterSubsystem.shootAtSpeedHoodCommand(
+                    44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         hopperSubsystem
@@ -43,7 +42,12 @@ public class ShootWithAim extends ParallelCommandGroup {
                                             Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
-                    () -> shooterSubsystem.getTargetShootingSpeed(distanceToHub), () -> shooterSubsystem.getTargetHoodAngle(distanceToHub)),
+                    () ->
+                        shooterSubsystem.getTargetShootingSpeed(
+                            MiscUtils.getDistanceToHub(redside, drivetrain)),
+                    () ->
+                        shooterSubsystem.getTargetHoodAngle(
+                            MiscUtils.getDistanceToHub(redside, drivetrain))),
                 new SwerveJoystickCommand(
                     translationalX,
                     translationalY,
