@@ -5,15 +5,19 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 public class SwerveJoystickCommandInArc extends Command {
-  protected final DoubleSupplier tangentSpdFunction, speedControlFunction, angleToPointTo;
+  protected final DoubleSupplier tangentSpdFunction, speedControlFunction;
+  
+  protected final Supplier<Translation2d> poseToTarget;
 
   private final Pose3d center;
 
@@ -31,16 +35,15 @@ public class SwerveJoystickCommandInArc extends Command {
       DoubleSupplier tangentSpeedFunction,
       DoubleSupplier speedControlFunction,
       BooleanSupplier fieldRelativeFunction,
-      DoubleSupplier angleToPointTo,
-      CommandSwerveDrivetrain swerveSubsystem,
-      BooleanSupplier redside) {
+      Supplier<Translation2d> poseToTarget,
+      CommandSwerveDrivetrain swerveSubsystem
+    ) {
     this.center = center;
     this.tangentSpdFunction = tangentSpeedFunction;
     this.fieldRelativeFunction = fieldRelativeFunction;
     this.speedControlFunction = speedControlFunction;
-    this.angleToPointTo = angleToPointTo;
+    this.poseToTarget = poseToTarget;
     this.swerveDrivetrain = swerveSubsystem;
-    this.redSide = redside;
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
   }
@@ -94,8 +97,7 @@ public class SwerveJoystickCommandInArc extends Command {
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     double turn =
-        swerveDrivetrain.calculateRequiredRotationalRate(
-            new Rotation2d(angleToPointTo.getAsDouble()));
+        swerveDrivetrain.calculateRequiredRotationalRateWithFF(poseToTarget.get(), !Constants.Shooter.SHOOTS_BACKWARDS);
 
     DogLog.log("Commands/arcjoystickCommand/turnReq", turn);
 

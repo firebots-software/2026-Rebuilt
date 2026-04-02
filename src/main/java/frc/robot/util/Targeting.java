@@ -11,7 +11,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
-import frc.robot.MathUtils.MiscMath;
 import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
@@ -45,12 +44,7 @@ public class Targeting {
                 0),
             -1);
 
-    Pose3d shooterOffset =
-        MiscMath.RotatedPosAroundVertical(
-            Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
-            drivetrain.getCurrentState().Pose.getRotation().getRadians());
-    Vector3 shooterPos =
-        Vector3.add(new Vector3(drivetrain.getCurrentState().Pose), new Vector3(shooterOffset));
+    Vector3 shooterPos = new Vector3(drivetrain.getCurrentState().Pose);
     Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
 
     double correctedSpeed = speedForDist(relativePos.magnitude());

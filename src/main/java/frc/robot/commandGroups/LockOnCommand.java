@@ -1,43 +1,43 @@
-package frc.robot.commandGroups;
+// package frc.robot.commandGroups;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants;
-import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.util.Targeting;
-import java.util.function.DoubleSupplier;
+// import edu.wpi.first.math.geometry.Pose3d;
+// import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+// import edu.wpi.first.wpilibj2.command.Commands;
+// import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+// import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+// import frc.robot.Constants;
+// import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
+// import frc.robot.subsystems.CommandSwerveDrivetrain;
+// import frc.robot.subsystems.ShooterSubsystem;
+// import frc.robot.util.Targeting;
+// import java.util.function.DoubleSupplier;
 
-public class LockOnCommand extends ParallelCommandGroup {
-  public LockOnCommand(
-      CommandSwerveDrivetrain drivetrain,
-      ShooterSubsystem shooter,
-      DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction,
-      Pose3d target,
-      CommandXboxController joystick) {
+// public class LockOnCommand extends ParallelCommandGroup {
+//   public LockOnCommand(
+//       CommandSwerveDrivetrain drivetrain,
+//       ShooterSubsystem shooter,
+//       DoubleSupplier frontBackFunction,
+//       DoubleSupplier leftRightFunction,
+//       Pose3d target,
+//       CommandXboxController joystick) {
 
-    addCommands(
-        new SwerveJoystickCommandWithPointing(
-            frontBackFunction,
-            leftRightFunction,
-            () -> 1f,
-            () -> false,
-            () -> Targeting.targetAngle(target, drivetrain),
-            drivetrain),
-        Commands.runEnd(
-            () ->
-                joystick.setRumble(
-                    RumbleType.kBothRumble,
-                    (Targeting.amtToRumble(drivetrain, target).getAsDouble())),
-            () -> joystick.setRumble(RumbleType.kBothRumble, (0d))),
-        shooter.shootAtSpeedCommand(
-            () ->
-                Targeting.shootingSpeed(
-                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
-  }
-}
+//     addCommands(
+//         new SwerveJoystickCommandWithPointing(
+//             frontBackFunction,
+//             leftRightFunction,
+//             () -> 1f,
+//             () -> false,
+//             () -> Targeting.targetAngle(target, drivetrain),
+//             drivetrain),
+//         Commands.runEnd(
+//             () ->
+//                 joystick.setRumble(
+//                     RumbleType.kBothRumble,
+//                     (Targeting.amtToRumble(drivetrain, target).getAsDouble())),
+//             () -> joystick.setRumble(RumbleType.kBothRumble, (0d))),
+//         shooter.shootAtSpeedCommand(
+//             () ->
+//                 Targeting.shootingSpeed(
+//                     target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)));
+//   }
+// }

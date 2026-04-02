@@ -636,10 +636,6 @@ public final class Constants {
     public static final InterpolatingDoubleTreeMap HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS =
         new InterpolatingDoubleTreeMap();
 
-    static {
-      UPDATE_INTERMAPS();
-    }
-
     public static void UPDATE_INTERMAPS() {
       HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
 
@@ -906,47 +902,6 @@ public final class Constants {
     }
   }
 
-  // public static final class Shooter {
-  // public static final int WARMUP_1_ID = 18;
-  // public static final int WARMUP_2_ID = 19;
-  // public static final int WARMUP_3_ID = 24;
-
-  // public static final double WHEEL_TOLERANCE_RPS = 2.0; // tolerance in
-  // rotations per second
-
-  // // TODO: Tune
-  // public static final double kP = 0.5;
-  // public static final double kI = 0.0;
-  // public static final double kD = 0.0;
-  // public static final double kV = 0.12;
-  // public static final double kA = 0.0;
-
-  // public static final double STATOR_CURRENT_LIMIT = 30.0;
-  // public static final double SUPPLY_CURRENT_LIMIT = 30.0;
-
-  // public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
-  // public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 /
-  // MOTOR_ROTS_PER_WHEEL_ROT;
-  // public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
-  // public static final double SHOOT_FOR_AUTO = 66.7; //104.72 / 2.0;
-
-  // public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
-
-  // public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
-
-  // public static final boolean SHOOTS_BACKWARDS = false;
-
-  // public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
-
-  // public static final int TARGETING_CALCULATION_PRECISION = 5;
-
-  // public static final double MIN_DIST_FT = 4d;
-  // public static final double MAX_DIST_FT = 8d;
-
-  // public static final class Simulation {
-  // public static final double SHOOTER_SIM_MOI_KG_M2 = 0.0015;
-  // }
-  // }
   public static final class Shooter {
 
     public static final class Hood {
@@ -955,30 +910,45 @@ public final class Constants {
       public static final double KP = 0.85; // TODO
       public static final double KI = 0.0; // TODO
       public static final double KD = 0.0; // TODO
-      public static final double KV = 0.124; // TODO
-      public static final double KA = 0.0; // TODO
+
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
       public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
 
-      public static final int HOOD_TOLERANCE = 0;
+      public static final double HOOD_TOLERANCE = 0;
 
       public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
 
-      public static final int HOOD_ROTS_PER_CANCODER_ROT = 0;
-      
+      public static final double HOOD_ROTS_PER_CANCODER_ROT = 0;
       public static final double MIN_HOOD_POSITION = 0;
       public static final double MAX_HOOD_POSITION = 15;
 
-      public static final int MOTOR_ROTS_PER_ENCODER_ROT = 0;
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 0;
 
-      public static final int ENCODER_ROTS_PER_ARM_ROT = 0;
+      public static final double ENCODER_ROTS_PER_ARM_ROT = 0;
+
+      public static double ENCODER_OFFSET = 0.0d;
 
       public static final int ENCODER_PORT = 0;
 
-      public static final double ENCODER_OFFSET = 0;
-      
-      public static final double PRECISION = 5;
+      public static final InterpolatingDoubleTreeMap
+          HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
+              new InterpolatingDoubleTreeMap();
+
+      public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
+
+      public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
+
+      public static final double ZERO_VOLTAGE = 0;
+
+      public static final double ZERO_MAX_SUPPLY = 0;
+
+      public static final double ZERO_MAX_STATOR = 0;
+
+      public static void UPDATE_INTERMAPS() {
+        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
+        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION);
+      }
     }
 
     public static final double TOLERANCE_RPS = 2.0;
@@ -1002,11 +972,9 @@ public final class Constants {
     public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     public static final double SHOOT_FOR_AUTO = 67.0;
 
-    public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
-
     public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
-    public static final boolean SHOOTS_BACKWARDS = false;
+    public static final boolean SHOOTS_BACKWARDS = true;
 
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
@@ -1027,10 +995,6 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap
         TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
-
-    static {
-      UPDATE_INTERMAPS();
-    }
 
     public static void UPDATE_INTERMAPS() {
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();
@@ -1155,5 +1119,15 @@ public final class Constants {
         new Pose2d(
             new Translation2d(5.624283313751221, 2.4593770503997803),
             new Rotation2d(1.57873264137917));
+  }
+
+  static {
+    UPDATE_ALL_INTERMAPS();
+  }
+
+  public static void UPDATE_ALL_INTERMAPS() {
+    Shooter.UPDATE_INTERMAPS();
+    Shooter.Hood.UPDATE_INTERMAPS();
+    Hopper.UPDATE_INTERMAPS();
   }
 }
