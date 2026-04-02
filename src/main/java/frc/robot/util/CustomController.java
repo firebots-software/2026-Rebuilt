@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class CustomController extends GenericHID {
-  Trigger visionShootingLockout, intakeVisionLockout;
-  Trigger reverseShoot, intakeOverride;
+  private Trigger visionShootingLockout, intakeVisionLockout;
+  private Trigger reverseShoot, intakeOverride;
 
   public CustomController(int port) {
     super(port);
