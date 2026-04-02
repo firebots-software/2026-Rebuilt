@@ -975,6 +975,16 @@ public final class Constants {
           HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
               new InterpolatingDoubleTreeMap();
 
+    public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
+
+    public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
+
+    public static final double ZERO_VOLTAGE = 0;
+
+    public static final double ZERO_MAX_SUPPLY = 0;
+
+    public static final double ZERO_MAX_STATOR = 0;
+
       public static void UPDATE_INTERMAPS() {
         HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
         HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION);
