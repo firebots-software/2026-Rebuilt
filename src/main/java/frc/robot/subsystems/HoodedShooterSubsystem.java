@@ -229,6 +229,11 @@ public class HoodedShooterSubsystem extends SubsystemBase {
     return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter);
   }
 
+  public Command shootAtSpeedHoodCommand(DoubleSupplier shooterSpeedRPS, DoubleSupplier hoodAngle) {
+    return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS.getAsDouble()), this::stopShooter)
+        .alongWith(run(() -> setHoodPosition(hoodAngle.getAsDouble())));
+  }
+
   public Command shootAtSpeedCommand(DoubleSupplier shooterSpeedRPS) {
     DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterSpeedRPS.getAsDouble());
     return runEnd(() -> this.setShooterSpeedRPS(shooterSpeedRPS.getAsDouble()), this::stopShooter);
