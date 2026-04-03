@@ -245,8 +245,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command shootAtSpeedCommand(DoubleSupplier shooterSpeedRPS) {
-    DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterSpeedRPS.getAsDouble());
-    return runEnd(() -> this.setShooterSpeedRPS(shooterSpeedRPS.getAsDouble()), this::stopShooter);
+    return runEnd(() -> {
+      DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterSpeedRPS.getAsDouble());
+      this.setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
+    }, this::stopShooter);
   }
 
   public void moveHoodWithVoltage() {
