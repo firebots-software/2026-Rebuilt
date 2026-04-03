@@ -305,7 +305,7 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Hood/TargetPositionDeg", hoodTargetDeg); 
     DogLog.log("Subsystems/Shooter/Hood/ErrorDeg", currentHoodDeg - hoodTargetDeg); 
     DogLog.log("Subsystems/Shooter/Hood/UnfusedCANcoderPositionDeg",
-        getHoodCancoderPositionRaw() * 360.0); // NEW - CANcoder reading before fusion
+        getHoodCancoderPositionRaw() * 360.0); // CANCAoder reading before fusion
 
     // Targeting
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
