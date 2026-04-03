@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -166,9 +165,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean hoodAtTarget() {
-    return Math.abs(
-            (hood.getCachedPositionRotations() * 360.0)
-                - hoodTargetDeg)
+    return Math.abs((hood.getCachedPositionRotations() * 360.0) - hoodTargetDeg)
         <= Constants.Shooter.Hood.HOOD_TOLERANCE;
   }
 
