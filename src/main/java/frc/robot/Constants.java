@@ -772,11 +772,11 @@ public final class Constants {
       public static final double KS = 0.0; // TODO
       public static final double KG = 0.0; // TODO
 
-      public static final double STATOR_CURRENT_LIMIT = 120.0;
-      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+      public static final double STATOR_CURRENT_LIMIT = 60.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 50.0;
       public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
 
-      public static final double HOOD_TOLERANCE = 0;
+      public static final double HOOD_TOLERANCE = 0.1;
 
       public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
 

@@ -108,11 +108,13 @@ public class ShooterSubsystem extends SubsystemBase {
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
+
+    // TODO: Verify these configurations
     MotorOutputConfigs hoodMotorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
-    VoltageConfigs hoodVoltageConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
+
     FeedbackConfigs hoodFeedbackConfigs =
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
@@ -124,7 +126,6 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodConfig.Slot0 = hoodS0c;
     hoodConfig.CurrentLimits = hoodClc;
     hoodConfig.MotorOutput = hoodMotorOutputConfigs;
-    hoodConfig.Voltage = hoodVoltageConfigs;
     hoodConfig.Feedback = hoodFeedbackConfigs;
 
     hood.getConfigurator().apply(hoodConfig);
@@ -141,6 +142,8 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.Rollers.KV);
 
     DogLog.log("Subsystems/Shooter/Hood/Gains/kP", Constants.Shooter.Hood.KP);
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kS", Constants.Shooter.Hood.KS);
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kG", Constants.Shooter.Hood.KG);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kV", Constants.Shooter.Hood.KV);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kD", Constants.Shooter.Hood.KD);
   }
