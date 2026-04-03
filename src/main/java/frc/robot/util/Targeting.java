@@ -3,8 +3,6 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
@@ -73,7 +71,7 @@ public class Targeting {
     double initDX = target.getX() - currState.getX();
     double initDY = target.getY() - currState.getY();
     double initialDistance = Math.pow(initDX * initDX + initDY * initDY, 0.5);
-    
+
     if (initialDistance < 1e-6) return 0;
 
     double radialVelocity =
@@ -97,18 +95,16 @@ public class Targeting {
       distance = Math.pow(distX * distX + distY * distY, 0.5);
       if (distance < 1e-6) break;
 
-      double tofTable = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
-      double error =
-          tof - tofTable;
+      double tofTable =
+          Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
+      double error = tof - tofTable;
 
-      double horizontalVel = distance
-                      / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
-                          distance);
+      double horizontalVel = distance / tofTable;
       double errorDerivative =
           1.0
               + ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
                   / (horizontalVel));
-      
+
       if (Math.abs(errorDerivative) < 1e-9) break;
 
       tof -= (error / errorDerivative);
