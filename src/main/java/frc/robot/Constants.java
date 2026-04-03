@@ -812,7 +812,6 @@ public final class Constants {
     }
 
     public static final class Rollers {
-
       public static final double TOLERANCE_RPS = 2.0;
 
       public static final boolean INTERMAP_TESTING = false;
