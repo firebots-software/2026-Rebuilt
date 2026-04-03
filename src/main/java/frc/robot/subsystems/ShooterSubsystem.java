@@ -101,8 +101,8 @@ public class ShooterSubsystem extends SubsystemBase {
         new Slot0Configs()
             .withKP(Constants.Shooter.Hood.KP)
             .withKV(Constants.Shooter.Hood.KV)
-            .withKV(Constants.Shooter.Hood.KS)
-            .withKV(Constants.Shooter.Hood.KG)
+            .withKS(Constants.Shooter.Hood.KS)
+            .withKG(Constants.Shooter.Hood.KG)
             .withKD(Constants.Shooter.Hood.KD);
 
     CurrentLimitsConfigs hoodClc =
