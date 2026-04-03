@@ -230,7 +230,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   // Commands
   public Command shootAtSpeedCommand() {
-    return runEnd(() -> setShooterSpeedRPS(67.0), this::stopShooter);
+    return runEnd(() -> setShooterSpeedRPS(44.2), this::stopShooter);
   }
 
   public Command shootAtSpeedHoodCommand(double shooterSpeedRPS, double hoodAngle) {
