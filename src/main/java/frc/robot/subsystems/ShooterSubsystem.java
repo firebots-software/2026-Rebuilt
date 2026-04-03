@@ -117,7 +117,7 @@ public class ShooterSubsystem extends SubsystemBase {
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
             .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-            .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_ARM_ROT)
+            .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT)
             .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
 
     TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
@@ -167,7 +167,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public boolean hoodAtTarget() {
     return Math.abs((hood.getCachedPositionRotations() * 360.0) - hoodTargetDeg)
-        <= Constants.Shooter.Hood.HOOD_TOLERANCE;
+        <= Constants.Shooter.Hood.HOOD_TOLERANCE_DEG;
   }
 
   public double getHoodCancoderPositionRaw() {
@@ -177,7 +177,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public Rotation2d getHoodUnfusedPosition() {
     return new Rotation2d(
         Units.rotationsToRadians(
-            getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_CANCODER_ROT));
+            getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_ENCODER_ROT));
   }
 
   public void setShooterSpeedRPS(double shooterSpeedRPS) {

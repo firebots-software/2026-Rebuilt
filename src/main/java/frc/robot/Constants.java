@@ -774,38 +774,35 @@ public final class Constants {
 
       public static final double STATOR_CURRENT_LIMIT = 60.0;
       public static final double SUPPLY_CURRENT_LIMIT = 50.0;
-      public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
 
-      public static final double HOOD_TOLERANCE = 0.1;
+      public static final double MOTOR_ROTS_PER_HOOD_ROT = 199.2;
+      public static final double HOOD_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_HOOD_ROT;
+      public static final double HOOD_DEGREES_PER_MOTOR_ROT = HOOD_ROTS_PER_MOTOR_ROT * 360.0;
+      public static final double MOTOR_ROTS_PER_DEGREE = 1.0 / HOOD_DEGREES_PER_MOTOR_ROT;
 
-      public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 12.0;
+      public static final double ENCODER_ROTS_PER_HOOD_ROT = 199.2 / 12.0;
+      public static final double HOOD_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_HOOD_ROT;
 
-      public static final double HOOD_ROTS_PER_CANCODER_ROT = 0;
+      public static final double HOOD_TOLERANCE_DEG = 0.1;
+
+      // TODO
       public static final double MIN_HOOD_POSITION = 0;
       public static final double MAX_HOOD_POSITION = 15;
 
-      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 0;
+      public static double ENCODER_OFFSET = 0.0d; // TODO
 
-      public static final double ENCODER_ROTS_PER_ARM_ROT = 0;
-
-      public static double ENCODER_OFFSET = 0.0d;
-
-      public static final int ENCODER_PORT = 0;
+      public static final int ENCODER_PORT = 0; // TODO
 
       public static final InterpolatingDoubleTreeMap
           HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
               new InterpolatingDoubleTreeMap();
 
       public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
-
       public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
-
       public static final double ZERO_VOLTAGE = 0;
-
       public static final double ZERO_MAX_SUPPLY = 0;
-
       public static final double ZERO_MAX_STATOR = 0;
-
       public static final int MAX_TIMES_EXCEEDED = 10;
 
       public static void UPDATE_INTERMAPS() {
