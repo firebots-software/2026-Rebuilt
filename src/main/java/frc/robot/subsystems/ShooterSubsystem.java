@@ -77,13 +77,10 @@ public class ShooterSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
 
-    VoltageConfigs voltageConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
-
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersS0c;
     rollersConfig.CurrentLimits = rollersClc;
     rollersConfig.MotorOutput = motorOutputConfigs;
-    rollersConfig.Voltage = voltageConfigs;
 
     warmup1.getConfigurator().apply(rollersConfig);
     warmup2.getConfigurator().apply(rollersConfig);
