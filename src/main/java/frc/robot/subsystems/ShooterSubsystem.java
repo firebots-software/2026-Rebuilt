@@ -225,7 +225,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    return (isAtSpeed() && isShooterReady());
+    return (isAtSpeed() && hoodAtTarget());
   }
 
   // Commands
@@ -287,6 +287,9 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log("Subsystems/Shooter/TargetWheelSpeed (rps)", getTargetShooterWheelSpeedRPS());
     DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
+    DogLog.log("Subsystems/Shooter/AtTargetAngle", hoodAtTarget());
+    DogLog.log("Subsystems/Shooter/ShooterReady", isShooterReady());
+
     DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", getCurrentShooterWheelSpeedRPS());
 
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;

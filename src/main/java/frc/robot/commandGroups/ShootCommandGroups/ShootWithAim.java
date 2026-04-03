@@ -28,7 +28,7 @@ public class ShootWithAim extends ParallelCommandGroup {
             Commands.parallel( // shoot without aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION),
-                Commands.waitUntil(shooterSubsystem::isAtSpeed)
+                Commands.waitUntil(shooterSubsystem::isShooterReady)
                     .andThen(
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(),
@@ -50,7 +50,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                     () -> true,
                     redside,
                     drivetrain),
-                Commands.waitUntil(shooterSubsystem::isAtSpeed)
+                Commands.waitUntil(shooterSubsystem::isShooterReady)
                     .andThen(
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(

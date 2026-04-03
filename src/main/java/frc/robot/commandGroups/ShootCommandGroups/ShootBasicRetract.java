@@ -15,7 +15,7 @@ public class ShootBasicRetract extends ParallelCommandGroup {
       HopperSubsystem hopperSubsystem) {
     addCommands(
         shooterSubsystem.shootAtSpeedCommand(speed),
-        Commands.waitUntil(shooterSubsystem::isAtSpeed)
+        Commands.waitUntil(shooterSubsystem::isShooterReady)
             .andThen(
                 Commands.parallel(
                     hopperSubsystem.runHopperUntilInterruptedCommand(),
