@@ -795,7 +795,7 @@ public final class Constants {
       public static final int ENCODER_PORT = 0; // TODO
 
       public static final InterpolatingDoubleTreeMap
-          HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
+          HOOD_ANGLE_FOR_DISTANCE_METERS =
               new InterpolatingDoubleTreeMap();
 
       public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
@@ -806,8 +806,8 @@ public final class Constants {
       public static final int MAX_TIMES_EXCEEDED = 10;
 
       public static void UPDATE_INTERMAPS() {
-        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
-        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION);
+        HOOD_ANGLE_FOR_DISTANCE_METERS.clear();
+        HOOD_ANGLE_FOR_DISTANCE_METERS.put(0d, Hood.MIN_HOOD_POSITION);
       }
     }
 
@@ -834,7 +834,7 @@ public final class Constants {
       public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
           new InterpolatingDoubleTreeMap();
       public static final InterpolatingDoubleTreeMap
-          TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
+          TOF_FOR_DISTANCE_METERS = new InterpolatingDoubleTreeMap();
 
       public static void UPDATE_INTERMAPS() {
         SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();
@@ -851,25 +851,25 @@ public final class Constants {
         SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.put(3.6576 + offset, 61.1154981473);
 
         double VIDEO_SECONDS_TO_REGULAR_SECONDS = 1d / 8d;
-        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
-        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, 0d);
-        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+        TOF_FOR_DISTANCE_METERS.clear();
+        TOF_FOR_DISTANCE_METERS.put(0d, 0d);
+        TOF_FOR_DISTANCE_METERS.put(
             Units.inchesToMeters(
                 13d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
             10d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+        TOF_FOR_DISTANCE_METERS.put(
             Units.inchesToMeters(
                 50d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
             13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+        TOF_FOR_DISTANCE_METERS.put(
             Units.inchesToMeters(
                 70d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
             13d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+        TOF_FOR_DISTANCE_METERS.put(
             Units.inchesToMeters(
                 93d + 1d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
             14d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
-        TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
+        TOF_FOR_DISTANCE_METERS.put(
             Units.inchesToMeters(
                 102d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
             15d * VIDEO_SECONDS_TO_REGULAR_SECONDS);

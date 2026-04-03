@@ -92,7 +92,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     hoodEncoder = new CANcoder(Constants.Shooter.Hood.ENCODER_PORT, Constants.Swerve.CAN_BUS);
 
-    // TODO: Verify all this
     Slot0Configs hoodS0c =
         new Slot0Configs()
             .withKP(Constants.Shooter.Hood.KP)
@@ -107,7 +106,6 @@ public class ShooterSubsystem extends SubsystemBase {
             .withStatorCurrentLimit(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
 
-    // TODO: Verify these configurations
     MotorOutputConfigs hoodMotorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
@@ -136,14 +134,29 @@ public class ShooterSubsystem extends SubsystemBase {
 
     hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
 
+    // Roller gains
     DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.Rollers.KP);
     DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.Rollers.KV);
+    DogLog.log("Subsystems/Shooter/Gains/kS", Constants.Shooter.Rollers.KS); // NEW
 
+    // Hood gains
     DogLog.log("Subsystems/Shooter/Hood/Gains/kP", Constants.Shooter.Hood.KP);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kS", Constants.Shooter.Hood.KS);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kG", Constants.Shooter.Hood.KG);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kV", Constants.Shooter.Hood.KV);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kD", Constants.Shooter.Hood.KD);
+
+    // Hood config constants // NEW
+    DogLog.log("Subsystems/Shooter/Hood/Config/EncoderRotsPerHoodRot",
+        Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT); // NEW
+    DogLog.log("Subsystems/Shooter/Hood/Config/MotorRotsPerEncoderRot",
+        Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT); // NEW
+    DogLog.log("Subsystems/Shooter/Hood/Config/EncoderOffset",
+        Constants.Shooter.Hood.ENCODER_OFFSET); // NEW
+    DogLog.log("Subsystems/Shooter/Hood/Config/MinPositionRot",
+        Constants.Shooter.Hood.MIN_HOOD_POSITION); // NEW
+    DogLog.log("Subsystems/Shooter/Hood/Config/MaxPositionRot",
+        Constants.Shooter.Hood.MAX_HOOD_POSITION); // NEW
   }
 
   public void setHoodPosition(double degrees) {
@@ -196,7 +209,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if (shooter.getCachedVelocityRps() == 0) {
       return false;
     }
-    return Math.abs(targetShooterSpeedRPS - (getCurrentShooterWheelSpeedRPS()))
+    return Math.abs(targetShooterSpeedRPS - getCurrentShooterWheelSpeedRPS())
         <= Constants.Shooter.Rollers.TOLERANCE_RPS;
   }
 
@@ -209,23 +222,16 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getTargetShootingSpeed(double distanceToTarget) {
-    double mappedSpeed =
-        Constants.Shooter.Rollers.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(
-            distanceToTarget); // -0.4
-
-    return mappedSpeed;
+    return Constants.Shooter.Rollers.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget);
   }
 
   public double getTargetHoodAngle(double distanceToTarget) {
-    double mappedAngle =
-        Constants.Shooter.Hood.HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
-            distanceToTarget);
-
-    return mappedAngle;
+    return Constants.Shooter.Hood.HOOD_ANGLE_FOR_DISTANCE_METERS.get(
+        distanceToTarget);
   }
 
   public boolean isShooterReady() {
-    return (isAtSpeed() && hoodAtTarget());
+    return isAtSpeed() && hoodAtTarget();
   }
 
   // Commands
@@ -278,31 +284,42 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean checkHoodCurrent() {
     double supply = Math.abs(hood.getSupplyCurrent().getValue().magnitude());
     double stator = Math.abs(hood.getStatorCurrent().getValue().magnitude());
-
     return supply > Constants.Shooter.Hood.ZERO_MAX_SUPPLY
         && stator > Constants.Shooter.Hood.ZERO_MAX_STATOR;
   }
 
   @Override
   public void periodic() {
+    // Shooter velocity information
     DogLog.log("Subsystems/Shooter/TargetWheelSpeed (rps)", getTargetShooterWheelSpeedRPS());
+    DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", getCurrentShooterWheelSpeedRPS());
+
+    // Shooter status information
     DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
     DogLog.log("Subsystems/Shooter/AtTargetAngle", hoodAtTarget());
     DogLog.log("Subsystems/Shooter/ShooterReady", isShooterReady());
 
-    DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", getCurrentShooterWheelSpeedRPS());
+    // Hood position information
+    double currentHoodDeg = hood.getCachedPositionRotations() * 360.0; 
+    DogLog.log("Subsystems/Shooter/Hood/CurrentPositionDeg", currentHoodDeg); 
+    DogLog.log("Subsystems/Shooter/Hood/TargetPositionDeg", hoodTargetDeg); 
+    DogLog.log("Subsystems/Shooter/Hood/ErrorDeg", currentHoodDeg - hoodTargetDeg); 
+    DogLog.log("Subsystems/Shooter/Hood/UnfusedCANcoderPositionDeg",
+        getHoodCancoderPositionRaw() * 360.0); // NEW - CANcoder reading before fusion
 
+    // Targeting
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
+    double distanceMeters = Targeting.distMeters(drivetrain, target);
 
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/ShootingSpeed",
-        Targeting.shootingSpeed(
-            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+    DogLog.log("Subsystems/Shooter/Targeting/DistanceMeters", distanceMeters);
+    DogLog.log("Subsystems/Shooter/Targeting/ShootingSpeed",
+        Targeting.shootingSpeed(target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
+    DogLog.log("Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
+    DogLog.log("Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+
+    DogLog.log("Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
+        getTargetShootingSpeed(distanceMeters));
+    DogLog.log("Subsystems/Shooter/Targeting/MappedHoodAngleDeg",
+        getTargetHoodAngle(distanceMeters)); 
   }
 }
