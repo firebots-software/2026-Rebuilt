@@ -111,7 +111,7 @@ public class ShooterSubsystem extends SubsystemBase {
     MotorOutputConfigs hoodMotorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
-            .withNeutralMode(NeutralModeValue.Brake);
+            .withNeutralMode(NeutralModeValue.Coast);
 
     FeedbackConfigs hoodFeedbackConfigs =
         new FeedbackConfigs()
