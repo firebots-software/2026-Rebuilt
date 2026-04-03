@@ -52,9 +52,9 @@ public class ShooterSubsystem extends SubsystemBase {
     this.drivetrain = drivetrain;
     this.redside = redside;
     CANBus canbus = Constants.Swerve.CAN_BUS;
-    warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.WARMUP_1_ID, canbus);
-    warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.WARMUP_2_ID, canbus);
-    warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.WARMUP_3_ID, canbus);
+    warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.Rollers.WARMUP_1_ID, canbus);
+    warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.Rollers.WARMUP_2_ID, canbus);
+    warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.Rollers.WARMUP_3_ID, canbus);
     shooter = warmup3;
     // TODO: fix hood id constant
     hood =
@@ -62,13 +62,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Slot0Configs rollersS0c =
         new Slot0Configs()
-            .withKP(Constants.Shooter.KP)
-            .withKV(Constants.Shooter.KV);
+            .withKP(Constants.Shooter.Rollers.KP)
+            .withKV(Constants.Shooter.Rollers.KV);
 
-    CurrentLimitsConfigs clc =
+    CurrentLimitsConfigs rollersClc =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
-            .withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
+            .withStatorCurrentLimit(Constants.Shooter.Rollers.STATOR_CURRENT_LIMIT)
+            .withSupplyCurrentLimit(Constants.Shooter.Rollers.SUPPLY_CURRENT_LIMIT);
+
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
@@ -77,7 +78,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.Slot0 = rollersS0c;
-    config.CurrentLimits = clc;
+    config.CurrentLimits = rollersClc;
     config.MotorOutput = motorOutputConfigs;
     config.Voltage = voltageConfigs;
 
@@ -85,7 +86,7 @@ public class ShooterSubsystem extends SubsystemBase {
     warmup2.getConfigurator().apply(config);
     warmup3.getConfigurator().apply(config);
 
-    Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
+    Follower follower = new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
     warmup1.setControl(follower);
     warmup2.setControl(follower);
 
@@ -95,8 +96,9 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs hoodS0c =
         new Slot0Configs()
             .withKP(Constants.Shooter.Hood.KP)
-            .withKI(Constants.Shooter.Hood.KI)
+            .withKV(Constants.Shooter.Hood.KV)
             .withKD(Constants.Shooter.Hood.KD);
+
     CurrentLimitsConfigs hoodClc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT)
@@ -130,14 +132,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
 
-    DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.KP);
-    DogLog.log("Subsystems/Shooter/Gains/kI", Constants.Shooter.KI);
-    DogLog.log("Subsystems/Shooter/Gains/kD", Constants.Shooter.KD);
-    DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.KV);
-    DogLog.log("Subsystems/Shooter/Gains/kA", Constants.Shooter.KA);
+    DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.Rollers.KP);
+    DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.Rollers.KV);
 
     DogLog.log("Subsystems/Shooter/Hood/Gains/kP", Constants.Shooter.Hood.KP);
-    DogLog.log("Subsystems/Shooter/Hood/Gains/kI", Constants.Shooter.Hood.KI);
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kV", Constants.Shooter.Hood.KV);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kD", Constants.Shooter.Hood.KD);
   }
 
@@ -181,7 +180,7 @@ public class ShooterSubsystem extends SubsystemBase {
     targetShooterSpeedRPS = shooterSpeedRPS;
     shooter.setControl(
         m_velocityRequest.withVelocity(
-            targetShooterSpeedRPS * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROT));
+            targetShooterSpeedRPS * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
   }
 
   public void stopShooter() {
@@ -194,11 +193,11 @@ public class ShooterSubsystem extends SubsystemBase {
       return false;
     }
     return Math.abs(targetShooterSpeedRPS - (getCurrentShooterWheelSpeedRPS()))
-        <= Constants.Shooter.TOLERANCE_RPS;
+        <= Constants.Shooter.Rollers.TOLERANCE_RPS;
   }
 
   public double getCurrentShooterWheelSpeedRPS() {
-    return shooter.getCachedVelocityRps() * Constants.Shooter.WHEEL_ROTS_PER_MOTOR_ROT;
+    return shooter.getCachedVelocityRps() * Constants.Shooter.Rollers.WHEEL_ROTS_PER_MOTOR_ROT;
   }
 
   public double getTargetShooterWheelSpeedRPS() {
@@ -207,7 +206,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getTargetShootingSpeed(double distanceToTarget) {
     double mappedSpeed =
-        Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget); // -0.4
+        Constants.Shooter.Rollers.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget); // -0.4
 
     return mappedSpeed;
   }
