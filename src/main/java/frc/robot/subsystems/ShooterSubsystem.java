@@ -287,16 +287,6 @@ public class ShooterSubsystem extends SubsystemBase {
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
 
     DogLog.log(
-        "Subsystems/Shooter/Targeting/TargetPlusLead",
-        new Pose2d(
-            Targeting.positionToTarget(
-                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-                .x,
-            Targeting.positionToTarget(
-                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-                .y,
-            new Rotation2d()));
-    DogLog.log(
         "Subsystems/Shooter/Targeting/ShootingSpeed",
         Targeting.shootingSpeed(
             target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
