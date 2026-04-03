@@ -878,25 +878,26 @@ public final class Constants {
             15d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
       }
     }
-      public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
-      public static final boolean SHOOTS_BACKWARDS = true;
+    public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
-      public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
+    public static final boolean SHOOTS_BACKWARDS = true;
 
-      public static final int TARGETING_CALCULATION_PRECISION = 5;
+    public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
-      public static final double MIN_DIST_FT = 4d;
-      public static final double MAX_DIST_FT = 8d;
+    public static final int TARGETING_CALCULATION_PRECISION = 5;
 
-      public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
-      public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
-      public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
+    public static final double MIN_DIST_FT = 4d;
+    public static final double MAX_DIST_FT = 8d;
 
-      public static final double PRECISION = 5; // TUNE
+    public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
+    public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
+    public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
 
-      public static final double SHOOT_FOR_AUTO = 67.0;
-      public static final double SHOOT_FOR_AIM = 44.2;
+    public static final double PRECISION = 5; // TUNE
+
+    public static final double SHOOT_FOR_AUTO = 67.0;
+    public static final double SHOOT_FOR_AIM = 44.2;
   }
 
   public static class OI {

@@ -86,7 +86,8 @@ public class ShooterSubsystem extends SubsystemBase {
     warmup2.getConfigurator().apply(config);
     warmup3.getConfigurator().apply(config);
 
-    Follower follower = new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
+    Follower follower =
+        new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
     warmup1.setControl(follower);
     warmup2.setControl(follower);
 
@@ -206,7 +207,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getTargetShootingSpeed(double distanceToTarget) {
     double mappedSpeed =
-        Constants.Shooter.Rollers.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget); // -0.4
+        Constants.Shooter.Rollers.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(
+            distanceToTarget); // -0.4
 
     return mappedSpeed;
   }
