@@ -23,7 +23,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -245,10 +244,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command shootAtSpeedCommand(DoubleSupplier shooterSpeedRPS) {
-    return runEnd(() -> {
-      DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterSpeedRPS.getAsDouble());
-      this.setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
-    }, this::stopShooter);
+    return runEnd(
+        () -> {
+          DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterSpeedRPS.getAsDouble());
+          this.setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
+        },
+        this::stopShooter);
   }
 
   public void moveHoodWithVoltage() {
