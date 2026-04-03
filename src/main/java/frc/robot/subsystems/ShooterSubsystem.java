@@ -224,6 +224,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return mappedAngle;
   }
 
+  public boolean isShooterReady() {
+    return (isAtSpeed() && isShooterReady());
+  }
+
   // Commands
   public Command shootAtSpeedCommand() {
     return runEnd(() -> setShooterSpeedRPS(67.0), this::stopShooter);
