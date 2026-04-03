@@ -100,10 +100,14 @@ public class Targeting {
       double tofTable = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
       double error =
           tof - tofTable;
+
+      double horizontalVel = distance
+                      / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
+                          distance);
       double errorDerivative =
           1.0
               + ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
-                  / (Constants.Shooter.INITIAL_HORIZONTAL_VELOCITY_OF_PROJECTILE.get(initialDistance) * distance));
+                  / (horizontalVel));
       
       if (Math.abs(errorDerivative) < 1e-9) break;
 
