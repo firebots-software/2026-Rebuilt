@@ -60,13 +60,11 @@ public class ShooterSubsystem extends SubsystemBase {
     hood =
         new LoggedTalonFX("ShooterHood", Constants.Shooter.Hood.HOOD_ID, Constants.Swerve.CAN_BUS);
 
-    Slot0Configs s0c =
+    Slot0Configs rollersS0c =
         new Slot0Configs()
             .withKP(Constants.Shooter.KP)
-            .withKI(Constants.Shooter.KI)
-            .withKD(Constants.Shooter.KD)
-            .withKV(Constants.Shooter.KV)
-            .withKA(Constants.Shooter.KA);
+            .withKV(Constants.Shooter.KV);
+
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
@@ -78,7 +76,7 @@ public class ShooterSubsystem extends SubsystemBase {
     VoltageConfigs voltageConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0 = s0c;
+    config.Slot0 = rollersS0c;
     config.CurrentLimits = clc;
     config.MotorOutput = motorOutputConfigs;
     config.Voltage = voltageConfigs;
