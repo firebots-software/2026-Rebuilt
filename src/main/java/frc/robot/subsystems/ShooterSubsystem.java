@@ -170,7 +170,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public boolean hoodAtTarget() {
     return Math.abs(
-            hood.getCachedPositionRotations() * Constants.Shooter.Hood.HOOD_DEGREES_PER_MOTOR_ROT
+            (hood.getCachedPositionRotations() * 360.0)
                 - hoodTargetDeg)
         <= Constants.Shooter.Hood.HOOD_TOLERANCE;
   }
