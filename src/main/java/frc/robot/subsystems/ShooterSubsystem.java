@@ -281,7 +281,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
 
-    // TODO: Cache this value
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         new Pose2d(

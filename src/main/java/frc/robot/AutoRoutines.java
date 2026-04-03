@@ -9,17 +9,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-// import frc.robot.Constants.Swerve.Auto.ClimbPos;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
-import frc.robot.commandGroups.ExtendIntake;
 import frc.robot.commandGroups.IntakeToBumpDTP;
-import frc.robot.commandGroups.RetractIntake;
-import frc.robot.commandGroups.ShootWithAim;
-// import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -33,7 +29,6 @@ public class AutoRoutines {
   private final ShooterSubsystem lebronShooterSubsystem;
   private final HopperSubsystem hopperSubsystem;
   private final CommandSwerveDrivetrain swerveSubsystem;
-  // private final ClimberSubsystem climberSubsystem;
   private final BooleanSupplier redSide;
 
   public AutoRoutines(
@@ -41,17 +36,14 @@ public class AutoRoutines {
       ShooterSubsystem lebron,
       HopperSubsystem hopper,
       CommandSwerveDrivetrain swerve,
-      // ClimberSubsystem climber,
       BooleanSupplier redSide) {
     this.intakeSubsystem = intake;
     this.lebronShooterSubsystem = lebron;
     this.hopperSubsystem = hopper;
     this.swerveSubsystem = swerve;
-    // this.climberSubsystem = climber;
     this.redSide = redSide;
 
     autoFactory = swerveSubsystem.createAutoFactory();
-
     autoChooser = new AutoChooser();
     addCommandstoAutoChooser();
   }
@@ -63,10 +55,9 @@ public class AutoRoutines {
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
     if (traj != null) {
-      traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-      traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
     }
-
     return traj;
   }
 
@@ -74,17 +65,8 @@ public class AutoRoutines {
     if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
-
     return traj;
   }
-
-  // private AutoTrajectory climb(AutoRoutine routine, ClimbPos type) {
-  //   if (type == null) return null;
-
-  //   AutoTrajectory traj = routine.trajectory(type + ".traj");
-
-  //   return traj;
-  // }
 
   private AutoTrajectory depot(AutoRoutine routine, Depot type) {
     if (type == null) return null;
@@ -92,10 +74,9 @@ public class AutoRoutines {
     AutoTrajectory traj = routine.trajectory(type + ".traj");
 
     if (traj != null) {
-      traj.atTime("IntakeDown").onTrue(new ExtendIntake(intakeSubsystem));
-      traj.atTime("IntakeUp").onTrue(new RetractIntake(intakeSubsystem));
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
     }
-
     return traj;
   }
 
@@ -103,7 +84,6 @@ public class AutoRoutines {
     if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
-
     return traj;
   }
 
@@ -111,7 +91,6 @@ public class AutoRoutines {
     if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
-
     return traj;
   }
 
@@ -133,9 +112,7 @@ public class AutoRoutines {
 
   public Command driveForward(double time) {
     return Commands.run(
-            () -> {
-              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), new Feedforwards(4));
-            },
+            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
@@ -145,9 +122,8 @@ public class AutoRoutines {
 
   public Command driveBackward(double time) {
     return Commands.run(
-            () -> {
-              swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5, 0, 0), new Feedforwards(4));
-            },
+            () ->
+                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(

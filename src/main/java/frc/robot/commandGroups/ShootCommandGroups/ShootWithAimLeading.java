@@ -1,4 +1,4 @@
-package frc.robot.commandGroups;
+package frc.robot.commandGroups.ShootCommandGroups;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -6,14 +6,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
-import frc.robot.MathUtils.Vector2;
-import frc.robot.MathUtils.Vector3;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandInArc;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.util.MathUtils.Vector2;
+import frc.robot.util.MathUtils.Vector3;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -94,7 +94,7 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                         hopperSubsystem
                             .runHopperUntilInterruptedCommand(
                                 () ->
-                                    hopperSubsystem.grabHopperRecommendedSpeed(
+                                    hopperSubsystem.getHopperRecommendedSpeed(
                                         shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
                                 () -> (Targeting.pointingAtTarget(targetNoOffset, drivetrain)))
                             .alongWith(
