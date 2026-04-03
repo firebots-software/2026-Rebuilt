@@ -56,6 +56,7 @@ public class ShooterSubsystem extends SubsystemBase {
     warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.Rollers.WARMUP_2_ID, canbus);
     warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.Rollers.WARMUP_3_ID, canbus);
     shooter = warmup3;
+
     // TODO: fix hood id constant
     hood =
         new LoggedTalonFX("ShooterHood", Constants.Shooter.Hood.HOOD_ID, Constants.Swerve.CAN_BUS);
