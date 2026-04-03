@@ -823,10 +823,8 @@ public final class Constants {
       public static final int WARMUP_3_ID = 33;
 
       public static final double KP = 0.85;
-      public static final double KI = 0.0;
-      public static final double KD = 0.0;
       public static final double KV = 0.124;
-      public static final double KA = 0.0;
+      public static final double KS = 0.0;
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 

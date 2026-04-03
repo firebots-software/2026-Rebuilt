@@ -63,7 +63,8 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs rollersS0c =
         new Slot0Configs()
             .withKP(Constants.Shooter.Rollers.KP)
-            .withKV(Constants.Shooter.Rollers.KV);
+            .withKV(Constants.Shooter.Rollers.KV)
+            .withKS(Constants.Shooter.Rollers.KS);
 
     CurrentLimitsConfigs rollersClc =
         new CurrentLimitsConfigs()
