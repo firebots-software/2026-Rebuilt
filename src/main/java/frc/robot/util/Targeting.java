@@ -68,28 +68,27 @@ public class Targeting {
     // Load basic stuff in
     ChassisSpeeds currSpeeds = swerve.getFieldSpeeds();
     Pose2d currState = swerve.getPose();
-    double distToTarget =
-        target
-            .getTranslation()
-            .getDistance(new Translation3d(new Translation2d(currState.getX(), currState.getY())));
 
     // initial guess
     double initDX = target.getX() - currState.getX();
     double initDY = target.getY() - currState.getY();
-
     double initialDistance = Math.pow(initDX * initDX + initDY * initDY, 0.5);
-    double radialDistance =
+    
+    if (initialDistance < 1e-6) return 0;
+
+    double radialVelocity =
         (initDX * currSpeeds.vxMetersPerSecond + initDY * currSpeeds.vyMetersPerSecond)
             / initialDistance;
 
     // shit we need
-    double distance = distToTarget;
     double tof =
         initialDistance
-            / (distance
+            / (initialDistance
                     / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
-                        distance)
-                + radialDistance);
+                        initialDistance)
+                + radialVelocity);
+
+    double distance = initialDistance;
 
     for (int i = 0; i < Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
       double distX = (initDX) - currSpeeds.vxMetersPerSecond * tof;
@@ -98,14 +97,15 @@ public class Targeting {
       distance = Math.pow(distX * distX + distY * distY, 0.5);
       if (distance < 1e-6) break;
 
+      double tofTable = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
       double error =
-          tof - Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
+          tof - tofTable;
       double errorDerivative =
-          1
-              - ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
-                  / (distance
-                      / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
-                          distance)));
+          1.0
+              + ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
+                  / (Constants.Shooter.INITIAL_HORIZONTAL_VELOCITY_OF_PROJECTILE.get(initialDistance) * distance));
+      
+      if (Math.abs(errorDerivative) < 1e-9) break;
 
       tof -= (error / errorDerivative);
     }

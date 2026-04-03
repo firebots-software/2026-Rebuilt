@@ -997,6 +997,8 @@ public final class Constants {
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap
         TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap
+        INITIAL_HORIZONTAL_VELOCITY_OF_PROJECTILE = new InterpolatingDoubleTreeMap();
 
     public static void UPDATE_INTERMAPS() {
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();
@@ -1035,6 +1037,9 @@ public final class Constants {
           Units.inchesToMeters(
               102d + 5d / 8d + HUB_EDGE_TO_HUB_CENTER_INCHES + ROBOT_FRONT_EDGE_TO_ROBOT_CENTER),
           15d * VIDEO_SECONDS_TO_REGULAR_SECONDS);
+
+      INITIAL_HORIZONTAL_VELOCITY_OF_PROJECTILE.clear();
+      INITIAL_HORIZONTAL_VELOCITY_OF_PROJECTILE.put(67.0, 67.0);
     }
   }
 
