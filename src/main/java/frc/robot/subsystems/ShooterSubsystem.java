@@ -75,17 +75,18 @@ public class ShooterSubsystem extends SubsystemBase {
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
+
     VoltageConfigs voltageConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
 
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0 = rollersS0c;
-    config.CurrentLimits = rollersClc;
-    config.MotorOutput = motorOutputConfigs;
-    config.Voltage = voltageConfigs;
+    TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
+    rollersConfig.Slot0 = rollersS0c;
+    rollersConfig.CurrentLimits = rollersClc;
+    rollersConfig.MotorOutput = motorOutputConfigs;
+    rollersConfig.Voltage = voltageConfigs;
 
-    warmup1.getConfigurator().apply(config);
-    warmup2.getConfigurator().apply(config);
-    warmup3.getConfigurator().apply(config);
+    warmup1.getConfigurator().apply(rollersConfig);
+    warmup2.getConfigurator().apply(rollersConfig);
+    warmup3.getConfigurator().apply(rollersConfig);
 
     Follower follower =
         new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
@@ -99,6 +100,8 @@ public class ShooterSubsystem extends SubsystemBase {
         new Slot0Configs()
             .withKP(Constants.Shooter.Hood.KP)
             .withKV(Constants.Shooter.Hood.KV)
+            .withKV(Constants.Shooter.Hood.KS)
+            .withKV(Constants.Shooter.Hood.KG)
             .withKD(Constants.Shooter.Hood.KD);
 
     CurrentLimitsConfigs hoodClc =
