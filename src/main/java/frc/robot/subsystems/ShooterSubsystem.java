@@ -164,7 +164,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void stopHood() {
-    hoodTargetDeg = hood.getCachedPositionRotations();
+    hoodTargetDeg = hood.getCachedPositionRotations() * 360.0;
     setHoodPosition(hoodTargetDeg);
   }
 
