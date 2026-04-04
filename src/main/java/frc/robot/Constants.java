@@ -794,9 +794,8 @@ public final class Constants {
 
       public static final int ENCODER_PORT = 0; // TODO
 
-      public static final InterpolatingDoubleTreeMap
-          HOOD_ANGLE_FOR_DISTANCE_METERS =
-              new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap HOOD_ANGLE_FOR_DISTANCE_METERS =
+          new InterpolatingDoubleTreeMap();
 
       public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
       public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
@@ -832,8 +831,8 @@ public final class Constants {
 
       public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
           new InterpolatingDoubleTreeMap();
-      public static final InterpolatingDoubleTreeMap
-          TOF_FOR_DISTANCE_METERS = new InterpolatingDoubleTreeMap();
+      public static final InterpolatingDoubleTreeMap TOF_FOR_DISTANCE_METERS =
+          new InterpolatingDoubleTreeMap();
 
       public static void UPDATE_INTERMAPS() {
         SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();

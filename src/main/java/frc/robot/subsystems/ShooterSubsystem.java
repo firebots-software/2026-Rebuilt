@@ -147,15 +147,20 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Hood/Gains/kD", Constants.Shooter.Hood.KD);
 
     // Hood config constants // NEW
-    DogLog.log("Subsystems/Shooter/Hood/Config/EncoderRotsPerHoodRot",
+    DogLog.log(
+        "Subsystems/Shooter/Hood/Config/EncoderRotsPerHoodRot",
         Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT); // NEW
-    DogLog.log("Subsystems/Shooter/Hood/Config/MotorRotsPerEncoderRot",
+    DogLog.log(
+        "Subsystems/Shooter/Hood/Config/MotorRotsPerEncoderRot",
         Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT); // NEW
-    DogLog.log("Subsystems/Shooter/Hood/Config/EncoderOffset",
+    DogLog.log(
+        "Subsystems/Shooter/Hood/Config/EncoderOffset",
         Constants.Shooter.Hood.ENCODER_OFFSET); // NEW
-    DogLog.log("Subsystems/Shooter/Hood/Config/MinPositionRot",
+    DogLog.log(
+        "Subsystems/Shooter/Hood/Config/MinPositionRot",
         Constants.Shooter.Hood.MIN_HOOD_POSITION); // NEW
-    DogLog.log("Subsystems/Shooter/Hood/Config/MaxPositionRot",
+    DogLog.log(
+        "Subsystems/Shooter/Hood/Config/MaxPositionRot",
         Constants.Shooter.Hood.MAX_HOOD_POSITION); // NEW
   }
 
@@ -226,8 +231,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getTargetHoodAngle(double distanceToTarget) {
-    return Constants.Shooter.Hood.HOOD_ANGLE_FOR_DISTANCE_METERS.get(
-        distanceToTarget);
+    return Constants.Shooter.Hood.HOOD_ANGLE_FOR_DISTANCE_METERS.get(distanceToTarget);
   }
 
   public boolean isShooterReady() {
@@ -300,11 +304,12 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/ShooterReady", isShooterReady());
 
     // Hood position information
-    double currentHoodDeg = hood.getCachedPositionRotations() * 360.0; 
-    DogLog.log("Subsystems/Shooter/Hood/CurrentPositionDeg", currentHoodDeg); 
-    DogLog.log("Subsystems/Shooter/Hood/TargetPositionDeg", hoodTargetDeg); 
-    DogLog.log("Subsystems/Shooter/Hood/ErrorDeg", currentHoodDeg - hoodTargetDeg); 
-    DogLog.log("Subsystems/Shooter/Hood/UnfusedCANcoderPositionDeg",
+    double currentHoodDeg = hood.getCachedPositionRotations() * 360.0;
+    DogLog.log("Subsystems/Shooter/Hood/CurrentPositionDeg", currentHoodDeg);
+    DogLog.log("Subsystems/Shooter/Hood/TargetPositionDeg", hoodTargetDeg);
+    DogLog.log("Subsystems/Shooter/Hood/ErrorDeg", currentHoodDeg - hoodTargetDeg);
+    DogLog.log(
+        "Subsystems/Shooter/Hood/UnfusedCANcoderPositionDeg",
         getHoodCancoderPositionRaw() * 360.0); // CANCAoder reading before fusion
 
     // Targeting
@@ -312,14 +317,19 @@ public class ShooterSubsystem extends SubsystemBase {
     double distanceMeters = Targeting.distMeters(drivetrain, target);
 
     DogLog.log("Subsystems/Shooter/Targeting/DistanceMeters", distanceMeters);
-    DogLog.log("Subsystems/Shooter/Targeting/ShootingSpeed",
-        Targeting.shootingSpeed(target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
-    DogLog.log("Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
-    DogLog.log("Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/ShootingSpeed",
+        Targeting.shootingSpeed(
+            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
 
-    DogLog.log("Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
         getTargetShootingSpeed(distanceMeters));
-    DogLog.log("Subsystems/Shooter/Targeting/MappedHoodAngleDeg",
-        getTargetHoodAngle(distanceMeters)); 
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/MappedHoodAngleDeg", getTargetHoodAngle(distanceMeters));
   }
 }
