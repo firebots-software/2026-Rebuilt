@@ -52,8 +52,6 @@ public class HopperSubsystem extends SubsystemBase {
         new LoggedTalonFX(
             "HopperFloorSlave", Constants.Hopper.MOTOR_2_PORT, Constants.Swerve.CAN_BUS);
     hopper = hopperMotor1;
-    hopperMotor2.setControl(
-        new Follower(hopper.getDeviceID(), MotorAlignmentValue.Aligned));
 
     TalonFXConfiguration hopperConfig =
         new TalonFXConfiguration()
@@ -66,6 +64,9 @@ public class HopperSubsystem extends SubsystemBase {
     TalonFXConfigurator hopperMotor2Config = hopperMotor2.getConfigurator();
     hopperMotor1Config.apply(hopperConfig);
     hopperMotor2Config.apply(hopperConfig);
+
+    hopperMotor2.setControl(
+        new Follower(hopper.getDeviceID(), MotorAlignmentValue.Aligned));
 
     DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
     DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
