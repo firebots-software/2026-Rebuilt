@@ -154,7 +154,7 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Hopper/CurrentSurfaceSpeed (mps)",
         hopper.getCachedVelocityRps()
-            * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER);
+            * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
