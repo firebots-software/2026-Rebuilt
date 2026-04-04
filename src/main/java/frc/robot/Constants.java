@@ -462,15 +462,19 @@ public final class Constants {
   }
 
   public static class Hopper {
+    // TODO: Motor Ports
     public static final int MOTOR_1_PORT = 17;
     public static final int MOTOR_2_PORT = 18;
 
+    // TODO: subject to change, ask Jeff
     public static final double TARGET_SURFACE_SPEED_MPS =
         2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
+    // TODO: Tune these
     public static final double kP = 1.0;
     public static final double kV = 0.124;
 
+    // TODO: Do we want stator limit to still be this high?
     public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
     public static final double SUPPLY_LIMIT_AMPS = 50.0; // 30.0
 
@@ -489,6 +493,7 @@ public final class Constants {
       UPDATE_INTERMAPS();
     }
 
+    // TODO: Update these to be distance based
     public static void UPDATE_INTERMAPS() {
       HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
 
