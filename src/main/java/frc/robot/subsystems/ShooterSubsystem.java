@@ -149,8 +149,8 @@ public class ShooterSubsystem extends SubsystemBase {
         m_positionRequest.withPosition(
             MathUtil.clamp(
                 degrees / 360.0,
-                Constants.Shooter.Hood.MIN_HOOD_POSITION,
-                Constants.Shooter.Hood.MAX_HOOD_POSITION)));
+                Constants.Shooter.Hood.MIN_HOOD_POSITION_ROTS,
+                Constants.Shooter.Hood.MAX_HOOD_POSITION_ROTS)));
   }
 
   public Rotation2d getHoodPosition() {

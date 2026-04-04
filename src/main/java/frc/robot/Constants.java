@@ -19,7 +19,7 @@ public final class Constants {
   public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = true;
-  public static final boolean fuelGaugeOnRobot = true;
+  public static final boolean fuelGaugeOnRobot = false;
   public static final boolean intakeVisionOnRobot = true;
   public static final boolean shooterOnRobot = true;
 
@@ -779,8 +779,8 @@ public final class Constants {
       public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
 
       public static final double HOOD_ROTS_PER_CANCODER_ROT = 0;
-      public static final double MIN_HOOD_POSITION = 0;
-      public static final double MAX_HOOD_POSITION = 15;
+      public static final double MIN_HOOD_POSITION_ROTS = 0;
+      public static final double MAX_HOOD_POSITION_ROTS = 15;
 
       public static final double MOTOR_ROTS_PER_ENCODER_ROT = 0;
 
@@ -808,7 +808,7 @@ public final class Constants {
 
       public static void UPDATE_INTERMAPS() {
         HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
-        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION);
+        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(0d, Hood.MIN_HOOD_POSITION_ROTS);
       }
     }
 

@@ -27,7 +27,7 @@ public class ShootWithAim extends ParallelCommandGroup {
         Commands.either(
             Commands.parallel( // shoot without aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
-                    44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION),
+                    44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION_ROTS),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         Commands.parallel(
