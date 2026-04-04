@@ -94,8 +94,8 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                         hopperSubsystem
                             .runHopperUntilInterruptedCommand(
                                 () ->
-                                    hopperSubsystem.getHopperRecommendedSpeed(
-                                        shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
+                                    hopperSubsystem.grabHopperRecommendedSpeed(
+                                        dist.getAsDouble()),
                                 () -> (Targeting.pointingAtTarget(targetNoOffset, drivetrain)))
                             .alongWith(
                                 intakeSubsystem
