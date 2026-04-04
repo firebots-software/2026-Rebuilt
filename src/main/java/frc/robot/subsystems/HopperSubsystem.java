@@ -6,8 +6,10 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +22,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class HopperSubsystem extends SubsystemBase {
-  private final LoggedTalonFX hopperMotor;
+  private final LoggedTalonFX hopperMotorMaster, hopperMotorSlave;
   private double targetSurfaceSpeedMps = 0.0;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
@@ -45,8 +47,14 @@ public class HopperSubsystem extends SubsystemBase {
 
     ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3);
 
-    hopperMotor =
-        new LoggedTalonFX("HopperFloor", Constants.Hopper.MOTOR_PORT, Constants.Swerve.CAN_BUS);
+    hopperMotorMaster =
+        new LoggedTalonFX(
+            "HopperFloorMaster", Constants.Hopper.MOTOR_PORT_MASTER, Constants.Swerve.CAN_BUS);
+    hopperMotorSlave =
+        new LoggedTalonFX(
+            "HopperFloorSlave", Constants.Hopper.MOTOR_PORT_SLAVE, Constants.Swerve.CAN_BUS);
+    hopperMotorSlave.setControl(
+        new Follower(hopperMotorMaster.getDeviceID(), MotorAlignmentValue.Aligned));
 
     TalonFXConfiguration hopperConfig =
         new TalonFXConfiguration()
@@ -55,8 +63,10 @@ public class HopperSubsystem extends SubsystemBase {
             .withMotorOutput(motorOutputConfigs)
             .withClosedLoopRamps(clrc);
 
-    TalonFXConfigurator hopperMotorConfig = hopperMotor.getConfigurator();
-    hopperMotorConfig.apply(hopperConfig);
+    TalonFXConfigurator hopperMotorMasterConfig = hopperMotorMaster.getConfigurator();
+    TalonFXConfigurator hopperMotorSlaveConfig = hopperMotorSlave.getConfigurator();
+    hopperMotorMasterConfig.apply(hopperConfig);
+    hopperMotorSlaveConfig.apply(hopperConfig);
 
     DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
     DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
@@ -68,30 +78,32 @@ public class HopperSubsystem extends SubsystemBase {
   public void runHopperMps(DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
     if (readyToRun.getAsBoolean()) {
       this.targetSurfaceSpeedMps = targetSurfaceSpeedMps.getAsDouble();
-      hopperMotor.setControl(
+      hopperMotorMaster.setControl(
           m_velocityRequest.withVelocity(
               this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
-    } else hopperMotor.stopMotor();
+    } else {
+      hopperMotorMaster.stopMotor();
+    }
   }
 
   public void runHopperMps(double targetSurfaceSpeedMps) {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
-    hopperMotor.setControl(
+    hopperMotorMaster.setControl(
         m_velocityRequest.withVelocity(
             targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
   }
 
   public void stop() {
-    hopperMotor.stopMotor();
+    hopperMotorMaster.stopMotor();
   }
 
   public double getFloorSpeedMPS() {
-    return hopperMotor.getCachedVelocityRps()
+    return hopperMotorMaster.getCachedVelocityRps()
         * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
   }
 
   public double getAgitatorSpeedRPS() {
-    return hopperMotor.getCachedVelocityRps()
+    return hopperMotorMaster.getCachedVelocityRps()
         * Constants.Hopper.AGITATOR_ROTATIONS_PER_MOTOR_ROTATION;
   }
 
@@ -145,13 +157,14 @@ public class HopperSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log(
         "Subsystems/Hopper/CurrentSurfaceSpeed (mps)",
-        hopperMotor.getCachedVelocityRps()
+        hopperMotorMaster.getCachedVelocityRps()
             * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
         targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
-    DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getCachedVelocityRps());
+    DogLog.log(
+        "Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotorMaster.getCachedVelocityRps());
   }
 }
