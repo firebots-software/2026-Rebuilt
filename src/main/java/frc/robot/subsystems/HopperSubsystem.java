@@ -22,12 +22,18 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class HopperSubsystem extends SubsystemBase {
+  private final CommandSwerveDrivetrain drivetrain;
+  private final BooleanSupplier redside;
+
   private final LoggedTalonFX hopperMotor1, hopperMotor2, hopper;
   private double targetSurfaceSpeedMps = 0.0;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
-  public HopperSubsystem() {
+  public HopperSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
+    this.drivetrain = drivetrain;
+    this.redside = redside;
+
     CurrentLimitsConfigs currentLimitConfigs =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Hopper.STATOR_LIMIT_AMPS)
@@ -139,8 +145,8 @@ public class HopperSubsystem extends SubsystemBase {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
-  public double getHopperRecommendedSpeed(double speedOfShooter) {
-    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(speedOfShooter);
+  public double grabHopperRecommendedSpeed(double speedOfShooter) {
+    return Constants.Hopper.HOPPER_SPEED_MAP.get(speedOfShooter);
   }
 
   @Override

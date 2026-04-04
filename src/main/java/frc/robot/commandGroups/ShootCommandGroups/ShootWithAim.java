@@ -51,8 +51,8 @@ public class ShootWithAim extends ParallelCommandGroup {
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(
                                 () ->
-                                    hopperSubsystem.getHopperRecommendedSpeed(
-                                        shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
+                                    hopperSubsystem.grabHopperRecommendedSpeed(
+                                        MiscUtils.getDistanceToHub(redside, drivetrain)),
                                 () ->
                                     Targeting.pointingAtHub(redside, drivetrain)
                                         && drivetrain.getSpeedMagnitude() <= 0.2),

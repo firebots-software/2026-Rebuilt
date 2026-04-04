@@ -486,7 +486,7 @@ public final class Constants {
 
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
-    public static final InterpolatingDoubleTreeMap HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS =
+    public static final InterpolatingDoubleTreeMap HOPPER_SPEED_MAP =
         new InterpolatingDoubleTreeMap();
 
     static {
@@ -495,11 +495,11 @@ public final class Constants {
 
     // TODO: Update these to be distance based
     public static void UPDATE_INTERMAPS() {
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
+      HOPPER_SPEED_MAP.clear();
 
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.0, 2.2);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(53.0, 2.2);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(62.0, 0.88);
+      HOPPER_SPEED_MAP.put(0.0, 2.2);
+      HOPPER_SPEED_MAP.put(3.0, 2.2);
+      HOPPER_SPEED_MAP.put(8.0, 0.88);
     }
   }
 
