@@ -230,7 +230,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget);
   }
 
-  public Rotation2d grabTargetHoodAngle(double distanceToTarget) {
+  public double grabTargetHoodAngle(double distanceToTarget) {
     return Constants.Shooter.HOOD_ANGLE_MAP.get(distanceToTarget);
   }
 

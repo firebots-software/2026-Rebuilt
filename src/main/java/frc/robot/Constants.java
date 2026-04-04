@@ -766,8 +766,8 @@ public final class Constants {
   public static final class Shooter {
 
   // Launching Maps
-  public static final InterpolatingTreeMap<Double, Rotation2d> HOOD_ANGLE_MAP =
-      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
+  public static final InterpolatingDoubleTreeMap HOOD_ANGLE_MAP =
+      new InterpolatingDoubleTreeMap();
   public static final InterpolatingDoubleTreeMap ROLLER_SPEED_MAP =
       new InterpolatingDoubleTreeMap();
   public static final InterpolatingDoubleTreeMap TIME_OF_FLIGHT_MAP =
@@ -776,7 +776,7 @@ public final class Constants {
   public static void UPDATE_INTERMAPS() {
     // TODO: not populated yet
     HOOD_ANGLE_MAP.clear();
-    HOOD_ANGLE_MAP.put(0d, Rotation2d.fromDegrees(Hood.MIN_HOOD_POSITION));
+    HOOD_ANGLE_MAP.put(0d, Hood.MIN_HOOD_POSITION);
 
     ROLLER_SPEED_MAP.clear();
     final double offset = 1.0429875;

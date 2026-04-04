@@ -36,10 +36,10 @@ public class ShootWithAim extends ParallelCommandGroup {
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () ->
-                        shooterSubsystem.getTargetShootingSpeed(
+                        shooterSubsystem.grabTargetShootingSpeed(
                             MiscUtils.getDistanceToHub(redside, drivetrain)),
                     () ->
-                        shooterSubsystem.getTargetHoodAngle(
+                        shooterSubsystem.grabTargetHoodAngle(
                             MiscUtils.getDistanceToHub(redside, drivetrain))),
                 new SwerveJoystickCommand(
                     translationalX,
