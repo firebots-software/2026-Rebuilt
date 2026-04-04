@@ -244,8 +244,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command shootAtSpeedHoodCommand(double shooterSpeedRPS, double hoodAngle) {
-    return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter)
-        .alongWith(run(() -> setHoodPosition(hoodAngle)));
+    return runEnd(() -> {
+      setShooterSpeedRPS(shooterSpeedRPS);
+      setHoodPosition(hoodAngle);
+    }, this::stopShooter);
   }
 
   public Command shootAtSpeedCommand(double shooterSpeedRPS) {
