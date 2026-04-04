@@ -481,7 +481,7 @@ public final class Constants {
     public static final double MOTOR_ROTS_PER_AGITATOR_ROT = 3.57142857;
     public static final double AGITATOR_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_AGITATOR_ROT;
 
-    public static final double MOTOR_ROTS_PER_FLOOR_METER = 10.8857084074;
+    public static final double MOTOR_ROTS_PER_FLOOR_METER = 250d / 7d;
     public static final double FLOOR_METERS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_FLOOR_METER;
 
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
