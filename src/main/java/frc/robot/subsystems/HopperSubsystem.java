@@ -117,10 +117,6 @@ public class HopperSubsystem extends SubsystemBase {
         : false;
   }
 
-  public double getTargetHopperSpeed(double shooterSpeed) {
-    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(shooterSpeed);
-  }
-
   // Does not stop the Hopper when interrupted
   public Command runHopperCommand() {
     return runOnce(() -> runHopperMps(Constants.Hopper.TARGET_SURFACE_SPEED_MPS));
