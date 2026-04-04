@@ -481,12 +481,12 @@ public final class Constants {
     public static final double MOTOR_ROTS_PER_AGITATOR_ROT = 3.57142857;
     public static final double AGITATOR_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_AGITATOR_ROT;
 
-    public static final double MOTOR_ROTS_PER_FLOOR_METER = 10.8857084074;
+    public static final double MOTOR_ROTS_PER_FLOOR_METER = 250d / 7d;
     public static final double FLOOR_METERS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_FLOOR_METER;
 
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
-    public static final InterpolatingDoubleTreeMap HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS =
+    public static final InterpolatingDoubleTreeMap HOPPER_MPS_FOR_SHOOTER_WHEEL_RPS =
         new InterpolatingDoubleTreeMap();
 
     static {
@@ -495,11 +495,11 @@ public final class Constants {
 
     // TODO: Update these to be distance based
     public static void UPDATE_INTERMAPS() {
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
+      HOPPER_MPS_FOR_SHOOTER_WHEEL_RPS.clear();
 
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.0, 2.2);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(53.0, 2.2);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(62.0, 0.88);
+      HOPPER_MPS_FOR_SHOOTER_WHEEL_RPS.put(Units.feetToMeters(45.0), 2.2);
+      HOPPER_MPS_FOR_SHOOTER_WHEEL_RPS.put(Units.feetToMeters(53.0), 2.2);
+      HOPPER_MPS_FOR_SHOOTER_WHEEL_RPS.put(Units.feetToMeters(62.0), 0.88);
     }
   }
 
