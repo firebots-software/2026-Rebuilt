@@ -227,11 +227,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getTargetShootingSpeed(double distanceToTarget) {
-    return Constants.Shooter.Rollers.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget);
+    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget);
   }
 
-  public double getTargetHoodAngle(double distanceToTarget) {
-    return Constants.Shooter.Hood.HOOD_ANGLE_FOR_DISTANCE_METERS.get(distanceToTarget);
+  public Rotation2d getTargetHoodAngle(double distanceToTarget) {
+    return Constants.Shooter.HOOD_ANGLE_MAP.get(distanceToTarget);
   }
 
   public boolean isShooterReady() {
