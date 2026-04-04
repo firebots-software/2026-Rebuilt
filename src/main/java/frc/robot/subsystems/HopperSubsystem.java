@@ -76,7 +76,6 @@ public class HopperSubsystem extends SubsystemBase {
           m_velocityRequest.withVelocity(
               this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER));
     } else {
-      this.targetSurfaceSpeedMps = 0.0;
       stop();
     }
   }
