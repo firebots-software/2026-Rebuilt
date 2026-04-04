@@ -465,11 +465,8 @@ public final class Constants {
     public static final int MOTOR_1_PORT = 17;
     public static final int MOTOR_2_PORT = 18;
 
-    public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
     public static final double TARGET_SURFACE_SPEED_MPS =
         2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
-
-    public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
     public static final double kP = 1.0;
     public static final double kV = 0.124;
@@ -477,29 +474,13 @@ public final class Constants {
     public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
     public static final double SUPPLY_LIMIT_AMPS = 50.0; // 30.0
 
-    public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
-    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
-        (20.0 / 24.0) * (60.0 / 12.0);
+    public static final double MOTOR_ROTS_PER_AGITATOR_ROT = 3.57142857;
+    public static final double AGITATOR_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_AGITATOR_ROT;
 
-    public static final double BELT_TOOTH_PITCH_METERS =
-        0.005; // length of belt movement per tooth moved on it
-    public static final double FLOOR_PULLEY_TOOTH_COUNT = 24.0;
-    public static final double BELT_LOOP_TOOTH_COUNT =
-        220.0; // number of teeth on the actual belt for full revolution
-    public static final double BELT_LOOP_LENGTH_METERS =
-        BELT_LOOP_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+    public static final double MOTOR_ROTS_PER_FLOOR_METER = 10.8857084074;
+    public static final double FLOOR_METERS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_FLOOR_METER;
 
-    public static final double BELT_TRAVEL_METERS_PER_PULLEY_ROTATION =
-        FLOOR_PULLEY_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
-
-    public static final double BELT_TRAVEL_METERS_PER_MOTOR_ROTATION =
-        BELT_TRAVEL_METERS_PER_PULLEY_ROTATION / MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-
-    public static final double MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER =
-        1.0 / BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
-
-    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
-        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
+    public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
     public static final InterpolatingDoubleTreeMap HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS =
         new InterpolatingDoubleTreeMap();

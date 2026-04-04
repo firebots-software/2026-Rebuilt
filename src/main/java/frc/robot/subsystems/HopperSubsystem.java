@@ -78,7 +78,7 @@ public class HopperSubsystem extends SubsystemBase {
       this.targetSurfaceSpeedMps = targetSurfaceSpeedMps.getAsDouble();
       hopper.setControl(
           m_velocityRequest.withVelocity(
-              this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+              this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER));
     } else {
       this.targetSurfaceSpeedMps = 0.0;
       stop();
@@ -89,7 +89,7 @@ public class HopperSubsystem extends SubsystemBase {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
     hopper.setControl(
         m_velocityRequest.withVelocity(
-            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER));
   }
 
   public void stop() {
@@ -99,12 +99,12 @@ public class HopperSubsystem extends SubsystemBase {
 
   public double getFloorSpeedMPS() {
     return hopper.getCachedVelocityRps()
-        * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
+        * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT;
   }
 
   public double getAgitatorSpeedRPS() {
     return hopper.getCachedVelocityRps()
-        * Constants.Hopper.AGITATOR_ROTATIONS_PER_MOTOR_ROTATION;
+        * Constants.Hopper.AGITATOR_ROTS_PER_MOTOR_ROT;
   }
 
   public boolean atTargetSpeed() {
@@ -154,12 +154,12 @@ public class HopperSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Hopper/CurrentSurfaceSpeed (mps)",
         hopper.getCachedVelocityRps()
-            * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
+            * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
-        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
+        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER);
     DogLog.log(
         "Subsystems/Hopper/CurrentMotorSpeed (rps)", hopper.getCachedVelocityRps());
   }
