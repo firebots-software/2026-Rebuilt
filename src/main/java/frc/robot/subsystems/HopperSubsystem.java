@@ -33,10 +33,7 @@ public class HopperSubsystem extends SubsystemBase {
             .withStatorCurrentLimit(Constants.Hopper.STATOR_LIMIT_AMPS)
             .withSupplyCurrentLimit(Constants.Hopper.SUPPLY_LIMIT_AMPS);
 
-    Slot0Configs s0c =
-        new Slot0Configs()
-            .withKP(Constants.Hopper.kP)
-            .withKV(Constants.Hopper.kV);
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Hopper.kP).withKV(Constants.Hopper.kV);
 
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
@@ -65,8 +62,7 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotor1Config.apply(hopperConfig);
     hopperMotor2Config.apply(hopperConfig);
 
-    hopperMotor2.setControl(
-        new Follower(hopper.getDeviceID(), MotorAlignmentValue.Aligned));
+    hopperMotor2.setControl(new Follower(hopper.getDeviceID(), MotorAlignmentValue.Aligned));
 
     DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
     DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
@@ -98,13 +94,11 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public double getFloorSpeedMPS() {
-    return hopper.getCachedVelocityRps()
-        * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT;
+    return hopper.getCachedVelocityRps() * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT;
   }
 
   public double getAgitatorSpeedRPS() {
-    return hopper.getCachedVelocityRps()
-        * Constants.Hopper.AGITATOR_ROTS_PER_MOTOR_ROT;
+    return hopper.getCachedVelocityRps() * Constants.Hopper.AGITATOR_ROTS_PER_MOTOR_ROT;
   }
 
   public boolean atTargetSpeed() {
@@ -153,14 +147,12 @@ public class HopperSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log(
         "Subsystems/Hopper/CurrentSurfaceSpeed (mps)",
-        hopper.getCachedVelocityRps()
-            * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT);
+        hopper.getCachedVelocityRps() * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
         targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER);
-    DogLog.log(
-        "Subsystems/Hopper/CurrentMotorSpeed (rps)", hopper.getCachedVelocityRps());
+    DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopper.getCachedVelocityRps());
   }
 }
