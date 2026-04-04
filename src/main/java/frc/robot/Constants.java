@@ -11,8 +11,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
-import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -765,108 +763,108 @@ public final class Constants {
 
   public static final class Shooter {
 
-  // Launching Maps
-  public static final InterpolatingDoubleTreeMap HOOD_ANGLE_MAP =
-      new InterpolatingDoubleTreeMap();
-  public static final InterpolatingDoubleTreeMap ROLLER_SPEED_MAP =
-      new InterpolatingDoubleTreeMap();
-  public static final InterpolatingDoubleTreeMap TIME_OF_FLIGHT_MAP =
-      new InterpolatingDoubleTreeMap();
+    // Launching Maps
+    public static final InterpolatingDoubleTreeMap HOOD_ANGLE_MAP =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap ROLLER_SPEED_MAP =
+        new InterpolatingDoubleTreeMap();
+    public static final InterpolatingDoubleTreeMap TIME_OF_FLIGHT_MAP =
+        new InterpolatingDoubleTreeMap();
 
-  public static void UPDATE_INTERMAPS() {
-    // TODO: not populated yet
-    HOOD_ANGLE_MAP.clear();
-    HOOD_ANGLE_MAP.put(0d, Hood.MIN_HOOD_POSITION);
+    public static void UPDATE_INTERMAPS() {
+      // TODO: not populated yet
+      HOOD_ANGLE_MAP.clear();
+      HOOD_ANGLE_MAP.put(0d, Hood.MIN_HOOD_POSITION);
 
-    ROLLER_SPEED_MAP.clear();
-    final double offset = 1.0429875;
-    ROLLER_SPEED_MAP.put(offset, 44.2);
-    ROLLER_SPEED_MAP.put(0.2111 + offset, 45.2000038381);
-    ROLLER_SPEED_MAP.put(0.6108 + offset, 46.4732433828);
-    ROLLER_SPEED_MAP.put(1.0478 + offset, 50.9295817894);
-    ROLLER_SPEED_MAP.put(1.4097 + offset, 52.8394411065);
-    ROLLER_SPEED_MAP.put(1.7971 + offset, 55.385920196);
-    ROLLER_SPEED_MAP.put(2.1336 + offset, 57.2957795131);
-    ROLLER_SPEED_MAP.put(3.6576 + offset, 61.1154981473);
+      ROLLER_SPEED_MAP.clear();
+      final double offset = 1.0429875;
+      ROLLER_SPEED_MAP.put(offset, 44.2);
+      ROLLER_SPEED_MAP.put(0.2111 + offset, 45.2000038381);
+      ROLLER_SPEED_MAP.put(0.6108 + offset, 46.4732433828);
+      ROLLER_SPEED_MAP.put(1.0478 + offset, 50.9295817894);
+      ROLLER_SPEED_MAP.put(1.4097 + offset, 52.8394411065);
+      ROLLER_SPEED_MAP.put(1.7971 + offset, 55.385920196);
+      ROLLER_SPEED_MAP.put(2.1336 + offset, 57.2957795131);
+      ROLLER_SPEED_MAP.put(3.6576 + offset, 61.1154981473);
 
-    TIME_OF_FLIGHT_MAP.clear();
-    TIME_OF_FLIGHT_MAP.put(0d, 0d);
+      TIME_OF_FLIGHT_MAP.clear();
+      TIME_OF_FLIGHT_MAP.put(0d, 0d);
+    }
+
+    public static final class Hood {
+      public static final int HOOD_ID = 0; // TODO
+
+      public static final double KP = 0.85;
+      public static final double KV = 0.124;
+      public static final double KD = 0.0;
+      public static final double KS = 0.0;
+      public static final double KG = 0.0;
+
+      public static final double STATOR_CURRENT_LIMIT = 60.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 50.0;
+
+      public static final double MOTOR_ROTS_PER_HOOD_ROT = 199.2;
+      public static final double HOOD_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_HOOD_ROT;
+      public static final double HOOD_DEGREES_PER_MOTOR_ROT = HOOD_ROTS_PER_MOTOR_ROT * 360.0;
+      public static final double MOTOR_ROTS_PER_DEGREE = 1.0 / HOOD_DEGREES_PER_MOTOR_ROT;
+
+      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 12.0;
+      public static final double ENCODER_ROTS_PER_HOOD_ROT =
+          MOTOR_ROTS_PER_HOOD_ROT / MOTOR_ROTS_PER_ENCODER_ROT;
+      public static final double HOOD_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_HOOD_ROT;
+
+      public static final double HOOD_TOLERANCE_DEG = 0.1;
+
+      public static final double MIN_HOOD_POSITION = 0;
+      public static final double MAX_HOOD_POSITION = 15;
+
+      public static double ENCODER_OFFSET = 0.0d; // TODO
+      public static final int ENCODER_PORT = 0; // TODO
+
+      public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
+      public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
+      public static final double ZERO_VOLTAGE = 0;
+      public static final double ZERO_MAX_SUPPLY = 0;
+      public static final double ZERO_MAX_STATOR = 0;
+      public static final int MAX_TIMES_EXCEEDED = 10;
+    }
+
+    public static final class Rollers {
+      public static final double TOLERANCE_RPS = 2.0;
+      public static final boolean INTERMAP_TESTING = false;
+
+      public static final int WARMUP_1_ID = 35;
+      public static final int WARMUP_2_ID = 34;
+      public static final int WARMUP_3_ID = 33;
+
+      public static final double KP = 0.85;
+      public static final double KV = 0.124;
+      public static final double KS = 0.0;
+
+      public static final double STATOR_CURRENT_LIMIT = 120.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
+      public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
+      public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
+    }
+
+    public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
+    public static final boolean SHOOTS_BACKWARDS = true;
+    public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = 0.1;
+    public static final int TARGETING_CALCULATION_PRECISION = 5;
+
+    public static final double MIN_DIST_FT = 4d;
+    public static final double MAX_DIST_FT = 8d;
+
+    public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
+    public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
+    public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
+
+    public static final double PRECISION = 5; // TUNE
+    public static final double SHOOT_FOR_AUTO = 67.0;
+    public static final double SHOOT_FOR_AIM = 44.2;
   }
-
-  public static final class Hood {
-    public static final int HOOD_ID = 0; // TODO
-
-    public static final double KP = 0.85;
-    public static final double KV = 0.124;
-    public static final double KD = 0.0;
-    public static final double KS = 0.0;
-    public static final double KG = 0.0;
-
-    public static final double STATOR_CURRENT_LIMIT = 60.0;
-    public static final double SUPPLY_CURRENT_LIMIT = 50.0;
-
-    public static final double MOTOR_ROTS_PER_HOOD_ROT = 199.2;
-    public static final double HOOD_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_HOOD_ROT;
-    public static final double HOOD_DEGREES_PER_MOTOR_ROT = HOOD_ROTS_PER_MOTOR_ROT * 360.0;
-    public static final double MOTOR_ROTS_PER_DEGREE = 1.0 / HOOD_DEGREES_PER_MOTOR_ROT;
-
-    public static final double MOTOR_ROTS_PER_ENCODER_ROT = 12.0;
-    public static final double ENCODER_ROTS_PER_HOOD_ROT =
-        MOTOR_ROTS_PER_HOOD_ROT / MOTOR_ROTS_PER_ENCODER_ROT;
-    public static final double HOOD_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_HOOD_ROT;
-
-    public static final double HOOD_TOLERANCE_DEG = 0.1;
-
-    public static final double MIN_HOOD_POSITION = 0;
-    public static final double MAX_HOOD_POSITION = 15;
-
-    public static double ENCODER_OFFSET = 0.0d; // TODO
-    public static final int ENCODER_PORT = 0; // TODO
-
-    public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
-    public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
-    public static final double ZERO_VOLTAGE = 0;
-    public static final double ZERO_MAX_SUPPLY = 0;
-    public static final double ZERO_MAX_STATOR = 0;
-    public static final int MAX_TIMES_EXCEEDED = 10;
-  }
-
-  public static final class Rollers {
-    public static final double TOLERANCE_RPS = 2.0;
-    public static final boolean INTERMAP_TESTING = false;
-
-    public static final int WARMUP_1_ID = 35;
-    public static final int WARMUP_2_ID = 34;
-    public static final int WARMUP_3_ID = 33;
-
-    public static final double KP = 0.85;
-    public static final double KV = 0.124;
-    public static final double KS = 0.0;
-
-    public static final double STATOR_CURRENT_LIMIT = 120.0;
-    public static final double SUPPLY_CURRENT_LIMIT = 40.0;
-
-    public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
-    public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
-    public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
-  }
-
-  public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
-  public static final boolean SHOOTS_BACKWARDS = true;
-  public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = 0.1;
-  public static final int TARGETING_CALCULATION_PRECISION = 5;
-
-  public static final double MIN_DIST_FT = 4d;
-  public static final double MAX_DIST_FT = 8d;
-
-  public static final double HUB_EDGE_TO_HUB_CENTER_INCHES = 20d;
-  public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
-  public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
-
-  public static final double PRECISION = 5; // TUNE
-  public static final double SHOOT_FOR_AUTO = 67.0;
-  public static final double SHOOT_FOR_AIM = 44.2;
-}
 
   public static class OI {
     public static final double LEFT_JOYSTICK_DEADBAND = 0.07;
