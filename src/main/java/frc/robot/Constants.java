@@ -763,7 +763,8 @@ public final class Constants {
       LOC_SEL();
     }
   }
-    public static final class Shooter {
+
+  public static final class Shooter {
 
     // Launching Maps
     public static final InterpolatingDoubleTreeMap HOOD_ANGLE_MAP =
