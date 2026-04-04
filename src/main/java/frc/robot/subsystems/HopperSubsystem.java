@@ -81,7 +81,7 @@ public class HopperSubsystem extends SubsystemBase {
               this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
     } else {
       this.targetSurfaceSpeedMps = 0.0;
-      hopper.stopMotor();
+      stop();
     }
   }
 
@@ -93,6 +93,7 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public void stop() {
+    targetSurfaceSpeedMps = 0.0;
     hopper.stopMotor();
   }
 
