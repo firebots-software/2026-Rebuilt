@@ -36,8 +36,6 @@ public class HopperSubsystem extends SubsystemBase {
     Slot0Configs s0c =
         new Slot0Configs()
             .withKP(Constants.Hopper.kP)
-            .withKI(Constants.Hopper.kI)
-            .withKD(Constants.Hopper.kD)
             .withKV(Constants.Hopper.kV);
 
     MotorOutputConfigs motorOutputConfigs =
@@ -70,8 +68,6 @@ public class HopperSubsystem extends SubsystemBase {
     hopperMotor2Config.apply(hopperConfig);
 
     DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
-    DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
-    DogLog.log("Subsystems/Hopper/Gains/kD", Constants.Hopper.kD);
     DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
   }
 

@@ -472,8 +472,6 @@ public final class Constants {
     public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
     public static final double kP = 1.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
     public static final double kV = 0.124;
 
     public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
