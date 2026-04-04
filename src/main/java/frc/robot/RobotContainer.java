@@ -139,7 +139,6 @@ public class RobotContainer {
                 drivetrain,
                 redside,
                 secondController.visionShootingLockout()));
-    secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
   }
 
   public void visionPeriodic() {
