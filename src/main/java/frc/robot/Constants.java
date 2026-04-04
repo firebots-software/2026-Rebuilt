@@ -464,7 +464,7 @@ public final class Constants {
   public static class Hopper {
     // TODO: Motor Ports
     public static final int MOTOR_1_PORT = 17;
-    public static final int MOTOR_2_PORT = 18;
+    public static final int MOTOR_2_PORT = 13;
 
     // TODO: subject to change, ask Jeff
     public static final double TARGET_SURFACE_SPEED_MPS =
