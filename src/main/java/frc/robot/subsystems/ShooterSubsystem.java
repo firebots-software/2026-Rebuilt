@@ -328,8 +328,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     DogLog.log(
         "Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
-        getTargetShootingSpeed(distanceMeters));
+        grabTargetShootingSpeed(distanceMeters));
     DogLog.log(
-        "Subsystems/Shooter/Targeting/MappedHoodAngleDeg", getTargetHoodAngle(distanceMeters));
+        "Subsystems/Shooter/Targeting/MappedHoodAngleDeg", grabTargetHoodAngle(distanceMeters));
   }
 }
