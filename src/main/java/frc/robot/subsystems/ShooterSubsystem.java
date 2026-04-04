@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final CommandSwerveDrivetrain drivetrain;
   private final BooleanSupplier redside;
-  private final LoggedTalonFX warmup1, warmup2, warmup3, shooter, hood;
+  private final LoggedTalonFX warmup1, warmup2, shooter, hood;
   private final CANcoder hoodEncoder;
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
@@ -54,8 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
     CANBus canbus = Constants.Swerve.CAN_BUS;
     warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.WARMUP_1_ID, canbus);
     warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.WARMUP_2_ID, canbus);
-    warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.WARMUP_3_ID, canbus);
-    shooter = warmup3;
+    shooter = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.WARMUP_3_ID, canbus);
     // TODO: fix hood id constant
     hood =
         new LoggedTalonFX("ShooterHood", Constants.Shooter.Hood.HOOD_ID, Constants.Swerve.CAN_BUS);
@@ -85,7 +84,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     warmup1.getConfigurator().apply(config);
     warmup2.getConfigurator().apply(config);
-    warmup3.getConfigurator().apply(config);
+    shooter.getConfigurator().apply(config);
 
     Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
     warmup1.setControl(follower);
