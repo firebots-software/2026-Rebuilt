@@ -5,12 +5,16 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandGroups.ShootCommandGroups.ShootBasicRetract;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
@@ -71,6 +75,9 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
+
+  private final DoubleSubscriber shootSpeed = DogLog.tunable("Shooter/Speed", 0d);
+  private final DoubleSubscriber shootAngle = DogLog.tunable("Shooter/Angle", Constants.Shooter.Hood.MIN_HOOD_POSITION_ROTS);
 
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
@@ -140,14 +147,24 @@ public class RobotContainer {
                 redside,
                 secondController.visionShootingLockout()));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+
+    if (Constants.Shooter.INTERMAP_TESTING) {
+        joystick
+            .a()
+            .whileTrue(
+                new ShootBasicRetract(
+                    () -> shootSpeed.get(), () -> shootAngle.get(), lebron, intakeSubsystem, hopperSubsystem));
+    }
   }
 
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
 
-    visionFuelGauge.periodic();
-    VisionUtils.fuelGaugeLogs(visionFuelGauge);
+    if (Constants.fuelGaugeOnRobot) {
+        visionFuelGauge.periodic();
+        VisionUtils.fuelGaugeLogs(visionFuelGauge);
+    }
   }
 
   public static boolean isRedAlliance() {

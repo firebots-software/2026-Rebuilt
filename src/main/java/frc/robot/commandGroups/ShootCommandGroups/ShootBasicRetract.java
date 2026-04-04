@@ -10,11 +10,12 @@ import java.util.function.DoubleSupplier;
 public class ShootBasicRetract extends ParallelCommandGroup {
   public ShootBasicRetract(
       DoubleSupplier speed,
+      DoubleSupplier angle,
       ShooterSubsystem shooterSubsystem,
       IntakeSubsystem intakeSubsystem,
       HopperSubsystem hopperSubsystem) {
     addCommands(
-        shooterSubsystem.shootAtSpeedCommand(speed),
+        shooterSubsystem.shootAtSpeedHoodCommand(speed, angle),
         Commands.waitUntil(shooterSubsystem::isAtSpeed)
             .andThen(
                 Commands.parallel(
