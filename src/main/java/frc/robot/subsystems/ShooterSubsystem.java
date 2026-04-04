@@ -236,10 +236,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Command shootAtSpeedHoodCommand(DoubleSupplier shooterSpeedRPS, DoubleSupplier hoodAngle) {
-    return runEnd(() -> {
-      setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
-      setHoodPosition(hoodAngle.getAsDouble());
-    }, this::stopShooter);
+    return runEnd(
+        () -> {
+          setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
+          setHoodPosition(hoodAngle.getAsDouble());
+        },
+        this::stopShooter);
   }
 
   public Command shootAtSpeedCommand(DoubleSupplier shooterSpeedRPS) {
