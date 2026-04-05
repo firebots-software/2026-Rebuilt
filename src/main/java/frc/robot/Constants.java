@@ -853,7 +853,6 @@ public final class Constants {
     public static final double SHOOT_FOR_AUTO = 67.0;
     public static final double SHOOT_FOR_AIM = 44.2;
 
-
     static {
       UPDATE_INTERMAPS();
     }
