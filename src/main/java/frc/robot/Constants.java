@@ -791,7 +791,7 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 40.0;
       public static final double SUPPLY_CURRENT_LIMIT = 50.0;
 
-      public static final double MOTOR_ROTS_PER_HOOD_ROT = 199.2;
+      public static final double MOTOR_ROTS_PER_HOOD_ROT = 996.0 / 5.0;
       public static final double HOOD_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_HOOD_ROT;
       public static final double HOOD_DEGREES_PER_MOTOR_ROT = HOOD_ROTS_PER_MOTOR_ROT * 360.0;
       public static final double MOTOR_ROTS_PER_DEGREE = 1.0 / HOOD_DEGREES_PER_MOTOR_ROT;
