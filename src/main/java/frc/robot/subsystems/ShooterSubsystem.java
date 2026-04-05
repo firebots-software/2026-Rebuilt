@@ -244,6 +244,8 @@ public class ShooterSubsystem extends SubsystemBase {
         () -> {
           setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
           setHoodPosition(hoodAngle.getAsDouble());
+          DogLog.log("SkibSpeed", shooterSpeedRPS.getAsDouble());
+          DogLog.log("SkibAngle", hoodAngle.getAsDouble());
         },
         this::stopShooter);
   }
