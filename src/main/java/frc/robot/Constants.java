@@ -560,7 +560,7 @@ public final class Constants {
       private static final double X = Units.inchesToMeters(-14.106719);
       private static final double Y = Units.inchesToMeters(-11.537644);
       private static final double Z = Units.inchesToMeters(23.570693);
-      private static final double ROLL = Units.degreesToRadians(0.0); 
+      private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
       private static final double YAW = Units.degreesToRadians(328.35615);
     }
