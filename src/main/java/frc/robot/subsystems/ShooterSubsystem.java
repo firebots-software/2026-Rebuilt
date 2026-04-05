@@ -145,23 +145,6 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Hood/Gains/kG", Constants.Shooter.Hood.KG);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kV", Constants.Shooter.Hood.KV);
     DogLog.log("Subsystems/Shooter/Hood/Gains/kD", Constants.Shooter.Hood.KD);
-
-    // Hood config constants // NEW
-    DogLog.log(
-        "Subsystems/Shooter/Hood/Config/EncoderRotsPerHoodRot",
-        Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT); // NEW
-    DogLog.log(
-        "Subsystems/Shooter/Hood/Config/MotorRotsPerEncoderRot",
-        Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT); // NEW
-    DogLog.log(
-        "Subsystems/Shooter/Hood/Config/EncoderOffset",
-        Constants.Shooter.Hood.ENCODER_OFFSET); // NEW
-    DogLog.log(
-        "Subsystems/Shooter/Hood/Config/MinPositionRot",
-        Constants.Shooter.Hood.MIN_HOOD_POSITION); // NEW
-    DogLog.log(
-        "Subsystems/Shooter/Hood/Config/MaxPositionRot",
-        Constants.Shooter.Hood.MAX_HOOD_POSITION); // NEW
   }
 
   public void setHoodPosition(double degrees) {
