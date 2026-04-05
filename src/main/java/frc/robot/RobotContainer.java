@@ -145,9 +145,6 @@ public class RobotContainer {
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-
-    visionFuelGauge.periodic();
-    VisionUtils.fuelGaugeLogs(visionFuelGauge);
   }
 
   public static boolean isRedAlliance() {
