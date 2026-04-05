@@ -129,7 +129,7 @@ public class Targeting {
               - ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
                   / (distance * horizontalVel));
 
-      if (Math.abs(errorDerivative) < 1e-3) break;
+      if (Math.abs(error) < 1e-3) break;
 
       if (tof < 1e-3) tof = 1e-3;
 
