@@ -20,7 +20,7 @@ import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;
 import frc.robot.util.LoggedTalonFX;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
+//spotless is clapping out
 public class HopperSubsystem extends SubsystemBase {
   private final CommandSwerveDrivetrain drivetrain;
   private final BooleanSupplier redside;
