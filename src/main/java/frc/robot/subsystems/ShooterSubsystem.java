@@ -71,7 +71,7 @@ public class ShooterSubsystem extends SubsystemBase {
             .withStatorCurrentLimit(Constants.Shooter.Rollers.STATOR_CURRENT_LIMIT)
             .withSupplyCurrentLimit(Constants.Shooter.Rollers.SUPPLY_CURRENT_LIMIT);
 
-    MotorOutputConfigs motorOutputConfigs =
+    MotorOutputConfigs rollersOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
@@ -79,7 +79,7 @@ public class ShooterSubsystem extends SubsystemBase {
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersS0c;
     rollersConfig.CurrentLimits = rollersClc;
-    rollersConfig.MotorOutput = motorOutputConfigs;
+    rollersConfig.MotorOutput = rollersOutputConfigs;
 
     warmup1.getConfigurator().apply(rollersConfig);
     warmup2.getConfigurator().apply(rollersConfig);
