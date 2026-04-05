@@ -165,11 +165,5 @@ public class ShooterSubsystem extends SubsystemBase {
         "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
     DogLog.log(
         "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
-
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TimeOfFlight",
-        Targeting.targetingInfo(
-                target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-            .getToF());
   }
 }
