@@ -192,11 +192,11 @@ public class ShooterSubsystem extends SubsystemBase {
     return hoodEncoder.getAbsolutePosition().getValueAsDouble();
   }
 
-  public Rotation2d getHoodUnfusedPosition() {
-    return new Rotation2d(
-        Units.rotationsToRadians(
-            getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_ENCODER_ROT));
-  }
+  // public Rotation2d getHoodUnfusedPosition() {
+  //   return new Rotation2d(
+  //       Units.rotationsToRadians(
+  //           getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_ENCODER_ROT));
+  // }
 
   public void setShooterSpeedRPS(double shooterSpeedRPS) {
     targetShooterSpeedRPS = shooterSpeedRPS;
