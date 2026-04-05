@@ -50,10 +50,10 @@ public class HopperSubsystem extends SubsystemBase {
 
     hopperMotor1 =
         new LoggedTalonFX(
-            "HopperFloorMaster", Constants.Hopper.MOTOR_1_PORT, Constants.Swerve.CAN_BUS);
+            "HopperFloorMain", Constants.Hopper.MOTOR_1_PORT, Constants.Swerve.CAN_BUS);
     hopperMotor2 =
         new LoggedTalonFX(
-            "HopperFloorSlave", Constants.Hopper.MOTOR_2_PORT, Constants.Swerve.CAN_BUS);
+            "HopperFloorFollower", Constants.Hopper.MOTOR_2_PORT, Constants.Swerve.CAN_BUS);
     hopper = hopperMotor1;
 
     TalonFXConfiguration hopperConfig =
