@@ -38,9 +38,9 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
             Vector3.toVector2(
                 Targeting.positionToTarget(
                     targetNoOffset, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
-    Vector2 curPose = Vector2.fromPose2d(drivetrain.getCurrentState().Pose);
+    Supplier<Vector2> curPose = () -> Vector2.fromPose2d(drivetrain.getCurrentState().Pose);
 
-    DoubleSupplier dist = () -> Vector2.dist(target.get(), curPose);
+    DoubleSupplier dist = () -> Vector2.dist(target.get(), curPose.get());
 
     addCommands(
         Commands.either(
