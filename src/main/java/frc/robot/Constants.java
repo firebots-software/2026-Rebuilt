@@ -780,7 +780,7 @@ public final class Constants {
     }
 
     public static final class Hood {
-      public static final int HOOD_ID = 0; // TODO
+      public static final int HOOD_ID = 12;
 
       public static final double KP = 0.85;
       public static final double KV = 0.124;
@@ -807,7 +807,7 @@ public final class Constants {
       public static final double MAX_HOOD_POSITION = 15;
 
       public static double ENCODER_OFFSET = 0.0d; // TODO
-      public static final int ENCODER_PORT = 0; // TODO
+      public static final int ENCODER_PORT = 18;
 
       public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
       public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
@@ -821,9 +821,9 @@ public final class Constants {
       public static final double TOLERANCE_RPS = 2.0;
       public static final boolean INTERMAP_TESTING = false;
 
-      public static final int WARMUP_1_ID = 35;
-      public static final int WARMUP_2_ID = 34;
-      public static final int WARMUP_3_ID = 33;
+      public static final int WARMUP_1_ID = 10;
+      public static final int WARMUP_2_ID = 9;
+      public static final int WARMUP_3_ID = 11;
 
       public static final double KP = 0.85;
       public static final double KV = 0.124;
