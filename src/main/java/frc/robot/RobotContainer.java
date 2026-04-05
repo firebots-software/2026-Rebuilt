@@ -5,6 +5,8 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
+import dev.doglog.DogLog;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -28,7 +30,14 @@ import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
-
+  private final DoubleSubscriber hoodAngleTunable =
+      DogLog.tunable("Tunable/HoodAngleTunable", 17.0);
+  private final DoubleSubscriber shooterSpeedTunable =
+      DogLog.tunable("Tunable/ShoterSpeedTunable", 44.0);
+  //   private final DoubleEntry hoodAngleTunable = NetworkTableInstance.getDefault()
+  //     .getDoubleTopic("Tunable/HoodAngleTunable").getEntry(17.0);
+  //   private final DoubleEntry shooterSpeedTunable = NetworkTableInstance.getDefault()
+  //     .getDoubleTopic("Tunable/ShooterSpeedTunable").getEntry(44.0);
   private Field2d field = new Field2d();
 
   private final CommandXboxController joystick = new CommandXboxController(0);
@@ -73,6 +82,8 @@ public class RobotContainer {
           : null;
 
   public RobotContainer() {
+    // hoodAngleTunable.setDefault(17.0);
+    // shooterSpeedTunable.setDefault(44.0);
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -112,14 +123,21 @@ public class RobotContainer {
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+    // joystick
+    //     .a()
+    //     .whileTrue(
+    //         intakeSubsystem
+    //             .outtakeUntilInterruptedCommand()
+    //             .alongWith(
+    //                 hopperSubsystem.runHopperUntilInterruptedCommand(
+    //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+
     joystick
         .a()
         .whileTrue(
-            intakeSubsystem
-                .outtakeUntilInterruptedCommand()
-                .alongWith(
-                    hopperSubsystem.runHopperUntilInterruptedCommand(
-                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+            lebron.shootAtSpeedHoodCommand(
+                () -> hoodAngleTunable.get(), () -> shooterSpeedTunable.get()));
+
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
     // Hopper

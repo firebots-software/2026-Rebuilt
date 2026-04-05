@@ -1,12 +1,13 @@
 package frc.robot.util;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.util.MathUtils.MiscMath;
 import frc.robot.util.MathUtils.Vector3;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -53,8 +54,8 @@ public class Targeting {
     return hullAimed;
   }
 
-  public static TargetingInfo targetingInfo(
-      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
+  public static double shootingSpeed(
+      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) { // meters per sec
     Vector3 relativeVel =
         Vector3.mult(
             new Vector3(
@@ -62,45 +63,55 @@ public class Targeting {
                 drivetrain.getFieldSpeeds().vyMetersPerSecond,
                 0),
             -1);
-
-    Pose3d shooterOffset =
-        MiscMath.RotatedPosAroundVertical(
-            Constants.Shooter.OFFSET_FROM_ROBOT_CENTER,
-            drivetrain.getCurrentState().Pose.getRotation().getRadians());
-    Vector3 shooterPos =
-        Vector3.add(new Vector3(drivetrain.getCurrentState().Pose), new Vector3(shooterOffset));
+    Vector3 shooterPos = new Vector3(drivetrain.getCurrentState().Pose);
     Vector3 relativePos = Vector3.subtract(new Vector3(target), shooterPos);
 
+    Vector3 correctedPos = new Vector3(target);
     double correctedSpeed = speedForDist(relativePos.magnitude());
     double prevTof = 0;
-    Vector3 correctedPos = new Vector3(target);
-
     for (int i = 0; i < precision; i++) {
-      double dist = Vector3.subtract(correctedPos, shooterPos).magnitude();
-      double tof = Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(dist);
+      double tof =
+          2
+              * correctedSpeed
+              * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+              / 9.81;
       correctedPos = Vector3.add(correctedPos, Vector3.mult(relativeVel, tof - prevTof));
       correctedSpeed = speedForDist(Vector3.subtract(correctedPos, shooterPos).magnitude());
       prevTof = tof;
     }
-    DogLog.log("Subsystems/Shooter/Shoot/ShootSpeed", correctedSpeed);
-    DogLog.log("Subsystems/Shooter/Shoot/TOF", prevTof);
-    DogLog.log("Subsystems/Shooter/Shoot/TargetPlusLead", Vector3.toPose2d(correctedPos));
-
-    return new TargetingInfo(correctedSpeed, prevTof, correctedPos);
+    DogLog.log("Subsystems/ShooterSubsystem/Shoot/shootspeed", correctedSpeed);
+    return correctedSpeed;
   }
 
-  public static double shootingSpeed(
-      Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-    return targetingInfo(target, drivetrain, precision).getSpeed();
+  public static double speedForDist(double d) {
+    return Math.sqrt(
+        d
+            * 9.81
+            / Math.sin(
+                Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES) * 2));
   }
 
   public static Vector3 positionToTarget(
       Pose3d target, CommandSwerveDrivetrain drivetrain, int precision) {
-    return targetingInfo(target, drivetrain, precision).getPosition();
-  }
+    double timeOfFlight =
+        2
+            * shootingSpeed(target, drivetrain, precision)
+            * Math.sin(Math.toRadians(Constants.Shooter.SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES))
+            / 9.81;
 
-  public static double speedForDist(double d) {
-    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(d);
+    Vector3 relativeVel =
+        Vector3.mult(
+            new Vector3(
+                drivetrain.getFieldSpeeds().vxMetersPerSecond,
+                drivetrain.getFieldSpeeds().vyMetersPerSecond,
+                0),
+            -1);
+    Vector3 targetPlusOffset =
+        Vector3.add(new Vector3(target), Vector3.mult(relativeVel, timeOfFlight));
+    DogLog.log(
+        "Subsystems/ShooterSubsystem/Shoot/targetPlusOffset",
+        new Pose2d(targetPlusOffset.x, targetPlusOffset.y, new Rotation2d()));
+    return targetPlusOffset;
   }
 
   public static double targetAngle(Pose3d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
