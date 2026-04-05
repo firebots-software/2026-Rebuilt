@@ -788,7 +788,7 @@ public final class Constants {
       public static final double KS = 0.0;
       public static final double KG = 0.0;
 
-      public static final double STATOR_CURRENT_LIMIT = 60.0;
+      public static final double STATOR_CURRENT_LIMIT = 40.0;
       public static final double SUPPLY_CURRENT_LIMIT = 50.0;
 
       public static final double MOTOR_ROTS_PER_HOOD_ROT = 199.2;
@@ -809,9 +809,9 @@ public final class Constants {
       public static double ENCODER_OFFSET = 0.0d; // TODO
       public static final int ENCODER_PORT = 18;
 
-      public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
-      public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
-      public static final double ZERO_VOLTAGE = 0;
+      public static final double ZERO_STATOR_CURRENT_LIMIT = 15.0;
+      public static final double ZERO_SUPPLY_CURRENT_LIMIT = 15.0;
+      public static final double ZERO_VOLTAGE = -2.0;
       public static final double ZERO_MAX_SUPPLY = 0;
       public static final double ZERO_MAX_STATOR = 0;
       public static final int MAX_TIMES_EXCEEDED = 10;
