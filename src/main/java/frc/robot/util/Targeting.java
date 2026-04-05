@@ -108,7 +108,7 @@ public class Targeting {
             / (initialDistance
                     / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
                         initialDistance)
-                + radialVelocity);
+                - radialVelocity);
 
     double distance = initialDistance;
 
@@ -126,12 +126,16 @@ public class Targeting {
       double horizontalVel = distance / tofTable;
       double errorDerivative =
           1.0
-              + ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
-                  / (horizontalVel));
+              - ((distX * currSpeeds.vxMetersPerSecond + distY * currSpeeds.vyMetersPerSecond)
+                  / (distance * horizontalVel));
 
-      if (Math.abs(errorDerivative) < 1e-9) break;
+      if (Math.abs(errorDerivative) < 1e-3) break;
 
-      tof -= (error / errorDerivative);
+      if (tof < 1e-3) tof = 1e-3;
+
+      double step = error/errorDerivative;
+      step = Math.max(-0.05, Math.min(0.05, step));
+      tof -= step;
     }
 
     return distance;
