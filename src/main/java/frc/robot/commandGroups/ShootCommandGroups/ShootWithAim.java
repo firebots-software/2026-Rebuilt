@@ -26,20 +26,16 @@ public class ShootWithAim extends ParallelCommandGroup {
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
-                shooterSubsystem.shootAtSpeedHoodCommand(
-                    44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION_ROTS),
+                shooterSubsystem.shootAtSpeedCommand(Constants.Shooter.SHOOT_FOR_AIM),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(),
                             intakeSubsystem.powerRetractRollersCommand()))),
             Commands.parallel( // shoot with aim
-                shooterSubsystem.shootAtSpeedHoodCommand(
+                shooterSubsystem.shootAtSpeedCommand(
                     () ->
                         shooterSubsystem.getTargetShootingSpeed(
-                            MiscUtils.getDistanceToHub(redside, drivetrain)),
-                    () ->
-                        shooterSubsystem.getTargetHoodAngle(
                             MiscUtils.getDistanceToHub(redside, drivetrain))),
                 new SwerveJoystickCommand(
                     translationalX,
@@ -55,8 +51,8 @@ public class ShootWithAim extends ParallelCommandGroup {
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(
                                 () ->
-                                    hopperSubsystem.getHopperRecommendedSpeed(
-                                        shooterSubsystem.getCurrentShooterWheelSpeedRPS()),
+                                    hopperSubsystem.grabHopperRecommendedSpeed(
+                                        MiscUtils.getDistanceToHub(redside, drivetrain)),
                                 () ->
                                     Targeting.pointingAtHub(redside, drivetrain)
                                         && drivetrain.getSpeedMagnitude() <= 0.2),

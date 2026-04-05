@@ -19,7 +19,7 @@ public final class Constants {
   public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = true;
-  public static final boolean fuelGaugeOnRobot = false;
+  public static final boolean fuelGaugeOnRobot = true;
   public static final boolean intakeVisionOnRobot = true;
   public static final boolean shooterOnRobot = true;
 
@@ -462,56 +462,44 @@ public final class Constants {
   }
 
   public static class Hopper {
-    public static final int MOTOR_PORT_MASTER = 17;
-    public static final int MOTOR_PORT_SLAVE = 0; // GET ID
+    // TODO: Motor Ports
+    public static final int MOTOR_1_PORT = 17;
+    public static final int MOTOR_2_PORT = 13;
 
-    public static final double TARGET_SURFACE_SPEED_FPS = 6.0;
+    // TODO: subject to change, ask Jeff
     public static final double TARGET_SURFACE_SPEED_MPS =
         2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
-    public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
-
+    // TODO: Tune these
     public static final double kP = 1.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
     public static final double kV = 0.124;
 
+    // TODO: Do we want stator limit to still be this high?
     public static final double STATOR_LIMIT_AMPS = 150.0; // 50.0
     public static final double SUPPLY_LIMIT_AMPS = 50.0; // 30.0
 
-    public static final double MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION = 5.0;
-    public static final double MOTOR_ROTATIONS_PER_AGITATOR_ROTATION =
-        (20.0 / 24.0) * (60.0 / 12.0);
+    public static final double MOTOR_ROTS_PER_AGITATOR_ROT = 3.57142857;
+    public static final double AGITATOR_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_AGITATOR_ROT;
 
-    public static final double BELT_TOOTH_PITCH_METERS =
-        0.005; // length of belt movement per tooth moved on it
-    public static final double FLOOR_PULLEY_TOOTH_COUNT = 24.0;
-    public static final double BELT_LOOP_TOOTH_COUNT =
-        220.0; // number of teeth on the actual belt for full revolution
-    public static final double BELT_LOOP_LENGTH_METERS =
-        BELT_LOOP_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+    public static final double MOTOR_ROTS_PER_FLOOR_METER = 250d / 7d;
+    public static final double FLOOR_METERS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_FLOOR_METER;
 
-    public static final double BELT_TRAVEL_METERS_PER_PULLEY_ROTATION =
-        FLOOR_PULLEY_TOOTH_COUNT * BELT_TOOTH_PITCH_METERS;
+    public static final double FLOOR_SPEED_TOLERANCE_MPS = 0.05;
 
-    public static final double BELT_TRAVEL_METERS_PER_MOTOR_ROTATION =
-        BELT_TRAVEL_METERS_PER_PULLEY_ROTATION / MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-
-    public static final double MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER =
-        1.0 / BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
-
-    public static final double AGITATOR_ROTATIONS_PER_MOTOR_ROTATION =
-        1.0 / MOTOR_ROTATIONS_PER_AGITATOR_ROTATION;
-
-    public static final InterpolatingDoubleTreeMap HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS =
+    public static final InterpolatingDoubleTreeMap HOPPER_SPEED_MAP =
         new InterpolatingDoubleTreeMap();
 
-    public static void UPDATE_INTERMAPS() {
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.clear();
+    static {
+      UPDATE_INTERMAPS();
+    }
 
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(45.0, 2.2);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(53.0, 2.2);
-      HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.put(62.0, 0.88);
+    // TODO: Update these to be distance based
+    public static void UPDATE_INTERMAPS() {
+      HOPPER_SPEED_MAP.clear();
+
+      HOPPER_SPEED_MAP.put(0.0, 2.2);
+      HOPPER_SPEED_MAP.put(3.0, 2.2);
+      HOPPER_SPEED_MAP.put(8.0, 0.88);
     }
   }
 
@@ -762,59 +750,6 @@ public final class Constants {
   }
 
   public static final class Shooter {
-
-    public static final class Hood {
-      public static final int HOOD_ID = 0; // TODO
-
-      public static final double KP = 0.85; // TODO
-      public static final double KI = 0.0; // TODO
-      public static final double KD = 0.0; // TODO
-
-      public static final double STATOR_CURRENT_LIMIT = 120.0;
-      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
-      public static final double MOTOR_ROTS_PER_DEGREE = 1.25;
-
-      public static final double HOOD_TOLERANCE = 0;
-
-      public static final double HOOD_DEGREES_PER_MOTOR_ROT = 0;
-
-      public static final double HOOD_ROTS_PER_CANCODER_ROT = 0;
-      public static final double MIN_HOOD_POSITION_ROTS = 0;
-      public static final double MAX_HOOD_POSITION_ROTS = 15;
-
-      public static final double MOTOR_ROTS_PER_ENCODER_ROT = 0;
-
-      public static final double ENCODER_ROTS_PER_ARM_ROT = 0;
-
-      public static double ENCODER_OFFSET = 0.0d;
-
-      public static final int ENCODER_PORT = 0;
-
-      public static final InterpolatingDoubleTreeMap
-          HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP =
-              new InterpolatingDoubleTreeMap();
-
-      public static final double ZERO_STATOR_CURRENT_LIMIT = 0;
-
-      public static final double ZERO_SUPPLY_CURRENT_LIMIT = 0;
-
-      public static final double ZERO_VOLTAGE = 0;
-
-      public static final double ZERO_MAX_SUPPLY = 0;
-
-      public static final double ZERO_MAX_STATOR = 0;
-
-      public static final int MAX_TIMES_EXCEEDED = 10;
-
-      public static void UPDATE_INTERMAPS() {
-        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.clear();
-        HOOD_ANGLE_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.put(
-            0d, Hood.MIN_HOOD_POSITION_ROTS);
-      }
-    }
-
-    public static final double TOLERANCE_RPS = 2.0;
-
     public static final boolean INTERMAP_TESTING = false;
 
     public static final int WARMUP_1_ID = 35;
@@ -835,9 +770,11 @@ public final class Constants {
     public static final double SHOOT_FOR_AUTO = 67.0;
     public static final double SHOOT_FOR_AIM = 44.2;
 
+    public static final Pose3d OFFSET_FROM_ROBOT_CENTER = new Pose3d();
+
     public static final double SHOOTER_ANGLE_FROM_HORIZONTAL_DEGREES = 75;
 
-    public static final boolean SHOOTS_BACKWARDS = true;
+    public static final boolean SHOOTS_BACKWARDS = false;
 
     public static final double ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD = .1;
 
@@ -850,12 +787,14 @@ public final class Constants {
     public static final double ROBOT_FRONT_EDGE_TO_SHOOTER = 27d;
     public static final double ROBOT_FRONT_EDGE_TO_ROBOT_CENTER = 13.75d;
 
-    public static final double PRECISION = 5; // TUNE
-
     public static final InterpolatingDoubleTreeMap SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS =
         new InterpolatingDoubleTreeMap();
     public static final InterpolatingDoubleTreeMap
         TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP = new InterpolatingDoubleTreeMap();
+
+    static {
+      UPDATE_INTERMAPS();
+    }
 
     public static void UPDATE_INTERMAPS() {
       SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.clear();
@@ -980,15 +919,5 @@ public final class Constants {
         new Pose2d(
             new Translation2d(5.624283313751221, 2.4593770503997803),
             new Rotation2d(1.57873264137917));
-  }
-
-  static {
-    UPDATE_ALL_INTERMAPS();
-  }
-
-  public static void UPDATE_ALL_INTERMAPS() {
-    Shooter.UPDATE_INTERMAPS();
-    Shooter.Hood.UPDATE_INTERMAPS();
-    Hopper.UPDATE_INTERMAPS();
   }
 }

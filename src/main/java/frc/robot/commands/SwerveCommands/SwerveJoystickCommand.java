@@ -133,12 +133,11 @@ public class SwerveJoystickCommand extends Command {
 
     final double turn =
         (doPointing.getAsBoolean())
-            ? swerveDrivetrain.calculateRequiredRotationalRateWithFF(
+            ? (swerveDrivetrain.calculateRequiredRotationalRateWithFF(
                 redsideIfPointing.getAsBoolean()
                     ? Constants.Landmarks.RED_HUB_2D.getTranslation()
-                    : Constants.Landmarks.BLUE_HUB_2D.getTranslation(),
-                Constants.Shooter.SHOOTS_BACKWARDS)
-            : turningSpeed;
+                    : Constants.Landmarks.BLUE_HUB_2D.getTranslation()))
+            : (turningSpeed);
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)

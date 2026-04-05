@@ -29,10 +29,6 @@ public class MiscUtils {
         new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
   }
 
-  public static Translation2d fromPoseToTranslation(Pose2d p) {
-    return new Translation2d(p.getX(), p.getY());
-  }
-
   public static Alliance getSecondAlliance() {
     String allianceChar = DriverStation.getGameSpecificMessage();
     if (allianceChar.isEmpty()) return null;
