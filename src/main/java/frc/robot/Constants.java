@@ -802,7 +802,7 @@ public final class Constants {
           MOTOR_ROTS_PER_HOOD_ROT / MOTOR_ROTS_PER_ENCODER_ROT;
       public static final double HOOD_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_HOOD_ROT;
 
-      public static final double HOOD_TOLERANCE_DEG = 0.1;
+      public static final double HOOD_TOLERANCE_DEG = 0.5;
 
       public static final double MIN_HOOD_POSITION = 3.8;
       public static final double MAX_HOOD_POSITION = 18.369;
@@ -819,14 +819,14 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double TOLERANCE_RPS = 2.0;
+      public static final double TOLERANCE_RPS = 3.0;
       public static final boolean INTERMAP_TESTING = false;
 
       public static final int WARMUP_1_ID = 10;
       public static final int WARMUP_2_ID = 9;
       public static final int WARMUP_3_ID = 11;
 
-      public static final double KP = 0.0;
+      public static final double KP = 0.8;
       public static final double KV = 0.124;
       public static final double KS = 0.0;
 

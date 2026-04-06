@@ -349,7 +349,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       omegaFF = (dy * vx - dx * vy) / r2;
     }
 
-    Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx));
+    Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx) + Math.PI);
     double omegaPID =
         headingPIDController.calculate(
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());

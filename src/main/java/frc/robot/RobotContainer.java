@@ -6,12 +6,15 @@ package frc.robot;
 
 import choreo.auto.AutoChooser;
 import dev.doglog.DogLog;
+import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
@@ -30,15 +33,11 @@ import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
-  private final DoubleSubscriber hoodAngleTunable =
-      DogLog.tunable("Tunable/HoodAngleTunable", 10.0);
-  private final DoubleSubscriber shooterSpeedTunable =
-      DogLog.tunable("Tunable/ShoterSpeedTunable", 44.0);
 
-  //   private final DoubleEntry hoodAngleTunable = NetworkTableInstance.getDefault()
-  //     .getDoubleTopic("Tunable/HoodAngleTunable").getEntry(17.0);
-  //   private final DoubleEntry shooterSpeedTunable = NetworkTableInstance.getDefault()
-  //     .getDoubleTopic("Tunable/ShooterSpeedTunable").getEntry(44.0);
+    private final DoubleEntry hoodAngleTunable = NetworkTableInstance.getDefault()
+      .getDoubleTopic("Tunable/HoodAngleTunable").getEntry(10.0);
+    private final DoubleEntry shooterSpeedTunable = NetworkTableInstance.getDefault()
+      .getDoubleTopic("Tunable/ShooterSpeedTunable").getEntry(44.0);
   private Field2d field = new Field2d();
 
   private final CommandXboxController joystick = new CommandXboxController(0);
@@ -83,8 +82,8 @@ public class RobotContainer {
           : null;
 
   public RobotContainer() {
-    // hoodAngleTunable.setDefault(17.0);
-    // shooterSpeedTunable.setDefault(44.0);
+    hoodAngleTunable.setDefault(10.0);
+    shooterSpeedTunable.setDefault(44.0);
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -136,8 +135,8 @@ public class RobotContainer {
     joystick
         .a()
         .whileTrue(
-            lebron.shootAtSpeedHoodCommand(() -> 70.0,
-                () -> hoodAngleTunable.get()));
+            lebron.shootAtSpeedHoodCommand(shooterSpeedTunable,
+                hoodAngleTunable).alongWith((hopperSubsystem.runHopperUntilInterruptedCommand()))); //Commands.waitUntil(lebron::isShooterReady).andThen
 
     joystick
         .b()
@@ -172,9 +171,6 @@ public class RobotContainer {
                 redside,
                 secondController.visionShootingLockout()));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
-
-    // joystick.b().whileTrue(lebron.moveHoodWithVoltageCommand(-4));
-    // joystick.y().whileTrue(lebron.moveHoodWithVoltageCommand(4));
   }
 
   public void visionPeriodic() {

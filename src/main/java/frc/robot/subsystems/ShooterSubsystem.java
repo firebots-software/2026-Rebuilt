@@ -167,10 +167,10 @@ public class ShooterSubsystem extends SubsystemBase {
     setHoodPosition(hoodTargetDeg);
   }
 
-  public boolean hoodAtTarget() {
-    return Math.abs((hood.getCachedPositionRotations() * 360.0) - hoodTargetDeg)
-        <= Constants.Shooter.Hood.HOOD_TOLERANCE_DEG;
-  }
+  // public boolean hoodAtTarget() {
+  //   return Math.abs((hood.getCachedPositionRotations() * 360.0) - hoodTargetDeg)
+  //       <= Constants.Shooter.Hood.HOOD_TOLERANCE_DEG;
+  // }
 
   public double getHoodCancoderPositionRaw() {
     return hoodEncoder.getAbsolutePosition().getValueAsDouble();
@@ -219,7 +219,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    return isAtSpeed() && hoodAtTarget();
+    return isAtSpeed(); // && hoodAtTarget()
   }
 
   // Commands
@@ -277,7 +277,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Shooter status information
     DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
-    DogLog.log("Subsystems/Shooter/AtTargetAngle", hoodAtTarget());
+    // DogLog.log("Subsystems/Shooter/AtTargetAngle", hoodAtTarget());
     DogLog.log("Subsystems/Shooter/ShooterReady", isShooterReady());
 
     // Hood position information
