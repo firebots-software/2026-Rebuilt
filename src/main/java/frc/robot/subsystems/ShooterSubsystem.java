@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     MotorOutputConfigs rollersOutputConfigs =
         new MotorOutputConfigs()
-            .withInverted(InvertedValue.CounterClockwise_Positive)
+            .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
 
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
@@ -95,6 +95,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Slot0Configs hoodS0c =
         new Slot0Configs()
             .withKP(Constants.Shooter.Hood.KP)
+            .withKI(Constants.Shooter.Hood.KI)
             .withKV(Constants.Shooter.Hood.KV)
             .withKS(Constants.Shooter.Hood.KS)
             .withKG(Constants.Shooter.Hood.KG)
@@ -129,7 +130,7 @@ public class ShooterSubsystem extends SubsystemBase {
     MagnetSensorConfigs hoodCANcoderConfig =
         new CANcoderConfiguration()
             .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
-                .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+                .withSensorDirection(SensorDirectionValue.CounterClockwise_Positive)
                 .withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
 
     hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
@@ -152,9 +153,10 @@ public class ShooterSubsystem extends SubsystemBase {
     hood.setControl(
         m_positionRequest.withPosition(
             MathUtil.clamp(
-                degrees / 360.0,
-                Constants.Shooter.Hood.MIN_HOOD_POSITION,
-                Constants.Shooter.Hood.MAX_HOOD_POSITION)));
+                    degrees,
+                    Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                    Constants.Shooter.Hood.MAX_HOOD_POSITION)
+                / 360.0));
   }
 
   public Rotation2d getHoodPosition() {
@@ -166,10 +168,10 @@ public class ShooterSubsystem extends SubsystemBase {
     setHoodPosition(hoodTargetDeg);
   }
 
-  public boolean hoodAtTarget() {
-    return Math.abs((hood.getCachedPositionRotations() * 360.0) - hoodTargetDeg)
-        <= Constants.Shooter.Hood.HOOD_TOLERANCE_DEG;
-  }
+  // public boolean hoodAtTarget() {
+  //   return Math.abs((hood.getCachedPositionRotations() * 360.0) - hoodTargetDeg)
+  //       <= Constants.Shooter.Hood.HOOD_TOLERANCE_DEG;
+  // }
 
   public double getHoodCancoderPositionRaw() {
     return hoodEncoder.getAbsolutePosition().getValueAsDouble();
@@ -218,7 +220,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isShooterReady() {
-    return isAtSpeed() && hoodAtTarget();
+    return isAtSpeed(); // && hoodAtTarget()
   }
 
   // Commands
@@ -259,8 +261,13 @@ public class ShooterSubsystem extends SubsystemBase {
         this::stopShooter);
   }
 
-  public void moveHoodWithVoltage() {
-    hood.setControl(m_voltageRequest.withOutput(Constants.Shooter.Hood.ZERO_VOLTAGE));
+  public void moveHoodWithVoltage(double volts) {
+    // hood.setControl(m_voltageRequest.withOutput(Constants.Shooter.Hood.ZERO_VOLTAGE));
+    hood.setControl(m_voltageRequest.withOutput(volts));
+  }
+
+  public Command moveHoodWithVoltageCommand(double volts) {
+    return runEnd(() -> this.moveHoodWithVoltage(volts), this::stopShooter);
   }
 
   @Override
@@ -271,7 +278,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // Shooter status information
     DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
-    DogLog.log("Subsystems/Shooter/AtTargetAngle", hoodAtTarget());
+    // DogLog.log("Subsystems/Shooter/AtTargetAngle", hoodAtTarget());
     DogLog.log("Subsystems/Shooter/ShooterReady", isShooterReady());
 
     // Hood position information
