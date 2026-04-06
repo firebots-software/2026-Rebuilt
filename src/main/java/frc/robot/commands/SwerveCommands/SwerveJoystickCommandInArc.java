@@ -3,6 +3,7 @@ package frc.robot.commands.SwerveCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,7 +16,7 @@ import java.util.function.DoubleSupplier;
 public class SwerveJoystickCommandInArc extends Command {
   protected final DoubleSupplier tangentSpdFunction, speedControlFunction, angleToPointTo;
 
-  private final Pose3d center;
+  private final Pose2d center;
 
   protected final BooleanSupplier fieldRelativeFunction;
 
@@ -27,7 +28,7 @@ public class SwerveJoystickCommandInArc extends Command {
   private BooleanSupplier redSide;
 
   public SwerveJoystickCommandInArc(
-      Pose3d center,
+      Pose2d center,
       DoubleSupplier tangentSpeedFunction,
       DoubleSupplier speedControlFunction,
       BooleanSupplier fieldRelativeFunction,

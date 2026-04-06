@@ -1,5 +1,6 @@
 package frc.robot.commandGroups;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,7 +24,7 @@ public class ArcAroundAndShoot extends ParallelCommandGroup {
       IntakeSubsystem intake,
       HopperSubsystem hopper,
       DoubleSupplier tangentialVelocitySupplier,
-      Pose3d target,
+      Pose2d target,
       BooleanSupplier redside,
       CommandXboxController joystick) {
 

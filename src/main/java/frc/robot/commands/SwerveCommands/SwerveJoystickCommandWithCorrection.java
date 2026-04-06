@@ -145,8 +145,8 @@ public class SwerveJoystickCommandWithCorrection extends Command {
             ? (swerveDrivetrain.calculateRequiredRotationalRate(
                 swerveDrivetrain.travelAngleTo(
                     ((redsideIfPointing.getAsBoolean())
-                        ? (Constants.Landmarks.RED_HUB_2D)
-                        : (Constants.Landmarks.BLUE_HUB_2D)))))
+                        ? (Constants.Landmarks.RED_HUB)
+                        : (Constants.Landmarks.BLUE_HUB)))))
             : (turningSpeed);
 
     if (Math.abs(turningSpdFunction.getAsDouble()) < Constants.IntakeVision.OVERRIDE_ROT_INPUT

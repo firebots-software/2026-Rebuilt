@@ -1,5 +1,6 @@
 package frc.robot.commandGroups;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,7 +22,7 @@ public class ShootWithWarning extends ParallelCommandGroup {
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       HopperSubsystem hopper,
-      Pose3d target,
+      Pose2d target,
       BooleanSupplier redside,
       CommandXboxController joystick,
       DoubleSupplier frontBackFunction,
