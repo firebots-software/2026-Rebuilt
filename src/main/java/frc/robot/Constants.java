@@ -558,20 +558,20 @@ public final class Constants {
 
     private class RearRight {
       private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(11.537644); // mrd negative
+      private static final double Y = Units.inchesToMeters(-11.537644); // mrd negative
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(211.64385); // mrd 328.35615
+      private static final double YAW = Units.degreesToRadians(148.35615); // mrd 328.35615 
     }
 
     private class RearLeft {
       private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(-11.537644); // mrd positive
+      private static final double Y = Units.inchesToMeters(11.537644); // mrd positive
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(148.35615); // mrd 31.643850
+      private static final double YAW = Units.degreesToRadians(211.64385); // mrd 31.643850
     }
 
     // initializes cameras for use in VisionSubsystem
