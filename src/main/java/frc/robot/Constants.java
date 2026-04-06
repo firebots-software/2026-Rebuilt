@@ -562,7 +562,7 @@ public final class Constants {
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(328.35615);
+      private static final double YAW = Units.degreesToRadians(211.64385); // mrd 328.35615
     }
 
     private class RearLeft {
@@ -571,7 +571,7 @@ public final class Constants {
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(31.643850);
+      private static final double YAW = Units.degreesToRadians(148.35615); // mrd 31.643850
     }
 
     // initializes cameras for use in VisionSubsystem
@@ -782,15 +782,14 @@ public final class Constants {
     public static final class Hood {
       public static final int HOOD_ID = 12;
 
-      public static final double KP = 2300.0;
-      public static final double KI = 7.0;
+      public static final double KP = 0.85;
       public static final double KV = 0.124;
-      public static final double KD = 40.0;
+      public static final double KD = 0.0;
       public static final double KS = 0.0;
-      public static final double KG = 0.4;
+      public static final double KG = 0.0;
 
       public static final double STATOR_CURRENT_LIMIT = 40.0;
-      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 50.0;
 
       public static final double MOTOR_ROTS_PER_HOOD_ROT = 996.0 / 5.0;
       public static final double HOOD_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_HOOD_ROT;
@@ -804,10 +803,10 @@ public final class Constants {
 
       public static final double HOOD_TOLERANCE_DEG = 0.5;
 
-      public static final double MIN_HOOD_POSITION = 3.8;
-      public static final double MAX_HOOD_POSITION = 18.369;
+      public static final double MIN_HOOD_POSITION = 0;
+      public static final double MAX_HOOD_POSITION = 15;
 
-      public static double ENCODER_OFFSET = 0.296d; // TODO
+      public static double ENCODER_OFFSET = 0.0d; // TODO
       public static final int ENCODER_PORT = 18;
 
       public static final double ZERO_STATOR_CURRENT_LIMIT = 15.0;
@@ -833,7 +832,7 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
-      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
       public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
       public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     }
