@@ -23,6 +23,7 @@ public class ShootWithAim extends ParallelCommandGroup {
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside,
       BooleanSupplier manualOverride) {
+        double dist = drivetrain.getPose().getTranslation().getDistance(drivetrain.getVirtualTarget(redside));
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
@@ -36,11 +37,10 @@ public class ShootWithAim extends ParallelCommandGroup {
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () ->
-                        shooterSubsystem.grabTargetShootingSpeed(drivetrain.getCurrentState().Pose.getTranslation().getDistance()
-                            /*MiscUtils.getDistanceToHub(redside, drivetrain*/)),
+                        shooterSubsystem.grabTargetShootingSpeed(dist),
                     () ->
                         shooterSubsystem.grabTargetHoodAngle(
-                            MiscUtils.getDistanceToHub(redside, drivetrain))),
+                            dist)),
                 new SwerveJoystickCommand(
                     translationalX,
                     translationalY,
@@ -64,3 +64,69 @@ public class ShootWithAim extends ParallelCommandGroup {
             manualOverride));
   }
 }
+// package frc.robot.commandGroups.ShootCommandGroups;
+
+// import edu.wpi.first.wpilibj2.command.Commands;
+// import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+// import frc.robot.Constants;
+// import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+// import frc.robot.subsystems.CommandSwerveDrivetrain;
+// import frc.robot.subsystems.HopperSubsystem;
+// import frc.robot.subsystems.IntakeSubsystem;
+// import frc.robot.subsystems.ShooterSubsystem;
+// import frc.robot.util.MiscUtils;
+// import frc.robot.util.Targeting;
+// import java.util.function.BooleanSupplier;
+// import java.util.function.DoubleSupplier;
+
+// public class ShootWithAim extends ParallelCommandGroup {
+//   public ShootWithAim(
+//       DoubleSupplier translationalX,
+//       DoubleSupplier translationalY,
+//       ShooterSubsystem shooterSubsystem,
+//       IntakeSubsystem intakeSubsystem,
+//       HopperSubsystem hopperSubsystem,
+//       CommandSwerveDrivetrain drivetrain,
+//       BooleanSupplier redside,
+//       BooleanSupplier manualOverride) {
+//     addCommands(
+//         Commands.either(
+//             Commands.parallel( // shoot without aim
+//                 shooterSubsystem.shootAtSpeedHoodCommand(
+//                     44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION),
+//                 Commands.waitUntil(shooterSubsystem::isShooterReady)
+//                     .andThen(
+//                         Commands.parallel(
+//                             hopperSubsystem.runHopperUntilInterruptedCommand(),
+//                             intakeSubsystem.powerRetractRollersCommand()))),
+//             Commands.parallel( // shoot with aim
+//                 shooterSubsystem.shootAtSpeedHoodCommand(
+//                     () ->
+//                         shooterSubsystem.grabTargetShootingSpeed(drivetrain.getCurrentState().Pose.getTranslation().getDistance()
+//                             /*MiscUtils.getDistanceToHub(redside, drivetrain*/)),
+//                     () ->
+//                         shooterSubsystem.grabTargetHoodAngle(
+//                             MiscUtils.getDistanceToHub(redside, drivetrain))),
+//                 new SwerveJoystickCommand(
+//                     translationalX,
+//                     translationalY,
+//                     () -> 0.0,
+//                     () -> 1.0,
+//                     () -> false,
+//                     () -> true,
+//                     redside,
+//                     drivetrain),
+//                 Commands.waitUntil(shooterSubsystem::isShooterReady)
+//                     .andThen(
+//                         Commands.parallel(
+//                             hopperSubsystem.runHopperUntilInterruptedCommand(
+//                                 () ->
+//                                     hopperSubsystem.grabHopperRecommendedSpeed(
+//                                         MiscUtils.getDistanceToHub(redside, drivetrain)),
+//                                 () ->
+//                                     Targeting.pointingAtHub(redside, drivetrain)
+//                                         && drivetrain.getSpeedMagnitude() <= 0.2),
+//                             intakeSubsystem.powerRetractRollersCommand()))),
+//             manualOverride));
+//   }
+// }
