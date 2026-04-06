@@ -36,8 +36,8 @@ public class ShootWithAim extends ParallelCommandGroup {
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () ->
-                        shooterSubsystem.grabTargetShootingSpeed(
-                            MiscUtils.getDistanceToHub(redside, drivetrain)),
+                        shooterSubsystem.grabTargetShootingSpeed(drivetrain.getCurrentState().Pose.getTranslation().getDistance()
+                            /*MiscUtils.getDistanceToHub(redside, drivetrain*/)),
                     () ->
                         shooterSubsystem.grabTargetHoodAngle(
                             MiscUtils.getDistanceToHub(redside, drivetrain))),

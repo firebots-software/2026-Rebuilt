@@ -802,8 +802,8 @@ public final class Constants {
 
       public static final double HOOD_TOLERANCE_DEG = 0.1;
 
-      public static final double MIN_HOOD_POSITION = 0;
-      public static final double MAX_HOOD_POSITION = 15;
+      public static final double MIN_HOOD_POSITION = 17.0;
+      public static final double MAX_HOOD_POSITION = 32.0;
 
       public static double ENCODER_OFFSET = 0.0d; // TODO
       public static final int ENCODER_PORT = 18;
