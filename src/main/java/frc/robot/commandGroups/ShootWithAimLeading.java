@@ -13,7 +13,6 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.MathUtils.Vector2;
-import frc.robot.util.MathUtils.Vector3;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -33,10 +32,7 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
       BooleanSupplier manualOverride) {
 
     Pose2d targetNoOffset = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
-    Supplier<Pose2d> target =
-        () ->
-            Targeting.positionToTarget(
-                    targetNoOffset, drivetrain);
+    Supplier<Pose2d> target = () -> Targeting.positionToTarget(targetNoOffset, drivetrain);
     Supplier<Pose2d> curPose = () -> drivetrain.getCurrentState().Pose;
 
     DoubleSupplier dist = () -> Vector2.dist(new Vector2(target.get()), new Vector2(curPose.get()));
@@ -68,11 +64,8 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                         (BooleanSupplier) () -> false,
                         (Supplier<Translation2d>)
                             () ->
-                                Vector3.toTranslation2d(
-                                    Targeting.positionToTarget(
-                                        targetNoOffset,
-                                        drivetrain,
-                                        Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                                Targeting.positionToTarget(targetNoOffset, drivetrain)
+                                    .getTranslation(),
                         drivetrain),
                     new SwerveJoystickCommandWithPointing(
                         translationalX,
@@ -81,11 +74,8 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                         (BooleanSupplier) () -> false,
                         (Supplier<Translation2d>)
                             () ->
-                                Vector3.toTranslation2d(
-                                    Targeting.positionToTarget(
-                                        targetNoOffset,
-                                        drivetrain,
-                                        Constants.Shooter.TARGETING_CALCULATION_PRECISION)),
+                                Targeting.positionToTarget(targetNoOffset, drivetrain)
+                                    .getTranslation(),
                         drivetrain),
                     arcing),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
@@ -93,8 +83,7 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                         hopperSubsystem
                             .runHopperUntilInterruptedCommand(
                                 () ->
-                                    hopperSubsystem.grabHopperRecommendedSpeed(
-                                        dist.getAsDouble()),
+                                    hopperSubsystem.grabHopperRecommendedSpeed(dist.getAsDouble()),
                                 () -> (Targeting.pointingAtTarget(targetNoOffset, drivetrain)))
                             .alongWith(
                                 intakeSubsystem

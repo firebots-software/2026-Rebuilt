@@ -106,9 +106,7 @@ public class Targeting {
     // shit we need
     double tof =
         initialDistance
-            / (initialDistance
-                    / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(
-                        initialDistance)
+            / (initialDistance / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance)
                 - radialVelocity);
 
     double distance = initialDistance;
@@ -120,8 +118,7 @@ public class Targeting {
       distance = Math.pow(distX * distX + distY * distY, 0.5);
       if (distance < 1e-6) break;
 
-      double tofTable =
-          Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
+      double tofTable = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
       double error = tof - tofTable;
 
       double horizontalVel = distance / tofTable;
@@ -145,8 +142,7 @@ public class Targeting {
   public static TargetingInfo newtonTargetingInfo(
       Pose2d target, CommandSwerveDrivetrain drivetrain) {
     double distance = newtonTargetingDistance(target, drivetrain);
-    double timeOfFlight =
-        Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
+    double timeOfFlight = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
 
     Vector3 relativeVel =
         Vector3.mult(
@@ -164,13 +160,11 @@ public class Targeting {
         Vector3.toPose2d(targetPlusOffset));
   }
 
-  public static double shootingSpeed(
-      Pose2d target, CommandSwerveDrivetrain drivetrain) {
+  public static double shootingSpeed(Pose2d target, CommandSwerveDrivetrain drivetrain) {
     return newtonTargetingInfo(target, drivetrain).getSpeed();
   }
 
-  public static Pose2d positionToTarget(
-      Pose2d target, CommandSwerveDrivetrain drivetrain) {
+  public static Pose2d positionToTarget(Pose2d target, CommandSwerveDrivetrain drivetrain) {
     return newtonTargetingInfo(target, drivetrain).getPosition();
   }
 
@@ -179,9 +173,7 @@ public class Targeting {
   }
 
   public static double targetAngle(Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
-    Pose2d target =
-        positionToTarget(
-            targetNoOffset, drivetrain);
+    Pose2d target = positionToTarget(targetNoOffset, drivetrain);
     return Math.atan2(
             Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).y,
             Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).x)
