@@ -5,8 +5,8 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
-import dev.doglog.DogLog;
-import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -30,14 +30,13 @@ import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
-  private final DoubleSubscriber hoodAngleTunable =
-      DogLog.tunable("Tunable/HoodAngleTunable", 17.0);
-  private final DoubleSubscriber shooterSpeedTunable =
-      DogLog.tunable("Tunable/ShoterSpeedTunable", 44.0);
-  //   private final DoubleEntry hoodAngleTunable = NetworkTableInstance.getDefault()
-  //     .getDoubleTopic("Tunable/HoodAngleTunable").getEntry(17.0);
-  //   private final DoubleEntry shooterSpeedTunable = NetworkTableInstance.getDefault()
-  //     .getDoubleTopic("Tunable/ShooterSpeedTunable").getEntry(44.0);
+
+  private final DoubleEntry hoodAngleTunable =
+      NetworkTableInstance.getDefault().getDoubleTopic("Tunable/HoodAngleTunable").getEntry(10.0);
+  private final DoubleEntry shooterSpeedTunable =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("Tunable/ShooterSpeedTunable")
+          .getEntry(44.0);
   private Field2d field = new Field2d();
 
   private final CommandXboxController joystick = new CommandXboxController(0);
@@ -82,8 +81,8 @@ public class RobotContainer {
           : null;
 
   public RobotContainer() {
-    // hoodAngleTunable.setDefault(17.0);
-    // shooterSpeedTunable.setDefault(44.0);
+    hoodAngleTunable.setDefault(10.0);
+    shooterSpeedTunable.setDefault(44.0);
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -135,8 +134,24 @@ public class RobotContainer {
     joystick
         .a()
         .whileTrue(
+            lebron
+                .shootAtSpeedHoodCommand(shooterSpeedTunable, hoodAngleTunable)
+                .alongWith(
+                    (hopperSubsystem
+                        .runHopperUntilInterruptedCommand()))); // Commands.waitUntil(lebron::isShooterReady).andThen
+
+    joystick
+        .b()
+        .whileTrue(
             lebron.shootAtSpeedHoodCommand(
-                () -> hoodAngleTunable.get(), () -> shooterSpeedTunable.get()));
+                () -> 50.0, () -> Constants.Shooter.Hood.MIN_HOOD_POSITION));
+    // joystick
+    //     .b()
+    //     .whileTrue(
+    //         lebron
+    //             .shootAtSpeedHoodCommand(() -> shooterSpeedTunable.get(),
+    //                 () -> hoodAngleTunable.get())
+    //             .alongWith(hopperSubsystem.runHopperUntilInterruptedCommand()));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
