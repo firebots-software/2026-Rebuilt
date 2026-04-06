@@ -201,7 +201,7 @@ public class Targeting {
   }
 
   public static boolean pointingAtHub(BooleanSupplier redside, CommandSwerveDrivetrain drivetrain) {
-    Pose2d target = redside.getAsBoolean() ? Landmarks.RED_HUB_2D : Landmarks.BLUE_HUB_2D;
+    Pose2d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
     return pointingAtTarget(target, drivetrain);
   }
 }
