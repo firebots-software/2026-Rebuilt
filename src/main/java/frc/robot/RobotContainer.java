@@ -31,9 +31,10 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
   private final DoubleSubscriber hoodAngleTunable =
-      DogLog.tunable("Tunable/HoodAngleTunable", 17.0);
+      DogLog.tunable("Tunable/HoodAngleTunable", 10.0);
   private final DoubleSubscriber shooterSpeedTunable =
       DogLog.tunable("Tunable/ShoterSpeedTunable", 44.0);
+
   //   private final DoubleEntry hoodAngleTunable = NetworkTableInstance.getDefault()
   //     .getDoubleTopic("Tunable/HoodAngleTunable").getEntry(17.0);
   //   private final DoubleEntry shooterSpeedTunable = NetworkTableInstance.getDefault()
@@ -135,8 +136,21 @@ public class RobotContainer {
     joystick
         .a()
         .whileTrue(
-            lebron.shootAtSpeedHoodCommand(
-                () -> hoodAngleTunable.get(), () -> shooterSpeedTunable.get()));
+            lebron.shootAtSpeedHoodCommand(() -> 70.0,
+                () -> hoodAngleTunable.get()));
+
+    joystick
+        .b()
+        .whileTrue(
+            lebron.shootAtSpeedHoodCommand(() -> 50.0,
+                () -> Constants.Shooter.Hood.MIN_HOOD_POSITION));
+    // joystick
+    //     .b()
+    //     .whileTrue(
+    //         lebron
+    //             .shootAtSpeedHoodCommand(() -> shooterSpeedTunable.get(),
+    //                 () -> hoodAngleTunable.get())
+    //             .alongWith(hopperSubsystem.runHopperUntilInterruptedCommand()));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
@@ -158,6 +172,9 @@ public class RobotContainer {
                 redside,
                 secondController.visionShootingLockout()));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+
+    // joystick.b().whileTrue(lebron.moveHoodWithVoltageCommand(-4));
+    // joystick.y().whileTrue(lebron.moveHoodWithVoltageCommand(4));
   }
 
   public void visionPeriodic() {
