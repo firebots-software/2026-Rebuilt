@@ -6,8 +6,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.MathUtils.Vector3;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -15,9 +15,9 @@ public class Targeting {
   public static class TargetingInfo {
     private double speed;
     private double tof;
-    private Vector3 pos;
+    private Pose2d pos;
 
-    public TargetingInfo(double speed, double tof, Vector3 pos) {
+    public TargetingInfo(double speed, double tof, Pose2d pos) {
       this.speed = speed;
       this.tof = tof;
       this.pos = pos;
@@ -31,7 +31,7 @@ public class Targeting {
       return tof;
     }
 
-    public Vector3 getPosition() {
+    public Pose2d getPosition() {
       return pos;
     }
   }
@@ -132,7 +132,7 @@ public class Targeting {
 
       if (tof < 1e-3) tof = 1e-3;
 
-      double step = error/errorDerivative;
+      double step = error / errorDerivative;
       step = Math.max(-0.05, Math.min(0.05, step));
       tof -= step;
     }
@@ -159,7 +159,7 @@ public class Targeting {
     return new TargetingInfo(
         Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distance),
         timeOfFlight,
-        targetPlusOffset);
+        Vector3.toPose2d(targetPlusOffset));
   }
 
   public static double shootingSpeed(
@@ -167,7 +167,7 @@ public class Targeting {
     return newtonTargetingInfo(target, drivetrain).getSpeed();
   }
 
-  public static Vector3 positionToTarget(
+  public static Pose2d positionToTarget(
       Pose2d target, CommandSwerveDrivetrain drivetrain, int precision) {
     return newtonTargetingInfo(target, drivetrain).getPosition();
   }
@@ -177,12 +177,12 @@ public class Targeting {
   }
 
   public static double targetAngle(Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
-    Vector3 target =
+    Pose2d target =
         positionToTarget(
             targetNoOffset, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION);
     return Math.atan2(
-            Vector3.subtract(target, new Vector3(drivetrain.getCurrentState().Pose)).y,
-            Vector3.subtract(target, new Vector3(drivetrain.getCurrentState().Pose)).x)
+            Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).y,
+            Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).x)
         + (Constants.Shooter.SHOOTS_BACKWARDS ? Math.PI : 0);
   }
 
