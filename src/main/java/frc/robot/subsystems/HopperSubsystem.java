@@ -6,8 +6,10 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,103 +21,90 @@ import frc.robot.util.LoggedTalonFX;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+// spotless is clapping out
 public class HopperSubsystem extends SubsystemBase {
-  private final LoggedTalonFX hopperMotor;
-  private double targetSurfaceSpeedMps = 0.0;
+  private final CommandSwerveDrivetrain drivetrain;
+  private final BooleanSupplier redside;
 
-  // private TalonFXSimState hopperMotorSimState;
-  // private DCMotorSim hopperMechanismSim;
+  private final LoggedTalonFX hopperMotor1, hopperMotor2, hopper;
+  private double targetSurfaceSpeedMps = 0.0;
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
 
-  public HopperSubsystem() {
+  public HopperSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
+    this.drivetrain = drivetrain;
+    this.redside = redside;
+
     CurrentLimitsConfigs currentLimitConfigs =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Hopper.STATOR_LIMIT_AMPS)
             .withSupplyCurrentLimit(Constants.Hopper.SUPPLY_LIMIT_AMPS);
 
-    Slot0Configs s0c =
-        new Slot0Configs()
-            .withKP(Constants.Hopper.kP)
-            .withKI(Constants.Hopper.kI)
-            .withKD(Constants.Hopper.kD)
-            .withKV(Constants.Hopper.kV);
+    Slot0Configs s0c = new Slot0Configs().withKP(Constants.Hopper.kP).withKV(Constants.Hopper.kV);
 
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
 
-    ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs();
-    clrc.withVoltageClosedLoopRampPeriod(0.3);
+    ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3);
 
-    hopperMotor =
-        new LoggedTalonFX("HopperFloor", Constants.Hopper.MOTOR_PORT, Constants.Swerve.CAN_BUS);
+    hopperMotor1 =
+        new LoggedTalonFX(
+            "HopperFloorMain", Constants.Hopper.MOTOR_1_PORT, Constants.Swerve.CAN_BUS);
+    hopperMotor2 =
+        new LoggedTalonFX(
+            "HopperFloorFollower", Constants.Hopper.MOTOR_2_PORT, Constants.Swerve.CAN_BUS);
+    hopper = hopperMotor1;
 
-    TalonFXConfiguration hopperConfig = new TalonFXConfiguration();
-    hopperConfig.Slot0 = s0c;
-    hopperConfig.CurrentLimits = currentLimitConfigs;
-    hopperConfig.MotorOutput = motorOutputConfigs;
-    hopperConfig.ClosedLoopRamps = clrc;
+    TalonFXConfiguration hopperConfig =
+        new TalonFXConfiguration()
+            .withSlot0(s0c)
+            .withCurrentLimits(currentLimitConfigs)
+            .withMotorOutput(motorOutputConfigs)
+            .withClosedLoopRamps(clrc);
 
-    TalonFXConfigurator hopperMotorConfig = hopperMotor.getConfigurator();
-    hopperMotorConfig.apply(hopperConfig);
+    TalonFXConfigurator hopperMotor1Config = hopperMotor1.getConfigurator();
+    TalonFXConfigurator hopperMotor2Config = hopperMotor2.getConfigurator();
+    hopperMotor1Config.apply(hopperConfig);
+    hopperMotor2Config.apply(hopperConfig);
+
+    hopperMotor2.setControl(new Follower(hopper.getDeviceID(), MotorAlignmentValue.Aligned));
 
     DogLog.log("Subsystems/Hopper/Gains/kP", Constants.Hopper.kP);
-    DogLog.log("Subsystems/Hopper/Gains/kI", Constants.Hopper.kI);
-    DogLog.log("Subsystems/Hopper/Gains/kD", Constants.Hopper.kD);
     DogLog.log("Subsystems/Hopper/Gains/kV", Constants.Hopper.kV);
-
-    // if (RobotBase.isSimulation()) setupSimulation();
   }
-
-  // private void setupSimulation() {
-  // hopperMotorSimState = hopperMotor.getSimState();
-  // hopperMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
-  // hopperMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
-
-  // DCMotor krakenGearboxModel = DCMotor.getKrakenX60Foc(1);
-
-  // hopperMechanismSim =
-  // new DCMotorSim(
-  // LinearSystemId.createDCMotorSystem(
-  // krakenGearboxModel,
-  // Constants.Hopper.Simulation.MECHANISM_SIM_MOI_KG_M2,
-  // Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION),
-  // krakenGearboxModel);
-  // }
 
   // Ruth's version
   public void runHopperMps(DoubleSupplier targetSurfaceSpeedMps, BooleanSupplier readyToRun) {
     if (readyToRun.getAsBoolean()) {
       this.targetSurfaceSpeedMps = targetSurfaceSpeedMps.getAsDouble();
-      hopperMotor.setControl(
+      hopper.setControl(
           m_velocityRequest.withVelocity(
-              this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+              this.targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER));
     } else {
-      hopperMotor.stopMotor();
+      stop();
     }
   }
 
   public void runHopperMps(double targetSurfaceSpeedMps) {
     this.targetSurfaceSpeedMps = targetSurfaceSpeedMps;
-    hopperMotor.setControl(
+    hopper.setControl(
         m_velocityRequest.withVelocity(
-            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER));
+            targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER));
   }
 
   public void stop() {
-    hopperMotor.stopMotor();
+    targetSurfaceSpeedMps = 0.0;
+    hopper.stopMotor();
   }
 
   public double getFloorSpeedMPS() {
-    return hopperMotor.getCachedVelocityRps()
-        * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION;
+    return hopper.getCachedVelocityRps() * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT;
   }
 
   public double getAgitatorSpeedRPS() {
-    return hopperMotor.getCachedVelocityRps()
-        * Constants.Hopper.AGITATOR_ROTATIONS_PER_MOTOR_ROTATION;
+    return hopper.getCachedVelocityRps() * Constants.Hopper.AGITATOR_ROTS_PER_MOTOR_ROT;
   }
 
   public boolean atTargetSpeed() {
@@ -124,14 +113,10 @@ public class HopperSubsystem extends SubsystemBase {
   }
 
   public boolean isHopperSufficientlyEmpty(FuelGaugeDetection fuelGaugeDetection) {
-    return (fuelGaugeDetection != null
+    return fuelGaugeDetection != null
         ? fuelGaugeDetection.GaugeLessThanEqualTo(
             GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS, FuelGauge.LOW)
-        : false);
-  }
-
-  public double getTargetHopperSpeed(double shooterSpeed) {
-    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(shooterSpeed);
+        : false;
   }
 
   // Does not stop the Hopper when interrupted
@@ -160,57 +145,20 @@ public class HopperSubsystem extends SubsystemBase {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
-  public double grabHopperRecommendedSpeed(double speedOfShooter) {
-    return Constants.Hopper.HOPPER_FPS_FOR_SHOOTER_WHEEL_RPS.get(speedOfShooter);
+  public double grabHopperRecommendedSpeed(double distanceToTarget) {
+    return Constants.Hopper.HOPPER_SPEED_MAP.get(distanceToTarget);
   }
 
   @Override
   public void periodic() {
     DogLog.log(
         "Subsystems/Hopper/CurrentSurfaceSpeed (mps)",
-        hopperMotor.getCachedVelocityRps()
-            * Constants.Hopper.BELT_TRAVEL_METERS_PER_MOTOR_ROTATION);
+        hopper.getCachedVelocityRps() * Constants.Hopper.FLOOR_METERS_PER_MOTOR_ROT);
     DogLog.log("Subsystems/Hopper/TargetSurfaceSpeed (mps)", targetSurfaceSpeedMps);
     DogLog.log("Subsystems/Hopper/AtTargetSpeed", atTargetSpeed());
     DogLog.log(
         "Subsystems/Hopper/TargetMotorSpeed (rps)",
-        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTATIONS_PER_BELT_TRAVEL_METER);
-    DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopperMotor.getCachedVelocityRps());
+        targetSurfaceSpeedMps * Constants.Hopper.MOTOR_ROTS_PER_FLOOR_METER);
+    DogLog.log("Subsystems/Hopper/CurrentMotorSpeed (rps)", hopper.getCachedVelocityRps());
   }
-
-  // @Override
-  // public void simulationPeriodic() {
-  // if (hopperMotorSimState == null || hopperMechanismSim == null) return;
-
-  // // 1. How many volts applied to the motor?
-  // hopperMotorSimState.setSupplyVoltage(RobotController.getBatteryVoltage());
-
-  // double appliedMotorVoltageVolts =
-  // hopperMotorSimState.getMotorVoltageMeasure().in(Units.Volts);
-  // hopperMechanismSim.setInputVoltage(appliedMotorVoltageVolts);
-  // hopperMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
-
-  // // 2. What happens to the simulated mechanism?
-  // double hopperMechanismVelocityRotationsPerSecond =
-  // hopperMechanismSim.getAngularVelocityRadPerSec() / (2.0 * Math.PI);
-  // double hopperMechanismPositionRotations =
-  // hopperMechanismSim.getAngularPositionRotations();
-
-  // // 3. Updating the simulated motor based on the behavior of the simulated
-  // mechanism
-  // double motorRotorPositionRotations =
-  // hopperMechanismPositionRotations
-  // * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-  // double motorRotorVelocityRotationsPerSecond =
-  // hopperMechanismVelocityRotationsPerSecond
-  // * Constants.Hopper.MOTOR_ROTATIONS_PER_FLOOR_PULLEY_ROTATION;
-  // hopperMotorSimState.setRawRotorPosition(motorRotorPositionRotations);
-  // hopperMotorSimState.setRotorVelocity(motorRotorVelocityRotationsPerSecond);
-
-  // // 4. What happens to the battery (simulated)?
-  // double hopperSupplyCurrentAmps = hopperMotorSimState.getSupplyCurrent();
-  // double targetBatteryV =
-  // BatterySim.calculateDefaultBatteryLoadedVoltage(hopperSupplyCurrentAmps);
-  // RoboRioSim.setVInVoltage(targetBatteryV);
-  // }
 }

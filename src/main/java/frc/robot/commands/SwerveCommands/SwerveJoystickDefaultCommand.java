@@ -8,7 +8,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
-
   public SwerveJoystickDefaultCommand(
       DoubleSupplier frontBackFunction,
       DoubleSupplier leftRightFunction,
@@ -22,7 +21,6 @@ public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
       BooleanSupplier doDriveAssist,
       BooleanSupplier intakeVisionLockout,
       BooleanSupplier intakeExtended) {
-
     addCommands(
         Commands.either(
             new SwerveJoystickCommand(
@@ -46,6 +44,6 @@ public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
                 intakeVision,
                 doDriveAssist,
                 intakeExtended),
-            () -> intakeVisionLockout.getAsBoolean()));
+            () -> !intakeVisionLockout.getAsBoolean()));
   }
 }

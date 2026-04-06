@@ -13,7 +13,6 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class FuelGaugeDetection extends SubsystemBase {
-
   private static ArrayList<Double> latestRawMeasurements = new ArrayList<>();
   private static ArrayList<Double> latestMultipleMeasurements = new ArrayList<>();
 
@@ -37,7 +36,6 @@ public class FuelGaugeDetection extends SubsystemBase {
   @Override
   public void periodic() {
     if (!cameraConnected()) return;
-
     if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
 
     updateVisionResult();
@@ -51,7 +49,6 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   private boolean validVisionResult(List<PhotonPipelineResult> results) {
     if (results.isEmpty()) return false;
-
     latestVisionResult = results.get(results.size() - 1);
 
     return latestVisionResult != null;
@@ -116,19 +113,10 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   private FuelGauge setFuelGauge(double area) {
-    FuelGauge gauge;
-
-    if (area < FuelGauge.EMPTY.getThreshold()) {
-      gauge = FuelGauge.EMPTY;
-    } else if (area < FuelGauge.LOW.getThreshold()) {
-      gauge = FuelGauge.LOW;
-    } else if (area < FuelGauge.MEDIUM.getThreshold()) {
-      gauge = FuelGauge.MEDIUM;
-    } else {
-      gauge = FuelGauge.FULL;
-    }
-
-    return gauge;
+    if (area < FuelGauge.EMPTY.getThreshold()) return FuelGauge.EMPTY;
+    if (area < FuelGauge.LOW.getThreshold()) return FuelGauge.LOW;
+    if (area < FuelGauge.MEDIUM.getThreshold()) return FuelGauge.MEDIUM;
+    return FuelGauge.FULL;
   }
 
   private Optional<PhotonTrackedTarget> getLargestBall() {
@@ -208,15 +196,10 @@ public class FuelGaugeDetection extends SubsystemBase {
 
     double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
 
-    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
-      return FuelGauge.EMPTY;
-    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
-      return FuelGauge.LOW;
-    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
-      return FuelGauge.MEDIUM;
-    } else {
-      return FuelGauge.FULL;
-    }
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) return FuelGauge.EMPTY;
+    if (currentMeasurement <= FuelGauge.LOW.getThreshold()) return FuelGauge.LOW;
+    if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) return FuelGauge.MEDIUM;
+    return FuelGauge.FULL;
   }
 
   public String getCurrentFuelGaugeStateAsHex() {

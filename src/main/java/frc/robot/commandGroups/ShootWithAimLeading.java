@@ -12,8 +12,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.MathUtils.Vector2;
-import frc.robot.MathUtils.Vector3;
+import frc.robot.util.MathUtils.Vector2;
+import frc.robot.util.MathUtils.Vector3;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -33,14 +33,13 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
       BooleanSupplier manualOverride) {
 
     Pose2d targetNoOffset = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
-    Supplier<Vector2> target =
+    Supplier<Pose2d> target =
         () ->
-            Vector3.toVector2(
-                Targeting.positionToTarget(
-                    targetNoOffset, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
-    Supplier<Vector2> curPose = () -> Vector2.fromPose2d(drivetrain.getCurrentState().Pose);
+            Targeting.positionToTarget(
+                    targetNoOffset, drivetrain);
+    Supplier<Pose2d> curPose = () -> drivetrain.getCurrentState().Pose;
 
-    DoubleSupplier dist = () -> Vector2.dist(target.get(), curPose.get());
+    DoubleSupplier dist = () -> Vector2.dist(new Vector2(target.get()), new Vector2(curPose.get()));
 
     addCommands(
         Commands.either(

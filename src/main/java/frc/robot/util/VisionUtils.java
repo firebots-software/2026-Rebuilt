@@ -20,7 +20,6 @@ import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class VisionUtils {
-
   private static VisionSubsystem visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft;
   private static VisionSubsystem preferredVision;
   private static CommandSwerveDrivetrain drivetrain;
@@ -31,7 +30,6 @@ public class VisionUtils {
       VisionSubsystem rearRight,
       VisionSubsystem rearLeft,
       CommandSwerveDrivetrain swerve) {
-
     if (!Constants.visionOnRobot
         || frontRight == null
         || frontLeft == null
@@ -79,7 +77,6 @@ public class VisionUtils {
   }
 
   private static VisionSubsystem selectPreferredVision() {
-
     CameraSelectionMethod method = Constants.Vision.CAMERA_SELECTION_METHOD;
     double frontRightDist = getCameraDistance(visionFrontRight, method);
     double frontLeftDist = getCameraDistance(visionFrontLeft, method);
@@ -197,7 +194,6 @@ public class VisionUtils {
   }
 
   private static double computeNoiseHeading(double distance, double robotSpeed, int tagCount) {
-
     double baseNoise = Constants.Vision.BASE_NOISE_THETA;
     double distanceCoefficient = Constants.Vision.DISTANCE_COEFFICIENT_THETA;
     double speedCoefficient = Constants.Vision.SPEED_COEFFICIENT_THETA;

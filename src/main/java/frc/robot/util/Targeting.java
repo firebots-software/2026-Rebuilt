@@ -6,8 +6,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
-import frc.robot.MathUtils.Vector3;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.MathUtils.Vector3;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -48,7 +48,9 @@ public class Targeting {
     double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
     if (diff > Math.PI) diff = 2 * Math.PI - diff;
     DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
+    DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
     boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
+    DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
     DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
     return hullAimed;
   }
@@ -105,7 +107,7 @@ public class Targeting {
     double tof =
         initialDistance
             / (initialDistance
-                    / Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(
+                    / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(
                         initialDistance)
                 - radialVelocity);
 
@@ -119,7 +121,7 @@ public class Targeting {
       if (distance < 1e-6) break;
 
       double tofTable =
-          Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
+          Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
       double error = tof - tofTable;
 
       double horizontalVel = distance / tofTable;
@@ -144,7 +146,7 @@ public class Targeting {
       Pose2d target, CommandSwerveDrivetrain drivetrain) {
     double distance = newtonTargetingDistance(target, drivetrain);
     double timeOfFlight =
-        Constants.Shooter.TOF_FOR_DISTANCE_METERS_CENTER_TO_CENTER_INTERMAP.get(distance);
+        Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
 
     Vector3 relativeVel =
         Vector3.mult(
@@ -157,7 +159,7 @@ public class Targeting {
         Vector3.add(new Vector3(target), Vector3.mult(relativeVel, timeOfFlight));
 
     return new TargetingInfo(
-        Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distance),
+        Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance),
         timeOfFlight,
         Vector3.toPose2d(targetPlusOffset));
   }
@@ -173,7 +175,7 @@ public class Targeting {
   }
 
   public static double speedForDist(double d) {
-    return Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(d);
+    return Constants.Shooter.TIME_OF_FLIGHT_MAP.get(d);
   }
 
   public static double targetAngle(Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {

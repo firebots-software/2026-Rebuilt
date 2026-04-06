@@ -1,22 +1,32 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Rotations;
+
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -27,85 +37,160 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class ShooterSubsystem extends SubsystemBase {
+
   private final CommandSwerveDrivetrain drivetrain;
   private final BooleanSupplier redside;
-
-  private final LoggedTalonFX warmUpMotor1, warmUpMotor2, warmUpMotor3, shooter;
+  private final LoggedTalonFX warmup1, warmup2, warmup3, shooter, hood;
+  private final CANcoder hoodEncoder;
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
-  private double targetShooterWheelRPS = 0;
-  private static final double TOLERANCE_RPS = 2.0; // tolerance in rotations per second
+  private final PositionVoltage m_positionRequest = new PositionVoltage(0);
+  private final VoltageOut m_voltageRequest = new VoltageOut(0);
+  private double targetShooterSpeedRPS = 0;
+  private double hoodTargetDeg = 0;
 
   public ShooterSubsystem(CommandSwerveDrivetrain drivetrain, BooleanSupplier redside) {
     this.drivetrain = drivetrain;
     this.redside = redside;
+    CANBus canbus = Constants.Swerve.CAN_BUS;
+    warmup1 = new LoggedTalonFX("ShooterWarmup1", Constants.Shooter.Rollers.WARMUP_1_ID, canbus);
+    warmup2 = new LoggedTalonFX("ShooterWarmup2", Constants.Shooter.Rollers.WARMUP_2_ID, canbus);
+    warmup3 = new LoggedTalonFX("ShooterWarmup3", Constants.Shooter.Rollers.WARMUP_3_ID, canbus);
+    shooter = warmup3;
 
-    warmUpMotor1 =
-        new LoggedTalonFX(
-            "ShooterWarmUp1", Constants.Shooter.WARMUP_1_ID, Constants.Swerve.CAN_BUS);
-    warmUpMotor2 =
-        new LoggedTalonFX(
-            "ShooterWarmUp2", Constants.Shooter.WARMUP_2_ID, Constants.Swerve.CAN_BUS);
-    warmUpMotor3 =
-        new LoggedTalonFX(
-            "ShooterWarmUp3", Constants.Shooter.WARMUP_3_ID, Constants.Swerve.CAN_BUS);
-    shooter = warmUpMotor3;
+    // TODO: fix hood id constant
+    hood =
+        new LoggedTalonFX("ShooterHood", Constants.Shooter.Hood.HOOD_ID, Constants.Swerve.CAN_BUS);
 
-    Slot0Configs s0c =
+    Slot0Configs rollersS0c =
         new Slot0Configs()
-            .withKP(Constants.Shooter.KP)
-            .withKI(Constants.Shooter.KI)
-            .withKD(Constants.Shooter.KD)
-            .withKV(Constants.Shooter.KV)
-            .withKA(Constants.Shooter.KA);
+            .withKP(Constants.Shooter.Rollers.KP)
+            .withKV(Constants.Shooter.Rollers.KV)
+            .withKS(Constants.Shooter.Rollers.KS);
 
-    CurrentLimitsConfigs clc =
+    CurrentLimitsConfigs rollersClc =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Shooter.STATOR_CURRENT_LIMIT)
-            .withSupplyCurrentLimit(Constants.Shooter.SUPPLY_CURRENT_LIMIT);
+            .withStatorCurrentLimit(Constants.Shooter.Rollers.STATOR_CURRENT_LIMIT)
+            .withSupplyCurrentLimit(Constants.Shooter.Rollers.SUPPLY_CURRENT_LIMIT);
 
-    MotorOutputConfigs motorOutputConfigs =
+    MotorOutputConfigs rollersOutputConfigs =
         new MotorOutputConfigs()
             .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
 
-    VoltageConfigs vConfigs = new VoltageConfigs().withPeakReverseVoltage(0.0);
+    TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
+    rollersConfig.Slot0 = rollersS0c;
+    rollersConfig.CurrentLimits = rollersClc;
+    rollersConfig.MotorOutput = rollersOutputConfigs;
 
-    // Apply full TalonFXConfiguration to ensure factory defaults
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.Slot0 = s0c;
-    config.CurrentLimits = clc;
-    config.MotorOutput = motorOutputConfigs;
-    config.Voltage = vConfigs;
+    warmup1.getConfigurator().apply(rollersConfig);
+    warmup2.getConfigurator().apply(rollersConfig);
+    warmup3.getConfigurator().apply(rollersConfig);
 
-    TalonFXConfigurator m1config = warmUpMotor1.getConfigurator();
-    TalonFXConfigurator m2config = warmUpMotor2.getConfigurator();
-    TalonFXConfigurator m3config = warmUpMotor3.getConfigurator();
+    Follower follower =
+        new Follower(Constants.Shooter.Rollers.WARMUP_3_ID, MotorAlignmentValue.Aligned);
+    warmup1.setControl(follower);
+    warmup2.setControl(follower);
 
-    m1config.apply(config);
-    m2config.apply(config);
-    m3config.apply(config);
+    hoodEncoder = new CANcoder(Constants.Shooter.Hood.ENCODER_PORT, Constants.Swerve.CAN_BUS);
 
-    // Set motors 1 and 2 to follow motor 3 (the leader)
-    Follower follower = new Follower(Constants.Shooter.WARMUP_3_ID, MotorAlignmentValue.Aligned);
-    warmUpMotor1.setControl(follower);
-    warmUpMotor2.setControl(follower);
+    Slot0Configs hoodS0c =
+        new Slot0Configs()
+            .withKP(Constants.Shooter.Hood.KP)
+            .withKV(Constants.Shooter.Hood.KV)
+            .withKS(Constants.Shooter.Hood.KS)
+            .withKG(Constants.Shooter.Hood.KG)
+            .withKD(Constants.Shooter.Hood.KD)
+            .withGravityType(GravityTypeValue.Arm_Cosine);
 
-    DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.KP);
-    DogLog.log("Subsystems/Shooter/Gains/kI", Constants.Shooter.KI);
-    DogLog.log("Subsystems/Shooter/Gains/kD", Constants.Shooter.KD);
-    DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.KV);
-    DogLog.log("Subsystems/Shooter/Gains/kA", Constants.Shooter.KA);
+    CurrentLimitsConfigs hoodClc =
+        new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(Constants.Shooter.Hood.STATOR_CURRENT_LIMIT)
+            .withSupplyCurrentLimit(Constants.Shooter.Hood.SUPPLY_CURRENT_LIMIT);
+
+    MotorOutputConfigs hoodMotorOutputConfigs =
+        new MotorOutputConfigs()
+            .withInverted(InvertedValue.CounterClockwise_Positive)
+            .withNeutralMode(NeutralModeValue.Coast);
+
+    FeedbackConfigs hoodFeedbackConfigs =
+        new FeedbackConfigs()
+            .withFeedbackRemoteSensorID(hoodEncoder.getDeviceID())
+            .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
+            .withSensorToMechanismRatio(Constants.Shooter.Hood.ENCODER_ROTS_PER_HOOD_ROT)
+            .withRotorToSensorRatio(Constants.Shooter.Hood.MOTOR_ROTS_PER_ENCODER_ROT);
+
+    TalonFXConfiguration hoodConfig = new TalonFXConfiguration();
+    hoodConfig.Slot0 = hoodS0c;
+    hoodConfig.CurrentLimits = hoodClc;
+    hoodConfig.MotorOutput = hoodMotorOutputConfigs;
+    hoodConfig.Feedback = hoodFeedbackConfigs;
+
+    hood.getConfigurator().apply(hoodConfig);
+
+    MagnetSensorConfigs hoodCANcoderConfig =
+        new CANcoderConfiguration()
+            .MagnetSensor.withAbsoluteSensorDiscontinuityPoint(Rotations.of(1))
+                .withSensorDirection(SensorDirectionValue.Clockwise_Positive)
+                .withMagnetOffset(Rotations.of(Constants.Shooter.Hood.ENCODER_OFFSET));
+
+    hoodEncoder.getConfigurator().apply(hoodCANcoderConfig);
+
+    // Roller gains
+    DogLog.log("Subsystems/Shooter/Gains/kP", Constants.Shooter.Rollers.KP);
+    DogLog.log("Subsystems/Shooter/Gains/kV", Constants.Shooter.Rollers.KV);
+    DogLog.log("Subsystems/Shooter/Gains/kS", Constants.Shooter.Rollers.KS); // NEW
+
+    // Hood gains
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kP", Constants.Shooter.Hood.KP);
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kS", Constants.Shooter.Hood.KS);
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kG", Constants.Shooter.Hood.KG);
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kV", Constants.Shooter.Hood.KV);
+    DogLog.log("Subsystems/Shooter/Hood/Gains/kD", Constants.Shooter.Hood.KD);
   }
 
-  public void setShooterWheelRPS(double shooterWheelSpeedRPS) {
-    targetShooterWheelRPS = shooterWheelSpeedRPS;
+  public void setHoodPosition(double degrees) {
+    hoodTargetDeg = degrees;
+    hood.setControl(
+        m_positionRequest.withPosition(
+            MathUtil.clamp(
+                degrees / 360.0,
+                Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                Constants.Shooter.Hood.MAX_HOOD_POSITION)));
+  }
+
+  public Rotation2d getHoodPosition() {
+    return new Rotation2d(Units.rotationsToRadians(hood.getCachedPositionRotations()));
+  }
+
+  public void stopHood() {
+    hoodTargetDeg = hood.getCachedPositionRotations() * 360.0;
+    setHoodPosition(hoodTargetDeg);
+  }
+
+  public boolean hoodAtTarget() {
+    return Math.abs((hood.getCachedPositionRotations() * 360.0) - hoodTargetDeg)
+        <= Constants.Shooter.Hood.HOOD_TOLERANCE_DEG;
+  }
+
+  public double getHoodCancoderPositionRaw() {
+    return hoodEncoder.getAbsolutePosition().getValueAsDouble();
+  }
+
+  // public Rotation2d getHoodUnfusedPosition() {
+  //   return new Rotation2d(
+  //       Units.rotationsToRadians(
+  //           getHoodCancoderPositionRaw() * Constants.Shooter.Hood.HOOD_ROTS_PER_ENCODER_ROT));
+  // }
+
+  public void setShooterSpeedRPS(double shooterSpeedRPS) {
+    targetShooterSpeedRPS = shooterSpeedRPS;
     shooter.setControl(
         m_velocityRequest.withVelocity(
-            targetShooterWheelRPS * Constants.Shooter.MOTOR_ROTS_PER_WHEEL_ROT));
+            targetShooterSpeedRPS * Constants.Shooter.Rollers.MOTOR_ROTS_PER_WHEEL_ROT));
   }
 
   public void stopShooter() {
-    targetShooterWheelRPS = 0;
+    targetShooterSpeedRPS = 0;
     shooter.stopMotor();
   }
 
@@ -113,46 +198,97 @@ public class ShooterSubsystem extends SubsystemBase {
     if (shooter.getCachedVelocityRps() == 0) {
       return false;
     }
-    return Math.abs(targetShooterWheelRPS - (getCurrentShooterWheelSpeedRPS())) <= TOLERANCE_RPS;
+    return Math.abs(targetShooterSpeedRPS - getCurrentShooterWheelSpeedRPS())
+        <= Constants.Shooter.Rollers.TOLERANCE_RPS;
   }
 
   public double getCurrentShooterWheelSpeedRPS() {
-    return shooter.getCachedVelocityRps() * Constants.Shooter.WHEEL_ROTS_PER_MOTOR_ROT;
+    return shooter.getCachedVelocityRps() * Constants.Shooter.Rollers.WHEEL_ROTS_PER_MOTOR_ROT;
   }
 
   public double getTargetShooterWheelSpeedRPS() {
-    return targetShooterWheelRPS;
+    return targetShooterSpeedRPS;
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    double mappedSpeed =
-        (Constants.Shooter.SHOOTER_WHEEL_RPS_FOR_DISTANCE_METERS.get(distanceToTarget)); // -0.4
+    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget);
+  }
 
-    return mappedSpeed;
+  public double grabTargetHoodAngle(double distanceToTarget) {
+    return Constants.Shooter.HOOD_ANGLE_MAP.get(distanceToTarget);
+  }
+
+  public boolean isShooterReady() {
+    return isAtSpeed() && hoodAtTarget();
   }
 
   // Commands
   public Command shootAtSpeedCommand() {
-    return runEnd(() -> setShooterWheelRPS(67.0), this::stopShooter);
+    return runEnd(() -> setShooterSpeedRPS(44.2), this::stopShooter);
   }
 
-  public Command shootAtSpeedCommand(double shooterWheelSpeedRPS) {
-    return runEnd(() -> setShooterWheelRPS(shooterWheelSpeedRPS), this::stopShooter);
-  }
-
-  public Command shootAtSpeedCommand(DoubleSupplier shooterWheelSpeedRPS) {
-    DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterWheelSpeedRPS.getAsDouble());
+  public Command shootAtSpeedHoodCommand(double shooterSpeedRPS, double hoodAngle) {
     return runEnd(
-        () -> this.setShooterWheelRPS(shooterWheelSpeedRPS.getAsDouble()), this::stopShooter);
+        () -> {
+          setShooterSpeedRPS(shooterSpeedRPS);
+          setHoodPosition(hoodAngle);
+        },
+        this::stopShooter);
+  }
+
+  public Command shootAtSpeedCommand(double shooterSpeedRPS) {
+    return runEnd(() -> setShooterSpeedRPS(shooterSpeedRPS), this::stopShooter);
+  }
+
+  public Command shootAtSpeedHoodCommand(DoubleSupplier shooterSpeedRPS, DoubleSupplier hoodAngle) {
+    return runEnd(
+        () -> {
+          setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
+          setHoodPosition(hoodAngle.getAsDouble());
+          DogLog.log("SkibSpeed", shooterSpeedRPS.getAsDouble());
+          DogLog.log("SkibAngle", hoodAngle.getAsDouble());
+        },
+        this::stopShooter);
+  }
+
+  public Command shootAtSpeedCommand(DoubleSupplier shooterSpeedRPS) {
+    return runEnd(
+        () -> {
+          DogLog.log("Subsystems/Shooter/ShootingSpeedRN", shooterSpeedRPS.getAsDouble());
+          this.setShooterSpeedRPS(shooterSpeedRPS.getAsDouble());
+        },
+        this::stopShooter);
+  }
+
+  public void moveHoodWithVoltage() {
+    hood.setControl(m_voltageRequest.withOutput(Constants.Shooter.Hood.ZERO_VOLTAGE));
   }
 
   @Override
   public void periodic() {
+    // Shooter velocity information
     DogLog.log("Subsystems/Shooter/TargetWheelSpeed (rps)", getTargetShooterWheelSpeedRPS());
-    DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
     DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)", getCurrentShooterWheelSpeedRPS());
 
+    // Shooter status information
+    DogLog.log("Subsystems/Shooter/AtTargetSpeed", isAtSpeed());
+    DogLog.log("Subsystems/Shooter/AtTargetAngle", hoodAtTarget());
+    DogLog.log("Subsystems/Shooter/ShooterReady", isShooterReady());
+
+    // Hood position information
+    double currentHoodDeg = hood.getCachedPositionRotations() * 360.0;
+    DogLog.log("Subsystems/Shooter/Hood/CurrentPositionDeg", currentHoodDeg);
+    DogLog.log("Subsystems/Shooter/Hood/TargetPositionDeg", hoodTargetDeg);
+    DogLog.log("Subsystems/Shooter/Hood/ErrorDeg", currentHoodDeg - hoodTargetDeg);
+    DogLog.log(
+        "Subsystems/Shooter/Hood/UnfusedCANcoderPositionDeg",
+        getHoodCancoderPositionRaw() * 360.0); // CANCAoder reading before fusion
+
+    // Targeting
     Pose2d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
+    double distanceMeters = Targeting.distMeters(drivetrain, target);
+
+    DogLog.log("Subsystems/Shooter/Targeting/DistanceMeters", distanceMeters);
 
     // TODO: Cache this value
     DogLog.log(
@@ -175,5 +311,9 @@ public class ShooterSubsystem extends SubsystemBase {
         Targeting.newtonTargetingInfo(target, drivetrain).getToF());
     // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
     // shooter.getVelocity().getValueAsDouble());
+        // "Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
+        // grabTargetShootingSpeed(distanceMeters));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/MappedHoodAngleDeg", grabTargetHoodAngle(distanceMeters));
   }
 }
