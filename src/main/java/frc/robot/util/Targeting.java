@@ -48,9 +48,7 @@ public class Targeting {
     double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
     if (diff > Math.PI) diff = 2 * Math.PI - diff;
     DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
-    DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
     boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
-    DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
     DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
     return hullAimed;
   }
