@@ -58,8 +58,8 @@ public class ShootWithAimLeading extends ParallelCommandGroup {
                                             Constants.Intake.Arm.POWER_RETRACT_DELAY))))),
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
-                    () -> shooterSubsystem.getTargetShootingSpeed(dist.getAsDouble()),
-                    () -> shooterSubsystem.getTargetHoodAngle(dist.getAsDouble())),
+                    shooterSubsystem.grabTargetShootingSpeed(dist.getAsDouble()),
+                    shooterSubsystem.grabTargetHoodAngle(dist.getAsDouble())),
                 Commands.either(
                     new SwerveJoystickCommandInArc(
                         targetNoOffset,
