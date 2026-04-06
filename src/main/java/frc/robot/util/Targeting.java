@@ -55,6 +55,25 @@ public class Targeting {
     return hullAimed;
   }
 
+  public static boolean pointingAtPose(
+      Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
+    double desiredRobotHullAngle =
+        angleTo(targetNoOffset, drivetrain) + (2 * Math.PI) % (2 * Math.PI);
+
+    double robotHullAngle =
+        drivetrain.getCurrentState().Pose.getRotation().getRadians()
+            + (2 * Math.PI) % (2 * Math.PI);
+
+    double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
+    if (diff > Math.PI) diff = 2 * Math.PI - diff;
+    DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
+    DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
+    boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
+    DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
+    DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
+    return hullAimed;
+  }
+
   // public static TargetingInfo targetingInfo(
   //     Pose2d target, CommandSwerveDrivetrain drivetrain, int precision) {
   //   Vector3 relativeVel =
@@ -174,6 +193,13 @@ public class Targeting {
 
   public static double targetAngle(Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
     Pose2d target = positionToTarget(targetNoOffset, drivetrain);
+    return Math.atan2(
+            Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).y,
+            Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).x)
+        + (Constants.Shooter.SHOOTS_BACKWARDS ? Math.PI : 0);
+  }
+
+  public static double angleTo(Pose2d target, CommandSwerveDrivetrain drivetrain) {
     return Math.atan2(
             Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).y,
             Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).x)

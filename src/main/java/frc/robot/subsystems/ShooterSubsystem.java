@@ -33,6 +33,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
 import frc.robot.util.LoggedTalonFX;
 import frc.robot.util.Targeting;
+import frc.robot.util.Targeting.TargetingInfo;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -288,24 +290,27 @@ public class ShooterSubsystem extends SubsystemBase {
     Pose2d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
     double distanceMeters = Targeting.distMeters(drivetrain, target);
 
-    DogLog.log("Subsystems/Shooter/Targeting/DistanceMeters", distanceMeters);
+    DogLog.log("Subsystems/Shooter/Targeting/DistanceMetersNoOffset", distanceMeters);
+
+    TargetingInfo info = Targeting.newtonTargetingInfo(target, drivetrain);
+    double distanceMetersOffset = Targeting.distMeters(drivetrain, info.getPosition());
 
     // TODO: Cache this value
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         Targeting.positionToTarget(target, drivetrain));
     DogLog.log(
-        "Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target, drivetrain));
+        "Subsystems/Shooter/Targeting/ShootingSpeed", info.getSpeed());
     DogLog.log(
-        "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
+        "Subsystems/Shooter/Targeting/DistanceMetersOffset", distanceMetersOffset);
     DogLog.log(
-        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
+        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.angleTo(info.getPosition(), drivetrain));
     DogLog.log(
-        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtPose(info.getPosition(), drivetrain));
 
     DogLog.log(
         "Subsystems/Shooter/Targeting/TimeOfFlight",
-        Targeting.newtonTargetingInfo(target, drivetrain).getToF());
+        info.getToF());
     // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
     // shooter.getVelocity().getValueAsDouble());
     // "Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
