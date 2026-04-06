@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootWithAimLeading;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
+import frc.robot.commandGroups.ShootWithAimLeading;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -160,7 +160,19 @@ public class RobotContainer {
                 secondController.visionShootingLockout()));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
 
-    joystick.leftTrigger().whileTrue(new ShootWithAimLeading(frontBackFunction, leftRightFunction, lebron, intakeSubsystem, hopperSubsystem, drivetrain, redside, () -> false, () -> false));
+    joystick
+        .leftTrigger()
+        .whileTrue(
+            new ShootWithAimLeading(
+                frontBackFunction,
+                leftRightFunction,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem,
+                drivetrain,
+                redside,
+                () -> false,
+                () -> false));
   }
 
   public void visionPeriodic() {
