@@ -153,9 +153,10 @@ public class ShooterSubsystem extends SubsystemBase {
     hood.setControl(
         m_positionRequest.withPosition(
             MathUtil.clamp(
-                degrees,
-                Constants.Shooter.Hood.MIN_HOOD_POSITION,
-                Constants.Shooter.Hood.MAX_HOOD_POSITION)/ 360.0));
+                    degrees,
+                    Constants.Shooter.Hood.MIN_HOOD_POSITION,
+                    Constants.Shooter.Hood.MAX_HOOD_POSITION)
+                / 360.0));
   }
 
   public Rotation2d getHoodPosition() {
