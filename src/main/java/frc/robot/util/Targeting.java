@@ -163,12 +163,12 @@ public class Targeting {
   }
 
   public static double shootingSpeed(
-      Pose2d target, CommandSwerveDrivetrain drivetrain, int precision) {
+      Pose2d target, CommandSwerveDrivetrain drivetrain) {
     return newtonTargetingInfo(target, drivetrain).getSpeed();
   }
 
   public static Pose2d positionToTarget(
-      Pose2d target, CommandSwerveDrivetrain drivetrain, int precision) {
+      Pose2d target, CommandSwerveDrivetrain drivetrain) {
     return newtonTargetingInfo(target, drivetrain).getPosition();
   }
 
@@ -179,7 +179,7 @@ public class Targeting {
   public static double targetAngle(Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
     Pose2d target =
         positionToTarget(
-            targetNoOffset, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION);
+            targetNoOffset, drivetrain);
     return Math.atan2(
             Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).y,
             Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).x)
