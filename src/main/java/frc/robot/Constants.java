@@ -562,7 +562,7 @@ public final class Constants {
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(148.35615); // mrd 328.35615 
+      private static final double YAW = Units.degreesToRadians(148.35615); // mrd 328.35615
     }
 
     private class RearLeft {
