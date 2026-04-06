@@ -540,7 +540,7 @@ public final class Constants {
 
     private class FrontRight {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(-12.316702);
+      private static final double Y = Units.inchesToMeters(12.316702); // mrd negative
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
@@ -549,7 +549,7 @@ public final class Constants {
 
     private class FrontLeft {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(12.316702);
+      private static final double Y = Units.inchesToMeters(-12.316702); // mrd positive
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
@@ -558,7 +558,7 @@ public final class Constants {
 
     private class RearRight {
       private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(11.537644); //neg
+      private static final double Y = Units.inchesToMeters(11.537644); // mrd negative
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
@@ -567,7 +567,7 @@ public final class Constants {
 
     private class RearLeft {
       private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(-11.537644); // pos
+      private static final double Y = Units.inchesToMeters(-11.537644); // mrd positive
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
