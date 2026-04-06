@@ -17,7 +17,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -158,14 +157,8 @@ public class ShooterSubsystem extends SubsystemBase {
     // TODO: Cache this value
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
-        new Pose2d(
-            Targeting.positionToTarget(
-                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-                .x,
-            Targeting.positionToTarget(
-                    target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION)
-                .y,
-            new Rotation2d()));
+        Targeting.positionToTarget(
+            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
     DogLog.log(
         "Subsystems/Shooter/Targeting/ShootingSpeed",
         Targeting.shootingSpeed(
@@ -179,9 +172,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     DogLog.log(
         "Subsystems/Shooter/Targeting/TimeOfFlight",
-        Targeting.newtonTargetingInfo(
-                target, drivetrain)
-            .getToF());
+        Targeting.newtonTargetingInfo(target, drivetrain).getToF());
     // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
     // shooter.getVelocity().getValueAsDouble());
   }
