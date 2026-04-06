@@ -471,7 +471,7 @@ public final class Constants {
         2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
-    public static final double kP = 1.0;
+    public static final double kP = 0.8;
     public static final double kV = 0.124;
 
     // TODO: Do we want stator limit to still be this high?
