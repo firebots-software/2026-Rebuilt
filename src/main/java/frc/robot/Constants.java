@@ -753,9 +753,10 @@ public final class Constants {
       HOOD_ANGLE_MAP.put(2.78, 6.6);
       HOOD_ANGLE_MAP.put(3.34, 9.0);
       HOOD_ANGLE_MAP.put(3.90, 12.6);
-      HOOD_ANGLE_MAP.put(5.0, 15.3);
-      HOOD_ANGLE_MAP.put(6.0, 16.7);
-      HOOD_ANGLE_MAP.put(7.0, 15.6);
+      HOOD_ANGLE_MAP.put(5.0, 17.0);
+      HOOD_ANGLE_MAP.put(6.0, 18.0);
+      // HOOD_ANGLE_MAP.put(6.0, 16.7);
+      // HOOD_ANGLE_MAP.put(7.0, 15.6);
 
       ROLLER_SPEED_MAP.clear();
       ROLLER_SPEED_MAP.put(1.77, 41.5);
