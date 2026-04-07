@@ -769,6 +769,11 @@ public final class Constants {
 
       TIME_OF_FLIGHT_MAP.clear();
       TIME_OF_FLIGHT_MAP.put(0d, 0d);
+      TIME_OF_FLIGHT_MAP.put(1.97d, 1.5d);
+      TIME_OF_FLIGHT_MAP.put(2.47d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.01d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.59d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.83d, .875d);
     }
 
     public static final class Hood {
