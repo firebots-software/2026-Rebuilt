@@ -487,19 +487,6 @@ public final class Constants {
 
     public static final InterpolatingDoubleTreeMap HOPPER_SPEED_MAP =
         new InterpolatingDoubleTreeMap();
-
-    static {
-      UPDATE_INTERMAPS();
-    }
-
-    // TODO: Update these to be distance based
-    public static void UPDATE_INTERMAPS() {
-      HOPPER_SPEED_MAP.clear();
-
-      HOPPER_SPEED_MAP.put(0.0, 2.2);
-      HOPPER_SPEED_MAP.put(3.0, 2.2);
-      HOPPER_SPEED_MAP.put(8.0, 0.88);
-    }
   }
 
   public static class Vision {
@@ -761,18 +748,18 @@ public final class Constants {
     public static void UPDATE_INTERMAPS() {
       // TODO: not populated yet
       HOOD_ANGLE_MAP.clear();
-      HOOD_ANGLE_MAP.put(0d, Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(1.77, Constants.Shooter.Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(2.21, Constants.Shooter.Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(2.78, 6.6);
+      HOOD_ANGLE_MAP.put(3.34, 9.0);
+      HOOD_ANGLE_MAP.put(3.90, 12.6);
 
       ROLLER_SPEED_MAP.clear();
-      final double offset = 1.0429875;
-      ROLLER_SPEED_MAP.put(offset, 44.2);
-      ROLLER_SPEED_MAP.put(0.2111 + offset, 45.2000038381);
-      ROLLER_SPEED_MAP.put(0.6108 + offset, 46.4732433828);
-      ROLLER_SPEED_MAP.put(1.0478 + offset, 50.9295817894);
-      ROLLER_SPEED_MAP.put(1.4097 + offset, 52.8394411065);
-      ROLLER_SPEED_MAP.put(1.7971 + offset, 55.385920196);
-      ROLLER_SPEED_MAP.put(2.1336 + offset, 57.2957795131);
-      ROLLER_SPEED_MAP.put(3.6576 + offset, 61.1154981473);
+      ROLLER_SPEED_MAP.put(1.77, 41.5);
+      ROLLER_SPEED_MAP.put(2.21, 43.5);
+      ROLLER_SPEED_MAP.put(2.78, 46.5);
+      ROLLER_SPEED_MAP.put(3.34, 49.0);
+      ROLLER_SPEED_MAP.put(3.90, 51.50);
 
       TIME_OF_FLIGHT_MAP.clear();
       TIME_OF_FLIGHT_MAP.put(0d, 0d);
@@ -818,14 +805,14 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double TOLERANCE_RPS = 3.0;
+      public static final double TOLERANCE_RPS = 1.0;
       public static final boolean INTERMAP_TESTING = false;
 
       public static final int WARMUP_1_ID = 10;
       public static final int WARMUP_2_ID = 9;
       public static final int WARMUP_3_ID = 11;
 
-      public static final double KP = 0.8;
+      public static final double KP = 0.85;
       public static final double KV = 0.124;
       public static final double KS = 0.0;
 
