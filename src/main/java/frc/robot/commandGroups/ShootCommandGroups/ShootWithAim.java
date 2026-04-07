@@ -49,11 +49,21 @@ public class ShootWithAim extends ParallelCommandGroup {
                     translationalY,
                     () -> 0.0,
                     () -> 1.0,
-                    () -> false,
-                    () -> false,
                     () -> true,
+                    () -> true,
+                    () -> false,
                     redside,
                     drivetrain),
+
+    //                  DoubleSupplier frontBackFunction,
+    //   DoubleSupplier leftRightFunction,
+    //   DoubleSupplier turningSpdFunction,
+    //   DoubleSupplier speedControlFunction,
+    //   BooleanSupplier fieldRelativeFunction,
+    //   BooleanSupplier doPointing,
+    //   BooleanSupplier doPassing,
+    //   BooleanSupplier redSideIfPointing,
+    //   CommandSwerveDrivetrain swerveSubsystem
                 Commands.waitUntil(shooterSubsystem::isShooterReady)
                     .andThen(
                         Commands.parallel(
