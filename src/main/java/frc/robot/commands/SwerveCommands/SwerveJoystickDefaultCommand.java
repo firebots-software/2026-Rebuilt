@@ -30,6 +30,7 @@ public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
                 speedFunction, // slowmode when left shoulder is pressed, otherwise fast
                 () -> true,
                 doPointing, // joystick.a().getAsBoolean()
+                () -> false,
                 redSideIfPointing,
                 swerveSubsystem),
             new SwerveJoystickCommandWithCorrection(

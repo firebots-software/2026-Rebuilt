@@ -229,11 +229,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public Translation2d getPassingTarget(BooleanSupplier redside) {
     return redside.getAsBoolean()
         ? this.getPose()
-            .nearest(Arrays.asList(Constants.Landmarks.RED_PASSING_L, Constants.Landmarks.RED_PASSING_R))
+            .nearest(
+                Arrays.asList(Constants.Landmarks.RED_PASSING_L, Constants.Landmarks.RED_PASSING_R))
             .getTranslation()
         : this.getPose()
             .nearest(
-                Arrays.asList(Constants.Landmarks.BLUE_PASSING_L, Constants.Landmarks.BLUE_PASSING_R))
+                Arrays.asList(
+                    Constants.Landmarks.BLUE_PASSING_L, Constants.Landmarks.BLUE_PASSING_R))
             .getTranslation();
   }
 
