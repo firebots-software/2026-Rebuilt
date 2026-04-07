@@ -55,15 +55,15 @@ public class ShootWithAim extends ParallelCommandGroup {
                     redside,
                     drivetrain),
 
-    //                  DoubleSupplier frontBackFunction,
-    //   DoubleSupplier leftRightFunction,
-    //   DoubleSupplier turningSpdFunction,
-    //   DoubleSupplier speedControlFunction,
-    //   BooleanSupplier fieldRelativeFunction,
-    //   BooleanSupplier doPointing,
-    //   BooleanSupplier doPassing,
-    //   BooleanSupplier redSideIfPointing,
-    //   CommandSwerveDrivetrain swerveSubsystem
+                //                  DoubleSupplier frontBackFunction,
+                //   DoubleSupplier leftRightFunction,
+                //   DoubleSupplier turningSpdFunction,
+                //   DoubleSupplier speedControlFunction,
+                //   BooleanSupplier fieldRelativeFunction,
+                //   BooleanSupplier doPointing,
+                //   BooleanSupplier doPassing,
+                //   BooleanSupplier redSideIfPointing,
+                //   CommandSwerveDrivetrain swerveSubsystem
                 Commands.waitUntil(shooterSubsystem::isShooterReady)
                     .andThen(
                         Commands.parallel(
@@ -72,12 +72,13 @@ public class ShootWithAim extends ParallelCommandGroup {
                                 () ->
                                     Targeting.pointingAtTarget(
                                         drivetrain
-                                            .travelAngleTo(
-                                                new Pose2d(
-                                                    drivetrain.getVirtualTarget(
-                                                        redside, () -> false),
-                                                    new Rotation2d()))
-                                            .getRadians() + Math.PI,
+                                                .travelAngleTo(
+                                                    new Pose2d(
+                                                        drivetrain.getVirtualTarget(
+                                                            redside, () -> false),
+                                                        new Rotation2d()))
+                                                .getRadians()
+                                            + Math.PI,
                                         drivetrain)),
                             intakeSubsystem.powerRetractRollersCommand()))),
             manualOverride));

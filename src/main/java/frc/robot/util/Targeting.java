@@ -3,7 +3,6 @@ package frc.robot.util;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
@@ -61,9 +60,9 @@ public class Targeting {
     //         / initialDistance;
 
     double tof = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance);
-        // initialDistance
-        //     / (initialDistance / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance)
-        //         - radialVelocity);
+    // initialDistance
+    //     / (initialDistance / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance)
+    //         - radialVelocity);
 
     for (int i = 0; i < Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
       double distX = initDX - fieldSpeeds.vxMetersPerSecond * tof;
