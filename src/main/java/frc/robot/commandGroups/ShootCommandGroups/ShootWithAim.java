@@ -1,5 +1,7 @@
 package frc.robot.commandGroups.ShootCommandGroups;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
@@ -57,8 +59,15 @@ public class ShootWithAim extends ParallelCommandGroup {
                             hopperSubsystem.runHopperUntilInterruptedCommand(
                                 () -> Constants.Hopper.TARGET_SURFACE_SPEED_MPS,
                                 () ->
-                                    Targeting.pointingAtHub(redside, drivetrain)
-                                        && drivetrain.getSpeedMagnitude() <= 0.2),
+                                    Targeting.pointingAtTarget(
+                                        drivetrain
+                                            .travelAngleTo(
+                                                new Pose2d(
+                                                    drivetrain.getVirtualTarget(
+                                                        redside, () -> false),
+                                                    new Rotation2d()))
+                                            .getRadians() + Math.PI,
+                                        drivetrain)),
                             intakeSubsystem.powerRetractRollersCommand()))),
             manualOverride));
   }

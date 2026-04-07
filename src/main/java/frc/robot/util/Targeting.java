@@ -112,6 +112,21 @@ public class Targeting {
     return hullAimed;
   }
 
+  public static boolean pointingAtTarget(double angle, CommandSwerveDrivetrain drivetrain) {
+    double desiredRobotHullAngle = angle;
+
+    double robotHullAngle =
+        drivetrain.getCurrentState().Pose.getRotation().getRadians()
+            + (2 * Math.PI) % (2 * Math.PI);
+
+    double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
+    if (diff > Math.PI) diff = 2 * Math.PI - diff;
+    DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
+    boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
+    DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
+    return hullAimed;
+  }
+
   // public static TargetingInfo targetingInfo(
   //     Pose2d target, CommandSwerveDrivetrain drivetrain, int precision) {
   //   Vector3 relativeVel =
