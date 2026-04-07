@@ -225,7 +225,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       virtualTarget = Targeting.computeVirtualTarget(Targeting.getHub(redside), this);
       virtualTargetComputedThisLoop = true;
     }
-    DogLog.log("VirtualTarget", virtualTarget);
+    DogLog.log("VirtualTarget", new Pose2d(virtualTarget, new Rotation2d()));
     return virtualTarget;
   }
 
