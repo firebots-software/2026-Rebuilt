@@ -470,7 +470,7 @@ public final class Constants {
         2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
-    public static final double kP = 1.0;
+    public static final double kP = 0.8;
     public static final double kV = 0.124;
 
     // TODO: Do we want stator limit to still be this high?
@@ -487,19 +487,6 @@ public final class Constants {
 
     public static final InterpolatingDoubleTreeMap HOPPER_SPEED_MAP =
         new InterpolatingDoubleTreeMap();
-
-    static {
-      UPDATE_INTERMAPS();
-    }
-
-    // TODO: Update these to be distance based
-    public static void UPDATE_INTERMAPS() {
-      HOPPER_SPEED_MAP.clear();
-
-      HOPPER_SPEED_MAP.put(0.0, 2.2);
-      HOPPER_SPEED_MAP.put(3.0, 2.2);
-      HOPPER_SPEED_MAP.put(8.0, 0.88);
-    }
   }
 
   public static class Vision {
@@ -539,7 +526,7 @@ public final class Constants {
 
     private class FrontRight {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(-12.316702);
+      private static final double Y = Units.inchesToMeters(12.316702); // mrd negative
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
@@ -548,7 +535,7 @@ public final class Constants {
 
     private class FrontLeft {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(12.316702);
+      private static final double Y = Units.inchesToMeters(-12.316702); // mrd positive
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
@@ -557,20 +544,20 @@ public final class Constants {
 
     private class RearRight {
       private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(-11.537644);
+      private static final double Y = Units.inchesToMeters(-11.537644); // mrd negative
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(328.35615);
+      private static final double YAW = Units.degreesToRadians(148.35615); // mrd 328.35615
     }
 
     private class RearLeft {
       private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(11.537644);
+      private static final double Y = Units.inchesToMeters(11.537644); // mrd positive
       private static final double Z = Units.inchesToMeters(23.570693);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(31.643850);
+      private static final double YAW = Units.degreesToRadians(211.64385); // mrd 31.643850
     }
 
     // initializes cameras for use in VisionSubsystem
@@ -761,34 +748,46 @@ public final class Constants {
     public static void UPDATE_INTERMAPS() {
       // TODO: not populated yet
       HOOD_ANGLE_MAP.clear();
-      HOOD_ANGLE_MAP.put(0d, Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(1.77, Constants.Shooter.Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(2.21, Constants.Shooter.Hood.MIN_HOOD_POSITION);
+      HOOD_ANGLE_MAP.put(2.78, 6.6);
+      HOOD_ANGLE_MAP.put(3.34, 9.0);
+      HOOD_ANGLE_MAP.put(3.90, 12.6);
+      HOOD_ANGLE_MAP.put(5.0, 15.3);
+      HOOD_ANGLE_MAP.put(6.0, 16.7);
+      HOOD_ANGLE_MAP.put(7.0, 15.6);
 
       ROLLER_SPEED_MAP.clear();
-      final double offset = 1.0429875;
-      ROLLER_SPEED_MAP.put(offset, 44.2);
-      ROLLER_SPEED_MAP.put(0.2111 + offset, 45.2000038381);
-      ROLLER_SPEED_MAP.put(0.6108 + offset, 46.4732433828);
-      ROLLER_SPEED_MAP.put(1.0478 + offset, 50.9295817894);
-      ROLLER_SPEED_MAP.put(1.4097 + offset, 52.8394411065);
-      ROLLER_SPEED_MAP.put(1.7971 + offset, 55.385920196);
-      ROLLER_SPEED_MAP.put(2.1336 + offset, 57.2957795131);
-      ROLLER_SPEED_MAP.put(3.6576 + offset, 61.1154981473);
+      ROLLER_SPEED_MAP.put(1.77, 41.5);
+      ROLLER_SPEED_MAP.put(2.21, 43.5);
+      ROLLER_SPEED_MAP.put(2.78, 46.5);
+      ROLLER_SPEED_MAP.put(3.34, 49.0);
+      ROLLER_SPEED_MAP.put(3.90, 51.50);
+      ROLLER_SPEED_MAP.put(5.0, 56.9);
+      ROLLER_SPEED_MAP.put(6.0, 61.7);
+      ROLLER_SPEED_MAP.put(7.0, 66.5);
 
       TIME_OF_FLIGHT_MAP.clear();
       TIME_OF_FLIGHT_MAP.put(0d, 0d);
+      TIME_OF_FLIGHT_MAP.put(1.97d, 1.5d);
+      TIME_OF_FLIGHT_MAP.put(2.47d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.01d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.59d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.83d, .875d);
     }
 
     public static final class Hood {
       public static final int HOOD_ID = 12;
 
-      public static final double KP = 0.85;
+      public static final double KP = 2300;
+      public static final double KI = 7.0;
       public static final double KV = 0.124;
-      public static final double KD = 0.0;
+      public static final double KD = 40.0;
       public static final double KS = 0.0;
-      public static final double KG = 0.0;
+      public static final double KG = 0.4;
 
       public static final double STATOR_CURRENT_LIMIT = 40.0;
-      public static final double SUPPLY_CURRENT_LIMIT = 50.0;
+      public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
       public static final double MOTOR_ROTS_PER_HOOD_ROT = 996.0 / 5.0;
       public static final double HOOD_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_HOOD_ROT;
@@ -800,12 +799,12 @@ public final class Constants {
           MOTOR_ROTS_PER_HOOD_ROT / MOTOR_ROTS_PER_ENCODER_ROT;
       public static final double HOOD_ROTS_PER_ENCODER_ROT = 1.0 / ENCODER_ROTS_PER_HOOD_ROT;
 
-      public static final double HOOD_TOLERANCE_DEG = 0.1;
+      public static final double HOOD_TOLERANCE_DEG = 0.5;
 
-      public static final double MIN_HOOD_POSITION = 0;
-      public static final double MAX_HOOD_POSITION = 15;
+      public static final double MIN_HOOD_POSITION = 3.8;
+      public static final double MAX_HOOD_POSITION = 18.369;
 
-      public static double ENCODER_OFFSET = 0.0d; // TODO
+      public static double ENCODER_OFFSET = 0.296; // TODO
       public static final int ENCODER_PORT = 18;
 
       public static final double ZERO_STATOR_CURRENT_LIMIT = 15.0;
@@ -817,7 +816,7 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double TOLERANCE_RPS = 2.0;
+      public static final double TOLERANCE_RPS = 1.0;
       public static final boolean INTERMAP_TESTING = false;
 
       public static final int WARMUP_1_ID = 10;
@@ -831,7 +830,7 @@ public final class Constants {
       public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 40.0;
 
-      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 1.25;
+      public static final double MOTOR_ROTS_PER_WHEEL_ROT = 15.0 / 12.0;
       public static final double WHEEL_ROTS_PER_MOTOR_ROT = 1.0 / MOTOR_ROTS_PER_WHEEL_ROT;
       public static final double SHOOTER_WHEEL_DIAMETER = 3.0;
     }
@@ -909,11 +908,6 @@ public final class Constants {
         new Pose2d(4.621390342712402, 4.032095909118652, new Rotation2d());
     public static Pose2d RED_HUB =
         new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
-
-    // public static Pose2d BLUE_HUB_2D =
-    //     new Pose2d(4.621390342712402, 4.032095909118652, new Rotation2d());
-    // public static Pose2d RED_HUB_2D =
-    //     new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
 
     public static Pose2d RED_TOWER_R =
         new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));

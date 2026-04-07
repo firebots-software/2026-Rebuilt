@@ -2,6 +2,8 @@ package frc.robot.util;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
@@ -34,6 +36,63 @@ public class Targeting {
     public Pose2d getPosition() {
       return pos;
     }
+  }
+
+  public static Translation2d computeVirtualTarget(
+      Pose2d target, CommandSwerveDrivetrain drivetrain) {
+    ChassisSpeeds fieldSpeeds = drivetrain.getFieldSpeeds();
+    Pose2d currPose = drivetrain.getPose();
+
+    Twist2d twist =
+        new Twist2d(
+            fieldSpeeds.vxMetersPerSecond * 0.03,
+            fieldSpeeds.vyMetersPerSecond * 0.03,
+            fieldSpeeds.omegaRadiansPerSecond * 0.03);
+    Pose2d lookaheadPose = currPose.exp(twist);
+
+    double initDX = target.getX() - lookaheadPose.getX();
+    double initDY = target.getY() - lookaheadPose.getY();
+    double initialDistance = Math.sqrt(initDX * initDX + initDY * initDY);
+
+    if (initialDistance < 1e-6) return target.getTranslation();
+
+    double radialVelocity =
+        (initDX * fieldSpeeds.vxMetersPerSecond + initDY * fieldSpeeds.vyMetersPerSecond)
+            / initialDistance;
+
+    double tof =
+        initialDistance
+            / (initialDistance / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance)
+                - radialVelocity);
+
+    for (int i = 0; i < Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
+      double distX = initDX - fieldSpeeds.vxMetersPerSecond * tof;
+      double distY = initDY - fieldSpeeds.vyMetersPerSecond * tof;
+      double distance = Math.sqrt(distX * distX + distY * distY);
+
+      if (distance < 1e-6) break;
+
+      double tofTable = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
+      double error = tof - tofTable;
+
+      if (Math.abs(error) < 1e-3) break;
+
+      double horizontalVel = distance / tofTable;
+      double errorDerivative =
+          1.0
+              + ((distX * fieldSpeeds.vxMetersPerSecond + distY * fieldSpeeds.vyMetersPerSecond)
+                  / (distance * horizontalVel));
+
+      if (tof < 1e-3) tof = 1e-3;
+
+      double step = error / errorDerivative;
+      step = Math.max(-0.05, Math.min(0.05, step));
+      tof -= step;
+    }
+
+    return new Translation2d(
+        target.getX() - fieldSpeeds.vxMetersPerSecond * tof,
+        target.getY() - fieldSpeeds.vyMetersPerSecond * tof);
   }
 
   public static boolean pointingAtTarget(
@@ -221,5 +280,9 @@ public class Targeting {
   public static boolean pointingAtHub(BooleanSupplier redside, CommandSwerveDrivetrain drivetrain) {
     Pose2d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
     return pointingAtTarget(target, drivetrain);
+  }
+
+  public static Pose2d getHub(BooleanSupplier redside) {
+    return (redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB);
   }
 }

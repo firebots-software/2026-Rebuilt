@@ -30,6 +30,8 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
+import frc.robot.util.Targeting;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -37,6 +39,8 @@ import java.util.function.Supplier;
  * be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+  private Translation2d virtualTarget = null;
+  private boolean virtualTargetComputedThisLoop = false;
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -208,6 +212,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return run(() -> this.setControl(requestSupplier.get()));
   }
 
+  public Translation2d getVirtualTarget(BooleanSupplier redside, BooleanSupplier override) {
+    if (override.getAsBoolean()) {
+      return (redside.getAsBoolean())
+          ? (Constants.Landmarks.RED_HUB.getTranslation())
+          : (Constants.Landmarks.BLUE_HUB.getTranslation());
+    }
+    if (virtualTarget == null || !virtualTargetComputedThisLoop) {
+      virtualTarget = Targeting.computeVirtualTarget(Targeting.getHub(redside), this);
+      virtualTargetComputedThisLoop = true;
+    }
+    return virtualTarget;
+  }
+
   public SwerveDriveState getCurrentState() {
     return currentState;
   }
@@ -256,6 +273,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   @Override
   public void periodic() {
+    virtualTargetComputedThisLoop = false;
     DogLog.log("SpeedMagnitude", getSpeedMagnitude());
     /*
      * Periodically try to apply the operator perspective.
@@ -349,7 +367,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       omegaFF = (dy * vx - dx * vy) / r2;
     }
 
-    Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx));
+    Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx) + Math.PI);
     double omegaPID =
         headingPIDController.calculate(
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());

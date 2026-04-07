@@ -44,7 +44,7 @@ public class HopperSubsystem extends SubsystemBase {
 
     MotorOutputConfigs motorOutputConfigs =
         new MotorOutputConfigs()
-            .withInverted(InvertedValue.Clockwise_Positive)
+            .withInverted(InvertedValue.CounterClockwise_Positive)
             .withNeutralMode(NeutralModeValue.Brake);
 
     ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3);
@@ -145,9 +145,9 @@ public class HopperSubsystem extends SubsystemBase {
     return runEnd(() -> runHopperMps(targetSurfaceSpeedMps), this::stop);
   }
 
-  public double grabHopperRecommendedSpeed(double distanceToTarget) {
-    return Constants.Hopper.HOPPER_SPEED_MAP.get(distanceToTarget);
-  }
+  // public double grabHopperRecommendedSpeed(double distanceToTarget) {
+  //   return Constants.Hopper.HOPPER_SPEED_MAP.get(distanceToTarget);
+  // }
 
   @Override
   public void periodic() {
