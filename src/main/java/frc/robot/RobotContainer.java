@@ -82,8 +82,8 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-    private double hoodAngle = 12.6;
-    private double shooterSpeed = 51.75;
+    // private double hoodAngle = 12.6;
+    // private double shooterSpeed = 51.75;
 
   public RobotContainer() {
     hoodAngleTunable.setDefault(10.0);
@@ -127,36 +127,23 @@ public class RobotContainer {
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         intakeSubsystem
-    //             .outtakeUntilInterruptedCommand()
-    //             .alongWith(
-    //                 hopperSubsystem.runHopperUntilInterruptedCommand(
-    //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
-
     joystick
-        .rightTrigger()
+        .a()
         .whileTrue(
-            lebron
-                .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
-                .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
-                    (hopperSubsystem
-                        .runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand()))))); // Commands.waitUntil(lebron::isShooterReady).andThen
+            intakeSubsystem
+                .outtakeUntilInterruptedCommand()
+                .alongWith(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
+                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
 
     // joystick
-    //     .b()
-    //     .whileTrue(
-    //         lebron.shootAtSpeedHoodCommand(
-    //             () -> 50.0, () -> Constants.Shooter.Hood.MIN_HOOD_POSITION));
-    // joystick
-    //     .b()
+    //     .rightTrigger()
     //     .whileTrue(
     //         lebron
-    //             .shootAtSpeedHoodCommand(() -> shooterSpeedTunable.get(),
-    //                 () -> hoodAngleTunable.get())
-    //             .alongWith(hopperSubsystem.runHopperUntilInterruptedCommand()));
+    //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
+    //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
+    //                 (hopperSubsystem
+    //                     .runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand()))))); // Commands.waitUntil(lebron::isShooterReady).andThen
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
@@ -165,25 +152,25 @@ public class RobotContainer {
 
     // Shooter
     lebron.setDefaultCommand(lebron.runOnce(lebron::stopShooter));
-    // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         new ShootWithAim(
-    //             frontBackFunction,
-    //             leftRightFunction,
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem,
-    //             drivetrain,
-    //             redside,
-    //             secondController.visionShootingLockout()));
+    joystick
+        .rightTrigger()
+        .whileTrue(
+            new ShootWithAim(
+                frontBackFunction,
+                leftRightFunction,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem,
+                drivetrain,
+                redside,
+                secondController.visionShootingLockout()));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
 
-    joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
-    joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
+    // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
+    // joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
 
-    joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
-    joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
+    // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
+    // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
 
   public void visionPeriodic() {

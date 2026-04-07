@@ -898,11 +898,6 @@ public final class Constants {
     public static Pose2d RED_HUB =
         new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
 
-    // public static Pose2d BLUE_HUB_2D =
-    //     new Pose2d(4.621390342712402, 4.032095909118652, new Rotation2d());
-    // public static Pose2d RED_HUB_2D =
-    //     new Pose2d(11.917659759521484, 4.032095909118652, new Rotation2d());
-
     public static Pose2d RED_TOWER_R =
         new Pose2d(14.871597290039062, 4.749175071716309, new Rotation2d(0));
     public static Pose2d RED_TOWER_L =
