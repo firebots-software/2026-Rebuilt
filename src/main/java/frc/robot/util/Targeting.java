@@ -43,27 +43,27 @@ public class Targeting {
     ChassisSpeeds fieldSpeeds = drivetrain.getFieldSpeeds();
     Pose2d currPose = drivetrain.getPose();
 
-    Twist2d twist =
-        new Twist2d(
-            fieldSpeeds.vxMetersPerSecond * 0.03,
-            fieldSpeeds.vyMetersPerSecond * 0.03,
-            fieldSpeeds.omegaRadiansPerSecond * 0.03);
-    Pose2d lookaheadPose = currPose.exp(twist);
+    // Twist2d twist =
+    //     new Twist2d(
+    //         fieldSpeeds.vxMetersPerSecond * 0.03,
+    //         fieldSpeeds.vyMetersPerSecond * 0.03,
+    //         fieldSpeeds.omegaRadiansPerSecond * 0.03);
+    // Pose2d lookaheadPose = currPose.exp(twist);
 
-    double initDX = target.getX() - lookaheadPose.getX();
-    double initDY = target.getY() - lookaheadPose.getY();
+    double initDX = target.getX() - currPose.getX();
+    double initDY = target.getY() - currPose.getY();
     double initialDistance = Math.sqrt(initDX * initDX + initDY * initDY);
 
     if (initialDistance < 1e-6) return target.getTranslation();
 
-    double radialVelocity =
-        (initDX * fieldSpeeds.vxMetersPerSecond + initDY * fieldSpeeds.vyMetersPerSecond)
-            / initialDistance;
+    // double radialVelocity =
+    //     (initDX * fieldSpeeds.vxMetersPerSecond + initDY * fieldSpeeds.vyMetersPerSecond)
+    //         / initialDistance;
 
-    double tof =
-        initialDistance
-            / (initialDistance / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance)
-                - radialVelocity);
+    double tof = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance);
+        // initialDistance
+        //     / (initialDistance / Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance)
+        //         - radialVelocity);
 
     for (int i = 0; i < Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
       double distX = initDX - fieldSpeeds.vxMetersPerSecond * tof;
@@ -86,7 +86,8 @@ public class Targeting {
       if (tof < 1e-3) tof = 1e-3;
 
       double step = error / errorDerivative;
-      step = Math.max(-0.05, Math.min(0.05, step));
+      // step = Math.max(-0.05, Math.min(0.05, step));
+      step = Math.max(-0.1 * tof, Math.min(0.1 * tof, step));
       tof -= step;
     }
 
