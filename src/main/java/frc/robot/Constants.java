@@ -467,7 +467,7 @@ public final class Constants {
 
     // TODO: subject to change, ask Jeff
     public static final double TARGET_SURFACE_SPEED_MPS =
-        2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
+        2.6; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
     public static final double kP = 0.8;
