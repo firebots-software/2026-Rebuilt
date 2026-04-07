@@ -753,9 +753,10 @@ public final class Constants {
       HOOD_ANGLE_MAP.put(2.78, 6.6);
       HOOD_ANGLE_MAP.put(3.34, 9.0);
       HOOD_ANGLE_MAP.put(3.90, 12.6);
-      HOOD_ANGLE_MAP.put(5.0, 15.3);
-      HOOD_ANGLE_MAP.put(6.0, 16.7);
-      HOOD_ANGLE_MAP.put(7.0, 15.6);
+      HOOD_ANGLE_MAP.put(5.0, 17.0);
+      HOOD_ANGLE_MAP.put(6.0, 18.0);
+      // HOOD_ANGLE_MAP.put(6.0, 16.7);
+      // HOOD_ANGLE_MAP.put(7.0, 15.6);
 
       ROLLER_SPEED_MAP.clear();
       ROLLER_SPEED_MAP.put(1.77, 41.5);
@@ -769,6 +770,11 @@ public final class Constants {
 
       TIME_OF_FLIGHT_MAP.clear();
       TIME_OF_FLIGHT_MAP.put(0d, 0d);
+      TIME_OF_FLIGHT_MAP.put(1.97d, 1.5d);
+      TIME_OF_FLIGHT_MAP.put(2.47d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.01d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.59d, .75d);
+      TIME_OF_FLIGHT_MAP.put(3.83d, .875d);
     }
 
     public static final class Hood {
@@ -929,5 +935,11 @@ public final class Constants {
         new Pose2d(
             new Translation2d(5.624283313751221, 2.4593770503997803),
             new Rotation2d(1.57873264137917));
+
+    public static Pose2d BLUE_PASSING_L = new Pose2d(1.8, 6.8, new Rotation2d());
+    public static Pose2d BLUE_PASSING_R = new Pose2d(1.8, 1.2, new Rotation2d());
+
+    public static Pose2d RED_PASSING_L = new Pose2d(14.7, 1.2, new Rotation2d());
+    public static Pose2d RED_PASSING_R = new Pose2d(14.7, 6.8, new Rotation2d());
   }
 }

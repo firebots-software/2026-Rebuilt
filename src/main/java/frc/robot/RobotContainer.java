@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
@@ -163,6 +164,17 @@ public class RobotContainer {
                 drivetrain,
                 redside,
                 secondController.visionShootingLockout()));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootPassing(
+                frontBackFunction,
+                leftRightFunction,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem,
+                drivetrain,
+                redside));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
 
     // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));

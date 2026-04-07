@@ -13,7 +13,7 @@ public class SwerveJoystickCommand extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
-  protected final BooleanSupplier fieldRelativeFunction, doPointing, redsideIfPointing;
+  protected final BooleanSupplier fieldRelativeFunction, doPointing, doPassing, redsideIfPointing;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
@@ -30,6 +30,7 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier speedControlFunction,
       BooleanSupplier fieldRelativeFunction,
       BooleanSupplier doPointing,
+      BooleanSupplier doPassing,
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem) {
     this.xSpdFunction = frontBackFunction;
@@ -40,6 +41,7 @@ public class SwerveJoystickCommand extends Command {
     this.squaredTurn = true;
     this.swerveDrivetrain = swerveSubsystem;
     this.doPointing = doPointing;
+    this.doPassing = doPassing;
     this.redsideIfPointing = redSideIfPointing;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
@@ -59,6 +61,7 @@ public class SwerveJoystickCommand extends Command {
         leftRightFunction,
         turningSpdFunction,
         speedControlFunction,
+        () -> false,
         () -> false,
         () -> false,
         () -> false,
@@ -131,11 +134,16 @@ public class SwerveJoystickCommand extends Command {
     //                     : (Constants.Landmarks.BLUE_HUB_2D)))))
     //         : (turningSpeed);
 
-    final double turn =
+    double turn =
         (doPointing.getAsBoolean())
             ? (swerveDrivetrain.calculateRequiredRotationalRateWithFF(
-                swerveDrivetrain.getVirtualTarget(redsideIfPointing, () -> true)))
+                swerveDrivetrain.getVirtualTarget(redsideIfPointing, () -> false)))
             : (turningSpeed);
+
+    if (doPassing.getAsBoolean())
+      turn =
+          swerveDrivetrain.calculateRequiredRotationalRateWithFF(
+              swerveDrivetrain.getPassingTarget(redsideIfPointing));
 
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
