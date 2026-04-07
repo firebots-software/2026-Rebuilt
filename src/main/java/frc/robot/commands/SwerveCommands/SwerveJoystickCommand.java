@@ -134,9 +134,7 @@ public class SwerveJoystickCommand extends Command {
     final double turn =
         (doPointing.getAsBoolean())
             ? (swerveDrivetrain.calculateRequiredRotationalRateWithFF(
-                redsideIfPointing.getAsBoolean()
-                    ? Constants.Landmarks.RED_HUB_2D.getTranslation()
-                    : Constants.Landmarks.BLUE_HUB_2D.getTranslation()))
+                swerveDrivetrain.getVirtualTarget(redsideIfPointing, () -> true)))
             : (turningSpeed);
 
     // 5. Applying the drive request on the swerve drivetrain

@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -23,8 +24,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -76,10 +78,13 @@ public class ShooterSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
 
+    VoltageConfigs rollersVoltageOutputConfigs = new VoltageConfigs().withPeakReverseVoltage(1.0);
+
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersS0c;
     rollersConfig.CurrentLimits = rollersClc;
     rollersConfig.MotorOutput = rollersOutputConfigs;
+    rollersConfig.Voltage = rollersVoltageOutputConfigs;
 
     warmup1.getConfigurator().apply(rollersConfig);
     warmup2.getConfigurator().apply(rollersConfig);
@@ -291,22 +296,31 @@ public class ShooterSubsystem extends SubsystemBase {
         getHoodCancoderPositionRaw() * 360.0); // CANCAoder reading before fusion
 
     // Targeting
-    Pose3d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
+    Pose2d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
     double distanceMeters = Targeting.distMeters(drivetrain, target);
 
     DogLog.log("Subsystems/Shooter/Targeting/DistanceMeters", distanceMeters);
+
+    // TODO: Cache this value
     DogLog.log(
-        "Subsystems/Shooter/Targeting/ShootingSpeed",
-        Targeting.shootingSpeed(
-            target, drivetrain, Constants.Shooter.TARGETING_CALCULATION_PRECISION));
+        "Subsystems/Shooter/Targeting/TargetPlusLead",
+        Targeting.positionToTarget(target, drivetrain));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target, drivetrain));
+    DogLog.log(
+        "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
     DogLog.log(
         "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
 
     DogLog.log(
-        "Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
-        grabTargetShootingSpeed(distanceMeters));
+        "Subsystems/Shooter/Targeting/TimeOfFlight",
+        Targeting.newtonTargetingInfo(target, drivetrain).getToF());
+    // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
+    // shooter.getVelocity().getValueAsDouble());
+    // "Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",
+    // grabTargetShootingSpeed(distanceMeters));
     DogLog.log(
         "Subsystems/Shooter/Targeting/MappedHoodAngleDeg", grabTargetHoodAngle(distanceMeters));
   }

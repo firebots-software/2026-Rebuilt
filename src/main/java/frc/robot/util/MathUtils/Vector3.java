@@ -3,6 +3,7 @@ package frc.robot.util.MathUtils;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class Vector3 {
   public float x;
@@ -65,5 +66,13 @@ public class Vector3 {
 
   public static Pose2d toPose2d(Vector3 a) {
     return new Pose2d(a.x, a.y, new Rotation2d());
+  }
+
+  public static Vector2 toVector2(Vector3 a) {
+    return new Vector2(a.x, a.y);
+  }
+
+  public static Translation2d toTranslation2d(Vector3 a) {
+    return new Translation2d(a.x, a.y);
   }
 }
