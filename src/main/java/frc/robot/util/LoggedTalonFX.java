@@ -1,12 +1,12 @@
 package frc.robot.util;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj.RobotController;
 import java.util.ArrayList;
 
 /**
@@ -146,12 +146,11 @@ public class LoggedTalonFX extends TalonFX {
   /**
    * @param deviceName Designated name of this LoggedTalonFX
    * @param deviceId Motor ID of this LoggedTalonFX
-   * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
-   *     identify CAN Bus through string. Check phoenix6 documentation for more details.
+   * @param canbus CAN Bus object Associated with this LoggedTalonFX.
    */
-  public LoggedTalonFX(String deviceName, int deviceId, String canbus) {
+  public LoggedTalonFX(String deviceName, int deviceId, CANBus canbus) {
     super(deviceId, canbus);
-    name = deviceName;
+    name = "Motors/" + deviceName;
     init();
   }
 
@@ -161,16 +160,15 @@ public class LoggedTalonFX extends TalonFX {
    */
   public LoggedTalonFX(String deviceName, int deviceId) {
     super(deviceId);
-    name = deviceName;
+    name = "Motors/" + deviceName;
     init();
   }
 
   /**
    * @param deviceId Motor ID of this LoggedTalonFX
-   * @param canbus Name of CAN Bus Associated with this LoggedTalonFX. Might be deprecated to
-   *     identify CAN Bus through string. Check phoenix6 documentation for more details.
+   * @param canbus CAN Bus object Associated with this LoggedTalonFX.
    */
-  public LoggedTalonFX(int deviceId, String canbus) {
+  public LoggedTalonFX(int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = "Motors/Motor " + deviceId;
     init();
@@ -224,8 +222,7 @@ public class LoggedTalonFX extends TalonFX {
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(supplyCurrentLimit);
 
-    motorConfiguration.CurrentLimits = clc;
-    this.getConfigurator().apply(motorConfiguration);
+    this.getConfigurator().apply(clc);
   }
 
   public static void periodic_static() {
@@ -273,6 +270,5 @@ public class LoggedTalonFX extends TalonFX {
     // Voltage
     DogLog.log(motorVoltage, getCachedMotorVoltageV());
     DogLog.log(supplyVoltage, getCachedSupplyVoltageV());
-    DogLog.log("Power/BatteryVoltage", RobotController.getBatteryVoltage());
   }
 }
