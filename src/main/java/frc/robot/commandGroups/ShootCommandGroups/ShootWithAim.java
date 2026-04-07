@@ -23,7 +23,7 @@ public class ShootWithAim extends ParallelCommandGroup {
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside,
       BooleanSupplier manualOverride) {
-        double dist = drivetrain.getPose().getTranslation().getDistance(drivetrain.getVirtualTarget(redside, () -> false));
+    DoubleSupplier dist = () -> (drivetrain.getPose().getTranslation().getDistance(drivetrain.getVirtualTarget(redside, () -> false)));
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
@@ -37,10 +37,10 @@ public class ShootWithAim extends ParallelCommandGroup {
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () ->
-                        shooterSubsystem.grabTargetShootingSpeed(dist),
+                        shooterSubsystem.grabTargetShootingSpeed(dist.getAsDouble()),
                     () ->
                         shooterSubsystem.grabTargetHoodAngle(
-                            dist)),
+                            dist.getAsDouble())),
                 new SwerveJoystickCommand(
                     translationalX,
                     translationalY,

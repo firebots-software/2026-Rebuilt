@@ -753,6 +753,9 @@ public final class Constants {
       HOOD_ANGLE_MAP.put(2.78, 6.6);
       HOOD_ANGLE_MAP.put(3.34, 9.0);
       HOOD_ANGLE_MAP.put(3.90, 12.6);
+      HOOD_ANGLE_MAP.put(5.0, 15.3);
+      HOOD_ANGLE_MAP.put(6.0, 16.7);
+      HOOD_ANGLE_MAP.put(7.0, 15.6);
 
       ROLLER_SPEED_MAP.clear();
       ROLLER_SPEED_MAP.put(1.77, 41.5);
@@ -760,6 +763,9 @@ public final class Constants {
       ROLLER_SPEED_MAP.put(2.78, 46.5);
       ROLLER_SPEED_MAP.put(3.34, 49.0);
       ROLLER_SPEED_MAP.put(3.90, 51.50);
+      ROLLER_SPEED_MAP.put(5.0, 56.9);
+      ROLLER_SPEED_MAP.put(6.0, 61.7);
+      ROLLER_SPEED_MAP.put(7.0, 66.5);
 
       TIME_OF_FLIGHT_MAP.clear();
       TIME_OF_FLIGHT_MAP.put(0d, 0d);
