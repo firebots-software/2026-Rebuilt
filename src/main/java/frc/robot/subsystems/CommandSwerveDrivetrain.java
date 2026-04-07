@@ -213,7 +213,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return run(() -> this.setControl(requestSupplier.get()));
   }
 
-  public Translation2d getVirtualTarget(BooleanSupplier redside) {
+  public Translation2d getVirtualTarget(BooleanSupplier redside, BooleanSupplier override) {
+    if (override.getAsBoolean()) {
+      return (redside.getAsBoolean()) ? (Constants.Landmarks.RED_HUB.getTranslation()) : (Constants.Landmarks.BLUE_HUB.getTranslation());
+    }
     if (virtualTarget == null || !virtualTargetComputedThisLoop) {
       virtualTarget = Targeting.computeVirtualTarget(Targeting.getHub(redside), this);
       virtualTargetComputedThisLoop = true;

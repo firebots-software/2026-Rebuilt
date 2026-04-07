@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
@@ -135,8 +136,8 @@ public class RobotContainer {
         .a()
         .whileTrue(
             lebron
-                .shootAtSpeedHoodCommand(shooterSpeedTunable, hoodAngleTunable)
-                .alongWith(
+                .shootAtSpeedHoodCommand(() -> shooterSpeedTunable.get(), () -> hoodAngleTunable.get())
+                .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
                     (hopperSubsystem
                         .runHopperUntilInterruptedCommand()))); // Commands.waitUntil(lebron::isShooterReady).andThen
 

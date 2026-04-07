@@ -23,7 +23,7 @@ public class ShootWithAim extends ParallelCommandGroup {
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside,
       BooleanSupplier manualOverride) {
-        double dist = drivetrain.getPose().getTranslation().getDistance(drivetrain.getVirtualTarget(redside));
+        double dist = drivetrain.getPose().getTranslation().getDistance(drivetrain.getVirtualTarget(redside, () -> false));
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
