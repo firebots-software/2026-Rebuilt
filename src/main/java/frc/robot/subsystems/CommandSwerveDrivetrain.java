@@ -31,7 +31,6 @@ import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
-
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -215,7 +214,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   public Translation2d getVirtualTarget(BooleanSupplier redside, BooleanSupplier override) {
     if (override.getAsBoolean()) {
-      return (redside.getAsBoolean()) ? (Constants.Landmarks.RED_HUB.getTranslation()) : (Constants.Landmarks.BLUE_HUB.getTranslation());
+      return (redside.getAsBoolean())
+          ? (Constants.Landmarks.RED_HUB.getTranslation())
+          : (Constants.Landmarks.BLUE_HUB.getTranslation());
     }
     if (virtualTarget == null || !virtualTargetComputedThisLoop) {
       virtualTarget = Targeting.computeVirtualTarget(Targeting.getHub(redside), this);

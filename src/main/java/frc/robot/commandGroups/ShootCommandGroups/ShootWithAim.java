@@ -8,7 +8,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -23,7 +22,12 @@ public class ShootWithAim extends ParallelCommandGroup {
       CommandSwerveDrivetrain drivetrain,
       BooleanSupplier redside,
       BooleanSupplier manualOverride) {
-    DoubleSupplier dist = () -> (drivetrain.getPose().getTranslation().getDistance(drivetrain.getVirtualTarget(redside, () -> false)));
+    DoubleSupplier dist =
+        () ->
+            (drivetrain
+                .getPose()
+                .getTranslation()
+                .getDistance(drivetrain.getVirtualTarget(redside, () -> false)));
     addCommands(
         Commands.either(
             Commands.parallel( // shoot without aim
@@ -36,11 +40,8 @@ public class ShootWithAim extends ParallelCommandGroup {
                             intakeSubsystem.powerRetractRollersCommand()))),
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
-                    () ->
-                        shooterSubsystem.grabTargetShootingSpeed(dist.getAsDouble()),
-                    () ->
-                        shooterSubsystem.grabTargetHoodAngle(
-                            dist.getAsDouble())),
+                    () -> shooterSubsystem.grabTargetShootingSpeed(dist.getAsDouble()),
+                    () -> shooterSubsystem.grabTargetHoodAngle(dist.getAsDouble())),
                 new SwerveJoystickCommand(
                     translationalX,
                     translationalY,
@@ -100,7 +101,8 @@ public class ShootWithAim extends ParallelCommandGroup {
 //             Commands.parallel( // shoot with aim
 //                 shooterSubsystem.shootAtSpeedHoodCommand(
 //                     () ->
-//                         shooterSubsystem.grabTargetShootingSpeed(drivetrain.getCurrentState().Pose.getTranslation().getDistance()
+//
+// shooterSubsystem.grabTargetShootingSpeed(drivetrain.getCurrentState().Pose.getTranslation().getDistance()
 //                             /*MiscUtils.getDistanceToHub(redside, drivetrain*/)),
 //                     () ->
 //                         shooterSubsystem.grabTargetHoodAngle(

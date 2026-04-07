@@ -38,14 +38,16 @@ public class Targeting {
     }
   }
 
-  public static Translation2d computeVirtualTarget(Pose2d target, CommandSwerveDrivetrain drivetrain) {
+  public static Translation2d computeVirtualTarget(
+      Pose2d target, CommandSwerveDrivetrain drivetrain) {
     ChassisSpeeds fieldSpeeds = drivetrain.getFieldSpeeds();
     Pose2d currPose = drivetrain.getPose();
 
-    Twist2d twist = new Twist2d(
-        fieldSpeeds.vxMetersPerSecond * 0.03,
-        fieldSpeeds.vyMetersPerSecond * 0.03,
-        fieldSpeeds.omegaRadiansPerSecond * 0.03);
+    Twist2d twist =
+        new Twist2d(
+            fieldSpeeds.vxMetersPerSecond * 0.03,
+            fieldSpeeds.vyMetersPerSecond * 0.03,
+            fieldSpeeds.omegaRadiansPerSecond * 0.03);
     Pose2d lookaheadPose = currPose.exp(twist);
 
     double initDX = target.getX() - lookaheadPose.getX();
@@ -64,28 +66,28 @@ public class Targeting {
                 - radialVelocity);
 
     for (int i = 0; i < Constants.Shooter.TARGETING_CALCULATION_PRECISION; i++) {
-        double distX = initDX - fieldSpeeds.vxMetersPerSecond * tof;
-        double distY = initDY - fieldSpeeds.vyMetersPerSecond * tof;
-        double distance = Math.sqrt(distX * distX + distY * distY);
+      double distX = initDX - fieldSpeeds.vxMetersPerSecond * tof;
+      double distY = initDY - fieldSpeeds.vyMetersPerSecond * tof;
+      double distance = Math.sqrt(distX * distX + distY * distY);
 
-        if (distance < 1e-6) break;
+      if (distance < 1e-6) break;
 
-        double tofTable = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
-        double error = tof - tofTable;
+      double tofTable = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(distance);
+      double error = tof - tofTable;
 
-        if (Math.abs(error) < 1e-3) break;
+      if (Math.abs(error) < 1e-3) break;
 
-        double horizontalVel = distance / tofTable;
-        double errorDerivative =
-            1.0
-                + ((distX * fieldSpeeds.vxMetersPerSecond + distY * fieldSpeeds.vyMetersPerSecond)
-                    / (distance * horizontalVel));
+      double horizontalVel = distance / tofTable;
+      double errorDerivative =
+          1.0
+              + ((distX * fieldSpeeds.vxMetersPerSecond + distY * fieldSpeeds.vyMetersPerSecond)
+                  / (distance * horizontalVel));
 
-        if (tof < 1e-3) tof = 1e-3;
+      if (tof < 1e-3) tof = 1e-3;
 
-        double step = error / errorDerivative;
-        step = Math.max(-0.05, Math.min(0.05, step));
-        tof -= step;
+      double step = error / errorDerivative;
+      step = Math.max(-0.05, Math.min(0.05, step));
+      tof -= step;
     }
 
     return new Translation2d(
