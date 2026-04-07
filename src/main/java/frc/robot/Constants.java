@@ -934,5 +934,11 @@ public final class Constants {
         new Pose2d(
             new Translation2d(5.624283313751221, 2.4593770503997803),
             new Rotation2d(1.57873264137917));
+
+    public static Pose2d BLUE_PASSING_L = new Pose2d(1.8, 6.8, new Rotation2d());
+    public static Pose2d BLUE_PASSING_R = new Pose2d(1.8, 1.2, new Rotation2d());
+
+    public static Pose2d RED_PASSING_L = new Pose2d(14.7, 1.2, new Rotation2d());
+    public static Pose2d RED_PASSING_R = new Pose2d(14.7, 6.8, new Rotation2d());
   }
 }

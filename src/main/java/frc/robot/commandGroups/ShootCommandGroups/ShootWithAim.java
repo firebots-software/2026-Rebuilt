@@ -50,6 +50,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                     () -> 0.0,
                     () -> 1.0,
                     () -> false,
+                    () -> false,
                     () -> true,
                     redside,
                     drivetrain),

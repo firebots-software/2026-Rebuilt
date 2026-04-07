@@ -31,6 +31,7 @@ import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
+import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
@@ -227,6 +228,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     DogLog.log("VirtualTarget", new Pose2d(virtualTarget, new Rotation2d()));
     return virtualTarget;
+  }
+
+  public Translation2d getPassingTarget(BooleanSupplier redside) {
+    return redside.getAsBoolean()
+        ? this.getPose()
+            .nearest(
+                Arrays.asList(Constants.Landmarks.RED_PASSING_L, Constants.Landmarks.RED_PASSING_R))
+            .getTranslation()
+        : this.getPose()
+            .nearest(
+                Arrays.asList(
+                    Constants.Landmarks.BLUE_PASSING_L, Constants.Landmarks.BLUE_PASSING_R))
+            .getTranslation();
   }
 
   public SwerveDriveState getCurrentState() {
