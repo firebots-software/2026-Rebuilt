@@ -105,7 +105,7 @@ public class AutoRoutines {
                 swerveSubsystem,
                 isRedSide,
                 () -> false)
-            .withTimeout(4.0);
+            .withTimeout(3.0);
 
     return shoot;
   }
