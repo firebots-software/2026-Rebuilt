@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -78,13 +77,14 @@ public class ShooterSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
 
-    VoltageConfigs rollersVoltageOutputConfigs = new VoltageConfigs().withPeakReverseVoltage(1.0);
+    // VoltageConfigs rollersVoltageOutputConfigs = new
+    // VoltageConfigs().withPeakReverseVoltage(1.0);
 
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersS0c;
     rollersConfig.CurrentLimits = rollersClc;
     rollersConfig.MotorOutput = rollersOutputConfigs;
-    rollersConfig.Voltage = rollersVoltageOutputConfigs;
+    // rollersConfig.Voltage = rollersVoltageOutputConfigs;
 
     warmup1.getConfigurator().apply(rollersConfig);
     warmup2.getConfigurator().apply(rollersConfig);
@@ -217,7 +217,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget);
+    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget) - 0.2;
+  }
+
+  public double grabPassingShootingSpeed(double distanceToTarget) {
+    return Constants.Shooter.PASSING_ROLLER_SPEED_MAP.get(distanceToTarget);
   }
 
   public double grabTargetHoodAngle(double distanceToTarget) {

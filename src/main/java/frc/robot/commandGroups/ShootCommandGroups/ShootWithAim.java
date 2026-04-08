@@ -53,7 +53,8 @@ public class ShootWithAim extends ParallelCommandGroup {
                     () -> true,
                     () -> false,
                     redside,
-                    drivetrain),
+                    drivetrain,
+                    () -> true),
 
                 //                  DoubleSupplier frontBackFunction,
                 //   DoubleSupplier leftRightFunction,
@@ -64,7 +65,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                 //   BooleanSupplier doPassing,
                 //   BooleanSupplier redSideIfPointing,
                 //   CommandSwerveDrivetrain swerveSubsystem
-                Commands.waitUntil(shooterSubsystem::isShooterReady)
+                Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(
