@@ -756,20 +756,18 @@ public final class Constants {
       HOOD_ANGLE_MAP.put(2.78, 6.6);
       HOOD_ANGLE_MAP.put(3.34, 9.0);
       HOOD_ANGLE_MAP.put(3.90, 12.6);
-      // Guesses
-      HOOD_ANGLE_MAP.put(5.0, 17.0);
-      HOOD_ANGLE_MAP.put(6.0, 16.7);
-      HOOD_ANGLE_MAP.put(7.0, 15.6);
-
+      HOOD_ANGLE_MAP.put(4.47, 16.8);
+      HOOD_ANGLE_MAP.put(5.02, 18.369);
+ 
       ROLLER_SPEED_MAP.clear();
       ROLLER_SPEED_MAP.put(1.77, 41.5);
       ROLLER_SPEED_MAP.put(2.21, 43.5);
       ROLLER_SPEED_MAP.put(2.78, 46.5);
       ROLLER_SPEED_MAP.put(3.34, 49.0);
       ROLLER_SPEED_MAP.put(3.90, 51.50);
+      ROLLER_SPEED_MAP.put(4.47, 53.60);
+      ROLLER_SPEED_MAP.put(5.02, 58.2);
       // Guesses
-      ROLLER_SPEED_MAP.put(5.0, 56.9);
-      ROLLER_SPEED_MAP.put(6.0, 61.7);
       ROLLER_SPEED_MAP.put(7.0, 66.5);
 
       TIME_OF_FLIGHT_MAP.clear();
@@ -779,11 +777,14 @@ public final class Constants {
       TIME_OF_FLIGHT_MAP.put(3.01d, .75d);
       TIME_OF_FLIGHT_MAP.put(3.59d, .75d);
       TIME_OF_FLIGHT_MAP.put(3.83d, .875d);
+      // newly tuned
+      TIME_OF_FLIGHT_MAP.put(4.47, 1.1d);
+      TIME_OF_FLIGHT_MAP.put(5.02, 1.26d);
 
       //Guesses
-      PASSING_ROLLER_SPEED_MAP.put(5.46, 50.0); 
-      PASSING_ROLLER_SPEED_MAP.put(6.62, 54.0); 
-      PASSING_ROLLER_SPEED_MAP.put(7.80, 58.0);
+      PASSING_ROLLER_SPEED_MAP.put(5.46, 55.5); 
+      PASSING_ROLLER_SPEED_MAP.put(6.62, 59.5); 
+      PASSING_ROLLER_SPEED_MAP.put(7.80, 62.5);
       PASSING_ROLLER_SPEED_MAP.put(17.16, 74.6); 
     }
 
@@ -834,7 +835,7 @@ public final class Constants {
       public static final int WARMUP_2_ID = 9;
       public static final int WARMUP_3_ID = 11;
 
-      public static final double KP = 0.85;
+      public static final double KP = 0.9; // 0.85
       public static final double KV = 0.124;
       public static final double KS = 0.0;
 
