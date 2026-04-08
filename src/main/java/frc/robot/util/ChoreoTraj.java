@@ -73,6 +73,13 @@ public record ChoreoTraj(
 	    new Pose2d(5.645, 2.555, Rotation2d.fromRadians(0)),
 	    new Pose2d(5.66, 2.551, Rotation2d.fromRadians(-3.142))
 	);
+	public static final ChoreoTraj OCDip2Right = new ChoreoTraj(
+	    "OCDip2Right",
+	    OptionalInt.empty(),
+	    2.91893,
+	    new Pose2d(5.784, 2.923, Rotation2d.fromRadians(0)),
+	    new Pose2d(5.808, 2.899, Rotation2d.fromRadians(3.142))
+	);
 	public static final ChoreoTraj BlueLeftClimbR = new ChoreoTraj(
 	    "BlueLeftClimbR",
 	    OptionalInt.empty(),
@@ -107,6 +114,13 @@ public record ChoreoTraj(
 	    3.6665,
 	    new Pose2d(5.657, 2.542, Rotation2d.fromRadians(0)),
 	    new Pose2d(5.657, 2.542, Rotation2d.fromRadians(3.142))
+	);
+	public static final ChoreoTraj OCDip2Left = new ChoreoTraj(
+	    "OCDip2Left",
+	    OptionalInt.empty(),
+	    2.91335,
+	    new Pose2d(5.788, 5.308, Rotation2d.fromRadians(0)),
+	    new Pose2d(5.799, 5.305, Rotation2d.fromRadians(3.142))
 	);
 	public static final ChoreoTraj RedLeftShoot = new ChoreoTraj(
 	    "RedLeftShoot",
@@ -360,6 +374,13 @@ public record ChoreoTraj(
 	    new Pose2d(3.555, 4.227, Rotation2d.fromRadians(0)),
 	    new Pose2d(3.539, 5.654, Rotation2d.fromRadians(0))
 	);
+	public static final ChoreoTraj OCDip1Left = new ChoreoTraj(
+	    "OCDip1Left",
+	    OptionalInt.empty(),
+	    2.63518,
+	    new Pose2d(5.76, 5.264, Rotation2d.fromRadians(0)),
+	    new Pose2d(5.749, 5.26, Rotation2d.fromRadians(3.14))
+	);
 	public static final ChoreoTraj BlueDepotM = new ChoreoTraj(
 	    "BlueDepotM",
 	    OptionalInt.empty(),
@@ -422,6 +443,13 @@ public record ChoreoTraj(
 	    2.81032,
 	    new Pose2d(10.87, 5.533, Rotation2d.fromRadians(3.14)),
 	    new Pose2d(10.87, 5.523, Rotation2d.fromRadians(0))
+	);
+	public static final ChoreoTraj OCDip1Right = new ChoreoTraj(
+	    "OCDip1Right",
+	    OptionalInt.empty(),
+	    2.31262,
+	    new Pose2d(5.8, 2.899, Rotation2d.fromRadians(0)),
+	    new Pose2d(5.8, 2.883, Rotation2d.fromRadians(3.14))
 	);
 	public static final ChoreoTraj RedRightManeuverL = new ChoreoTraj(
 	    "RedRightManeuverL",
@@ -541,11 +569,13 @@ public record ChoreoTraj(
 		Map.entry("RedRightIntakeMR", RedRightIntakeMR),
 		Map.entry("RedOutpostToShoot", RedOutpostToShoot),
 		Map.entry("BlueRightIntakeM", BlueRightIntakeM),
+		Map.entry("OCDip2Right", OCDip2Right),
 		Map.entry("BlueLeftClimbR", BlueLeftClimbR),
 		Map.entry("BlueRightIntakeMR", BlueRightIntakeMR),
 		Map.entry("RedLeftIntakeR", RedLeftIntakeR),
 		Map.entry("BlueLeftIntakeR", BlueLeftIntakeR),
 		Map.entry("BlueRightIntakeL", BlueRightIntakeL),
+		Map.entry("OCDip2Left", OCDip2Left),
 		Map.entry("RedLeftShoot", RedLeftShoot),
 		Map.entry("BlueOutpostR", BlueOutpostR),
 		Map.entry("RedDepotL", RedDepotL),
@@ -582,6 +612,7 @@ public record ChoreoTraj(
 		Map.entry("RedOutpostM", RedOutpostM),
 		Map.entry("RedOutpostRDrake", RedOutpostRDrake),
 		Map.entry("BlueLeftManeuverR", BlueLeftManeuverR),
+		Map.entry("OCDip1Left", OCDip1Left),
 		Map.entry("BlueDepotM", BlueDepotM),
 		Map.entry("BlueLeftShoot", BlueLeftShoot),
 		Map.entry("BlueDepotL", BlueDepotL),
@@ -591,6 +622,7 @@ public record ChoreoTraj(
 		Map.entry("RedRightIntakeSweep", RedRightIntakeSweep),
 		Map.entry("BlueOutpostToShoot", BlueOutpostToShoot),
 		Map.entry("RedRightIntakeM", RedRightIntakeM),
+		Map.entry("OCDip1Right", OCDip1Right),
 		Map.entry("RedRightManeuverL", RedRightManeuverL),
 		Map.entry("GoRight", GoRight),
 		Map.entry("BlueDepotR", BlueDepotR),
