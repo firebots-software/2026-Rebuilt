@@ -53,7 +53,8 @@ public class ShootWithAim extends ParallelCommandGroup {
                     () -> true,
                     () -> false,
                     redside,
-                    drivetrain),
+                    drivetrain,
+                    () -> true),
 
                 //                  DoubleSupplier frontBackFunction,
                 //   DoubleSupplier leftRightFunction,
