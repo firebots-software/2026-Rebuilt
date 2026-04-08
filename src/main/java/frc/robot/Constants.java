@@ -466,7 +466,7 @@ public final class Constants {
     public static final int MOTOR_2_PORT = 13;
 
     // TODO: subject to change, ask Jeff
-    public static final double TARGET_SURFACE_SPEED_MPS = 2.6; // TARGET_SURFACE_SPEED_FPS * 0.3048;
+    public static final double TARGET_SURFACE_SPEED_MPS = 2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
     public static final double kP = 0.8;
@@ -826,7 +826,7 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double TOLERANCE_RPS = 0.0;
+      public static final double TOLERANCE_RPS = 0.5;
       public static final boolean INTERMAP_TESTING = false;
 
       public static final int WARMUP_1_ID = 10;
@@ -834,7 +834,7 @@ public final class Constants {
       public static final int WARMUP_3_ID = 11;
 
       public static final double KP = 0.85;
-      public static final double KV = 0.124;
+      public static final double KV = 0.144;
       public static final double KS = 0.0;
 
       public static final double STATOR_CURRENT_LIMIT = 120.0;
