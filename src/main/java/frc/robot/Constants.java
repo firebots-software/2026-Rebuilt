@@ -826,7 +826,7 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double TOLERANCE_RPS = 1.0;
+      public static final double TOLERANCE_RPS = 0.0;
       public static final boolean INTERMAP_TESTING = false;
 
       public static final int WARMUP_1_ID = 10;
