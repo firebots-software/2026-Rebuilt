@@ -81,8 +81,8 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-  // private double hoodAngle = 12.6;
-  // private double shooterSpeed = 51.75;
+  //   private double hoodAngle = 18.369;
+  //   private double shooterSpeed = 58.0;
 
   public RobotContainer() {
     hoodAngleTunable.setDefault(10.0);
