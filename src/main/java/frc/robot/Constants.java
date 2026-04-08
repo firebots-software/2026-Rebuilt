@@ -466,7 +466,8 @@ public final class Constants {
     public static final int MOTOR_2_PORT = 13;
 
     // TODO: subject to change, ask Jeff
-    public static final double TARGET_SURFACE_SPEED_MPS = 2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
+    public static final double TARGET_SURFACE_SPEED_MPS =
+        2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
     public static final double kP = 0.8;
@@ -757,7 +758,7 @@ public final class Constants {
       HOOD_ANGLE_MAP.put(3.90, 12.6);
       HOOD_ANGLE_MAP.put(4.47, 16.8);
       HOOD_ANGLE_MAP.put(5.02, 18.369);
- 
+
       ROLLER_SPEED_MAP.clear();
       ROLLER_SPEED_MAP.put(1.77, 41.5);
       ROLLER_SPEED_MAP.put(2.21, 43.5);
