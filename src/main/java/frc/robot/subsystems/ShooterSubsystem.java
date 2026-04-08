@@ -78,13 +78,13 @@ public class ShooterSubsystem extends SubsystemBase {
             .withInverted(InvertedValue.Clockwise_Positive)
             .withNeutralMode(NeutralModeValue.Coast);
 
-    VoltageConfigs rollersVoltageOutputConfigs = new VoltageConfigs().withPeakReverseVoltage(1.0);
+    // VoltageConfigs rollersVoltageOutputConfigs = new VoltageConfigs().withPeakReverseVoltage(1.0);
 
     TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
     rollersConfig.Slot0 = rollersS0c;
     rollersConfig.CurrentLimits = rollersClc;
     rollersConfig.MotorOutput = rollersOutputConfigs;
-    rollersConfig.Voltage = rollersVoltageOutputConfigs;
+    // rollersConfig.Voltage = rollersVoltageOutputConfigs;
 
     warmup1.getConfigurator().apply(rollersConfig);
     warmup2.getConfigurator().apply(rollersConfig);
@@ -217,7 +217,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget);
+    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget)-0.4;
   }
 
   public double grabPassingShootingSpeed(double distanceToTarget) {
