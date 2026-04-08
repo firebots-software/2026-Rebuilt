@@ -466,8 +466,7 @@ public final class Constants {
     public static final int MOTOR_2_PORT = 13;
 
     // TODO: subject to change, ask Jeff
-    public static final double TARGET_SURFACE_SPEED_MPS =
-        2.6; // TARGET_SURFACE_SPEED_FPS * 0.3048;
+    public static final double TARGET_SURFACE_SPEED_MPS = 2.6; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
     public static final double kP = 0.8;
@@ -780,11 +779,11 @@ public final class Constants {
       TIME_OF_FLIGHT_MAP.put(3.59d, .75d);
       TIME_OF_FLIGHT_MAP.put(3.83d, .875d);
 
-      //Guesses
-      PASSING_ROLLER_SPEED_MAP.put(5.46, 50.0); 
-      PASSING_ROLLER_SPEED_MAP.put(6.62, 54.0); 
+      // Guesses
+      PASSING_ROLLER_SPEED_MAP.put(5.46, 50.0);
+      PASSING_ROLLER_SPEED_MAP.put(6.62, 54.0);
       PASSING_ROLLER_SPEED_MAP.put(7.80, 58.0);
-      PASSING_ROLLER_SPEED_MAP.put(17.16, 74.6); 
+      PASSING_ROLLER_SPEED_MAP.put(9.0, 74.6);
     }
 
     public static final class Hood {
