@@ -54,4 +54,12 @@ public class Vector2 {
   public static Pose2d toPose2d(Vector2 a) {
     return new Pose2d(a.x, a.y, new Rotation2d());
   }
+
+  public static Vector2 fromPose2d(Pose2d a) {
+    return new Vector2(a.getX(), a.getY());
+  }
+
+  public static double dist(Vector2 a, Vector2 b) {
+    return Vector2.subtract(a, b).magnitude();
+  }
 }

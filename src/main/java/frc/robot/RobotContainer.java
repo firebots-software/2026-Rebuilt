@@ -5,14 +5,15 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
-import dev.doglog.DogLog;
-import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
@@ -30,14 +31,13 @@ import java.util.function.DoubleSupplier;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
-  private final DoubleSubscriber hoodAngleTunable =
-      DogLog.tunable("Tunable/HoodAngleTunable", 17.0);
-  private final DoubleSubscriber shooterSpeedTunable =
-      DogLog.tunable("Tunable/ShoterSpeedTunable", 44.0);
-  //   private final DoubleEntry hoodAngleTunable = NetworkTableInstance.getDefault()
-  //     .getDoubleTopic("Tunable/HoodAngleTunable").getEntry(17.0);
-  //   private final DoubleEntry shooterSpeedTunable = NetworkTableInstance.getDefault()
-  //     .getDoubleTopic("Tunable/ShooterSpeedTunable").getEntry(44.0);
+
+  private final DoubleEntry hoodAngleTunable =
+      NetworkTableInstance.getDefault().getDoubleTopic("Tunable/HoodAngleTunable").getEntry(10.0);
+  private final DoubleEntry shooterSpeedTunable =
+      NetworkTableInstance.getDefault()
+          .getDoubleTopic("Tunable/ShooterSpeedTunable")
+          .getEntry(44.0);
   private Field2d field = new Field2d();
 
   private final CommandXboxController joystick = new CommandXboxController(0);
@@ -81,9 +81,12 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
+  // private double hoodAngle = 12.6;
+  // private double shooterSpeed = 51.75;
+
   public RobotContainer() {
-    // hoodAngleTunable.setDefault(17.0);
-    // shooterSpeedTunable.setDefault(44.0);
+    hoodAngleTunable.setDefault(10.0);
+    shooterSpeedTunable.setDefault(44.0);
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -117,26 +120,30 @@ public class RobotContainer {
             secondController.intakeVisionLockout(),
             intakeSubsystem::atExtendedPosition);
 
-    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         intakeSubsystem
-    //             .outtakeUntilInterruptedCommand()
-    //             .alongWith(
-    //                 hopperSubsystem.runHopperUntilInterruptedCommand(
-    //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
-
     joystick
         .a()
         .whileTrue(
-            lebron.shootAtSpeedHoodCommand(
-                () -> hoodAngleTunable.get(), () -> shooterSpeedTunable.get()));
+            intakeSubsystem
+                .outtakeUntilInterruptedCommand()
+                .alongWith(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
+                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+
+    // joystick
+    //     .rightTrigger()
+    //     .whileTrue(
+    //         lebron
+    //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
+    //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
+    //                 (hopperSubsystem
+    //
+    // .runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand()))))); // Commands.waitUntil(lebron::isShooterReady).andThen
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
@@ -157,7 +164,24 @@ public class RobotContainer {
                 drivetrain,
                 redside,
                 secondController.visionShootingLockout()));
+    joystick
+        .rightBumper()
+        .whileTrue(
+            new ShootPassing(
+                frontBackFunction,
+                leftRightFunction,
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem,
+                drivetrain,
+                redside));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+
+    // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
+    // joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
+
+    // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
+    // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
 
   public void visionPeriodic() {
