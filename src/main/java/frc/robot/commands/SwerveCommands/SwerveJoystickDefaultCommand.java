@@ -32,7 +32,8 @@ public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
                 doPointing, // joystick.a().getAsBoolean()
                 () -> false,
                 redSideIfPointing,
-                swerveSubsystem),
+                swerveSubsystem,
+                () -> false),
             new SwerveJoystickCommandWithCorrection(
                 frontBackFunction,
                 leftRightFunction,

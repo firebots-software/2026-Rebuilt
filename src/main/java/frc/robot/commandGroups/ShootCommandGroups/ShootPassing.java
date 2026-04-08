@@ -35,7 +35,7 @@ public class ShootPassing extends ParallelCommandGroup {
     addCommands(
         shooter.shootAtSpeedHoodCommand(
             () -> shooter.grabTargetShootingSpeed(dist.getAsDouble()),
-            () -> shooter.grabTargetHoodAngle(dist.getAsDouble())),
+            () -> Constants.Shooter.Hood.MAX_HOOD_POSITION),
         new SwerveJoystickCommandWithPointing(
             translationalX, translationalY, () -> 0.0, () -> false, passingTranslation, drivetrain),
         Commands.waitUntil(

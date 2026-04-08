@@ -220,6 +220,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget);
   }
 
+  public double grabPassingShootingSpeed(double distanceToTarget) {
+    return Constants.Shooter.PASSING_ROLLER_SPEED_MAP.get(distanceToTarget);
+  }
+
   public double grabTargetHoodAngle(double distanceToTarget) {
     return Constants.Shooter.HOOD_ANGLE_MAP.get(distanceToTarget);
   }
