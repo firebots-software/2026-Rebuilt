@@ -64,7 +64,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                 //   BooleanSupplier doPassing,
                 //   BooleanSupplier redSideIfPointing,
                 //   CommandSwerveDrivetrain swerveSubsystem
-                Commands.waitUntil(shooterSubsystem::isShooterReady)
+                Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(
