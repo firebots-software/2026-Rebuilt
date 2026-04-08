@@ -13,7 +13,11 @@ public class SwerveJoystickCommand extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
-  protected final BooleanSupplier fieldRelativeFunction, doPointing, doPassing, redsideIfPointing, capper;
+  protected final BooleanSupplier fieldRelativeFunction,
+      doPointing,
+      doPassing,
+      redsideIfPointing,
+      capper;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
@@ -131,8 +135,8 @@ public class SwerveJoystickCommand extends Command {
 
     if (capper.getAsBoolean()) {
       if (speedMagnitude > 2.5) {
-        xSpeed *= (2.5/speedMagnitude);
-        ySpeed *= (2.5/speedMagnitude);
+        xSpeed *= (2.5 / speedMagnitude);
+        ySpeed *= (2.5 / speedMagnitude);
       }
     }
 
