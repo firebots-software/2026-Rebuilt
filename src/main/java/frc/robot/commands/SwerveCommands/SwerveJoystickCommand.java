@@ -13,7 +13,11 @@ public class SwerveJoystickCommand extends Command {
       ySpdFunction,
       turningSpdFunction,
       speedControlFunction;
-  protected final BooleanSupplier fieldRelativeFunction, doPointing, doPassing, redsideIfPointing;
+  protected final BooleanSupplier fieldRelativeFunction,
+      doPointing,
+      doPassing,
+      redsideIfPointing,
+      capper;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
@@ -32,7 +36,8 @@ public class SwerveJoystickCommand extends Command {
       BooleanSupplier doPointing,
       BooleanSupplier doPassing,
       BooleanSupplier redSideIfPointing,
-      CommandSwerveDrivetrain swerveSubsystem) {
+      CommandSwerveDrivetrain swerveSubsystem,
+      BooleanSupplier capper) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
@@ -43,6 +48,7 @@ public class SwerveJoystickCommand extends Command {
     this.doPointing = doPointing;
     this.doPassing = doPassing;
     this.redsideIfPointing = redSideIfPointing;
+    this.capper = capper;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -54,7 +60,8 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier leftRightFunction,
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
-      CommandSwerveDrivetrain swerveSubsystem) {
+      CommandSwerveDrivetrain swerveSubsystem,
+      BooleanSupplier capper) {
 
     this(
         frontBackFunction,
@@ -65,7 +72,8 @@ public class SwerveJoystickCommand extends Command {
         () -> false,
         () -> false,
         () -> false,
-        swerveSubsystem);
+        swerveSubsystem,
+        capper);
   }
 
   public SwerveJoystickCommand(
@@ -74,14 +82,16 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
-      boolean squaredTurn) {
+      boolean squaredTurn,
+      BooleanSupplier capper) {
 
     this(
         frontBackFunction,
         leftRightFunction,
         turningSpdFunction,
         speedControlFunction,
-        swerveSubsystem);
+        swerveSubsystem,
+        capper);
     this.squaredTurn = squaredTurn;
   }
 
@@ -120,6 +130,15 @@ public class SwerveJoystickCommand extends Command {
     xSpeed = xSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     ySpeed = ySpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     turningSpeed = turningSpeed * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;
+
+    double speedMagnitude = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
+
+    if (capper.getAsBoolean()) {
+      if (speedMagnitude > 2.5) {
+        xSpeed *= (2.5 / speedMagnitude);
+        ySpeed *= (2.5 / speedMagnitude);
+      }
+    }
 
     // Final values to apply to drivetrain
     final double x = xSpeed;
