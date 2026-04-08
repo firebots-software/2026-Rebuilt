@@ -20,16 +20,13 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.ctre.phoenix6.sim.CANcoderSimState;
-import com.ctre.phoenix6.sim.TalonFXSimState;
 import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -41,21 +38,13 @@ public class IntakeSubsystem extends SubsystemBase {
   private double targetAngleDeg;
   private double targetRollersRPS;
 
-  // Simulation Objects
-  private TalonFXSimState rollersMotorSimState;
-  private TalonFXSimState armMotorSimState;
-  private CANcoderSimState armCancoderSimState;
-  private DCMotorSim rollersMechanismSim;
-  private SingleJointedArmSim armMechanismSim;
-
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
 
   public IntakeSubsystem() {
-    rollersMotor = new LoggedTalonFX(Constants.Intake.Rollers.CAN_ID);
+    rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
     armMotor =
-        new LoggedTalonFX(
-            Constants.Intake.Arm.CAN_ID, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+        new LoggedTalonFX("IntakeArm", Constants.Intake.Arm.CAN_ID, Constants.Swerve.CAN_BUS);
     targetAngleDeg = 0;
     targetRollersRPS = 0;
 
@@ -73,6 +62,8 @@ public class IntakeSubsystem extends SubsystemBase {
             .withKI(Constants.Intake.Arm.kI)
             .withKD(Constants.Intake.Arm.kD)
             .withKG(Constants.Intake.Arm.kG)
+            .withGravityArmPositionOffset(Constants.Intake.Arm.GRAVITY_POS_OFFSET)
+            .withKS(Constants.Intake.Arm.kS)
             .withGravityType(GravityTypeValue.Arm_Cosine);
 
     CurrentLimitsConfigs rollersCurrentLimitsConfigs =
@@ -82,7 +73,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     CurrentLimitsConfigs armCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT);
+            .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT)
+            .withStatorCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
 
     MotionMagicConfigs mmc =
         new MotionMagicConfigs()
@@ -91,9 +83,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
-    cancoder =
-        new CANcoder(
-            Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.CAN_BUS);
     CANcoderConfiguration ccConfig = new CANcoderConfiguration();
     MagnetSensorConfigs magnetSensorConfigs =
         new MagnetSensorConfigs()
@@ -109,23 +99,29 @@ public class IntakeSubsystem extends SubsystemBase {
         new FeedbackConfigs()
             .withFeedbackRemoteSensorID(cancoder.getDeviceID())
             .withFeedbackSensorSource(FeedbackSensorSourceValue.FusedCANcoder)
-            .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
             .withRotorToSensorRatio(
                 Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT
-                    / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
+                    / Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT)
+            .withSensorToMechanismRatio(Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
 
-    TalonFXConfiguration rollersConfig = new TalonFXConfiguration();
-    rollersConfig.Slot0 = rollersSlot0Configs;
-    rollersConfig.CurrentLimits = rollersCurrentLimitsConfigs;
-    rollersConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    rollersConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    TalonFXConfiguration rollersConfig =
+        new TalonFXConfiguration()
+            .withSlot0(rollersSlot0Configs)
+            .withCurrentLimits(rollersCurrentLimitsConfigs)
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Coast));
 
-    TalonFXConfiguration armConfig = new TalonFXConfiguration();
-    armConfig.Slot0 = armSlot0Configs;
-    armConfig.CurrentLimits = armCurrentLimitsConfigs;
-    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    armConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    armConfig.Feedback = feedbackConfigs;
+    TalonFXConfiguration armConfig =
+        new TalonFXConfiguration()
+            .withSlot0(armSlot0Configs)
+            .withCurrentLimits(armCurrentLimitsConfigs)
+            .withFeedback(feedbackConfigs)
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withInverted(InvertedValue.Clockwise_Positive)
+                    .withNeutralMode(NeutralModeValue.Brake));
 
     TalonFXConfigurator armMotorConfig = armMotor.getConfigurator();
     TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();
@@ -138,7 +134,6 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Arm/Gains/kI", Constants.Intake.Arm.kI);
     DogLog.log("Subsystems/Intake/Arm/Gains/kD", Constants.Intake.Arm.kD);
     DogLog.log("Subsystems/Intake/Arm/Gains/kV", Constants.Intake.Arm.kV);
-    DogLog.log("Subsystems/Intake/Arm/Gains/kG", Constants.Intake.Arm.kG);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcV", Constants.Intake.Arm.mmcV);
     DogLog.log("Subsystems/Intake/Arm/Gains/mmcA", Constants.Intake.Arm.mmcA);
 
@@ -146,47 +141,7 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Rollers/Gains/kI", Constants.Intake.Rollers.kI);
     DogLog.log("Subsystems/Intake/Rollers/Gains/kD", Constants.Intake.Rollers.kD);
     DogLog.log("Subsystems/Intake/Rollers/Gains/kV", Constants.Intake.Rollers.kV);
-
-    // if (RobotBase.isSimulation()) setupSimulation();
   }
-
-  // private void setupSimulation() {
-  //   rollersMotorSimState = rollersMotor.getSimState();
-  //   armMotorSimState = armMotor.getSimState();
-  //   armCancoderSimState = cancoder.getSimState();
-
-  //   // Match real-motor sign conventions
-  //   rollersMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-  //   armMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-
-  //   armCancoderSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-  //   armCancoderSimState.SensorOffset = Constants.Intake.Arm.ENCODER_OFFSET;
-
-  //   rollersMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX60);
-  //   armMotorSimState.setMotorType(TalonFXSimState.MotorType.KrakenX44);
-
-  //   var kraken60GearboxModel = DCMotor.getKrakenX60Foc(1);
-  //   var kraken44GearboxModel = DCMotor.getKrakenX44Foc(1);
-
-  //   rollersMechanismSim =
-  //       new DCMotorSim(
-  //           LinearSystemId.createDCMotorSystem(
-  //               kraken60GearboxModel,
-  //               Constants.Intake.Rollers.Simulation.SIM_MOI_KG_M2,
-  //               Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT),
-  //           kraken60GearboxModel);
-
-  //   armMechanismSim =
-  //       new SingleJointedArmSim(
-  //           kraken44GearboxModel,
-  //           Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT,
-  //           Constants.Intake.Arm.Simulation.SIM_MOI_KG_M2,
-  //           Constants.Intake.Arm.Simulation.ARM_LENGTH_METERS,
-  //           Units.degreesToRadians(Constants.Intake.Arm.Simulation.SIM_ARM_POS_MIN),
-  //           Units.degreesToRadians(Constants.Intake.Arm.Simulation.SIM_ARM_POS_MAX),
-  //           true,
-  //           Units.degreesToRadians(Constants.Intake.Arm.ARM_POS_RETRACTED));
-  // }
 
   public void runRollers(double speedRollersRotationsPerSecond) {
     targetRollersRPS = speedRollersRotationsPerSecond;
@@ -201,8 +156,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command stopRollersCommand() {
-    targetRollersRPS = 0;
-    return runOnce(() -> rollersMotor.setControl(m_velocityRequest.withVelocity(0)));
+    return runOnce(this::stopRollers);
   }
 
   public void stopArm() {
@@ -212,9 +166,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setArmDegrees(double angleDeg) {
     targetAngleDeg =
         MathUtil.clamp(
-            angleDeg,
-            Constants.Intake.Arm.ARM_POS_MIN,
-            Constants.Intake.Arm.ARM_POS_RETRACTED); // change to retracted, not max
+            angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_RETRACTED);
     double targetArmRotations = targetAngleDeg / 360.0;
     armMotor.setControl(m_motionMagicRequest.withPosition(targetArmRotations));
   }
@@ -229,25 +181,16 @@ public class IntakeSubsystem extends SubsystemBase {
             getCancoderPositionRaw() * Constants.Intake.Arm.ARM_ROTS_PER_CANCODER_ROT));
   }
 
-  // TODO: Verify this is the same used w/ the feedback
   public Rotation2d getArmPosition() {
     return new Rotation2d(Units.rotationsToRadians(armMotor.getCachedPositionRotations()));
   }
 
   public void applyCoastConfigArm() {
-    MotorOutputConfigs moc =
-        new MotorOutputConfigs()
-            .withNeutralMode(NeutralModeValue.Coast)
-            .withInverted(InvertedValue.Clockwise_Positive);
-    armMotor.getConfigurator().apply(moc);
+    armMotor.setNeutralMode(NeutralModeValue.Coast);
   }
 
   public void applyBrakeConfigArm() {
-    MotorOutputConfigs moc =
-        new MotorOutputConfigs()
-            .withNeutralMode(NeutralModeValue.Brake)
-            .withInverted(InvertedValue.Clockwise_Positive);
-    armMotor.getConfigurator().apply(moc);
+    armMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public double getCancoderPositionRaw() {
@@ -256,6 +199,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public boolean atTargetAngle() {
     return Math.abs(getArmPosition().getDegrees() - targetAngleDeg)
+        <= Constants.Intake.Arm.POSITION_TOLERANCE_DEGREES;
+  }
+
+  public boolean atExtendedPosition() {
+    return Math.abs(getArmPosition().getDegrees() - Constants.Intake.Arm.ARM_POS_EXTENDED)
         <= Constants.Intake.Arm.POSITION_TOLERANCE_DEGREES;
   }
 
@@ -268,23 +216,36 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command runRollersUntilInterruptedCommand() {
     return startEnd(
-        () -> this.runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
+        () -> runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
   }
 
   public Command runRollersUntilInterruptedCommand(double targetRollers_RPS) {
-    return startEnd(() -> this.runRollers(targetRollers_RPS), this::stopRollers);
+    return startEnd(() -> runRollers(targetRollers_RPS), this::stopRollers);
   }
 
   public Command setArmToDegreesCommand(double degrees) {
-    return runOnce(() -> this.setArmDegrees(degrees));
+    return runOnce(() -> setArmDegrees(degrees));
   }
 
   public Command retractIntakeCommand() {
-    return runOnce(
+    return run(
         () -> {
           setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED);
           stopRollers();
         });
+  }
+
+  public Command powerRetractRollersCommand() {
+    return runOnce(
+            () -> {
+              setPowerRetract();
+              runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+            })
+        .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
+  }
+
+  public Command torqueRetractCommand() {
+    return runOnce(this::setPowerRetract);
   }
 
   public Command intakeUntilInterruptedCommand() {
@@ -296,14 +257,19 @@ public class IntakeSubsystem extends SubsystemBase {
         this::stopRollers);
   }
 
-  // public Command powerRetractCommand() {
-  //   return runOnce(this::setPowerRetract);
-  // }
+  public Command outtakeUntilInterruptedCommand() {
+    return runEnd(
+        () -> {
+          setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
+          runRollers(-Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+        },
+        this::stopRollers);
+  }
 
   public Command intakeDefault() {
     return runOnce(
         () -> {
-          stopRollers();
+          runRollers(5.0);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
   }
@@ -326,68 +292,4 @@ public class IntakeSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Arm Angle", getArmPosition().getDegrees());
   }
-
-  // @Override
-  // public void simulationPeriodic() {
-  //   if (rollersMotorSimState == null
-  //       || armMotorSimState == null
-  //       || armCancoderSimState == null
-  //       || rollersMechanismSim == null
-  //       || armMechanismSim == null) {
-  //     return;
-  //   }
-
-  //   // 1. How many volts applied to the motor?
-  //   double batteryV = RobotController.getBatteryVoltage();
-  //   rollersMotorSimState.setSupplyVoltage(batteryV);
-  //   armMotorSimState.setSupplyVoltage(batteryV);
-
-  //   double rollersAppliedVolts =
-  //       rollersMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
-  //   double armAppliedVolts =
-  //       armMotorSimState.getMotorVoltageMeasure().in(edu.wpi.first.units.Units.Volts);
-  //   rollersMechanismSim.setInputVoltage(rollersAppliedVolts);
-  //   armMechanismSim.setInputVoltage(armAppliedVolts);
-
-  //   rollersMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
-  //   armMechanismSim.update(Constants.Simulation.SIM_LOOP_PERIOD_SECONDS);
-
-  //   // 2. What happens to the simulated mechanism?
-  //   double rollersMechPosRot = rollersMechanismSim.getAngularPositionRotations();
-  //   double rollersMechVelRps = rollersMechanismSim.getAngularVelocityRadPerSec() / (2.0 *
-  // Math.PI);
-
-  //   double armMechAngleRad = armMechanismSim.getAngleRads();
-  //   double armMechVelRps = armMechanismSim.getVelocityRadPerSec() / (2.0 * Math.PI);
-  //   double armMechPosRot = armMechAngleRad / (2.0 * Math.PI);
-
-  //   // 3. Updating the simulated motor based on the behavior of the simulated mechanism
-  //   double rollersRotorPosRot =
-  //       rollersMechPosRot * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT;
-  //   double rollersRotorVelRps =
-  //       rollersMechVelRps * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT;
-
-  //   double armRotorPosRot = armMechPosRot * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT;
-  //   double armRotorVelRps = armMechVelRps * Constants.Intake.Arm.MOTOR_ROTS_PER_ARM_ROT;
-
-  //   rollersMotorSimState.setRawRotorPosition(rollersRotorPosRot);
-  //   rollersMotorSimState.setRotorVelocity(rollersRotorVelRps);
-
-  //   armMotorSimState.setRawRotorPosition(armRotorPosRot);
-  //   armMotorSimState.setRotorVelocity(armRotorVelRps);
-
-  //   // 4. Keep CANcoder sim in sync with arm mechanism position/velocity
-  //   armCancoderSimState.setRawPosition(
-  //       armMechPosRot * Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
-  //   armCancoderSimState.setVelocity(armMechVelRps *
-  // Constants.Intake.Arm.CANCODER_ROTS_PER_ARM_ROT);
-
-  //   // 4. What happens to the battery (simulated)?
-  //   double rollersSupplyCurrentAmps = rollersMotorSimState.getSupplyCurrent();
-  //   double armSupplyCurrentAmps = armMotorSimState.getSupplyCurrent();
-  //   double totalSupplyCurrentAmps = rollersSupplyCurrentAmps + armSupplyCurrentAmps;
-  //   double targetBatteryV =
-  // BatterySim.calculateDefaultBatteryLoadedVoltage(totalSupplyCurrentAmps);
-  //   RoboRioSim.setVInVoltage(targetBatteryV);
-  // }
 }

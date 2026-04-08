@@ -13,17 +13,16 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class FuelGaugeDetection extends SubsystemBase {
-
   private static ArrayList<Double> latestRawMeasurements = new ArrayList<>();
   private static ArrayList<Double> latestMultipleMeasurements = new ArrayList<>();
 
   private final PhotonCamera photonCamera;
   private PhotonPipelineResult latestVisionResult;
 
-  private double latestRawArea;
-  private double latestSmoothedArea;
-  private double latestMultipleBallsArea;
-  private double latestSmoothedMultipleBallsArea;
+  private double rawArea;
+  private double smoothedArea;
+  private double multipleBallsArea;
+  private double smoothedMultipleBallsArea;
 
   private FuelGauge latestRawGauge;
   private FuelGauge latestSmoothedGauge;
@@ -36,25 +35,26 @@ public class FuelGaugeDetection extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // Check camera connection status
+    if (!cameraConnected()) return;
+    if (!validVisionResult(photonCamera.getAllUnreadResults())) return;
+
+    updateVisionResult();
+  }
+
+  private boolean cameraConnected() {
     boolean cameraConnected = photonCamera.isConnected();
-    if (cameraConnected) {
-      DogLog.log("FuelGauge/CameraStatus", true);
-    } else {
-      DogLog.log("FuelGauge/CameraStatus", false);
-      return;
-    }
+    DogLog.log("Subsystems/FuelGauge/CameraStatus", cameraConnected);
+    return cameraConnected;
+  }
 
-    // Get latest vision results
-    List<PhotonPipelineResult> results = photonCamera.getAllUnreadResults();
-    for (PhotonPipelineResult result : results) {
-      latestVisionResult = result;
-    }
+  private boolean validVisionResult(List<PhotonPipelineResult> results) {
+    if (results.isEmpty()) return false;
+    latestVisionResult = results.get(results.size() - 1);
 
-    if (latestVisionResult == null) {
-      return;
-    }
+    return latestVisionResult != null;
+  }
 
+  private void updateVisionResult() {
     Optional<PhotonTrackedTarget> ball = getLargestBall();
     ball.ifPresentOrElse(
         b -> {
@@ -63,29 +63,24 @@ public class FuelGaugeDetection extends SubsystemBase {
           DogLog.log("Subsystems/FuelGauge/BallPitch", b.getPitch());
           DogLog.log("Subsystems/FuelGauge/BallSkew", b.getSkew());
 
-          double rawArea = b.getArea();
-          double smoothedRawArea = updateLatestList(latestRawMeasurements, rawArea);
-          double avgMultipleBalls = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
-          double smoothedMultipleBalls =
-              updateLatestList(latestMultipleMeasurements, avgMultipleBalls);
-
-          latestRawArea = rawArea;
-          latestSmoothedArea = smoothedRawArea;
-          latestMultipleBallsArea = avgMultipleBalls;
-          latestSmoothedMultipleBallsArea = smoothedMultipleBalls;
+          rawArea = b.getArea();
+          smoothedArea = smoothFromList(latestRawMeasurements, rawArea);
+          multipleBallsArea = getLargestBallsAvg(Constants.FuelGaugeDetection.BALLS_TO_AVG);
+          smoothedMultipleBallsArea = smoothFromList(latestMultipleMeasurements, multipleBallsArea);
 
           DogLog.log("Subsystems/FuelGauge/Area/RawArea", rawArea);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedRawArea);
-          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", avgMultipleBalls);
-          DogLog.log("Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBalls);
+          DogLog.log("Subsystems/FuelGauge/Area/SmoothedRawArea", smoothedArea);
+          DogLog.log("Subsystems/FuelGauge/Area/MultipleBallsArea", multipleBallsArea);
+          DogLog.log(
+              "Subsystems/FuelGauge/Area/SmoothedMultipleBallsArea", smoothedMultipleBallsArea);
 
-          fuelGaugeStateSetAndLog(
-              rawArea, smoothedRawArea, avgMultipleBalls, smoothedMultipleBalls);
+          calculateFuelGaugeState(
+              rawArea, smoothedArea, multipleBallsArea, smoothedMultipleBallsArea);
         },
         () -> DogLog.log("Subsystems/FuelGauge/BallPresent", false));
   }
 
-  private double updateLatestList(ArrayList<Double> list, double area) {
+  private double smoothFromList(ArrayList<Double> list, double area) {
     double smoothedArea = 0.0;
 
     list.add(area);
@@ -101,9 +96,8 @@ public class FuelGaugeDetection extends SubsystemBase {
     return smoothedArea;
   }
 
-  private void fuelGaugeStateSetAndLog(
+  private void calculateFuelGaugeState(
       double rawArea, double smoothedArea, double avgMultipleBalls, double smoothedMultipleBalls) {
-
     latestRawGauge = setFuelGauge(rawArea);
     latestSmoothedGauge = setFuelGauge(smoothedArea);
     latestMultipleBallsGauge = setFuelGauge(avgMultipleBalls);
@@ -119,19 +113,10 @@ public class FuelGaugeDetection extends SubsystemBase {
   }
 
   private FuelGauge setFuelGauge(double area) {
-    FuelGauge gauge;
-
-    if (area < FuelGauge.EMPTY.getThreshold()) {
-      gauge = FuelGauge.EMPTY;
-    } else if (area < FuelGauge.LOW.getThreshold()) {
-      gauge = FuelGauge.LOW;
-    } else if (area < FuelGauge.MEDIUM.getThreshold()) {
-      gauge = FuelGauge.MEDIUM;
-    } else {
-      gauge = FuelGauge.FULL;
-    }
-
-    return gauge;
+    if (area < FuelGauge.EMPTY.getThreshold()) return FuelGauge.EMPTY;
+    if (area < FuelGauge.LOW.getThreshold()) return FuelGauge.LOW;
+    if (area < FuelGauge.MEDIUM.getThreshold()) return FuelGauge.MEDIUM;
+    return FuelGauge.FULL;
   }
 
   private Optional<PhotonTrackedTarget> getLargestBall() {
@@ -146,21 +131,21 @@ public class FuelGaugeDetection extends SubsystemBase {
   public double getArea(GaugeCalculationType type) {
     switch (type) {
       case RAW:
-        return latestRawArea;
-      case SMOOTHED:
-        return latestSmoothedArea;
-      case MULTIPLE_BALLS:
-        return latestMultipleBallsArea;
-      case SMOOTHED_MULTIPLE_BALLS:
-        return latestSmoothedMultipleBallsArea;
       default:
-        return latestRawArea;
+        return rawArea;
+      case SMOOTHED:
+        return smoothedArea;
+      case MULTIPLE_BALLS:
+        return multipleBallsArea;
+      case SMOOTHED_MULTIPLE_BALLS:
+        return smoothedMultipleBallsArea;
     }
   }
 
   public FuelGauge getGauge(GaugeCalculationType type) {
     switch (type) {
       case RAW:
+      default:
         return latestRawGauge;
       case SMOOTHED:
         return latestSmoothedGauge;
@@ -168,8 +153,6 @@ public class FuelGaugeDetection extends SubsystemBase {
         return latestMultipleBallsGauge;
       case SMOOTHED_MULTIPLE_BALLS:
         return latestSmoothedMultipleBallsGauge;
-      default:
-        return latestRawGauge;
     }
   }
 
@@ -208,17 +191,28 @@ public class FuelGaugeDetection extends SubsystemBase {
     return getLargestBall().map(PhotonTrackedTarget::getSkew);
   }
 
-  public FuelGauge getCurrentFuelGaugeState() {
-    double currentMeasurement = latestRawArea; // or whichever measurement we use
+  public FuelGauge getGaugeDefault() {
+    // return getGauge(GaugeCalculationType.SMOOTHED_MULTIPLE_BALLS);
 
-    if (currentMeasurement >= FuelGauge.FULL.getThreshold()) {
-      return FuelGauge.FULL;
-    } else if (currentMeasurement >= FuelGauge.MEDIUM.getThreshold()) {
-      return FuelGauge.MEDIUM;
-    } else if (currentMeasurement >= FuelGauge.LOW.getThreshold()) {
-      return FuelGauge.LOW;
+    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
+
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) return FuelGauge.EMPTY;
+    if (currentMeasurement <= FuelGauge.LOW.getThreshold()) return FuelGauge.LOW;
+    if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) return FuelGauge.MEDIUM;
+    return FuelGauge.FULL;
+  }
+
+  public String getCurrentFuelGaugeStateAsHex() {
+    double currentMeasurement = smoothedMultipleBallsArea; // or whichever measurement we use
+
+    if (currentMeasurement <= FuelGauge.EMPTY.getThreshold()) {
+      return "#000000";
+    } else if (currentMeasurement <= FuelGauge.LOW.getThreshold()) {
+      return "#FF0000";
+    } else if (currentMeasurement <= FuelGauge.MEDIUM.getThreshold()) {
+      return "#FFFF00";
     } else {
-      return FuelGauge.EMPTY;
+      return "#00FF00";
     }
   }
 }

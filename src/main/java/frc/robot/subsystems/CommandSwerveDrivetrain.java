@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.*;
-
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
@@ -12,15 +10,16 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import dev.doglog.DogLog;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -28,7 +27,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.MiscUtils;
+import frc.robot.util.Targeting;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 /**
@@ -36,11 +39,8 @@ import java.util.function.Supplier;
  * be used in command-based projects.
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
-  // private static final double kSimLoopPeriod = Constants.Simulation.SIM_LOOP_PERIOD_SECONDS; // 5
-  // ms
-  // private Notifier m_simNotifier = null;
-  // private double m_lastSimTime;
-
+  private Translation2d virtualTarget = null;
+  private boolean virtualTargetComputedThisLoop = false;
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
@@ -66,13 +66,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   private SwerveDriveState currentState;
 
-  /* Swerve requests to apply during SysId characterization */
-  private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
-      new SwerveRequest.SysIdSwerveTranslation();
-  private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization =
-      new SwerveRequest.SysIdSwerveSteerGains();
-  private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
-      new SwerveRequest.SysIdSwerveRotation();
+  private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
 
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
@@ -81,77 +75,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   // private final StructPublisher<Pose2d> posePublisher =
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
-
-  private ProfiledPIDController headingProfiledPIDController =
-      new ProfiledPIDController(
-          3.7, // 4 was good
+  private PIDController headingPIDController =
+      new PIDController(
+          4.67, // 4 was good
           0, //
-          0,
-          new TrapezoidProfile.Constraints(
-              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_RATE_RADIANS_PER_SECOND - 1.5, // -1 was good
-              Constants.Swerve.TELE_DRIVE_MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_PER_SECOND
-                  - 16)); // -13 was good
-
-  /*
-   * SysId routine for characterizing translation. This is used to find PID gains
-   * for the drive motors.
-  //  */
-  // private final SysIdRoutine m_sysIdRoutineTranslation =
-  //     new SysIdRoutine(
-  //         new SysIdRoutine.Config(
-  //             null, // Use default ramp rate (1 V/s)
-  //             Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-  //             null, // Use default timeout (10 s)
-  //             // Log state with SignalLogger class
-  //             state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
-  //         new SysIdRoutine.Mechanism(
-  //             output -> setControl(m_translationCharacterization.withVolts(output)), null,
-  // this));
-
-  // /*
-  //  * SysId routine for characterizing steer. This is used to find PID gains for
-  //  * the steer motors.
-  //  */
-  // private final SysIdRoutine m_sysIdRoutineSteer =
-  //     new SysIdRoutine(
-  //         new SysIdRoutine.Config(
-  //             null, // Use default ramp rate (1 V/s)
-  //             Volts.of(7), // Use dynamic voltage of 7 V
-  //             null, // Use default timeout (10 s)
-  //             // Log state with SignalLogger class
-  //             state -> SignalLogger.writeString("SysIdSteer_State", state.toString())),
-  //         new SysIdRoutine.Mechanism(
-  //             volts -> setControl(m_steerCharacterization.withVolts(volts)), null, this));
-
-  // /*
-  //  * SysId routine for characterizing rotation.
-  //  * This is used to find PID gains for the FieldCentricFacingAngle
-  //  * HeadingController.
-  //  * See the documentation of SwerveRequest.SysIdSwerveRotation for info on
-  //  * importing the log to SysId.
-  //  */
-  // private final SysIdRoutine m_sysIdRoutineRotation =
-  //     new SysIdRoutine(
-  //         new SysIdRoutine.Config(
-  //             /* This is in radians per second², but SysId only supports "volts per second" */
-  //             Volts.of(Math.PI / 6).per(Second),
-  //             /* This is in radians per second, but SysId only supports "volts" */
-  //             Volts.of(Math.PI),
-  //             null, // Use default timeout (10 s)
-  //             // Log state with SignalLogger class
-  //             state -> SignalLogger.writeString("SysIdRotation_State", state.toString())),
-  //         new SysIdRoutine.Mechanism(
-  //             output -> {
-  //               /* output is actually radians per second, but SysId only supports "volts" */
-  //               setControl(m_rotationCharacterization.withRotationalRate(output.in(Volts)));
-  //               /* also log the requested output for SysId */
-  //               SignalLogger.writeDouble("Rotational_Rate", output.in(Volts));
-  //             },
-  //             null,
-  //             this));
-
-  // /* The SysId routine to test */
-  // private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+          0); // -13 was good
+  // 15, 0, 0 w/o FF
+  public DoubleSubscriber headingKPTunable =
+      DogLog.tunable("Subsystems/Swerve/kPHeading", 15.0, headingPIDController::setP);
+  public DoubleSubscriber headingKITunable =
+      DogLog.tunable("Subsystems/Swerve/kIHeading", 0.0, headingPIDController::setI);
+  public DoubleSubscriber headingKIDunable =
+      DogLog.tunable("Subsystems/Swerve/kDHeading", 0.0, headingPIDController::setD);
 
   /**
    * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -168,9 +103,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     currentState = getState();
 
-    // if (Utils.isSimulation()) {
-    //   startSimThread();
-    // }
+    headingPIDController.setIZone(0.14);
+    headingPIDController.setIntegratorRange(0.0, Math.PI / 4); // 0.3 before
+    headingPIDController.enableContinuousInput(-Math.PI, Math.PI); // 0.3 before
+    m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SmartDashboard.putData(field);
   }
@@ -191,11 +127,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       double odometryUpdateFrequency,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(drivetrainConstants, odometryUpdateFrequency, modules);
-
-    // if (Utils.isSimulation()) {
-    //   startSimThread();
-    // }
-
     SmartDashboard.putData(field);
   }
 
@@ -226,11 +157,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         odometryStandardDeviation,
         visionStandardDeviation,
         modules);
-
-    // if (Utils.isSimulation()) {
-    //   startSimThread();
-    // }
-
     SmartDashboard.putData(field);
   }
 
@@ -251,9 +177,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public void followPath(SwerveSample sample) {
     m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI); // every run?
 
-    var pose = getState().Pose;
+    Pose2d pose = getState().Pose;
 
-    var targetSpeeds = sample.getChassisSpeeds();
+    ChassisSpeeds targetSpeeds = sample.getChassisSpeeds();
     targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
     targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
     targetSpeeds.omegaRadiansPerSecond +=
@@ -264,6 +190,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             .withSpeeds(targetSpeeds)
             .withWheelForceFeedforwardsX(sample.moduleForcesX())
             .withWheelForceFeedforwardsY(sample.moduleForcesY()));
+
+    DogLog.log("Subsystems/Swerve/SampleX", sample.x);
+    DogLog.log("Subsystems/Swerve/SampleY", sample.y);
+    DogLog.log("Subsystems/Swerve/SampleHeading", sample.heading);
+    DogLog.log("Subsystems/Swerve/SampleVX", sample.vx);
+    DogLog.log("Subsystems/Swerve/SampleVY", sample.vy);
+    DogLog.log("Subsystems/Swerve/SampleAngularVelocity", sample.omega);
+    DogLog.log("Subsystems/Swerve/SampleAX", sample.ax);
+    DogLog.log("Subsystems/Swerve/SampleAY", sample.ay);
+    DogLog.log("Subsystems/Swerve/SampleAngularAcceleration", sample.alpha);
   }
 
   /**
@@ -276,27 +212,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return run(() -> this.setControl(requestSupplier.get()));
   }
 
-  // /**
-  //  * Runs the SysId Quasistatic test in the given direction for the routine specified by {@link
-  //  * #m_sysIdRoutineToApply}.
-  //  *
-  //  * @param direction Direction of the SysId Quasistatic test
-  //  * @return Command to run
-  //  */
-  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  //   return m_sysIdRoutineToApply.quasistatic(direction);
-  // }
-
-  // /**
-  //  * Runs the SysId Dynamic test in the given direction for the routine specified by {@link
-  //  * #m_sysIdRoutineToApply}.
-  //  *
-  //  * @param direction Direction of the SysId Dynamic test
-  //  * @return Command to run
-  //  */
-  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  //   return m_sysIdRoutineToApply.dynamic(direction);
-  // }
+  public Translation2d getVirtualTarget(BooleanSupplier redside, BooleanSupplier override) {
+    if (override.getAsBoolean()) {
+      return (redside.getAsBoolean())
+          ? (Constants.Landmarks.RED_HUB.getTranslation())
+          : (Constants.Landmarks.BLUE_HUB.getTranslation());
+    }
+    if (virtualTarget == null || !virtualTargetComputedThisLoop) {
+      virtualTarget = Targeting.computeVirtualTarget(Targeting.getHub(redside), this);
+      virtualTargetComputedThisLoop = true;
+    }
+    return virtualTarget;
+  }
 
   public SwerveDriveState getCurrentState() {
     return currentState;
@@ -320,6 +247,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         m_pathApplyFieldSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity));
   }
 
+  public double getSpeedMagnitude() {
+    double xSpeed = getFieldSpeeds().vxMetersPerSecond;
+    double ySpeed = getFieldSpeeds().vyMetersPerSecond;
+    return Math.sqrt((xSpeed * xSpeed) + (ySpeed * ySpeed));
+  }
+
   public Pose2d getPose() {
     return currentState.Pose;
   }
@@ -334,12 +267,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return new Rotation2d(Math.atan2(deltaY, deltaX));
   }
 
-  public void resetPose(Pose2d pose) { // new
+  public void resetPose(Pose2d pose) {
     super.resetPose(pose);
   }
 
   @Override
   public void periodic() {
+    virtualTargetComputedThisLoop = false;
+    DogLog.log("SpeedMagnitude", getSpeedMagnitude());
     /*
      * Periodically try to apply the operator perspective.
      * If we haven't applied the operator perspective before, then we should apply
@@ -352,6 +287,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * occurs during testing.
      */
     currentState = getState();
+    DogLog.log("Subsystems/Swerve/AccumulatedError", headingPIDController.getAccumulatedError());
 
     if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
       DriverStation.getAlliance()
@@ -366,7 +302,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     if (this.getCurrentCommand() != null) {
-      DogLog.log("Subsystems/Swerve/Current Command", this.getCurrentCommand().toString());
+      DogLog.log("Subsystems/Swerve/CurrentCommand", this.getCurrentCommand().toString());
     }
     DogLog.log("Subsystems/Swerve/Pose", getCurrentState().Pose);
 
@@ -375,6 +311,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log("Subsystems/Swerve/CurrPoseRotRads", getCurrentState().Pose.getRotation());
     DogLog.log(
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
+
+    DogLog.log(
+        "Subsystems/Swerve/DistanceToHub",
+        MiscUtils.getDistanceToHub(RobotContainer::isRedAlliance, this));
+    DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
 
   @Override
@@ -389,21 +330,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
   }
 
-  // private void startSimThread() {
-  //     m_lastSimTime = Utils.getCurrentTimeSeconds();
-
-  //     /* Run simulation at a faster rate so PID gains behave more reasonably */
-  //     m_simNotifier = new Notifier(() -> {
-  //         final double currentTime = Utils.getCurrentTimeSeconds();
-  //         double deltaTime = currentTime - m_lastSimTime;
-  //         m_lastSimTime = currentTime;
-
-  //         /* use the measured time delta, get battery voltage from WPILib */
-  //         updateSimState(deltaTime, RobotController.getBatteryVoltage());
-  //     });
-  //     m_simNotifier.startPeriodic(kSimLoopPeriod);
-  // }
-
   public ChassisSpeeds getFieldSpeeds() {
     return ChassisSpeeds.fromRobotRelativeSpeeds(
         currentState.Speeds, currentState.Pose.getRotation());
@@ -412,25 +338,63 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
     double omega =
         // headingProfiledPIDController.getSetpoint().velocity+
-        headingProfiledPIDController.calculate(
+        headingPIDController.calculate(
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    double max = Constants.Swerve.MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND;
+    boolean clamp = Math.abs(omega) > max;
+    if (clamp) {
+      omega = MathUtil.clamp(omega, -max, max);
+    }
+    DogLog.log("Subsystems/Swerve/RotationController/clamped", clamp);
+    DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
     return omega;
   }
 
-  // private void startSimThread() {
-  //   m_lastSimTime = Utils.getCurrentTimeSeconds();
+  public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint) {
+    Translation2d robotPos = getCurrentState().Pose.getTranslation();
+    double dx = targetPoint.getX() - robotPos.getX();
+    double dy = targetPoint.getY() - robotPos.getY();
+    double r2 = dx * dx + dy * dy;
 
-  //   /* Run simulation at a faster rate so PID gains behave more reasonably */
-  //   m_simNotifier =
-  //       new Notifier(
-  //           () -> {
-  //             final double currentTime = Utils.getCurrentTimeSeconds();
-  //             double deltaTime = currentTime - m_lastSimTime;
-  //             m_lastSimTime = currentTime;
+    double omegaFF = 0.0;
+    if (r2 > Constants.Swerve.FF_RADIUS_M2) {
+      ChassisSpeeds fieldSpeeds =
+          ChassisSpeeds.fromRobotRelativeSpeeds(
+              currentState.Speeds, currentState.Pose.getRotation());
+      double vx = fieldSpeeds.vxMetersPerSecond;
+      double vy = fieldSpeeds.vyMetersPerSecond;
 
-  //             /* use the measured time delta, get battery voltage from WPILib */
-  //             updateSimState(deltaTime, RobotController.getBatteryVoltage());
-  //           });
-  //   m_simNotifier.startPeriodic(kSimLoopPeriod);
-  // }
+      omegaFF = (dy * vx - dx * vy) / r2;
+    }
+
+    Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx) + Math.PI);
+    double omegaPID =
+        headingPIDController.calculate(
+            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+
+    double sign = 1;
+    if (omegaPID < 0) {
+      sign = -1;
+    }
+
+    double angleDifference =
+        Math.atan2(
+            Math.sin(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()),
+            Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
+
+    if ((Math.abs(angleDifference) < 0.87) && Math.abs(omegaPID) >= 1.295) {
+      omegaPID = Math.abs(angleDifference) * (3.6) * sign;
+    }
+
+    double omega = (omegaFF) + omegaPID;
+
+    DogLog.log("Subsystems/Swerve/RotationController/omegaFF", omegaFF);
+    DogLog.log("Subsystems/Swerve/RotationController/omegaPID", omegaPID);
+    DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
+    return omega;
+  }
+
+  public Command brakeSwerve() {
+    return run(() -> setControl(m_brake));
+  }
 }
