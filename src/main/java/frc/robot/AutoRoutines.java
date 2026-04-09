@@ -105,14 +105,14 @@ public class AutoRoutines {
                 swerveSubsystem,
                 isRedSide,
                 () -> false)
-            .withTimeout(3.0);
+            .withTimeout(4.0);
 
     return shoot;
   }
 
   public Command driveForward(double time) {
     return Commands.run(
-            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(5, 0, 0), new Feedforwards(4)),
+            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(3, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
@@ -123,7 +123,7 @@ public class AutoRoutines {
   public Command driveBackward(double time) {
     return Commands.run(
             () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-5, 0, 0), new Feedforwards(4)),
+                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-3, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
