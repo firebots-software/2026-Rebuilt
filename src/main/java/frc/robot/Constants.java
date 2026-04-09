@@ -530,7 +530,7 @@ public final class Constants {
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
-      private static final double YAW = Units.degreesToRadians(-45.0); // mrd 310
+      private static final double YAW = Units.degreesToRadians(-42.0); // mrd 310
     }
 
     private class FrontLeft {
@@ -539,7 +539,7 @@ public final class Constants {
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
-      private static final double YAW = Units.degreesToRadians(45.0); // mrd 50
+      private static final double YAW = Units.degreesToRadians(42.0); // mrd 50
     }
 
     private class RearRight {
