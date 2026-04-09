@@ -526,7 +526,7 @@ public final class Constants {
 
     private class FrontRight {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(12.316702); // mrd negative
+      private static final double Y = Units.inchesToMeters(-12.316702); // mrd negative
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
@@ -535,7 +535,7 @@ public final class Constants {
 
     private class FrontLeft {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(-12.316702); // mrd positive
+      private static final double Y = Units.inchesToMeters(12.316702); // mrd positive
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
