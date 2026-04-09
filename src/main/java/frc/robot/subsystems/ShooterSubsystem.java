@@ -217,7 +217,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double grabTargetShootingSpeed(double distanceToTarget) {
-    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget) - 0.2;
+    return Constants.Shooter.ROLLER_SPEED_MAP.get(distanceToTarget) - 0.4;
   }
 
   public double grabPassingShootingSpeed(double distanceToTarget) {

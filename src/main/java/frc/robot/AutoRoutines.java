@@ -246,6 +246,59 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine PedriShortRightChoreo() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    Command forward2 =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward2 =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShortChoreo);
+    AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+    AutoTrajectory shootToBump =
+        miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightShootToBump);
+    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightSecondDipLongChoreo);
+    AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
+
+    intake1
+        .done()
+        .onTrue(
+            Commands.sequence(
+                intakeToShoot1.resetOdometry(),
+                intakeToShoot1.cmd()));
+
+    intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShoot(redSide), shootToBump.cmd()));
+
+    shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
+
+    intake2
+        .done()
+        .onTrue(
+            Commands.sequence(
+                intakeToShoot2.resetOdometry(),
+                intakeToShoot2.cmd()));
+
+    intakeToShoot2.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
   public AutoRoutine PedriShortLeft() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -546,6 +599,8 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot", () -> DrakeDepotShort());
     autoChooser.addRoutine("Outpost to depot", () -> DrakeOutpostLong());
     autoChooser.addRoutine("Depot to outpost", () -> DrakeDepotLong());
+
+    autoChooser.addRoutine("Choreo over bump", () -> PedriShortRightChoreo());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
   }
