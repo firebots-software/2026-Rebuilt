@@ -105,7 +105,7 @@ public class VisionSubsystem extends SubsystemBase {
     latestMaxDistance = getMaxDistance();
     latestAvgDistance = getAverageDistance();
 
-    if (throwOutDistance(latestMaxDistance)) return;
+    if (throwOutDistance(latestMinDistance)) return;
 
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -114,7 +114,7 @@ public class VisionSubsystem extends SubsystemBase {
     double currentSpeed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
 
     latestNoiseVector =
-        VisionUtils.computeNoiseVector(latestMaxDistance, currentSpeed, latestTagCount);
+        VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
     latestFinalTimestamp = calculateTimestamp(estimatedPose.timestampSeconds);
     hasValidMeasurement = true;
 
