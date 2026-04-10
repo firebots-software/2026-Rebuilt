@@ -609,6 +609,7 @@ public final class Constants {
 
     public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
     public static final double MAX_HEADING_DIFF = 25.0;
+    public static final double MAX_HEADING_DIFF_AUTO = 20.0;
 
     public static int MAX_JITTER_MEASUREMENTS = 16;
 

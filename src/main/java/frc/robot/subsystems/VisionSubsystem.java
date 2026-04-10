@@ -107,6 +107,7 @@ public class VisionSubsystem extends SubsystemBase {
     latestAvgDistance = getAverageDistance();
 
     if (throwOutDistance(latestMinDistance)) return;
+
     throwOutHeadingChange(latestMeasuredPose, swerve);
 
     // if (throwOutHeadingChange(latestMeasuredPose, swerve)) return;
