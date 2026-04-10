@@ -126,7 +126,7 @@ public class RobotContainer {
             secondController.intakeVisionLockout(),
             intakeSubsystem::atExtendedPosition);
 
-    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // Intake
