@@ -585,7 +585,7 @@ public class AutoRoutines {
 
     return routine;
   }
-  
+
   public AutoRoutine OCLeft() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
