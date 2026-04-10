@@ -43,6 +43,7 @@ public class VisionSubsystem extends SubsystemBase {
   private double latestFinalTimestamp;
   private Matrix<N3, N1> latestNoiseVector;
   private double latestMinDistance;
+  private double latestMaxDistance;
   private double latestAvgDistance;
   private int latestTagCount;
 
@@ -101,9 +102,10 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/MeasuredPose", latestMeasuredPose);
 
     latestMinDistance = getMinDistance();
+    latestMaxDistance = getMaxDistance();
     latestAvgDistance = getAverageDistance();
 
-    if (throwOutDistance(latestMinDistance)) return;
+    if (throwOutDistance(latestMaxDistance)) return;
 
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -112,7 +114,7 @@ public class VisionSubsystem extends SubsystemBase {
     double currentSpeed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
 
     latestNoiseVector =
-        VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
+        VisionUtils.computeNoiseVector(latestMaxDistance, currentSpeed, latestTagCount);
     latestFinalTimestamp = calculateTimestamp(estimatedPose.timestampSeconds);
     hasValidMeasurement = true;
 
