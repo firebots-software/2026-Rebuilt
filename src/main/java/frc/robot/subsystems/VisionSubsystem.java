@@ -5,7 +5,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.struct.Rotation2dStruct;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -106,6 +108,9 @@ public class VisionSubsystem extends SubsystemBase {
     latestAvgDistance = getAverageDistance();
 
     if (throwOutDistance(latestMinDistance)) return;
+    throwOutHeadingChange(latestMeasuredPose, swerve);
+
+    // if (throwOutHeadingChange(latestMeasuredPose, swerve)) return;
 
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -155,6 +160,14 @@ public class VisionSubsystem extends SubsystemBase {
     boolean thrownOut = Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE;
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
+  }
+
+  private void throwOutHeadingChange(Pose2d pose, CommandSwerveDrivetrain swerve) {
+    Rotation2d estimatedHeading = pose.getRotation();
+    Rotation2d currentHeading = swerve.getCurrentState().Pose.getRotation();
+    double rotationDiff = estimatedHeading.relativeTo(currentHeading).getDegrees();
+    boolean trueIfThrown = rotationDiff > Constants.Vision.MAX_HEADING_DIFF;
+    DogLog.log(loggingPath + "/ThrownOutHeading", trueIfThrown);
   }
 
   public double getMinDistance() {
