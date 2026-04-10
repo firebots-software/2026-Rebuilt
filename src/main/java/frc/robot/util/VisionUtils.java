@@ -51,7 +51,7 @@ public class VisionUtils {
 
     if (preferredVision == null || !preferredVision.hasValidMeasurement()) return;
 
-    preferredVision.addFilteredPose(drivetrain);
+    preferredVision.addFilteredPose();
 
     preferredVisionLogs();
   }
@@ -71,10 +71,10 @@ public class VisionUtils {
   }
 
   private static void calculateAllCameraPoses() {
-    visionFrontRight.calculateFilteredPose(drivetrain);
-    visionFrontLeft.calculateFilteredPose(drivetrain);
-    visionRearRight.calculateFilteredPose(drivetrain);
-    visionRearLeft.calculateFilteredPose(drivetrain);
+    visionFrontRight.calculateFilteredPose();
+    visionFrontLeft.calculateFilteredPose();
+    visionRearRight.calculateFilteredPose();
+    visionRearLeft.calculateFilteredPose();
   }
 
   private static VisionSubsystem selectPreferredVision() {

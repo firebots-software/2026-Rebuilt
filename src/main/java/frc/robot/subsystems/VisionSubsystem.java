@@ -5,6 +5,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -47,8 +48,9 @@ public class VisionSubsystem extends SubsystemBase {
   private double latestMaxDistance;
   private double latestAvgDistance;
   private int latestTagCount;
+  private CommandSwerveDrivetrain swerve;
 
-  public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
+  public VisionSubsystem(Constants.Vision.VisionCamera cameraID, CommandSwerveDrivetrain drivetrain) {
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
@@ -60,6 +62,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     cameraTitle = cameraID.getLoggingName();
     loggingPath = "Subsystems/Vision/" + cameraTitle;
+
+    this.swerve = drivetrain;
   }
 
   public VisionCamera getCameraID() {
@@ -89,10 +93,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     if (visionEstimate.isEmpty())
-      visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
+      visionEstimate = poseEstimator.estimateClosestToReferencePose(latestVisionResult, new Pose3d(swerve.getCurrentState().Pose));
   }
 
-  public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
+  public void calculateFilteredPose() {
     hasValidMeasurement = false;
 
     if (!resultValid()) return;
@@ -108,7 +112,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (throwOutDistance(latestMinDistance)) return;
 
-    throwOutHeadingChange(latestMeasuredPose, swerve);
+    throwOutHeadingChange(latestMeasuredPose);
 
     // if (throwOutHeadingChange(latestMeasuredPose, swerve)) return;
 
@@ -162,7 +166,7 @@ public class VisionSubsystem extends SubsystemBase {
     return thrownOut;
   }
 
-  private void throwOutHeadingChange(Pose2d pose, CommandSwerveDrivetrain swerve) {
+  private void throwOutHeadingChange(Pose2d pose) {
     Rotation2d estimatedHeading = pose.getRotation();
     Rotation2d currentHeading = swerve.getCurrentState().Pose.getRotation();
     double rotationDiff = Math.abs(estimatedHeading.relativeTo(currentHeading).getDegrees());
@@ -257,7 +261,7 @@ public class VisionSubsystem extends SubsystemBase {
     return latestMeasuredPose;
   }
 
-  public void addFilteredPose(CommandSwerveDrivetrain swerve) {
+  public void addFilteredPose() {
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
 }
