@@ -166,7 +166,7 @@ public class VisionSubsystem extends SubsystemBase {
     Rotation2d estimatedHeading = pose.getRotation();
     Rotation2d currentHeading = swerve.getCurrentState().Pose.getRotation();
     double rotationDiff = Math.abs(estimatedHeading.relativeTo(currentHeading).getDegrees());
-    boolean trueIfThrown = rotationDiff > Constants.Vision.MAX_HEADING_DIFF;
+    boolean trueIfThrown = rotationDiff > VisionUtils.getHeadingThreshold();
     DogLog.log(loggingPath + "/ThrownOutHeading", trueIfThrown);
     DogLog.log(loggingPath + "/ThrownOutHeadingDiff", rotationDiff);
   }
