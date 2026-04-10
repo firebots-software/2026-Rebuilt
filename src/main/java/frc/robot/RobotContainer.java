@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
-import frc.robot.commandGroups.ShootCommandGroups.DriveToAndShoot;
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
@@ -87,7 +86,7 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-    // * KEEP FOR INTERMAP TESTING
+  // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
   //   private double shooterSpeed = 58.0;
 
@@ -162,7 +161,8 @@ public class RobotContainer {
     //         lebron
     //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
     //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
-    //                 (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
+    //
+    // (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
