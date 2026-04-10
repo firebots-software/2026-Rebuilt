@@ -5,6 +5,10 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
+// * KEEP FOR WIN COMMAND TESTING
+// import edu.wpi.first.math.geometry.Pose2d;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -13,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+// * KEEP FOR WIN COMMAND TESTING
+import frc.robot.commandGroups.ShootCommandGroups.DriveToAndShoot;
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
@@ -81,6 +87,7 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
+    // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
   //   private double shooterSpeed = 58.0;
 
@@ -126,6 +133,7 @@ public class RobotContainer {
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+
     joystick
         .a()
         .whileTrue(
@@ -135,15 +143,26 @@ public class RobotContainer {
                     hopperSubsystem.runHopperUntilInterruptedCommand(
                         -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
 
+    // * KEEP FOR WIN COMMAND
+    // joystick
+    //     .a()
+    //     .whileTrue(
+    //         new DriveToAndShoot(
+    //             () -> (new Pose2d(new Translation2d(2.3, 5.5), new Rotation2d())),
+    //             lebron,
+    //             intakeSubsystem,
+    //             hopperSubsystem,
+    //             drivetrain,
+    //             redside));
+
+    // * KEEP FOR INTERMAP TESTING
     // joystick
     //     .rightTrigger()
     //     .whileTrue(
     //         lebron
     //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
     //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
-    //                 (hopperSubsystem
-    //
-    // .runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand()))))); // Commands.waitUntil(lebron::isShooterReady).andThen
+    //                 (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
 
     secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
 
@@ -177,9 +196,9 @@ public class RobotContainer {
                 redside));
     secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
 
+    // * KEEP FOR INTERMAP TESTING
     // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
     // joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
-
     // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
     // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
