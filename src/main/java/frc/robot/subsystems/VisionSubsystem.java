@@ -165,11 +165,10 @@ public class VisionSubsystem extends SubsystemBase {
   private void throwOutHeadingChange(Pose2d pose, CommandSwerveDrivetrain swerve) {
     Rotation2d estimatedHeading = pose.getRotation();
     Rotation2d currentHeading = swerve.getCurrentState().Pose.getRotation();
-    double rotationDiff = estimatedHeading.relativeTo(currentHeading).getDegrees();
+    double rotationDiff = Math.abs(estimatedHeading.relativeTo(currentHeading).getDegrees());
     boolean trueIfThrown = rotationDiff > Constants.Vision.MAX_HEADING_DIFF;
     DogLog.log(loggingPath + "/ThrownOutHeading", trueIfThrown);
     DogLog.log(loggingPath + "/ThrownOutHeadingDiff", rotationDiff);
-
   }
 
   public double getMinDistance() {

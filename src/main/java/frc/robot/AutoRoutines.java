@@ -691,7 +691,11 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightSecondDipLong);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -748,7 +752,11 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftSecondDipLong);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
