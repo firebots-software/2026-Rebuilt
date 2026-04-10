@@ -131,6 +131,26 @@ public class AutoRoutines {
     //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
+  public Command driveForwardSlower(double time) {
+    return Commands.run(
+            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(2, 0, 0), new Feedforwards(4)),
+            swerveSubsystem)
+        .withTimeout(time);
+    // .andThen(
+    //     () ->
+    //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
+  }
+
+  public Command driveBackwardSlower(double time) {
+    return Commands.run(
+            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-2, 0, 0), new Feedforwards(4)),
+            swerveSubsystem)
+        .withTimeout(time);
+    // .andThen(
+    //     () ->
+    //         swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
+  }
+
   public Command driveToBumpAfterIntake(BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {
     // return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
     return new IntakeToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
@@ -203,8 +223,8 @@ public class AutoRoutines {
 
     Command forward2 =
         redSide.getAsBoolean()
-            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
-            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+            ? driveBackwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER)
+            : driveForwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER);
     Command backward2 =
         redSide.getAsBoolean()
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
@@ -260,8 +280,8 @@ public class AutoRoutines {
 
     Command forward2 =
         redSide.getAsBoolean()
-            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
-            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+            ? driveBackwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER)
+            : driveForwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER);
     Command backward2 =
         redSide.getAsBoolean()
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
@@ -657,8 +677,8 @@ public class AutoRoutines {
 
     Command forward2 =
         redSide.getAsBoolean()
-            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
-            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+            ? driveBackwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER)
+            : driveForwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER);
     Command backward2 =
         redSide.getAsBoolean()
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
@@ -718,8 +738,8 @@ public class AutoRoutines {
 
     Command forward2 =
         redSide.getAsBoolean()
-            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
-            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+            ? driveBackwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER)
+            : driveForwardSlower(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS_SLOWER);
     Command backward2 =
         redSide.getAsBoolean()
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
