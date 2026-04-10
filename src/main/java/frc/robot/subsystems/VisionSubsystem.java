@@ -169,7 +169,6 @@ public class VisionSubsystem extends SubsystemBase {
     boolean trueIfThrown = rotationDiff > Constants.Vision.MAX_HEADING_DIFF;
     DogLog.log(loggingPath + "/ThrownOutHeading", trueIfThrown);
     DogLog.log(loggingPath + "/ThrownOutHeadingDiff", rotationDiff);
-
   }
 
   public double getMinDistance() {
