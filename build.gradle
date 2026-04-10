@@ -1,9 +1,7 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.2.1"
-    id 'com.diffplug.spotless' version '6.20.0'
+    id "edu.wpi.first.GradleRIO" version "2026.1.1"
 }
-
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -28,16 +26,7 @@ deploy {
                 // First part is artifact name, 2nd is artifact type
                 // getTargetTypeClass is a shortcut to get the class type using a string
 
-                // frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
-                // }
                 frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
-                    // Enable VisualVM connection
-                    jvmArgs.add("-Dcom.sun.management.jmxremote=true")
-                    jvmArgs.add("-Dcom.sun.management.jmxremote.port=1198")
-                    jvmArgs.add("-Dcom.sun.management.jmxremote.local.only=false")
-                    jvmArgs.add("-Dcom.sun.management.jmxremote.ssl=false")
-                    jvmArgs.add("-Dcom.sun.management.jmxremote.authenticate=false")
-                    jvmArgs.add("-Djava.rmi.server.hostname=10.35.1.2") // Replace TE.AM with team number
                 }
 
                 // Static files artifact
@@ -45,14 +34,12 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                     deleteOldFiles = false // Change to true to delete files on roboRIO that no
-                    // longer exist in deploy directory of this project
+                                           // longer exist in deploy directory of this project
                 }
             }
         }
     }
 }
-
-
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
@@ -101,11 +88,7 @@ wpi.sim.addDriverstation()
 // in order to make them all available at runtime. Also adding the manifest so WPILib
 // knows where to look for our Robot Class.
 jar {
-    from {
-        configurations.runtimeClasspath.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     from('src') { into 'backup/src' }
     from('vendordeps') { into 'backup/vendordeps' }
     from('build.gradle') { into 'backup' }
@@ -121,51 +104,4 @@ wpi.java.configureTestTasks(test)
 // Configure string concat to always inline compile
 tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
-}
-
-tasks.named("build") {
-    dependsOn("spotlessApply")
-}
-
-spotless {
-    java {
-        target fileTree('.') {
-            include '**/*.java'
-            exclude '**/build/**', '**/build-*/**', '**/bin/**'
-        }
-        toggleOffOn()
-        googleJavaFormat()
-        removeUnusedImports()
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    groovyGradle {
-        target fileTree('.') {
-            include '**/*.gradle'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        greclipse()
-        indentWithSpaces(4)
-        trimTrailingWhitespace()
-        endWithNewline()
-    }
-    format 'xml', {
-        target fileTree('.') {
-            include '**/*.xml'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        eclipseWtp('xml')
-        trimTrailingWhitespace()
-        indentWithSpaces(2)
-        endWithNewline()
-    }
-    format 'misc', {
-        target fileTree('.') {
-            include '**/*.md', '**/.gitignore'
-            exclude '**/build/**', '**/build-*/**'
-        }
-        trimTrailingWhitespace()
-        indentWithSpaces(2)
-        endWithNewline()
-    }
 }

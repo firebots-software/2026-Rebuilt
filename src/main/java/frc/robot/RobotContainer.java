@@ -1,201 +1,154 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import choreo.auto.AutoChooser;
-import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import dev.doglog.DogLog;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
-import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
-import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
-import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.FuelGaugeDetection;
-import frc.robot.subsystems.HopperSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.IntakeVisionDetection;
-import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.util.CustomController;
-import frc.robot.util.VisionUtils;
-import java.util.function.BooleanSupplier;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commandGroups.BundtShot;
+import frc.robot.commandGroups.Intake;
+import frc.robot.commands.ArmCommands.ArmToAngleCmd;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.JoystickSubsystem;
+import frc.robot.subsystems.PeterSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.util.OtherXBoxController;
 import java.util.function.DoubleSupplier;
 
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
 public class RobotContainer {
-  private BooleanSupplier redside = RobotContainer::isRedAlliance;
-
-  private final DoubleEntry hoodAngleTunable =
-      NetworkTableInstance.getDefault().getDoubleTopic("Tunable/HoodAngleTunable").getEntry(10.0);
-  private final DoubleEntry shooterSpeedTunable =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("Tunable/ShooterSpeedTunable")
-          .getEntry(44.0);
-  private Field2d field = new Field2d();
-
-  private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CustomController secondController = new CustomController(4);
-
-  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
-  public final HopperSubsystem hopperSubsystem =
-      Constants.hopperOnRobot ? new HopperSubsystem(drivetrain, redside) : null;
-  public final IntakeSubsystem intakeSubsystem =
-      Constants.intakeOnRobot ? new IntakeSubsystem() : null;
-  public final ShooterSubsystem lebron =
-      Constants.shooterOnRobot ? new ShooterSubsystem(drivetrain, redside) : null;
-
-  private final AutoRoutines autoRoutines;
-  private final AutoChooser autoChooser;
-
-  public final VisionSubsystem visionFrontRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM)
-          : null;
-  public final VisionSubsystem visionFrontLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM)
-          : null;
-  public final VisionSubsystem visionRearRight =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM)
-          : null;
-  public final VisionSubsystem visionRearLeft =
-      Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM)
-          : null;
-
-  public final FuelGaugeDetection visionFuelGauge =
-      Constants.fuelGaugeOnRobot
-          ? new FuelGaugeDetection(Constants.FuelGaugeDetection.FuelGaugeCamera.FUEL_GAUGE_CAM)
-          : null;
-  public final IntakeVisionDetection visionIntake =
-      Constants.intakeVisionOnRobot
-          ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
-          : null;
-
-  // private double hoodAngle = 12.6;
-  // private double shooterSpeed = 51.75;
+  // OI
+  private final OtherXBoxController joystick =
+      new OtherXBoxController(Constants.OI.JOYSTICK_A_PORT);
+  // Subsystems
+  private final SwerveSubsystem driveTrain = SwerveSubsystem.getInstance();
+  private final ArmSubsystem armSubsystem = ArmSubsystem.getInstance();
+  private final PeterSubsystem peterSubsystem = PeterSubsystem.getInstance();
+  private final JoystickSubsystem joystickSubsystem = new JoystickSubsystem(joystick.getHID());
+  // Logging
+  private final Telemetry logger =
+      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
   public RobotContainer() {
-    hoodAngleTunable.setDefault(10.0);
-    shooterSpeedTunable.setDefault(44.0);
-    autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
-    autoChooser = autoRoutines.getAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    SmartDashboard.putData("Elastic/Field2d", field);
-
     configureBindings();
   }
 
-  public CommandSwerveDrivetrain getDrivetrain() {
-    return drivetrain;
+  // Starts telemetry operations (essentially logging -> look on SmartDashboard, AdvantageScope)
+  public void doTelemetry() {
+    logger.telemeterize(driveTrain.getState());
+    DogLog.log("drivetrain/heading", driveTrain.getState().RawHeading.getDegrees() * 360);
+
+    double x = driveTrain.getState().Speeds.vxMetersPerSecond;
+    double y = driveTrain.getState().Speeds.vyMetersPerSecond;
+
+    double speed = Math.sqrt(x * x + y * y);
+
+    DogLog.log("drivetrain/speed(fps)", speed * 3.2808);
   }
 
   private void configureBindings() {
-    // Swerve
-    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY();
-    DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
-    DoubleSupplier rotationFunction = () -> -joystick.getRightX();
-    DoubleSupplier speedFunction = () -> 1d;
-    SwerveJoystickDefaultCommand swerveJoystickDefaultCommand =
-        new SwerveJoystickDefaultCommand(
+    // For outreach, we only want
+    // 1. drive
+    // 2. intake
+    // 3. fire at set angle
+
+    // Driving
+    //     * Left joystick = translation
+    //     * Right joystick = rotation
+    //     * Right shoulder = speed increase
+    // Speed is determined by
+    // Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT for when right shoulder is not pressed
+    // Constants.Swerve.TELE_DRIVE_FAST_MODE_SPEED_PERCENT for when right shoulder is pressed
+    // Trigger rightShoulderTrigger = joystick.rightBumper();
+    // Supplier<Double> frontBackFunction = () -> -joystick.getLeftY(),
+    //     leftRightFunction = () -> -joystick.getLeftX(),
+    //     rotationFunction = () -> -joystick.getRightX(),
+    //     speedFunction = () -> rightShoulderTrigger.getAsBoolean() ? 1d : 0d;
+    // Supplier<Boolean> fieldRelative = () -> false;
+    // SwerveJoystickCommand swerveJoystickCommand =
+    //     new SwerveJoystickCommand(
+    //         frontBackFunction,
+    //         leftRightFunction,
+    //         rotationFunction,
+    //         speedFunction,
+    //         fieldRelative,
+    //         driveTrain);
+    Trigger leftTrigger = joystick.leftTrigger();
+    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY(),
+        leftRightFunction = () -> -joystick.getLeftX(),
+        rotationFunction = () -> -joystick.getRightX(),
+        speedFunction =
+            () ->
+                leftTrigger.getAsBoolean()
+                    ? 0d
+                    : 1d; // slowmode when left shoulder is pressed, otherwise fast
+    SwerveJoystickCommand swerveJoystickCommand =
+        new SwerveJoystickCommand(
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
-            speedFunction,
-            () -> true,
-            joystick.leftTrigger()::getAsBoolean,
-            redside,
-            drivetrain,
-            visionIntake,
-            joystick.leftBumper()::getAsBoolean,
-            secondController.intakeVisionLockout(),
-            intakeSubsystem::atExtendedPosition);
+            speedFunction, // slowmode when left shoulder is pressed, otherwise fast
+            () -> false,
+            driveTrain);
 
-    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
+    driveTrain.setDefaultCommand(swerveJoystickCommand);
+    driveTrain.registerTelemetry(logger::telemeterize);
 
-    // Intake
-    intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
-    joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
-    joystick
-        .a()
-        .whileTrue(
-            intakeSubsystem
-                .outtakeUntilInterruptedCommand()
-                .alongWith(
-                    hopperSubsystem.runHopperUntilInterruptedCommand(
-                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+    // Intake - left trigger
+    // Angle controlled by Constants.Arm.INTAKE_ANGLE
+    joystick.leftTrigger().whileTrue(new Intake(peterSubsystem, armSubsystem, joystickSubsystem));
 
-    // joystick
-    //     .rightTrigger()
-    //     .whileTrue(
-    //         lebron
-    //             .shootAtSpeedHoodCommand(() -> shooterSpeed, () -> hoodAngle)
-    //             .alongWith(Commands.waitUntil(lebron::isAtSpeed).andThen
-    //                 (hopperSubsystem
-    //
-    // .runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand()))))); // Commands.waitUntil(lebron::isShooterReady).andThen
-
-    secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
-
-    // Hopper
-    hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
-
-    // Shooter
-    lebron.setDefaultCommand(lebron.runOnce(lebron::stopShooter));
+    // Shoot - right trigger
+    // Angle controlled by Constants.Arm.BUNDT_ANGLE
     joystick
         .rightTrigger()
-        .whileTrue(
-            new ShootWithAim(
-                frontBackFunction,
-                leftRightFunction,
-                lebron,
-                intakeSubsystem,
-                hopperSubsystem,
-                drivetrain,
-                redside,
-                secondController.visionShootingLockout()));
+        .whileTrue(new BundtShot(peterSubsystem, armSubsystem, joystickSubsystem));
+
+    // When no Commands are being issued, Peter motors should not be moving
+    peterSubsystem.setDefaultCommand(
+        new InstantCommand(
+            () -> {
+              peterSubsystem.stopIntake();
+              peterSubsystem.stopLeftShooter();
+              peterSubsystem.stopRightShooter();
+              peterSubsystem.stopPreShooterMotor();
+            },
+            peterSubsystem));
+
+    // Outtake - left shoulder
     joystick
-        .rightBumper()
+        .leftBumper()
         .whileTrue(
-            new ShootPassing(
-                frontBackFunction,
-                leftRightFunction,
-                lebron,
-                intakeSubsystem,
-                hopperSubsystem,
-                drivetrain,
-                redside));
-    secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+            new ParallelCommandGroup(
+                    new RunCommand(
+                        () -> {
+                          peterSubsystem.reverseMechanism();
+                        },
+                        peterSubsystem),
+                    ArmToAngleCmd.toNeutral(armSubsystem).withTolerance(1))
+                .withInterruptBehavior(InterruptionBehavior.kCancelSelf));
 
-    // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
-    // joystick.y().onTrue(new InstantCommand(() -> hoodAngle-=0.2));
-
-    // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
-    // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
-  }
-
-  public void visionPeriodic() {
-    VisionUtils.visionPeriodic(
-        visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-  }
-
-  public static boolean isRedAlliance() {
-    return DriverStation.getAlliance().isEmpty()
-        ? false
-        : DriverStation.getAlliance().get() == Alliance.Red;
+    joystick
+        .y()
+        .onTrue(
+            driveTrain.runOnce(
+                () ->
+                    driveTrain.resetPose(
+                        new Pose2d(driveTrain.getPose().getTranslation(), new Rotation2d(0)))));
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.selectedCommand();
+    return new WaitCommand(1);
   }
 }
