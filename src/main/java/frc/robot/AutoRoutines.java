@@ -133,7 +133,7 @@ public class AutoRoutines {
 
   public Command driveForwardSlower(double time) {
     return Commands.run(
-            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(2, 0, 0), new Feedforwards(4)),
+            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(2.7, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
@@ -143,7 +143,7 @@ public class AutoRoutines {
 
   public Command driveBackwardSlower(double time) {
     return Commands.run(
-            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-2, 0, 0), new Feedforwards(4)),
+            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-2.7, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
