@@ -107,6 +107,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     if (throwOutDistance(latestMinDistance)) return;
 
+    // if (throwOutHeadingChange(latestMeasuredPose, swerve)) return;
+
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(
             swerve.getState().Speeds, swerve.getState().Pose.getRotation());
@@ -155,6 +157,12 @@ public class VisionSubsystem extends SubsystemBase {
     boolean thrownOut = Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE;
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
+  }
+
+  private boolean throwOutHeadingChange(Pose2d pose, CommandSwerveDrivetrain swerve) {
+    double estimatedHeading = pose.getRotation().getDegrees();
+    double currentHeading = swerve.getCurrentState().Pose.getRotation().getDegrees();
+    return Math.abs(estimatedHeading - currentHeading) > Constants.Vision.MAX_HEADING_DIFF;
   }
 
   public double getMinDistance() {
