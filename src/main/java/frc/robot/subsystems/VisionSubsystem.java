@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -49,11 +50,13 @@ public class VisionSubsystem extends SubsystemBase {
   private double latestAvgDistance;
   private int latestTagCount;
   private CommandSwerveDrivetrain swerve;
+  private Transform3d camHeight;
 
   public VisionSubsystem(Constants.Vision.VisionCamera cameraID, CommandSwerveDrivetrain drivetrain) {
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
+    camHeight = new Transform3d(0.0, 0.0, robotToCamera.getZ(), new Rotation3d(0.0, 0.0, 0.0));
 
     fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
@@ -93,7 +96,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     if (visionEstimate.isEmpty())
-      visionEstimate = poseEstimator.estimateClosestToReferencePose(latestVisionResult, new Pose3d(swerve.getCurrentState().Pose));
+      visionEstimate = poseEstimator.estimateClosestToReferencePose(latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
   }
 
   public void calculateFilteredPose() {
