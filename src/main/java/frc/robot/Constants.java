@@ -423,8 +423,6 @@ public final class Constants {
         RightSecondDipLong,
         OCLeft,
         OCRight
-        // RightIntakeSweepShortChoreo,
-        // RightSecondDipLongChoreo
       }
 
       public static enum ShootPos {
