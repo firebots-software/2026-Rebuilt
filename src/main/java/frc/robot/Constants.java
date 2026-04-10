@@ -407,8 +407,8 @@ public final class Constants {
 
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
-      public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
-      public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
+      public static final double TIME_FOR_BUMP_FORWARDS = 0.95; // 0.95 for 5m/s
+      public static final double TIME_FOR_BUMP_BACKWARDS = 1.05; // 1.05 for 5m.s
 
       public static enum Intake {
         LeftIntakeSweep,
@@ -420,7 +420,11 @@ public final class Constants {
         LeftSecondDip,
         RightSecondDip,
         LeftSecondDipLong,
-        RightSecondDipLong
+        RightSecondDipLong,
+        OCLeft,
+        OCRight
+        // RightIntakeSweepShortChoreo,
+        // RightSecondDipLongChoreo
       }
 
       public static enum ShootPos {
@@ -526,20 +530,20 @@ public final class Constants {
 
     private class FrontRight {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(12.316702); // mrd negative
+      private static final double Y = Units.inchesToMeters(-12.316702); // mrd negative
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
-      private static final double YAW = Units.degreesToRadians(310.0);
+      private static final double YAW = Units.degreesToRadians(-42.0); // mrd 310
     }
 
     private class FrontLeft {
       private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(-12.316702); // mrd positive
+      private static final double Y = Units.inchesToMeters(12.316702); // mrd positive
       private static final double Z = Units.inchesToMeters(26.967089);
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
-      private static final double YAW = Units.degreesToRadians(50.0);
+      private static final double YAW = Units.degreesToRadians(42.0); // mrd 50
     }
 
     private class RearRight {
