@@ -786,9 +786,9 @@ public final class Constants {
       TIME_OF_FLIGHT_MAP.put(5.02, 1.26d);
 
       // Guesses
-      PASSING_ROLLER_SPEED_MAP.put(5.46, 50.0);
-      PASSING_ROLLER_SPEED_MAP.put(6.62, 54.0);
-      PASSING_ROLLER_SPEED_MAP.put(7.80, 58.0);
+      PASSING_ROLLER_SPEED_MAP.put(5.46, 60.0);
+      PASSING_ROLLER_SPEED_MAP.put(6.62, 63.0);
+      PASSING_ROLLER_SPEED_MAP.put(7.80, 66.0);
       PASSING_ROLLER_SPEED_MAP.put(9.0, 74.6);
     }
 
