@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -41,6 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
+  private final PositionVoltage m_positionRequest = new PositionVoltage(0);
 
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
@@ -179,6 +181,11 @@ public class IntakeSubsystem extends SubsystemBase {
     armMotor.setControl(new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
   }
 
+  public void setPowerRetractPosition() {
+    double targetRotations = Constants.Intake.Arm.ARM_POS_RETRACTED / 360.0;
+    armMotor.setControl(m_positionRequest.withPosition(targetRotations));
+  }
+
   public Rotation2d getArmUnfusedPosition() {
     return new Rotation2d(
         Units.rotationsToRadians(
@@ -242,7 +249,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command powerRetractRollersCommand() {
     return runOnce(
             () -> {
-              setPowerRetract();
+              setPowerRetractPosition();
               runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
             })
         .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
