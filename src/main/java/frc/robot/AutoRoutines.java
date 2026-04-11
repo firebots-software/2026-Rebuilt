@@ -162,6 +162,7 @@ public class AutoRoutines {
     return new IntakeToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
   }
 
+  //Middle
   public AutoRoutine Nike() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -174,6 +175,7 @@ public class AutoRoutines {
     return routine;
   }
 
+  //Sweeps
   public AutoRoutine PedriShortRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -412,17 +414,59 @@ public class AutoRoutines {
 
 
   // //Outpost and Depot
-  // public AutoRoutine DrakeOutpostShort() {
-  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+  public AutoRoutine DrakeOutpostShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
 
-  //   routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
-  //   outpostIntake.done().onTrue(returnBasicShoot(redSide));
+    outpostIntake.done().onTrue(returnBasicShoot(redSide));
 
-  //   return routine;
-  // }
+    return routine;
+  }
+
+  public AutoRoutine DrakeDepotShort() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
+
+    routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+
+    depotIntake.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeOutpostLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+    AutoTrajectory rightSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightSweep);
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
+
+    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+    outpostIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide), rightSweep.cmd()));
+    rightSweep.done().onTrue(depotIntake.cmd());
+    depotIntake.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine DrakeDepotLong() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
+    AutoTrajectory leftSweep = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftSweep);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+
+    routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+    depotIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide), leftSweep.cmd()));
+    leftSweep.done().onTrue(outpostIntake.cmd());
+    outpostIntake.done().onTrue(returnBasicShoot(redSide));
+
+    return routine;
+  }
 
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
@@ -447,6 +491,11 @@ public class AutoRoutines {
 
     autoChooser.addRoutine("WAIT Right two cycle", () -> PedriShortRightWait());
     autoChooser.addRoutine("WAIT Left two cycle", () -> PedriShortLeftWait());
+
+    autoChooser.addRoutine("Simple Outpost", () -> DrakeOutpostShort());
+    autoChooser.addRoutine("Simple Depot", () -> DrakeDepotShort());
+    autoChooser.addRoutine("Outpost to Depot", () -> DrakeOutpostLong());
+    autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
   }
