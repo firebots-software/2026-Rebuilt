@@ -36,7 +36,7 @@ public final class Constants {
 
       // Current Limits
       public static final double ARM_POS_RETRACTED = 122.0;
-      public static final double ARM_POS_EXTENDED = 27.0;
+      public static final double ARM_POS_EXTENDED = 27.3;
       public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
       public static final double ARM_POS_MIN = 16.4;
       public static final double ARM_POS_IDLE = 72.0;
