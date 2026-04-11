@@ -249,7 +249,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command powerRetractRollersCommand() {
     return runOnce(
             () -> {
-              setPowerRetractPosition();
+              setPowerRetract();
               runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
             })
         .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
