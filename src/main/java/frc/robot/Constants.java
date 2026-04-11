@@ -429,8 +429,7 @@ public final class Constants {
         RightShoot
       }
 
-      public static enum ClimbPos {
-      }
+      public static enum ClimbPos {}
 
       public static enum Depot {
         DepotStart,

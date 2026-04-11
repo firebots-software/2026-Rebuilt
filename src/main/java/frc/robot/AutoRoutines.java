@@ -8,7 +8,6 @@ import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
@@ -139,7 +138,8 @@ public class AutoRoutines {
 
   public Command driveForwardSlower(double time) {
     return Commands.run(
-            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(2.7, 0, 0), new Feedforwards(4)),
+            () ->
+                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(2.7, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
@@ -149,7 +149,9 @@ public class AutoRoutines {
 
   public Command driveBackwardSlower(double time) {
     return Commands.run(
-            () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-2.7, 0, 0), new Feedforwards(4)),
+            () ->
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisSpeeds(-2.7, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
@@ -162,7 +164,7 @@ public class AutoRoutines {
     return new IntakeToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
   }
 
-  //Middle
+  // Middle
   public AutoRoutine Nike() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -175,7 +177,7 @@ public class AutoRoutines {
     return routine;
   }
 
-  //Sweeps
+  // Sweeps
   public AutoRoutine PedriShortRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -318,7 +320,11 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightSecondDip);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -375,7 +381,11 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftSecondDip);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(1), forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -403,7 +413,6 @@ public class AutoRoutines {
 
     return routine;
   }
-
 
   // //Outpost and Depot
   public AutoRoutine DrakeOutpostShort() {
