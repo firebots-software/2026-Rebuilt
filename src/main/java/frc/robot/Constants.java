@@ -428,37 +428,27 @@ public final class Constants {
 
       public static enum ShootPos {
         LeftShoot,
-        RightShoot,
-        DepotToShoot,
-        OutpostToShoot,
-        LeftShootSide
+        RightShoot
       }
 
       public static enum ClimbPos {
-        LeftClimbL,
-        LeftClimbR,
-        RightClimbL,
-        RightClimbR
+        LeftClimbR
       }
 
       public static enum Depot {
-        DepotL,
-        DepotR,
-        DepotStart
+        DepotStart,
+        DepotSweep
       }
 
       public static enum Outpost {
-        OutpostL,
-        OutpostR,
-        OutpostStart
+        OutpostStart,
+        OutpostSweep
       }
 
       public static enum MiscPaths {
-        LeftSweep,
-        RightSweep,
         LeftShootToBump,
         RightShootToBump,
-        Nike
+        Nike,
       }
     }
   }
