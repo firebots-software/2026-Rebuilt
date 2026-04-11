@@ -409,7 +409,7 @@ public final class Constants {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
       public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
       public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
-      public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.80;
+      public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.30;
 
       public static enum Intake {
         LeftIntakeSweep,
@@ -418,6 +418,8 @@ public final class Constants {
         RightIntakeSweepShort,
         SecondLeftIntakeSweepShort,
         SecondRightIntakeSweepShort,
+        RightSecondDip,
+        LeftSecondDip,
         LeftSecondDipLong,
         RightSecondDipLong,
         OCLeft,
