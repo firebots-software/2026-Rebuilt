@@ -52,7 +52,8 @@ public class VisionSubsystem extends SubsystemBase {
   private CommandSwerveDrivetrain swerve;
   private Transform3d camHeight;
 
-  public VisionSubsystem(Constants.Vision.VisionCamera cameraID, CommandSwerveDrivetrain drivetrain) {
+  public VisionSubsystem(
+      Constants.Vision.VisionCamera cameraID, CommandSwerveDrivetrain drivetrain) {
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
@@ -96,7 +97,9 @@ public class VisionSubsystem extends SubsystemBase {
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     if (visionEstimate.isEmpty())
-      visionEstimate = poseEstimator.estimateClosestToReferencePose(latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
+      visionEstimate =
+          poseEstimator.estimateClosestToReferencePose(
+              latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
   }
 
   public void calculateFilteredPose() {
