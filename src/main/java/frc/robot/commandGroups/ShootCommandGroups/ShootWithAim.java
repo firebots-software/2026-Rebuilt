@@ -57,7 +57,17 @@ public class ShootWithAim extends ParallelCommandGroup {
                         redside,
                         drivetrain,
                         () -> true),
-                    () -> drivetrain.getSpeedMagnitude() <= 0.2),
+                    (() ->
+                                    Targeting.pointingAtTarget(
+                                        drivetrain
+                                                .travelAngleTo(
+                                                    new Pose2d(
+                                                        drivetrain.getVirtualTarget(
+                                                            redside, () -> false),
+                                                        new Rotation2d()))
+                                                .getRadians()
+                                            + Math.PI,
+                                        drivetrain))),
                 //                  DoubleSupplier frontBackFunction,
                 //   DoubleSupplier leftRightFunction,
                 //   DoubleSupplier turningSpdFunction,
