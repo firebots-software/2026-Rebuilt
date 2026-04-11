@@ -416,8 +416,6 @@ public final class Constants {
         RightIntakeSweep,
         LeftIntakeSweepShort,
         RightIntakeSweepShort,
-        SecondLeftIntakeSweepShort,
-        SecondRightIntakeSweepShort,
         RightSecondDip,
         LeftSecondDip,
         LeftSecondDipLong,
@@ -447,7 +445,7 @@ public final class Constants {
       public static enum MiscPaths {
         LeftShootToBump,
         RightShootToBump,
-        Nike,
+        Nike
       }
     }
   }
