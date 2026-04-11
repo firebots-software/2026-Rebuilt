@@ -84,6 +84,12 @@ public class AutoRoutines {
     if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
+
+    if (traj != null) {
+      traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
+      traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
+    }
+
     return traj;
   }
 
@@ -403,6 +409,20 @@ public class AutoRoutines {
 
     return routine;
   }
+
+
+  // //Outpost and Depot
+  // public AutoRoutine DrakeOutpostShort() {
+  //   AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+  //   AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+
+  //   routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+
+  //   outpostIntake.done().onTrue(returnBasicShoot(redSide));
+
+  //   return routine;
+  // }
 
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
