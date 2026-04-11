@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -81,6 +82,8 @@ public class IntakeSubsystem extends SubsystemBase {
             .withMotionMagicCruiseVelocity(Constants.Intake.Arm.mmcV)
             .withMotionMagicAcceleration(Constants.Intake.Arm.mmcA);
 
+  ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
     cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.CAN_BUS);
@@ -111,7 +114,8 @@ public class IntakeSubsystem extends SubsystemBase {
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withInverted(InvertedValue.Clockwise_Positive)
-                    .withNeutralMode(NeutralModeValue.Coast));
+                    .withNeutralMode(NeutralModeValue.Coast))
+            .withClosedLoopRamps(clrc);
 
     TalonFXConfiguration armConfig =
         new TalonFXConfiguration()

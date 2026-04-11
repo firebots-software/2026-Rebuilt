@@ -82,7 +82,7 @@ public final class Constants {
       public static final double kD = 0.0;
 
       // Current Limits
-      public static final double STATOR_CURRENT_LIMIT = 80.0;
+      public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 80.0;
 
       public static final double ROLLER_CIRCUMFERENCE_INCHES = 3.0 * Math.PI;
@@ -833,7 +833,7 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double TOLERANCE_RPS = 0.5;
+      public static final double TOLERANCE_RPS = 1.0;
       public static final boolean INTERMAP_TESTING = false;
 
       public static final int WARMUP_1_ID = 10;
