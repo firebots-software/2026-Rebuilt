@@ -183,7 +183,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setPowerRetractPosition() {
     double targetRotations = Constants.Intake.Arm.ARM_POS_RETRACTED / 360.0;
-    armMotor.setControl(m_positionRequest.withPosition(targetRotations));
+    armMotor.setControl(m_motionMagicRequest.withPosition(targetRotations));
   }
 
   public Rotation2d getArmUnfusedPosition() {
