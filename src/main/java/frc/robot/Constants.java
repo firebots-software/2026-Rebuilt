@@ -418,8 +418,6 @@ public final class Constants {
         RightIntakeSweepShort,
         SecondLeftIntakeSweepShort,
         SecondRightIntakeSweepShort,
-        LeftSecondDip,
-        RightSecondDip,
         LeftSecondDipLong,
         RightSecondDipLong,
         OCLeft,
