@@ -432,7 +432,6 @@ public final class Constants {
       }
 
       public static enum ClimbPos {
-        LeftClimbR
       }
 
       public static enum Depot {
