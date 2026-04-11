@@ -251,8 +251,8 @@ public class IntakeSubsystem extends SubsystemBase {
             () -> {
               setPowerRetract();
               runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
-            })
-        .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
+            });
+        // .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
   }
 
   public Command torqueRetractCommand() {
