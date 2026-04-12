@@ -33,6 +33,7 @@ public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
                 () -> false,
                 redSideIfPointing,
                 swerveSubsystem,
+                () -> false,
                 () -> false),
             new SwerveJoystickCommandWithCorrection(
                 frontBackFunction,
