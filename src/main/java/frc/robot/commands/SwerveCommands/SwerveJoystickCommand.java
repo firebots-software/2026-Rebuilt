@@ -180,9 +180,7 @@ public class SwerveJoystickCommand extends Command {
 
     if (brakeSwerve.getAsBoolean() == true) {
       swerveDrivetrain.brakeSwerve();
-    }
-
-    else {
+    } else {
       this.swerveDrivetrain.setControl(drive);
     }
   } // Drive counterclockwise with negative X (left))
