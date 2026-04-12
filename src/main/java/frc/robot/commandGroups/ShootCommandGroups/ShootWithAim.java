@@ -44,17 +44,43 @@ public class ShootWithAim extends ParallelCommandGroup {
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () -> shooterSubsystem.grabTargetShootingSpeed(dist.getAsDouble()),
                     () -> shooterSubsystem.grabTargetHoodAngle(dist.getAsDouble())),
+
                 new SwerveJoystickCommand(
-                    translationalX,
-                    translationalY,
-                    () -> 0.0,
-                    () -> 1.0,
-                    () -> true,
-                    () -> true,
-                    () -> false,
-                    redside,
-                    drivetrain,
-                    () -> true),
+                        translationalX,
+                        translationalY,
+                        () -> 0.0,
+                        () -> 1.0,
+                        () -> true,
+                        () ->  true,
+                        () -> false,
+                        redside,
+                        drivetrain,
+                        () -> true,
+                        () -> {
+                                    boolean pointed = (Targeting.pointingAtTarget(
+                                        drivetrain
+                                                .travelAngleTo(
+                                                    new Pose2d(
+                                                        drivetrain.getVirtualTarget(
+                                                            redside, () -> false),
+                                                        new Rotation2d()))
+                                                .getRadians()
+                                            + Math.PI,
+                                        drivetrain));
+                                    
+                                    double speedSquared = (translationalX.getAsDouble() * translationalX.getAsDouble()) + (translationalY.getAsDouble() * translationalY.getAsDouble()); 
+
+                                    return (pointed && (speedSquared < 0.04));
+                            }),
+                //                  DoubleSupplier frontBackFunction,
+                //   DoubleSupplier leftRightFunction,
+                //   DoubleSupplier turningSpdFunction,
+                //   DoubleSupplier speedControlFunction,
+                //   BooleanSupplier fieldRelativeFunction,
+                //   BooleanSupplier doPointing,
+                //   BooleanSupplier doPassing,
+                //   BooleanSupplier redSideIfPointing,
+                //   CommandSwerveDrivetrain swerveSubsystem
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         Commands.parallel(

@@ -68,6 +68,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SwerveDriveState currentState;
 
   private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest m_h_mode = new SwerveRequest.PointWheelsAt().withModuleDirection(new Rotation2d(0));
+
 
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
@@ -78,7 +80,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
       new PIDController(
-          4.87, // 4 was good
+          4.6, // 4 was good
           0, //
           0); // -13 was good
   // 15, 0, 0 w/o FF
@@ -414,5 +416,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   public Command brakeSwerve() {
     return run(() -> setControl(m_brake));
+  }
+
+  public Command hModeSwerve() {
+    return run(() -> setControl(m_h_mode));
   }
 }
