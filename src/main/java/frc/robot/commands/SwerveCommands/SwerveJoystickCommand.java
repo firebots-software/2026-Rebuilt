@@ -17,7 +17,8 @@ public class SwerveJoystickCommand extends Command {
       doPointing,
       doPassing,
       redsideIfPointing,
-      capper;
+      capper,
+      brakeSwerve;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
@@ -37,7 +38,8 @@ public class SwerveJoystickCommand extends Command {
       BooleanSupplier doPassing,
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
-      BooleanSupplier capper) {
+      BooleanSupplier capper,
+      BooleanSupplier brakeSwerve) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
@@ -49,6 +51,7 @@ public class SwerveJoystickCommand extends Command {
     this.doPassing = doPassing;
     this.redsideIfPointing = redSideIfPointing;
     this.capper = capper;
+    this.brakeSwerve = brakeSwerve;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -61,7 +64,8 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier turningSpdFunction,
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
-      BooleanSupplier capper) {
+      BooleanSupplier capper,
+      BooleanSupplier breakSwerve) {
 
     this(
         frontBackFunction,
@@ -73,7 +77,8 @@ public class SwerveJoystickCommand extends Command {
         () -> false,
         () -> false,
         swerveSubsystem,
-        capper);
+        capper,
+        breakSwerve);
   }
 
   public SwerveJoystickCommand(
@@ -83,7 +88,8 @@ public class SwerveJoystickCommand extends Command {
       DoubleSupplier speedControlFunction,
       CommandSwerveDrivetrain swerveSubsystem,
       boolean squaredTurn,
-      BooleanSupplier capper) {
+      BooleanSupplier capper,
+      BooleanSupplier breakSwerve) {
 
     this(
         frontBackFunction,
@@ -91,7 +97,8 @@ public class SwerveJoystickCommand extends Command {
         turningSpdFunction,
         speedControlFunction,
         swerveSubsystem,
-        capper);
+        capper,
+        breakSwerve);
     this.squaredTurn = squaredTurn;
   }
 
@@ -170,6 +177,10 @@ public class SwerveJoystickCommand extends Command {
         fieldRelativeFunction.getAsBoolean()
             ? fieldCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn)
             : robotCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn);
+
+    if (brakeSwerve.getAsBoolean() == true) {
+      swerveDrivetrain.brakeSwerve();
+    }
 
     // Applies request
     this.swerveDrivetrain.setControl(drive);

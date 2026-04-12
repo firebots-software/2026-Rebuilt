@@ -44,21 +44,20 @@ public class ShootWithAim extends ParallelCommandGroup {
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () -> shooterSubsystem.grabTargetShootingSpeed(dist.getAsDouble()),
                     () -> shooterSubsystem.grabTargetHoodAngle(dist.getAsDouble())),
-                Commands.either(
-                    drivetrain.brakeSwerve(),
-                    new SwerveJoystickCommand(
+
+                new SwerveJoystickCommand(
                         translationalX,
                         translationalY,
                         () -> 0.0,
                         () -> 1.0,
                         () -> true,
-                        () -> true,
+                        () ->  true,
                         () -> false,
                         redside,
                         drivetrain,
-                        () -> true),
-                    (() ->
-                                    Targeting.pointingAtTarget(
+                        () -> true,
+                        () -> {
+                                    boolean pointed = (Targeting.pointingAtTarget(
                                         drivetrain
                                                 .travelAngleTo(
                                                     new Pose2d(
@@ -67,7 +66,12 @@ public class ShootWithAim extends ParallelCommandGroup {
                                                         new Rotation2d()))
                                                 .getRadians()
                                             + Math.PI,
-                                        drivetrain))),
+                                        drivetrain));
+                                    
+                                    double speedSquared = (translationalX.getAsDouble() * translationalX.getAsDouble()) + (translationalY.getAsDouble() * translationalY.getAsDouble()); 
+
+                                    return (pointed && (speedSquared < 0.04));
+                            }),
                 //                  DoubleSupplier frontBackFunction,
                 //   DoubleSupplier leftRightFunction,
                 //   DoubleSupplier turningSpdFunction,
