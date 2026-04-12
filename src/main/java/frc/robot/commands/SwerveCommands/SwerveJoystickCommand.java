@@ -182,8 +182,9 @@ public class SwerveJoystickCommand extends Command {
       swerveDrivetrain.brakeSwerve();
     }
 
-    // Applies request
-    this.swerveDrivetrain.setControl(drive);
+    else {
+      this.swerveDrivetrain.setControl(drive);
+    }
   } // Drive counterclockwise with negative X (left))
 
   @Override
