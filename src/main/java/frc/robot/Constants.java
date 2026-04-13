@@ -425,7 +425,11 @@ public final class Constants {
         DCMPLeft,
         DCMPRight,
         DCMPTurnLeft,
-        DCMPTurnRight
+        DCMPTurnRight,
+        StraightLeft,
+        StraightRight,
+        GoLeft,
+        GoRight
       }
 
       public static enum ShootPos {

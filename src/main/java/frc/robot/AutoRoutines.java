@@ -313,14 +313,14 @@ public class AutoRoutines {
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
             : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
 
-    AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.DCMPRight);
+    AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.GoRight);
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
     routine
         .active()
         .onTrue(
             Commands.sequence(
-                Commands.waitSeconds(2.75), forward, intake1.resetOdometry(), intake1.cmd()));
+                Commands.waitSeconds(2.0), forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -357,14 +357,14 @@ public class AutoRoutines {
             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
             : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
 
-    AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.DCMPLeft);
+    AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.GoLeft);
     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
     routine
         .active()
         .onTrue(
             Commands.sequence(
-                Commands.waitSeconds(2.75), forward, intake1.resetOdometry(), intake1.cmd()));
+                Commands.waitSeconds(2.0), forward, intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -386,7 +386,7 @@ public class AutoRoutines {
 
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
 
-    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+    routine.active().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
     outpostIntake.done().onTrue(returnBasicShoot(redSide));
 
@@ -454,7 +454,7 @@ public class AutoRoutines {
     
     // turn.done().onTrue(Commands.sequence(Commands.waitSeconds(3), intake1.resetOdometry(), intake1.cmd()));
 
-    routine.active().onTrue(Commands.sequence(forward, Commands.waitSeconds(2.75), intake1.resetOdometry(), intake1.cmd()));
+    routine.active().onTrue(Commands.sequence(forward, Commands.waitSeconds(5.0), intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -492,7 +492,7 @@ public class AutoRoutines {
     
     // turn.done().onTrue(Commands.sequence(Commands.waitSeconds(3), intake1.resetOdometry(), intake1.cmd()));
 
-    routine.active().onTrue(Commands.sequence(forward, Commands.waitSeconds(2.75), intake1.resetOdometry(), intake1.cmd()));
+    routine.active().onTrue(Commands.sequence(forward, Commands.waitSeconds(5.0), intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
