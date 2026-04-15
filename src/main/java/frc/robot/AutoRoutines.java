@@ -120,9 +120,9 @@ public class AutoRoutines {
             () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(3, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time)
-    .andThen(
-        () ->
-            swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
+        .andThen(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
   public Command driveBackward(double time) {
@@ -131,9 +131,9 @@ public class AutoRoutines {
                 swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(-3, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time)
-    .andThen(
-        () ->
-            swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
+        .andThen(
+            () ->
+                swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(0, 0, 0), new Feedforwards(4)));
   }
 
   public Command driveForwardSlower(double time) {
@@ -386,7 +386,11 @@ public class AutoRoutines {
 
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
 
-    routine.active().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.resetOdometry(), outpostIntake.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                returnBasicShoot(redSide), outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
     outpostIntake.done().onTrue(returnBasicShoot(redSide));
 
@@ -431,7 +435,7 @@ public class AutoRoutines {
     return routine;
   }
 
-  //DCMP
+  // DCMP
   public AutoRoutine AllianceWaitRight() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
@@ -451,10 +455,15 @@ public class AutoRoutines {
     // routine
     //     .active()
     //     .onTrue(Commands.sequence(forward, turn.resetOdometry(), turn.cmd()));
-    
-    // turn.done().onTrue(Commands.sequence(Commands.waitSeconds(3), intake1.resetOdometry(), intake1.cmd()));
 
-    routine.active().onTrue(Commands.sequence(forward, Commands.waitSeconds(5.0), intake1.resetOdometry(), intake1.cmd()));
+    // turn.done().onTrue(Commands.sequence(Commands.waitSeconds(3), intake1.resetOdometry(),
+    // intake1.cmd()));
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                forward, Commands.waitSeconds(5.0), intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -470,7 +479,7 @@ public class AutoRoutines {
     return routine;
   }
 
-   public AutoRoutine AllianceWaitLeft() {
+  public AutoRoutine AllianceWaitLeft() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
     Command forward =
@@ -489,10 +498,15 @@ public class AutoRoutines {
     // routine
     //     .active()
     //     .onTrue(Commands.sequence(forward, turn.resetOdometry(), turn.cmd()));
-    
-    // turn.done().onTrue(Commands.sequence(Commands.waitSeconds(3), intake1.resetOdometry(), intake1.cmd()));
 
-    routine.active().onTrue(Commands.sequence(forward, Commands.waitSeconds(5.0), intake1.resetOdometry(), intake1.cmd()));
+    // turn.done().onTrue(Commands.sequence(Commands.waitSeconds(3), intake1.resetOdometry(),
+    // intake1.cmd()));
+
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                forward, Commands.waitSeconds(5.0), intake1.resetOdometry(), intake1.cmd()));
 
     intake1
         .done()
@@ -516,7 +530,6 @@ public class AutoRoutines {
     autoChooser.addRoutine("DCMP Right", () -> AllianceWaitRight());
     autoChooser.addRoutine("WAIT Left", () -> PedriShortLeftWait());
     autoChooser.addRoutine("WAIT Right", () -> PedriShortRightWait());
-    
 
     autoChooser.addRoutine("Simple Outpost", () -> DrakeOutpostShort());
     autoChooser.addRoutine("Simple Depot", () -> DrakeDepotShort());
