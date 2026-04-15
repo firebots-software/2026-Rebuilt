@@ -62,19 +62,19 @@ public class RobotContainer {
 
   public final VisionSubsystem visionFrontRight =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_RIGHT_CAM, drivetrain)
           : null;
   public final VisionSubsystem visionFrontLeft =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.FRONT_LEFT_CAM, drivetrain)
           : null;
   public final VisionSubsystem visionRearRight =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_RIGHT_CAM, drivetrain)
           : null;
   public final VisionSubsystem visionRearLeft =
       Constants.visionOnRobot
-          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM)
+          ? new VisionSubsystem(Constants.Vision.VisionCamera.REAR_LEFT_CAM, drivetrain)
           : null;
 
   public final FuelGaugeDetection visionFuelGauge =
@@ -126,7 +126,7 @@ public class RobotContainer {
             secondController.intakeVisionLockout(),
             intakeSubsystem::atExtendedPosition);
 
-    // joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // Intake

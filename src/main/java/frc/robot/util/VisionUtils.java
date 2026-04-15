@@ -23,6 +23,7 @@ public class VisionUtils {
   private static VisionSubsystem visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft;
   private static VisionSubsystem preferredVision;
   private static CommandSwerveDrivetrain drivetrain;
+  private static double headingThreshold;
 
   public static void visionPeriodic(
       VisionSubsystem frontRight,
@@ -50,7 +51,7 @@ public class VisionUtils {
 
     if (preferredVision == null || !preferredVision.hasValidMeasurement()) return;
 
-    preferredVision.addFilteredPose(drivetrain);
+    preferredVision.addFilteredPose();
 
     preferredVisionLogs();
   }
@@ -70,10 +71,10 @@ public class VisionUtils {
   }
 
   private static void calculateAllCameraPoses() {
-    visionFrontRight.calculateFilteredPose(drivetrain);
-    visionFrontLeft.calculateFilteredPose(drivetrain);
-    visionRearRight.calculateFilteredPose(drivetrain);
-    visionRearLeft.calculateFilteredPose(drivetrain);
+    visionFrontRight.calculateFilteredPose();
+    visionFrontLeft.calculateFilteredPose();
+    visionRearRight.calculateFilteredPose();
+    visionRearLeft.calculateFilteredPose();
   }
 
   private static VisionSubsystem selectPreferredVision() {
@@ -267,5 +268,13 @@ public class VisionUtils {
     if (Math.abs(slope) < Constants.IntakeVision.MIN_DETECTION_SLOPE) return Double.MAX_VALUE;
     return (-(targetHeight - Constants.IntakeVision.INTAKE_Z) / slope)
         - Constants.IntakeVision.INTAKE_Y;
+  }
+
+  public static void setHeadingThreshold(double threshold) {
+    headingThreshold = threshold;
+  }
+
+  public static double getHeadingThreshold() {
+    return headingThreshold;
   }
 }

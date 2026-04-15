@@ -36,7 +36,7 @@ public final class Constants {
 
       // Current Limits
       public static final double ARM_POS_RETRACTED = 122.0;
-      public static final double ARM_POS_EXTENDED = 27.0;
+      public static final double ARM_POS_EXTENDED = 27.3;
       public static final double ARM_POS_MAX = ARM_POS_RETRACTED;
       public static final double ARM_POS_MIN = 16.4;
       public static final double ARM_POS_IDLE = 72.0;
@@ -82,7 +82,7 @@ public final class Constants {
       public static final double kD = 0.0;
 
       // Current Limits
-      public static final double STATOR_CURRENT_LIMIT = 80.0;
+      public static final double STATOR_CURRENT_LIMIT = 120.0;
       public static final double SUPPLY_CURRENT_LIMIT = 80.0;
 
       public static final double ROLLER_CIRCUMFERENCE_INCHES = 3.0 * Math.PI;
@@ -407,56 +407,49 @@ public final class Constants {
 
     public static class Auto {
       public static final double TIME_FOR_OUTPOST_INTAKE = 3.0;
-      public static final double TIME_FOR_BUMP_FORWARDS = 0.95; // 0.95 for 5m/s
-      public static final double TIME_FOR_BUMP_BACKWARDS = 1.05; // 1.05 for 5m.s
+      public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
+      public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
+      public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.30;
 
       public static enum Intake {
         LeftIntakeSweep,
         RightIntakeSweep,
         LeftIntakeSweepShort,
         RightIntakeSweepShort,
-        SecondLeftIntakeSweepShort,
-        SecondRightIntakeSweepShort,
-        LeftSecondDip,
         RightSecondDip,
+        LeftSecondDip,
         LeftSecondDipLong,
         RightSecondDipLong,
         OCLeft,
-        OCRight
-        // RightIntakeSweepShortChoreo,
-        // RightSecondDipLongChoreo
+        OCRight,
+        DCMPLeft,
+        DCMPRight,
+        DCMPTurnLeft,
+        DCMPTurnRight,
+        StraightLeft,
+        StraightRight,
+        GoLeft,
+        GoRight
       }
 
       public static enum ShootPos {
         LeftShoot,
-        RightShoot,
-        DepotToShoot,
-        OutpostToShoot,
-        LeftShootSide
+        RightShoot
       }
 
-      public static enum ClimbPos {
-        LeftClimbL,
-        LeftClimbR,
-        RightClimbL,
-        RightClimbR
-      }
+      public static enum ClimbPos {}
 
       public static enum Depot {
-        DepotL,
-        DepotR,
-        DepotStart
+        DepotStart,
+        DepotSweep
       }
 
       public static enum Outpost {
-        OutpostL,
-        OutpostR,
-        OutpostStart
+        OutpostStart,
+        OutpostSweep
       }
 
       public static enum MiscPaths {
-        LeftSweep,
-        RightSweep,
         LeftShootToBump,
         RightShootToBump,
         Nike
@@ -471,7 +464,7 @@ public final class Constants {
 
     // TODO: subject to change, ask Jeff
     public static final double TARGET_SURFACE_SPEED_MPS =
-        2.24; // TARGET_SURFACE_SPEED_FPS * 0.3048;
+        2.63; // TARGET_SURFACE_SPEED_FPS * 0.3048;
 
     // TODO: Tune these
     public static final double kP = 0.8;
@@ -608,6 +601,8 @@ public final class Constants {
     }
 
     public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
+    public static final double MAX_HEADING_DIFF = 25.0;
+    public static final double MAX_HEADING_DIFF_AUTO = 20.0;
 
     public static int MAX_JITTER_MEASUREMENTS = 16;
 
@@ -764,7 +759,7 @@ public final class Constants {
       HOOD_ANGLE_MAP.put(5.02, 18.369);
 
       ROLLER_SPEED_MAP.clear();
-      ROLLER_SPEED_MAP.put(1.77, 41.5);
+      ROLLER_SPEED_MAP.put(1.77, 41.2); // 41.5
       ROLLER_SPEED_MAP.put(2.21, 43.5);
       ROLLER_SPEED_MAP.put(2.78, 46.5);
       ROLLER_SPEED_MAP.put(3.34, 49.0);
@@ -832,7 +827,7 @@ public final class Constants {
     }
 
     public static final class Rollers {
-      public static final double TOLERANCE_RPS = 0.5;
+      public static final double TOLERANCE_RPS = 1.0;
       public static final boolean INTERMAP_TESTING = false;
 
       public static final int WARMUP_1_ID = 10;

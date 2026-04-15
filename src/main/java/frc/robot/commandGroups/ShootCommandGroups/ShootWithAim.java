@@ -55,16 +55,6 @@ public class ShootWithAim extends ParallelCommandGroup {
                     redside,
                     drivetrain,
                     () -> true),
-
-                //                  DoubleSupplier frontBackFunction,
-                //   DoubleSupplier leftRightFunction,
-                //   DoubleSupplier turningSpdFunction,
-                //   DoubleSupplier speedControlFunction,
-                //   BooleanSupplier fieldRelativeFunction,
-                //   BooleanSupplier doPointing,
-                //   BooleanSupplier doPassing,
-                //   BooleanSupplier redSideIfPointing,
-                //   CommandSwerveDrivetrain swerveSubsystem
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(
                         Commands.parallel(

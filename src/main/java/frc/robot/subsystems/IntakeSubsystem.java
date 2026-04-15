@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -12,6 +13,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -26,7 +28,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -40,6 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
+  private final PositionVoltage m_positionRequest = new PositionVoltage(0);
 
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
@@ -81,6 +83,8 @@ public class IntakeSubsystem extends SubsystemBase {
             .withMotionMagicCruiseVelocity(Constants.Intake.Arm.mmcV)
             .withMotionMagicAcceleration(Constants.Intake.Arm.mmcA);
 
+    ClosedLoopRampsConfigs clrc = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+
     // Creates a FusedCANcoder, which combines data from the CANcoder and the arm
     // motor's encoder
     cancoder = new CANcoder(Constants.Intake.Arm.ENCODER_PORT, Constants.Swerve.CAN_BUS);
@@ -111,7 +115,8 @@ public class IntakeSubsystem extends SubsystemBase {
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withInverted(InvertedValue.Clockwise_Positive)
-                    .withNeutralMode(NeutralModeValue.Coast));
+                    .withNeutralMode(NeutralModeValue.Coast))
+            .withClosedLoopRamps(clrc);
 
     TalonFXConfiguration armConfig =
         new TalonFXConfiguration()
@@ -173,6 +178,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setPowerRetract() {
     armMotor.setControl(new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
+  }
+
+  public void setPowerRetractPosition() {
+    double targetRotations = Constants.Intake.Arm.ARM_POS_RETRACTED / 360.0;
+    armMotor.setControl(m_positionRequest.withPosition(targetRotations));
   }
 
   public Rotation2d getArmUnfusedPosition() {
@@ -237,11 +247,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command powerRetractRollersCommand() {
     return runOnce(
-            () -> {
-              setPowerRetract();
-              runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
-            })
-        .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
+        () -> {
+          setPowerRetract();
+          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+        });
+    // .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
   }
 
   public Command torqueRetractCommand() {

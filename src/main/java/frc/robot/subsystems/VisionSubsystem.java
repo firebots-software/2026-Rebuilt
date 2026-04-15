@@ -5,6 +5,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -43,13 +46,18 @@ public class VisionSubsystem extends SubsystemBase {
   private double latestFinalTimestamp;
   private Matrix<N3, N1> latestNoiseVector;
   private double latestMinDistance;
+  private double latestMaxDistance;
   private double latestAvgDistance;
   private int latestTagCount;
+  private CommandSwerveDrivetrain swerve;
+  private Transform3d camHeight;
 
-  public VisionSubsystem(Constants.Vision.VisionCamera cameraID) {
+  public VisionSubsystem(
+      Constants.Vision.VisionCamera cameraID, CommandSwerveDrivetrain drivetrain) {
     this.cameraID = cameraID;
     photonCamera = new PhotonCamera(cameraID.toString());
     Transform3d robotToCamera = cameraID.getCameraTransform();
+    camHeight = new Transform3d(0.0, 0.0, robotToCamera.getZ(), new Rotation3d(0.0, 0.0, 0.0));
 
     fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
@@ -58,6 +66,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     cameraTitle = cameraID.getLoggingName();
     loggingPath = "Subsystems/Vision/" + cameraTitle;
+
+    this.swerve = drivetrain;
   }
 
   public VisionCamera getCameraID() {
@@ -87,10 +97,12 @@ public class VisionSubsystem extends SubsystemBase {
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     if (visionEstimate.isEmpty())
-      visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
+      visionEstimate =
+          poseEstimator.estimateClosestToReferencePose(
+              latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
   }
 
-  public void calculateFilteredPose(CommandSwerveDrivetrain swerve) {
+  public void calculateFilteredPose() {
     hasValidMeasurement = false;
 
     if (!resultValid()) return;
@@ -101,9 +113,14 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/MeasuredPose", latestMeasuredPose);
 
     latestMinDistance = getMinDistance();
+    latestMaxDistance = getMaxDistance();
     latestAvgDistance = getAverageDistance();
 
     if (throwOutDistance(latestMinDistance)) return;
+
+    throwOutHeadingChange(latestMeasuredPose);
+
+    // if (throwOutHeadingChange(latestMeasuredPose, swerve)) return;
 
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(
@@ -153,6 +170,15 @@ public class VisionSubsystem extends SubsystemBase {
     boolean thrownOut = Double.isNaN(min) || min > Constants.Vision.MAX_TAG_DISTANCE;
     DogLog.log(loggingPath + "/ThrownOutDistance", thrownOut);
     return thrownOut;
+  }
+
+  private void throwOutHeadingChange(Pose2d pose) {
+    Rotation2d estimatedHeading = pose.getRotation();
+    Rotation2d currentHeading = swerve.getCurrentState().Pose.getRotation();
+    double rotationDiff = Math.abs(estimatedHeading.relativeTo(currentHeading).getDegrees());
+    boolean trueIfThrown = rotationDiff > VisionUtils.getHeadingThreshold();
+    DogLog.log(loggingPath + "/ThrownOutHeading", trueIfThrown);
+    DogLog.log(loggingPath + "/ThrownOutHeadingDiff", rotationDiff);
   }
 
   public double getMinDistance() {
@@ -241,7 +267,7 @@ public class VisionSubsystem extends SubsystemBase {
     return latestMeasuredPose;
   }
 
-  public void addFilteredPose(CommandSwerveDrivetrain swerve) {
+  public void addFilteredPose() {
     swerve.addVisionMeasurement(latestMeasuredPose, latestFinalTimestamp, latestNoiseVector);
   }
 }
