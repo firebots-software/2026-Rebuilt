@@ -39,7 +39,7 @@ public class PulseShootWithAim extends ParallelCommandGroup {
                     .andThen(
                         Commands.parallel(
                             hopperSubsystem.runHopperUntilInterruptedCommand(),
-                            intakeSubsystem.agitateIntakeCommand()))),
+                            intakeSubsystem.agitateArmCommand()))),
             Commands.parallel( // shoot with aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
                     () -> shooterSubsystem.grabTargetShootingSpeed(dist.getAsDouble()),
@@ -71,7 +71,7 @@ public class PulseShootWithAim extends ParallelCommandGroup {
                                                 .getRadians()
                                             + Math.PI,
                                         drivetrain)),
-                            intakeSubsystem.agitateIntakeCommand()))),
+                            intakeSubsystem.agitateArmCommand()))),
             manualOverride));
   }
 }

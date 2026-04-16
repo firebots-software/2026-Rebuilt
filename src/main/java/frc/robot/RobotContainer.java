@@ -5,6 +5,9 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 // * KEEP FOR WIN COMMAND TESTING
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commandGroups.ShootCommandGroups.DriveToAndShoot;
+import frc.robot.commandGroups.ShootCommandGroups.PulseShootWithAim;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
@@ -133,26 +138,26 @@ public class RobotContainer {
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
-    joystick
-        .a()
-        .whileTrue(
-            intakeSubsystem
-                .outtakeUntilInterruptedCommand()
-                .alongWith(
-                    hopperSubsystem.runHopperUntilInterruptedCommand(
-                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
-
-    // * KEEP FOR WIN COMMAND
     // joystick
     //     .a()
     //     .whileTrue(
-    //         new DriveToAndShoot(
-    //             () -> (new Pose2d(new Translation2d(2.3, 5.5), new Rotation2d())),
-    //             lebron,
-    //             intakeSubsystem,
-    //             hopperSubsystem,
-    //             drivetrain,
-    //             redside));
+    //         intakeSubsystem
+    //             .outtakeUntilInterruptedCommand()
+    //             .alongWith(
+    //                 hopperSubsystem.runHopperUntilInterruptedCommand(
+    //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+
+    // * KEEP FOR WIN COMMAND
+    joystick
+        .a()
+        .whileTrue(
+            new DriveToAndShoot(
+                () -> (new Pose2d(new Translation2d(3.0, 5.0), new Rotation2d())),
+                lebron,
+                intakeSubsystem,
+                hopperSubsystem,
+                drivetrain,
+                redside));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick
@@ -174,7 +179,7 @@ public class RobotContainer {
     joystick
         .rightTrigger()
         .whileTrue(
-            new ShootWithAim(
+            new PulseShootWithAim(
                 frontBackFunction,
                 leftRightFunction,
                 lebron,
@@ -183,6 +188,7 @@ public class RobotContainer {
                 drivetrain,
                 redside,
                 secondController.visionShootingLockout()));
+                
     joystick
         .rightBumper()
         .whileTrue(

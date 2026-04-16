@@ -94,7 +94,7 @@ public class DriveToAndShoot extends ParallelCommandGroup {
 
       path =
           new LinearPath(
-              new TrapezoidProfile.Constraints(1.5, 3.0),
+              new TrapezoidProfile.Constraints(1.5, 2.0),
               new TrapezoidProfile.Constraints(
                   Constants.Swerve.WHICH_SWERVE_ROBOT
                       .SWERVE_DRIVE_TO_POSE_PROFILE_VALUES
