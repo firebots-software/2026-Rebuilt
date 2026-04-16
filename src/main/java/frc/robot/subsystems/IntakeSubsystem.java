@@ -41,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private double targetAngleDeg;
   private double targetRollersRPS;
 
-  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
+  // private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
@@ -150,21 +150,25 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Rollers/Gains/kD", Constants.Intake.Rollers.kD);
     DogLog.log("Subsystems/Intake/Rollers/Gains/kV", Constants.Intake.Rollers.kV);
   }
+  
+  public void runRollers(double output) {
+    rollersMotor.setControl(m_dutyCycleRequest.withOutput(output));
+  }
 
   public void runRollers() {
-    rollersMotor.setControl(m_dutyCycleRequest.withOutput(1));
+    runRollers(1);
   }
 
   public void runRollersInReverse() {
-    rollersMotor.setControl(m_dutyCycleRequest.withOutput(-1));
+    runRollers(-1);
   }
 
-  public void runRollers(double speedRollersRotationsPerSecond) {
-    targetRollersRPS = speedRollersRotationsPerSecond;
-    rollersMotor.setControl(
-        m_velocityRequest.withVelocity(
-            targetRollersRPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT));
-  }
+  // public void runRollers(double speedRollersRotationsPerSecond) {
+  //   targetRollersRPS = speedRollersRotationsPerSecond;
+  //   rollersMotor.setControl(
+  //       m_velocityRequest.withVelocity(
+  //           targetRollersRPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT));
+  // }
 
   public void stopRollers() {
     targetRollersRPS = 0;
@@ -289,7 +293,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeDefault() {
     return runOnce(
         () -> {
-          runRollers(5.0);
+          runRollers(0.2);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
   }
