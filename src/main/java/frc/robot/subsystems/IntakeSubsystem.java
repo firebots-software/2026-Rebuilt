@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Seconds;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
@@ -27,6 +28,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -192,7 +194,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setPowerRetract() {
-    armMotor.setControl(new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
+    setPowerRetractWithCurrent(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT);
+  }
+
+  public void setPowerRetractWithCurrent(double current) {
+    armMotor.setControl(new TorqueCurrentFOC(current));
   }
 
   public void setPowerRetractPosition() {
@@ -293,18 +299,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeDefault() {
     return runOnce(
         () -> {
-          runRollers(0.2);
+          runRollers(0.03);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
   }
 
-  public Command agitateIntakeCommand() {
+  public Command agitateArmCommand() {
     // stole these numbers from 5507, subject to change
     return Commands.sequence(
-            run(this::stopArm),
-            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_EXTENDED).withTimeout(0.04),
+            runOnce(() -> setPowerRetractWithCurrent(45.0)).withTimeout(0.04),
             Commands.waitSeconds(0.6),
-            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED).withTimeout(0.04),
+            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
             Commands.waitSeconds(0.6))
         .repeatedly();
   }
@@ -316,7 +321,6 @@ public class IntakeSubsystem extends SubsystemBase {
         rollersMotor.getCachedVelocityRps() * Constants.Intake.Rollers.ROLLER_ROTS_PER_MOTOR_ROT);
     DogLog.log("Subsystems/Intake/Rollers/TargetSpeed (rps)", targetRollersRPS);
     DogLog.log("Subsystems/Intake/Rollers/AtTargetSpeed", atTargetSpeed());
-
     DogLog.log("Subsystems/Intake/Arm/AtTargetAngle", atTargetAngle());
     DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
     DogLog.log("Subsystems/Intake/Arm/FusedCurrentPosition (degs)", getArmPosition().getDegrees());
