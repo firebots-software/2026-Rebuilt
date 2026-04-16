@@ -42,10 +42,10 @@ public class Robot extends TimedRobot {
     RobotContainer.isRedAlliance();
     DogLog.setOptions(
         new DogLogOptions()
-            .withNtPublish(false)
+            .withNtPublish(true)
             .withCaptureDs(true)
             .withLogExtras(false)
-            .withNtTunables(false));
+            .withNtTunables(true));
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/RedSide", RobotContainer.isRedAlliance());
   }
