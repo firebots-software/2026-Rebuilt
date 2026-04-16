@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
@@ -28,6 +29,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -42,6 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
+  private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
 
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
@@ -148,6 +151,14 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Rollers/Gains/kV", Constants.Intake.Rollers.kV);
   }
 
+  public void runRollers() {
+    rollersMotor.setControl(m_dutyCycleRequest.withOutput(1));
+  }
+
+  public void runRollersInReverse() {
+    rollersMotor.setControl(m_dutyCycleRequest.withOutput(-1));
+  }
+
   public void runRollers(double speedRollersRotationsPerSecond) {
     targetRollersRPS = speedRollersRotationsPerSecond;
     rollersMotor.setControl(
@@ -157,7 +168,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stopRollers() {
     targetRollersRPS = 0;
-    rollersMotor.setControl(m_velocityRequest.withVelocity(0));
+    rollersMotor.setControl(m_dutyCycleRequest.withOutput(0));
   }
 
   public Command stopRollersCommand() {
@@ -225,12 +236,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command runRollersUntilInterruptedCommand() {
-    return startEnd(
-        () -> runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
+    return startEnd(this::runRollers, this::stopRollers);
   }
 
   public Command runRollersUntilInterruptedCommand(double targetRollers_RPS) {
-    return startEnd(() -> runRollers(targetRollers_RPS), this::stopRollers);
+    return startEnd(this::runRollers, this::stopRollers);
   }
 
   public Command setArmToDegreesCommand(double degrees) {
@@ -249,7 +259,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return runOnce(
         () -> {
           setPowerRetract();
-          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+          runRollers();
         });
     // .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
   }
@@ -262,7 +272,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return runEnd(
         () -> {
           setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
-          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+          runRollers();
         },
         this::stopRollers);
   }
@@ -271,7 +281,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return runEnd(
         () -> {
           setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
-          runRollers(-Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+          runRollersInReverse();
         },
         this::stopRollers);
   }
@@ -282,6 +292,17 @@ public class IntakeSubsystem extends SubsystemBase {
           runRollers(5.0);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
+  }
+
+  public Command agitateIntakeCommand() {
+    // stole these numbers from 5507, subject to change
+    return Commands.sequence(
+            run(this::stopArm),
+            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_EXTENDED).withTimeout(0.04),
+            Commands.waitSeconds(0.6),
+            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_RETRACTED).withTimeout(0.04),
+            Commands.waitSeconds(0.6))
+        .repeatedly();
   }
 
   @Override
