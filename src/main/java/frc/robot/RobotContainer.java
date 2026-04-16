@@ -24,7 +24,6 @@ import frc.robot.commandGroups.ShootCommandGroups.DriveToAndShoot;
 import frc.robot.commandGroups.ShootCommandGroups.PulseShootWithAim;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
-import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -188,7 +187,7 @@ public class RobotContainer {
                 drivetrain,
                 redside,
                 secondController.visionShootingLockout()));
-                
+
     joystick
         .rightBumper()
         .whileTrue(
