@@ -16,6 +16,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -40,7 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private double targetAngleDeg;
   private double targetRollersRPS;
 
-  // private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
+  private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
@@ -162,12 +163,12 @@ public class IntakeSubsystem extends SubsystemBase {
     runRollers(-1);
   }
 
-  // public void runRollers(double speedRollersRotationsPerSecond) {
-  //   targetRollersRPS = speedRollersRotationsPerSecond;
-  //   rollersMotor.setControl(
-  //       m_velocityRequest.withVelocity(
-  //           targetRollersRPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT));
-  // }
+  public void runRollersWithVelocity(double speedRollersRotationsPerSecond) {
+    targetRollersRPS = speedRollersRotationsPerSecond;
+    rollersMotor.setControl(
+        m_velocityRequest.withVelocity(
+            targetRollersRPS * Constants.Intake.Rollers.MOTOR_ROTS_PER_ROLLERS_ROT));
+  }
 
   public void stopRollers() {
     targetRollersRPS = 0;
@@ -296,7 +297,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeDefault() {
     return runOnce(
         () -> {
-          runRollers(0.03);
+          runRollersWithVelocity(5.0);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
   }
