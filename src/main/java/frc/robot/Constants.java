@@ -528,6 +528,18 @@ public final class Constants {
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
       private static final double YAW = Units.degreesToRadians(-42.0); // mrd 310
+      private static final double FX = 0.0; // cameramatrix
+      private static final double CX = 0.0;
+      private static final double FY = 0.0;
+      private static final double CY = 0.0;
+      private static final double K1 = 0.0; // distancecoeffs
+      private static final double K2 = 0.0;
+      private static final double P1 = 0.0;
+      private static final double P2 = 0.0;
+      private static final double K3 = 0.0;
+      private static final double K4 = 0.0;
+      private static final double K5 = 0.0;
+      private static final double K6 = 0.0;
     }
 
     private class FrontLeft {
