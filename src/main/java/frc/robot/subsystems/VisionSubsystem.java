@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.util.VisionUtils;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -42,7 +41,6 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean hasValidMeasurement;
   private Pose2d latestMeasuredPose;
   private Pose2d previousPose;
-  private ArrayList<Double> latestJitterMeasurements;
   private double latestFinalTimestamp;
   private Matrix<N3, N1> latestNoiseVector;
   private double latestMinDistance;
@@ -231,21 +229,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     DogLog.log(loggingPath + "/PoseAmbiguity", poseAmbiguity);
     return poseAmbiguity;
-  }
-
-  // Experimental, do not use
-  public double getJitter() {
-    if (latestMeasuredPose == null || previousPose == null) return Double.MAX_VALUE;
-    latestJitterMeasurements.add(
-        Math.hypot(
-            latestMeasuredPose.getX() - previousPose.getX(),
-            latestMeasuredPose.getY() - previousPose.getY()));
-    if (latestJitterMeasurements.size() > Constants.Vision.MAX_JITTER_MEASUREMENTS)
-      latestJitterMeasurements.remove(0);
-
-    double sum = 0.0;
-    for (double j : latestJitterMeasurements) sum += j;
-    return sum;
   }
 
   public boolean hasValidMeasurement() {

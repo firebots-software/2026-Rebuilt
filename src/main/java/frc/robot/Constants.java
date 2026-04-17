@@ -763,14 +763,11 @@ public final class Constants {
     public static final double MAX_HEADING_DIFF = 25.0;
     public static final double MAX_HEADING_DIFF_AUTO = 20.0;
 
-    public static int MAX_JITTER_MEASUREMENTS = 16;
-
     public static enum CameraSelectionMethod {
       MIN(),
       AVG(),
       MAX(),
-      POSE_AMBIGUITY(),
-      JITTER();
+      POSE_AMBIGUITY();
     }
   }
 
