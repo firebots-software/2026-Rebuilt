@@ -749,6 +749,14 @@ public final class Constants {
       public Transform3d getCameraTransform() {
         return cameraTransform;
       }
+
+      public Matrix<N3, N3> getCameraMatrix() {
+        return cameraMatrix;
+      }
+
+      public Matrix<N8, N1> getDistCoeffs() {
+        return distCoeffs;
+      }
     }
 
     public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
