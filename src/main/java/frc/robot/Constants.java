@@ -3,10 +3,9 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
-
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -619,39 +618,124 @@ public final class Constants {
           new Transform3d(
               new Translation3d(FrontRight.X, FrontRight.Y, FrontRight.Z),
               new Rotation3d(FrontRight.ROLL, FrontRight.PITCH, FrontRight.YAW)),
-          MatBuilder.fill(Nat.N3(), Nat.N3(), FrontRight.FX, 0.0, FrontRight.CX, 0.0, FrontRight.FY, FrontRight.CY, 0.0, 0.0, 1.0),
-          MatBuilder.fill(Nat.N8(), Nat.N1(), FrontRight.K1, FrontRight.K2, FrontRight.P1, FrontRight.P2, FrontRight.K3, FrontRight.K4, FrontRight.K5, FrontRight.K6)),
+          MatBuilder.fill(
+              Nat.N3(),
+              Nat.N3(),
+              FrontRight.FX,
+              0.0,
+              FrontRight.CX,
+              0.0,
+              FrontRight.FY,
+              FrontRight.CY,
+              0.0,
+              0.0,
+              1.0),
+          MatBuilder.fill(
+              Nat.N8(),
+              Nat.N1(),
+              FrontRight.K1,
+              FrontRight.K2,
+              FrontRight.P1,
+              FrontRight.P2,
+              FrontRight.K3,
+              FrontRight.K4,
+              FrontRight.K5,
+              FrontRight.K6)),
 
       FRONT_LEFT_CAM(
           "frontLeftCam",
           new Transform3d(
               new Translation3d(FrontLeft.X, FrontLeft.Y, FrontLeft.Z),
               new Rotation3d(FrontLeft.ROLL, FrontLeft.PITCH, FrontLeft.YAW)),
-          MatBuilder.fill(Nat.N3(), Nat.N3(), FrontLeft.FX, 0.0, FrontLeft.CX, 0.0, FrontLeft.FY, FrontLeft.CY, 0.0, 0.0, 1.0),
-          MatBuilder.fill(Nat.N8(), Nat.N1(), FrontLeft.K1, FrontLeft.K2, FrontLeft.P1, FrontLeft.P2, FrontLeft.K3, FrontLeft.K4, FrontLeft.K5, FrontLeft.K6)),
+          MatBuilder.fill(
+              Nat.N3(),
+              Nat.N3(),
+              FrontLeft.FX,
+              0.0,
+              FrontLeft.CX,
+              0.0,
+              FrontLeft.FY,
+              FrontLeft.CY,
+              0.0,
+              0.0,
+              1.0),
+          MatBuilder.fill(
+              Nat.N8(),
+              Nat.N1(),
+              FrontLeft.K1,
+              FrontLeft.K2,
+              FrontLeft.P1,
+              FrontLeft.P2,
+              FrontLeft.K3,
+              FrontLeft.K4,
+              FrontLeft.K5,
+              FrontLeft.K6)),
 
       REAR_RIGHT_CAM(
           "rearRightCam",
           new Transform3d(
               new Translation3d(RearRight.X, RearRight.Y, RearRight.Z),
               new Rotation3d(RearRight.ROLL, RearRight.PITCH, RearRight.YAW)),
-          MatBuilder.fill(Nat.N3(), Nat.N3(), RearRight.FX, 0.0, RearRight.CX, 0.0, RearRight.FY, RearRight.CY, 0.0, 0.0, 1.0),
-          MatBuilder.fill(Nat.N8(), Nat.N1(), RearRight.K1, RearRight.K2, RearRight.P1, RearRight.P2, RearRight.K3, RearRight.K4, RearRight.K5, RearRight.K6)),
+          MatBuilder.fill(
+              Nat.N3(),
+              Nat.N3(),
+              RearRight.FX,
+              0.0,
+              RearRight.CX,
+              0.0,
+              RearRight.FY,
+              RearRight.CY,
+              0.0,
+              0.0,
+              1.0),
+          MatBuilder.fill(
+              Nat.N8(),
+              Nat.N1(),
+              RearRight.K1,
+              RearRight.K2,
+              RearRight.P1,
+              RearRight.P2,
+              RearRight.K3,
+              RearRight.K4,
+              RearRight.K5,
+              RearRight.K6)),
 
       REAR_LEFT_CAM(
           "rearLeftCam",
           new Transform3d(
               new Translation3d(RearLeft.X, RearLeft.Y, RearLeft.Z),
               new Rotation3d(RearLeft.ROLL, RearLeft.PITCH, RearLeft.YAW)),
-          MatBuilder.fill(Nat.N3(), Nat.N3(), RearLeft.FX, 0.0, RearLeft.CX, 0.0, RearLeft.FY, RearLeft.CY, 0.0, 0.0, 1.0),
-          MatBuilder.fill(Nat.N8(), Nat.N1(), RearLeft.K1, RearLeft.K2, RearLeft.P1, RearLeft.P2, RearLeft.K3, RearLeft.K4, RearLeft.K5, RearLeft.K6));
+          MatBuilder.fill(
+              Nat.N3(),
+              Nat.N3(),
+              RearLeft.FX,
+              0.0,
+              RearLeft.CX,
+              0.0,
+              RearLeft.FY,
+              RearLeft.CY,
+              0.0,
+              0.0,
+              1.0),
+          MatBuilder.fill(
+              Nat.N8(),
+              Nat.N1(),
+              RearLeft.K1,
+              RearLeft.K2,
+              RearLeft.P1,
+              RearLeft.P2,
+              RearLeft.K3,
+              RearLeft.K4,
+              RearLeft.K5,
+              RearLeft.K6));
 
       private String loggingName;
       private Transform3d cameraTransform;
       private Matrix<N3, N3> cameraMatrix;
       private Matrix<N8, N1> distCoeffs;
 
-      VisionCamera(String name, Transform3d transform, Matrix<N3, N3> matrix, Matrix<N8, N1> coeffs) {
+      VisionCamera(
+          String name, Transform3d transform, Matrix<N3, N3> matrix, Matrix<N8, N1> coeffs) {
         loggingName = name;
         cameraTransform = transform;
         cameraMatrix = matrix;
