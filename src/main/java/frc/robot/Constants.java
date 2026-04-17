@@ -3,6 +3,10 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
+
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -10,6 +14,9 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
@@ -611,7 +618,9 @@ public final class Constants {
           "frontRightCam",
           new Transform3d(
               new Translation3d(FrontRight.X, FrontRight.Y, FrontRight.Z),
-              new Rotation3d(FrontRight.ROLL, FrontRight.PITCH, FrontRight.YAW))),
+              new Rotation3d(FrontRight.ROLL, FrontRight.PITCH, FrontRight.YAW)),
+          MatBuilder.fill(Nat.N3(), Nat.N3(), FrontRight.FX, 0.0, FrontRight.CX, 0.0, FrontRight.FY, FrontRight.CY, 0.0, 0.0, 1.0),
+          MatBuilder.fill(Nat.N8(), Nat.N1(), FrontRight.K1, FrontRight.K2, FrontRight.P1, FrontRight.P2, FrontRight.K3, FrontRight.K4, FrontRight.K5, FrontRight.K6)),
 
       FRONT_LEFT_CAM(
           "frontLeftCam",
@@ -633,10 +642,14 @@ public final class Constants {
 
       private String loggingName;
       private Transform3d cameraTransform;
+      private Matrix<N3, N3> cameraMatrix;
+      private Matrix<N8, N1> distCoeffs;
 
-      VisionCamera(String name, Transform3d transform) {
+      VisionCamera(String name, Transform3d transform, Matrix<N3, N3> matrix, Matrix<N8, N1> coeffs) {
         loggingName = name;
         cameraTransform = transform;
+        cameraMatrix = matrix;
+        distCoeffs = coeffs;
       }
 
       public String getLoggingName() {
