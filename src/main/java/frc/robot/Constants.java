@@ -149,8 +149,8 @@ public final class Constants {
           MotorConstants.dualControlled(32, false, 4d / 1d, 45.0, 0, 300 / 60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d)),
       PIPER(
-          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 3500d / 60d, 2000d / 60d),
-          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 3500d / 60d, 2000d / 60d),
+          MotorConstants.speedControled(35, false, 24d / 18d, 40.0, 2000d / 60d, 2250d / 60d), //3500 / 60 was prev val
+          MotorConstants.speedControled(34, false, 24d / 18d, 40.0, 2000d / 60d, 2250d / 60d), //3500 / 60 was prev val
           MotorConstants.dualControlled(32, true, 4d / 1d, 45.0, 0, 300 / 60, 9d),
           MotorConstants.speedControled(33, true, 2d / 1d, 50.0, 200d, 200d));
       public final MotorConstants SHOOTER_1, SHOOTER_2, PRESHOOTER, INTAKE;
