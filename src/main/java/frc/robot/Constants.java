@@ -549,6 +549,18 @@ public final class Constants {
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(0.0);
       private static final double YAW = Units.degreesToRadians(42.0); // mrd 50
+      private static final double FX = 0.0;
+      private static final double CX = 0.0;
+      private static final double FY = 0.0;
+      private static final double CY = 0.0;
+      private static final double K1 = 0.0;
+      private static final double K2 = 0.0;
+      private static final double P1 = 0.0;
+      private static final double P2 = 0.0;
+      private static final double K3 = 0.0;
+      private static final double K4 = 0.0;
+      private static final double K5 = 0.0;
+      private static final double K6 = 0.0;
     }
 
     private class RearRight {
@@ -558,6 +570,18 @@ public final class Constants {
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
       private static final double YAW = Units.degreesToRadians(148.35615); // mrd 328.35615
+      private static final double FX = 0.0;
+      private static final double CX = 0.0;
+      private static final double FY = 0.0;
+      private static final double CY = 0.0;
+      private static final double K1 = 0.0;
+      private static final double K2 = 0.0;
+      private static final double P1 = 0.0;
+      private static final double P2 = 0.0;
+      private static final double K3 = 0.0;
+      private static final double K4 = 0.0;
+      private static final double K5 = 0.0;
+      private static final double K6 = 0.0;
     }
 
     private class RearLeft {
@@ -567,6 +591,18 @@ public final class Constants {
       private static final double ROLL = Units.degreesToRadians(0.0);
       private static final double PITCH = Units.degreesToRadians(330.321995);
       private static final double YAW = Units.degreesToRadians(211.64385); // mrd 31.643850
+      private static final double FX = 0.0;
+      private static final double CX = 0.0;
+      private static final double FY = 0.0;
+      private static final double CY = 0.0;
+      private static final double K1 = 0.0;
+      private static final double K2 = 0.0;
+      private static final double P1 = 0.0;
+      private static final double P2 = 0.0;
+      private static final double K3 = 0.0;
+      private static final double K4 = 0.0;
+      private static final double K5 = 0.0;
+      private static final double K6 = 0.0;
     }
 
     // initializes cameras for use in VisionSubsystem
