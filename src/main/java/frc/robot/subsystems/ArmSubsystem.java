@@ -55,9 +55,9 @@ public class ArmSubsystem extends SubsystemBase {
     // Set up motor followers and deal with inverted motors
     Follower follower = new Follower(Constants.Arm.LT_PORT, MotorAlignmentValue.Aligned);
     Follower invertedFollower = new Follower(Constants.Arm.LT_PORT, MotorAlignmentValue.Opposed);
-    rt.setControl(follower);
-    rb.setControl(follower);
-    lb.setControl(invertedFollower);
+    rt.setControl(invertedFollower);
+    rb.setControl(invertedFollower);
+    lb.setControl(follower);
 
     TalonFXConfigurator rtConfig = rt.getConfigurator();
     TalonFXConfigurator rbConfig = rb.getConfigurator();
