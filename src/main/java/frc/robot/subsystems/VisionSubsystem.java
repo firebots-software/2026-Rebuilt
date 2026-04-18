@@ -40,7 +40,6 @@ public class VisionSubsystem extends SubsystemBase {
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
   private Pose2d latestMeasuredPose;
-  private Pose2d previousPose;
   private double latestFinalTimestamp;
   private Matrix<N3, N1> latestNoiseVector;
   private double latestMinDistance;
