@@ -586,7 +586,7 @@ public final class Constants {
     public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
     public static final double MAX_HEADING_DIFF = 25.0;
     public static final double MAX_HEADING_DIFF_AUTO = 20.0;
-    public static final double HDG_PENALTY = 0.0;
+    public static final double HDG_PENALTY = 0.5;
 
     public static enum CameraSelectionMethod {
       MIN(),
