@@ -37,6 +37,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   private Optional<EstimatedRobotPose> visionEstimate;
 
+  private boolean cameraConnectedStatus = false;
+
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
   private Pose2d latestMeasuredPose;
@@ -83,9 +85,9 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private boolean cameraConnected() {
-    boolean cameraConnected = photonCamera.isConnected();
-    DogLog.log(loggingPath + "/CameraConnected", cameraConnected);
-    return cameraConnected;
+    cameraConnectedStatus = photonCamera.isConnected();
+    DogLog.log(loggingPath + "/CameraConnected", cameraConnectedStatus);
+    return cameraConnectedStatus;
   }
 
   private void updateEstimate(List<PhotonPipelineResult> results) {
@@ -184,6 +186,10 @@ public class VisionSubsystem extends SubsystemBase {
     boolean trueIfThrown = rotationDiff > VisionUtils.getHeadingThreshold();
     DogLog.log(loggingPath + "/ThrownOutHeading", trueIfThrown);
     DogLog.log(loggingPath + "/ThrownOutHeadingDiff", rotationDiff);
+  }
+
+  public boolean getCameraConnected() {
+    return cameraConnectedStatus;
   }
 
   public double getMinDistance() {
