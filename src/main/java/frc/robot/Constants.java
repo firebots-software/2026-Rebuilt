@@ -629,61 +629,15 @@ public final class Constants {
 
       REAR_RIGHT_CAM(
           "rearRightCam",
-          new Transform3d(
-              new Translation3d(RearRight.X, RearRight.Y, RearRight.Z),
-              new Rotation3d(RearRight.ROLL, RearRight.PITCH, RearRight.YAW)),
-          MatBuilder.fill(
-              Nat.N3(),
-              Nat.N3(),
-              RearRight.FX,
-              0.0,
-              RearRight.CX,
-              0.0,
-              RearRight.FY,
-              RearRight.CY,
-              0.0,
-              0.0,
-              1.0),
-          MatBuilder.fill(
-              Nat.N8(),
-              Nat.N1(),
-              RearRight.K1,
-              RearRight.K2,
-              RearRight.P1,
-              RearRight.P2,
-              RearRight.K3,
-              RearRight.K4,
-              RearRight.K5,
-              RearRight.K6)),
+          VisionCameraConstants.rearRightTransform,
+          VisionCameraConstants.rearRightCameraMatrix,
+          VisionCameraConstants.rearRightDistCoeffs),
 
       REAR_LEFT_CAM(
           "rearLeftCam",
-          new Transform3d(
-              new Translation3d(RearLeft.X, RearLeft.Y, RearLeft.Z),
-              new Rotation3d(RearLeft.ROLL, RearLeft.PITCH, RearLeft.YAW)),
-          MatBuilder.fill(
-              Nat.N3(),
-              Nat.N3(),
-              RearLeft.FX,
-              0.0,
-              RearLeft.CX,
-              0.0,
-              RearLeft.FY,
-              RearLeft.CY,
-              0.0,
-              0.0,
-              1.0),
-          MatBuilder.fill(
-              Nat.N8(),
-              Nat.N1(),
-              RearLeft.K1,
-              RearLeft.K2,
-              RearLeft.P1,
-              RearLeft.P2,
-              RearLeft.K3,
-              RearLeft.K4,
-              RearLeft.K5,
-              RearLeft.K6));
+          VisionCameraConstants.rearLeftTransform,
+          VisionCameraConstants.rearLeftCameraMatrix,
+          VisionCameraConstants.rearLeftDistCoeffs);
 
       private String loggingName;
       private Transform3d cameraTransform;
