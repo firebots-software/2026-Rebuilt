@@ -30,7 +30,7 @@ public class LEDSubsystem extends SubsystemBase {
   private LEDStateGroup currentStateGroup;
 
   public LEDSubsystem() {
-    candle = new CANdle(39); // TODO: change when the bot gets LEDs
+    candle = new CANdle(5); // TODO: change when the bot gets LEDs
     updateAlliance();
     // reset all leds on init
     LEDStateGroup.LEDS_OFF.run(candle);
