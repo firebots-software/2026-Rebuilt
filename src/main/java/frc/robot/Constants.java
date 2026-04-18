@@ -533,27 +533,27 @@ public final class Constants {
     public static enum VisionCamera {
       FRONT_RIGHT_CAM(
           "frontRightCam",
-          VisionCameraConstants.frontRightTransform,
-          VisionCameraConstants.frontRightCameraMatrix,
-          VisionCameraConstants.frontRightDistCoeffs),
+          VisionCameraConstants.FrontRight.transform,
+          VisionCameraConstants.FrontRight.cameraMatrix,
+          VisionCameraConstants.FrontRight.distCoeffs),
 
       FRONT_LEFT_CAM(
           "frontLeftCam",
-          VisionCameraConstants.frontLeftTransform,
-          VisionCameraConstants.frontLeftCameraMatrix,
-          VisionCameraConstants.frontLeftDistCoeffs),
+          VisionCameraConstants.FrontLeft.transform,
+          VisionCameraConstants.FrontLeft.cameraMatrix,
+          VisionCameraConstants.FrontLeft.distCoeffs),
 
       REAR_RIGHT_CAM(
           "rearRightCam",
-          VisionCameraConstants.rearRightTransform,
-          VisionCameraConstants.rearRightCameraMatrix,
-          VisionCameraConstants.rearRightDistCoeffs),
+          VisionCameraConstants.RearRight.transform,
+          VisionCameraConstants.RearRight.cameraMatrix,
+          VisionCameraConstants.RearRight.distCoeffs),
 
       REAR_LEFT_CAM(
           "rearLeftCam",
-          VisionCameraConstants.rearLeftTransform,
-          VisionCameraConstants.rearLeftCameraMatrix,
-          VisionCameraConstants.rearLeftDistCoeffs);
+          VisionCameraConstants.RearLeft.transform,
+          VisionCameraConstants.RearLeft.cameraMatrix,
+          VisionCameraConstants.RearLeft.distCoeffs);
 
       private String loggingName;
       private Transform3d cameraTransform;
