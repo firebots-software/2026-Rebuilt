@@ -35,37 +35,35 @@ public final class VisionCameraConstants {
 
   public static final class FrontRight {
     public static final Transform3d transform =
-      new Transform3d(
-          new Translation3d(FrontRightVals.X, FrontRightVals.Y, FrontRightVals.Z),
-          new Rotation3d(FrontRightVals.ROLL, FrontRightVals.PITCH, FrontRightVals.YAW));
-  public static final Matrix<N3, N3> cameraMatrix =
-      MatBuilder.fill(
-          Nat.N3(),
-          Nat.N3(),
-          FrontRightVals.FX,
-          0.0,
-          FrontRightVals.CX,
-          0.0,
-          FrontRightVals.FY,
-          FrontRightVals.CY,
-          0.0,
-          0.0,
-          1.0);
-  public static final Matrix<N8, N1> distCoeffs =
-      MatBuilder.fill(
-          Nat.N8(),
-          Nat.N1(),
-          FrontRightVals.K1,
-          FrontRightVals.K2,
-          FrontRightVals.P1,
-          FrontRightVals.P2,
-          FrontRightVals.K3,
-          FrontRightVals.K4,
-          FrontRightVals.K5,
-          FrontRightVals.K6);
+        new Transform3d(
+            new Translation3d(FrontRightVals.X, FrontRightVals.Y, FrontRightVals.Z),
+            new Rotation3d(FrontRightVals.ROLL, FrontRightVals.PITCH, FrontRightVals.YAW));
+    public static final Matrix<N3, N3> cameraMatrix =
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N3(),
+            FrontRightVals.FX,
+            0.0,
+            FrontRightVals.CX,
+            0.0,
+            FrontRightVals.FY,
+            FrontRightVals.CY,
+            0.0,
+            0.0,
+            1.0);
+    public static final Matrix<N8, N1> distCoeffs =
+        MatBuilder.fill(
+            Nat.N8(),
+            Nat.N1(),
+            FrontRightVals.K1,
+            FrontRightVals.K2,
+            FrontRightVals.P1,
+            FrontRightVals.P2,
+            FrontRightVals.K3,
+            FrontRightVals.K4,
+            FrontRightVals.K5,
+            FrontRightVals.K6);
   }
-
-  
 
   private static final class FrontLeftVals {
     private static final double X = Units.inchesToMeters(-2.160666);
@@ -90,37 +88,35 @@ public final class VisionCameraConstants {
 
   public static final class FrontLeft {
     public static final Transform3d transform =
-      new Transform3d(
-          new Translation3d(FrontLeftVals.X, FrontLeftVals.Y, FrontLeftVals.Z),
-          new Rotation3d(FrontLeftVals.ROLL, FrontLeftVals.PITCH, FrontLeftVals.YAW));
-  public static final Matrix<N3, N3> cameraMatrix =
-      MatBuilder.fill(
-          Nat.N3(),
-          Nat.N3(),
-          FrontLeftVals.FX,
-          0.0,
-          FrontLeftVals.CX,
-          0.0,
-          FrontLeftVals.FY,
-          FrontLeftVals.CY,
-          0.0,
-          0.0,
-          1.0);
-  public static final Matrix<N8, N1> distCoeffs =
-      MatBuilder.fill(
-          Nat.N8(),
-          Nat.N1(),
-          FrontLeftVals.K1,
-          FrontLeftVals.K2,
-          FrontLeftVals.P1,
-          FrontLeftVals.P2,
-          FrontLeftVals.K3,
-          FrontLeftVals.K4,
-          FrontLeftVals.K5,
-          FrontLeftVals.K6);
+        new Transform3d(
+            new Translation3d(FrontLeftVals.X, FrontLeftVals.Y, FrontLeftVals.Z),
+            new Rotation3d(FrontLeftVals.ROLL, FrontLeftVals.PITCH, FrontLeftVals.YAW));
+    public static final Matrix<N3, N3> cameraMatrix =
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N3(),
+            FrontLeftVals.FX,
+            0.0,
+            FrontLeftVals.CX,
+            0.0,
+            FrontLeftVals.FY,
+            FrontLeftVals.CY,
+            0.0,
+            0.0,
+            1.0);
+    public static final Matrix<N8, N1> distCoeffs =
+        MatBuilder.fill(
+            Nat.N8(),
+            Nat.N1(),
+            FrontLeftVals.K1,
+            FrontLeftVals.K2,
+            FrontLeftVals.P1,
+            FrontLeftVals.P2,
+            FrontLeftVals.K3,
+            FrontLeftVals.K4,
+            FrontLeftVals.K5,
+            FrontLeftVals.K6);
   }
-
-  
 
   private static final class RearRightVals {
     private static final double X = Units.inchesToMeters(-14.106719);
@@ -145,37 +141,35 @@ public final class VisionCameraConstants {
 
   public static final class RearRight {
     public static final Transform3d transform =
-      new Transform3d(
-          new Translation3d(RearRightVals.X, RearRightVals.Y, RearRightVals.Z),
-          new Rotation3d(RearRightVals.ROLL, RearRightVals.PITCH, RearRightVals.YAW));
-  public static final Matrix<N3, N3> cameraMatrix =
-      MatBuilder.fill(
-          Nat.N3(),
-          Nat.N3(),
-          RearRightVals.FX,
-          0.0,
-          RearRightVals.CX,
-          0.0,
-          RearRightVals.FY,
-          RearRightVals.CY,
-          0.0,
-          0.0,
-          1.0);
-  public static final Matrix<N8, N1> distCoeffs =
-      MatBuilder.fill(
-          Nat.N8(),
-          Nat.N1(),
-          RearRightVals.K1,
-          RearRightVals.K2,
-          RearRightVals.P1,
-          RearRightVals.P2,
-          RearRightVals.K3,
-          RearRightVals.K4,
-          RearRightVals.K5,
-          RearRightVals.K6);
+        new Transform3d(
+            new Translation3d(RearRightVals.X, RearRightVals.Y, RearRightVals.Z),
+            new Rotation3d(RearRightVals.ROLL, RearRightVals.PITCH, RearRightVals.YAW));
+    public static final Matrix<N3, N3> cameraMatrix =
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N3(),
+            RearRightVals.FX,
+            0.0,
+            RearRightVals.CX,
+            0.0,
+            RearRightVals.FY,
+            RearRightVals.CY,
+            0.0,
+            0.0,
+            1.0);
+    public static final Matrix<N8, N1> distCoeffs =
+        MatBuilder.fill(
+            Nat.N8(),
+            Nat.N1(),
+            RearRightVals.K1,
+            RearRightVals.K2,
+            RearRightVals.P1,
+            RearRightVals.P2,
+            RearRightVals.K3,
+            RearRightVals.K4,
+            RearRightVals.K5,
+            RearRightVals.K6);
   }
-
-  
 
   private static final class RearLeftVals {
     private static final double X = Units.inchesToMeters(-14.106719);
@@ -200,35 +194,33 @@ public final class VisionCameraConstants {
 
   public static final class RearLeft {
     public static final Transform3d transform =
-      new Transform3d(
-          new Translation3d(RearLeftVals.X, RearLeftVals.Y, RearLeftVals.Z),
-          new Rotation3d(RearLeftVals.ROLL, RearLeftVals.PITCH, RearLeftVals.YAW));
-  public static final Matrix<N3, N3> cameraMatrix =
-      MatBuilder.fill(
-          Nat.N3(),
-          Nat.N3(),
-          RearLeftVals.FX,
-          0.0,
-          RearLeftVals.CX,
-          0.0,
-          RearLeftVals.FY,
-          RearLeftVals.CY,
-          0.0,
-          0.0,
-          1.0);
-  public static final Matrix<N8, N1> distCoeffs =
-      MatBuilder.fill(
-          Nat.N8(),
-          Nat.N1(),
-          RearLeftVals.K1,
-          RearLeftVals.K2,
-          RearLeftVals.P1,
-          RearLeftVals.P2,
-          RearLeftVals.K3,
-          RearLeftVals.K4,
-          RearLeftVals.K5,
-          RearLeftVals.K6);
+        new Transform3d(
+            new Translation3d(RearLeftVals.X, RearLeftVals.Y, RearLeftVals.Z),
+            new Rotation3d(RearLeftVals.ROLL, RearLeftVals.PITCH, RearLeftVals.YAW));
+    public static final Matrix<N3, N3> cameraMatrix =
+        MatBuilder.fill(
+            Nat.N3(),
+            Nat.N3(),
+            RearLeftVals.FX,
+            0.0,
+            RearLeftVals.CX,
+            0.0,
+            RearLeftVals.FY,
+            RearLeftVals.CY,
+            0.0,
+            0.0,
+            1.0);
+    public static final Matrix<N8, N1> distCoeffs =
+        MatBuilder.fill(
+            Nat.N8(),
+            Nat.N1(),
+            RearLeftVals.K1,
+            RearLeftVals.K2,
+            RearLeftVals.P1,
+            RearLeftVals.P2,
+            RearLeftVals.K3,
+            RearLeftVals.K4,
+            RearLeftVals.K5,
+            RearLeftVals.K6);
   }
-
-  
 }
