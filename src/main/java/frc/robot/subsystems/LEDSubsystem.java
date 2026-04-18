@@ -10,19 +10,20 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
+import java.util.Optional;
 
 public class LEDSubsystem extends SubsystemBase {
-  private static final int STRIP_LENGTH = 41; // TODO
+  private static final int STRIP_LENGTH = 100;
 
   private static FireAnimation FLAME =
       new FireAnimation(8, STRIP_LENGTH).withFrameRate(15).withSparking(0.4).withCooling(0.4);
 
   private static SingleFadeAnimation MATCH_IDLE =
       new SingleFadeAnimation(8, STRIP_LENGTH).withColor(new RGBWColor(255, 255, 255));
-  private static StrobeAnimation BLINK = new StrobeAnimation(8, STRIP_LENGTH);
+  private static StrobeAnimation BLINK = new StrobeAnimation(0, STRIP_LENGTH);
   private static SolidColor SOLID = new SolidColor(8, STRIP_LENGTH);
 
   private CANdle candle;
@@ -30,19 +31,20 @@ public class LEDSubsystem extends SubsystemBase {
   private LEDStateGroup currentStateGroup;
 
   public LEDSubsystem() {
-    candle = new CANdle(39); // TODO: change when the bot gets LEDs
-    updateAlliance();
+    candle = new CANdle(5);
     // reset all leds on init
     LEDStateGroup.LEDS_OFF.run(candle);
   }
 
-  @Override
-  public void periodic() {
-    if (currentState != null) currentState.run(candle);
+  public void ledPeriodic() {
+    //System.out.println("led periodic");
+    //setState(LEDState.BORING_BLINK);
+    //System.out.println(currentState.name);
+    currentState.run(candle);
     if (currentStateGroup != null) currentStateGroup.run(candle);
-    DogLog.log("Subsystems/LEDs/RunningAnimation", currentState != null ? currentState.name : null);
+    DogLog.log("Subsystems/LEDs/runningAnimation", currentState != null ? currentState.name : null);
     DogLog.log(
-        "Subsystems/LEDs/RunningAnimationGroup",
+        "Subsystems/LEDs/runningAnimationGroup",
         currentStateGroup != null ? currentStateGroup.name : null);
   }
 
@@ -56,15 +58,19 @@ public class LEDSubsystem extends SubsystemBase {
     currentState = null;
   }
 
-  public void updateAlliance() {
-    if (DriverStation.getAlliance().isEmpty()) return;
-    RGBWColor allianceColor =
-        (DriverStation.getAlliance().get() == Alliance.Red)
-            ? new RGBWColor(255, 0, 0)
-            : new RGBWColor(0, 0, 255);
-    MATCH_IDLE.Color = allianceColor;
-    BLINK.Color = allianceColor;
-    SOLID.Color = allianceColor;
+  public void updateAlliance(Optional<Alliance> alliance) {
+    if (alliance.isEmpty()) return;
+    if (alliance.get() == Alliance.Red) {
+      RGBWColor red = new RGBWColor(255, 0, 0);
+      MATCH_IDLE.Color = red;
+      BLINK.Color = red;
+      SOLID.Color = red;
+    } else if (alliance.get() == Alliance.Blue) {
+      RGBWColor blue = new RGBWColor(0, 0, 255);
+      MATCH_IDLE.Color = blue;
+      BLINK.Color = blue;
+      SOLID.Color = blue;
+    }
   }
 
   /** Enum for animation info */
@@ -75,6 +81,7 @@ public class LEDSubsystem extends SubsystemBase {
     NONE_SLOT_3("LEDs off (slot 3)", new EmptyAnimation(3)),
 
     IDLE("Idle", MATCH_IDLE),
+    BORING_BLINK("BaseBlink", BLINK.withColor(new RGBWColor(255, 255, 255))),
     ALLIANCE_BLINK("Blinking", BLINK),
     ALLIANCE_BLINK_RAPID("Blinking", BLINK.clone().withFrameRate(15)),
     ALLIANCE_SOLID("Solid", SOLID),
@@ -119,7 +126,7 @@ public class LEDSubsystem extends SubsystemBase {
     FLAME(
         "Flame",
         LEDState.FLAME_LEFT,
-        /* LEDState.FLAME_MIDDLE_LEFT, LEDState.FLAME_MIDDLE_RIGHT, */ LEDState.FLAME_RIGHT);
+        /* LEDState.FLAME_MIDDLE_LEFT, LEDState.FLAME_MIDDLE_IGHT, */ LEDState.FLAME_RIGHT);
 
     String name;
     LEDState[] animations;

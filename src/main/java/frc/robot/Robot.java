@@ -67,6 +67,7 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
     LoggedTalonFX.periodic_static();
     m_robotContainer.visionPeriodic();
+    m_robotContainer.ledSubsystem.ledPeriodic();
     elasticLogging();
     MiscUtils.shiftSwitchIndicator(simulatedTime);
   }

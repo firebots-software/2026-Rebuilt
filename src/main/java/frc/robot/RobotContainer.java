@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
@@ -27,8 +28,10 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
 import frc.robot.util.CustomController;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
@@ -49,6 +52,8 @@ public class RobotContainer {
   private final CustomController secondController = new CustomController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+  public final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
   public final HopperSubsystem hopperSubsystem =
       Constants.hopperOnRobot ? new HopperSubsystem(drivetrain, redside) : null;
@@ -106,6 +111,10 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+    // led
+    // joystick.a().whileTrue(new InstantCommand(() -> ledSubsystem.setState(LEDState.BORING_BLINK), ledSubsystem));
+    // ledSubsystem.setDefaultCommand(new InstantCommand(() -> ledSubsystem.setState(LEDState.NONE_SLOT_0), ledSubsystem));
+    
     // Swerve
     DoubleSupplier frontBackFunction = () -> -joystick.getLeftY();
     DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
