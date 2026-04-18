@@ -97,7 +97,13 @@ public class VisionSubsystem extends SubsystemBase {
     if (visionEstimate.isEmpty())
       visionEstimate =
           Constants.pnpReady
-              ? null
+              ? poseEstimator.estimateConstrainedSolvepnpPose(
+                  latestVisionResult,
+                  cameraID.getCameraMatrix(),
+                  cameraID.getDistCoeffs(),
+                  new Pose3d(swerve.getCurrentState().Pose).plus(camHeight),
+                  false,
+                  Constants.Vision.HDG_PENALTY)
               : poseEstimator.estimateClosestToReferencePose(
                   latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
   }
