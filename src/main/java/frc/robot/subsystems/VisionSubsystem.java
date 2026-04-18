@@ -96,8 +96,10 @@ public class VisionSubsystem extends SubsystemBase {
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     if (visionEstimate.isEmpty())
       visionEstimate =
-          poseEstimator.estimateClosestToReferencePose(
-              latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
+          Constants.pnpReady
+              ? null
+              : poseEstimator.estimateClosestToReferencePose(
+                  latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
   }
 
   public void calculateFilteredPose() {
