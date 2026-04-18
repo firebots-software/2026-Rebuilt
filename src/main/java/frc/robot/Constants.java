@@ -19,7 +19,6 @@ import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
-
 import frc.robot.util.VisionCameraConstants;
 
 public final class Constants {
