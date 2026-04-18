@@ -12,7 +12,7 @@ import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
 
 public final class VisionCameraConstants {
-  private class FrontRight {
+  private static final class FrontRight {
     private static final double X = Units.inchesToMeters(-2.160666);
     private static final double Y = Units.inchesToMeters(-12.316702); // mrd negative
     private static final double Z = Units.inchesToMeters(26.967089);
@@ -33,11 +33,11 @@ public final class VisionCameraConstants {
     private static final double K6 = 0.0;
   }
 
-  public Transform3d frontRightTransform =
+  public static final Transform3d frontRightTransform =
       new Transform3d(
           new Translation3d(FrontRight.X, FrontRight.Y, FrontRight.Z),
           new Rotation3d(FrontRight.ROLL, FrontRight.PITCH, FrontRight.YAW));
-  public Matrix<N3, N3> frontRightCameraMatrix =
+  public static final Matrix<N3, N3> frontRightCameraMatrix =
       MatBuilder.fill(
           Nat.N3(),
           Nat.N3(),
@@ -50,7 +50,7 @@ public final class VisionCameraConstants {
           0.0,
           0.0,
           1.0);
-  public Matrix<N8, N1> frontRightDistCoeffs =
+  public static final Matrix<N8, N1> frontRightDistCoeffs =
       MatBuilder.fill(
           Nat.N8(),
           Nat.N1(),
@@ -63,7 +63,7 @@ public final class VisionCameraConstants {
           FrontRight.K5,
           FrontRight.K6);
 
-  private class FrontLeft {
+  private static final class FrontLeft {
     private static final double X = Units.inchesToMeters(-2.160666);
     private static final double Y = Units.inchesToMeters(12.316702); // mrd positive
     private static final double Z = Units.inchesToMeters(26.967089);
@@ -84,11 +84,11 @@ public final class VisionCameraConstants {
     private static final double K6 = 0.0;
   }
 
-  public Transform3d frontLeftTransform =
+  public static final Transform3d frontLeftTransform =
       new Transform3d(
           new Translation3d(FrontLeft.X, FrontLeft.Y, FrontLeft.Z),
           new Rotation3d(FrontLeft.ROLL, FrontLeft.PITCH, FrontLeft.YAW));
-  public Matrix<N3, N3> frontLeftCameraMatrix =
+  public static final Matrix<N3, N3> frontLeftCameraMatrix =
       MatBuilder.fill(
           Nat.N3(),
           Nat.N3(),
@@ -101,7 +101,7 @@ public final class VisionCameraConstants {
           0.0,
           0.0,
           1.0);
-  public Matrix<N8, N1> frontLeftDistCoeffs =
+  public static final Matrix<N8, N1> frontLeftDistCoeffs =
       MatBuilder.fill(
           Nat.N8(),
           Nat.N1(),
@@ -114,7 +114,7 @@ public final class VisionCameraConstants {
           FrontLeft.K5,
           FrontLeft.K6);
 
-  private class RearRight {
+  private static final class RearRight {
     private static final double X = Units.inchesToMeters(-14.106719);
     private static final double Y = Units.inchesToMeters(-11.537644); // mrd negative
     private static final double Z = Units.inchesToMeters(23.570693);
@@ -135,11 +135,11 @@ public final class VisionCameraConstants {
     private static final double K6 = 0.0;
   }
 
-  public Transform3d rearRightTransform =
+  public static final Transform3d rearRightTransform =
       new Transform3d(
           new Translation3d(RearRight.X, RearRight.Y, RearRight.Z),
           new Rotation3d(RearRight.ROLL, RearRight.PITCH, RearRight.YAW));
-  public Matrix<N3, N3> rearRightCameraMatrix =
+  public static final Matrix<N3, N3> rearRightCameraMatrix =
       MatBuilder.fill(
           Nat.N3(),
           Nat.N3(),
@@ -152,7 +152,7 @@ public final class VisionCameraConstants {
           0.0,
           0.0,
           1.0);
-  public Matrix<N8, N1> rearRightDistCoeffs =
+  public static final Matrix<N8, N1> rearRightDistCoeffs =
       MatBuilder.fill(
           Nat.N8(),
           Nat.N1(),
@@ -165,7 +165,7 @@ public final class VisionCameraConstants {
           RearRight.K5,
           RearRight.K6);
 
-  private class RearLeft {
+  private static final class RearLeft {
     private static final double X = Units.inchesToMeters(-14.106719);
     private static final double Y = Units.inchesToMeters(11.537644); // mrd positive
     private static final double Z = Units.inchesToMeters(23.570693);
@@ -186,11 +186,11 @@ public final class VisionCameraConstants {
     private static final double K6 = 0.0;
   }
 
-  public Transform3d rearLeftTransform =
+  public static final Transform3d rearLeftTransform =
       new Transform3d(
           new Translation3d(RearLeft.X, RearLeft.Y, RearLeft.Z),
           new Rotation3d(RearLeft.ROLL, RearLeft.PITCH, RearLeft.YAW));
-  public Matrix<N3, N3> rearLeftCameraMatrix =
+  public static final Matrix<N3, N3> rearLeftCameraMatrix =
       MatBuilder.fill(
           Nat.N3(),
           Nat.N3(),
@@ -203,7 +203,7 @@ public final class VisionCameraConstants {
           0.0,
           0.0,
           1.0);
-  public Matrix<N8, N1> rearLeftDistCoeffs =
+  public static final Matrix<N8, N1> rearLeftDistCoeffs =
       MatBuilder.fill(
           Nat.N8(),
           Nat.N1(),

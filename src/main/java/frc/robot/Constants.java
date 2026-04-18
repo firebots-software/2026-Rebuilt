@@ -20,6 +20,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
+import frc.robot.util.VisionCameraConstants;
+
 public final class Constants {
   public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = true;
@@ -616,61 +618,15 @@ public final class Constants {
     public static enum VisionCamera {
       FRONT_RIGHT_CAM(
           "frontRightCam",
-          new Transform3d(
-              new Translation3d(FrontRight.X, FrontRight.Y, FrontRight.Z),
-              new Rotation3d(FrontRight.ROLL, FrontRight.PITCH, FrontRight.YAW)),
-          MatBuilder.fill(
-              Nat.N3(),
-              Nat.N3(),
-              FrontRight.FX,
-              0.0,
-              FrontRight.CX,
-              0.0,
-              FrontRight.FY,
-              FrontRight.CY,
-              0.0,
-              0.0,
-              1.0),
-          MatBuilder.fill(
-              Nat.N8(),
-              Nat.N1(),
-              FrontRight.K1,
-              FrontRight.K2,
-              FrontRight.P1,
-              FrontRight.P2,
-              FrontRight.K3,
-              FrontRight.K4,
-              FrontRight.K5,
-              FrontRight.K6)),
+          VisionCameraConstants.frontRightTransform,
+          VisionCameraConstants.frontRightCameraMatrix,
+          VisionCameraConstants.frontRightDistCoeffs),
 
       FRONT_LEFT_CAM(
           "frontLeftCam",
-          new Transform3d(
-              new Translation3d(FrontLeft.X, FrontLeft.Y, FrontLeft.Z),
-              new Rotation3d(FrontLeft.ROLL, FrontLeft.PITCH, FrontLeft.YAW)),
-          MatBuilder.fill(
-              Nat.N3(),
-              Nat.N3(),
-              FrontLeft.FX,
-              0.0,
-              FrontLeft.CX,
-              0.0,
-              FrontLeft.FY,
-              FrontLeft.CY,
-              0.0,
-              0.0,
-              1.0),
-          MatBuilder.fill(
-              Nat.N8(),
-              Nat.N1(),
-              FrontLeft.K1,
-              FrontLeft.K2,
-              FrontLeft.P1,
-              FrontLeft.P2,
-              FrontLeft.K3,
-              FrontLeft.K4,
-              FrontLeft.K5,
-              FrontLeft.K6)),
+          VisionCameraConstants.frontLeftTransform,
+          VisionCameraConstants.frontLeftCameraMatrix,
+          VisionCameraConstants.frontLeftDistCoeffs),
 
       REAR_RIGHT_CAM(
           "rearRightCam",
