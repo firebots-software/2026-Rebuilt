@@ -2,6 +2,8 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -20,6 +22,9 @@ public class SwerveJoystickCommand extends Command {
       capper;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
+
+  // Limits rate of change (in this case x, y, and turning movement)
+  protected final SlewRateLimiter xLimiter, yLimiter;
 
   private final SwerveRequest.FieldCentric fieldCentricDrive =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
@@ -49,6 +54,8 @@ public class SwerveJoystickCommand extends Command {
     this.doPassing = doPassing;
     this.redsideIfPointing = redSideIfPointing;
     this.capper = capper;
+    this.xLimiter = new SlewRateLimiter(3.5);
+    this.yLimiter = new SlewRateLimiter(3.5);
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -134,7 +141,9 @@ public class SwerveJoystickCommand extends Command {
     double speedMagnitude = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
 
     if (capper.getAsBoolean()) {
-      if (speedMagnitude > 2.0) {
+        xSpeed = xLimiter.calculate(xSpeed);
+        ySpeed = yLimiter.calculate(ySpeed);
+      if (speedMagnitude > 2.5) {
         xSpeed *= (2.5 / speedMagnitude);
         ySpeed *= (2.5 / speedMagnitude);
       }
