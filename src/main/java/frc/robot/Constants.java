@@ -99,6 +99,8 @@ public final class Constants {
       public static final double TARGET_ROLLER_RPM = 2700;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
+
+      public static final double IDLE_ROLLER_VELO_RPS = 5.0;
     }
   }
 

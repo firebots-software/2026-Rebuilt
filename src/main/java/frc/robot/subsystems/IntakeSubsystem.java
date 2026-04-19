@@ -298,7 +298,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeDefault() {
     return runOnce(
         () -> {
-          runRollersWithVelocity(5.0);
+          runRollersWithVelocity(Constants.Intake.Rollers.IDLE_ROLLER_VELO_RPS);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
   }
