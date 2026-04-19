@@ -141,11 +141,11 @@ public class SwerveJoystickCommand extends Command {
     double speedMagnitude = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
 
     if (capper.getAsBoolean()) {
+        xSpeed = xLimiter.calculate(xSpeed);
+        ySpeed = yLimiter.calculate(ySpeed);
       if (speedMagnitude > 2.5) {
         xSpeed *= (2.5 / speedMagnitude);
         ySpeed *= (2.5 / speedMagnitude);
-        xSpeed = xLimiter.calculate(xSpeed);
-        ySpeed = yLimiter.calculate(ySpeed);
       }
     }
 
