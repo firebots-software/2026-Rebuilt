@@ -47,6 +47,13 @@ public class AutoRoutines {
     addCommandstoAutoChooser();
   }
 
+   private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
+    if (type == null) return null;
+
+    AutoTrajectory traj = routine.trajectory(type + ".traj");
+    return traj;
+  }
+
   // Trajectory loading and specific cmds
   private AutoTrajectory intake(AutoRoutine routine, Intake type) {
     if (type == null) return null;
@@ -57,13 +64,6 @@ public class AutoRoutines {
       traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
       traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
     }
-    return traj;
-  }
-
-  private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
-    if (type == null) return null;
-
-    AutoTrajectory traj = routine.trajectory(type + ".traj");
     return traj;
   }
 
@@ -88,7 +88,6 @@ public class AutoRoutines {
       traj.atTime("IntakeDown").onTrue(intakeSubsystem.intakeUntilInterruptedCommand());
       traj.atTime("IntakeUp").onTrue(intakeSubsystem.retractIntakeCommand());
     }
-
     return traj;
   }
 
