@@ -412,6 +412,7 @@ public final class Constants {
       public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
       public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
       public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.30;
+      public static final double WAIT_TIME_FOR_ALLIANCE = 4.0;
 
       public static enum Intake {
         LeftIntakeSweep,
@@ -422,16 +423,8 @@ public final class Constants {
         LeftSecondDip,
         LeftSecondDipLong,
         RightSecondDipLong,
-        OCLeft,
-        OCRight,
-        DCMPLeft,
-        DCMPRight,
-        DCMPTurnLeft,
-        DCMPTurnRight,
-        StraightLeft,
-        StraightRight,
-        GoLeft,
-        GoRight
+        HubLeft,
+        HubRight
       }
 
       public static enum ShootPos {
