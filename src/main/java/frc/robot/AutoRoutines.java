@@ -8,6 +8,7 @@ import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
@@ -110,6 +111,22 @@ public class AutoRoutines {
                 isRedSide,
                 () -> false)
             .withTimeout(4.0);
+
+    return shoot;
+  }
+
+  public Command returnBasicShootLessTime(BooleanSupplier isRedSide) {
+    Command shoot =
+        new ShootWithAim(
+                () -> 0.0,
+                () -> 0.0,
+                lebronShooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem,
+                swerveSubsystem,
+                isRedSide,
+                () -> false)
+            .withTimeout(2.5);
 
     return shoot;
   }
@@ -434,9 +451,15 @@ public class AutoRoutines {
 
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotSweep);
+    Command shoot = returnBasicShootLessTime(redSide);
+    Trigger shootIsFinished = new Trigger(() -> shoot.isFinished());
 
+    // routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+    // outpostIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide).asProxy(), depotIntake.cmd()));
+    // depotIntake.done().onTrue(returnBasicShoot(redSide));
     routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
-    outpostIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide), depotIntake.cmd()));
+    outpostIntake.done().onTrue(shoot);
+    shootIsFinished.onTrue(depotIntake.cmd());
     depotIntake.done().onTrue(returnBasicShoot(redSide));
 
     return routine;
@@ -447,9 +470,15 @@ public class AutoRoutines {
 
     AutoTrajectory depotIntake = depot(routine, Constants.Swerve.Auto.Depot.DepotStart);
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostSweep);
+    Command shoot = returnBasicShoot(redSide);
+    Trigger shootIsFinished = new Trigger(() -> shoot.isFinished());
 
+    // routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+    // depotIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide).asProxy(), outpostIntake.cmd()));
+    // outpostIntake.done().onTrue(returnBasicShoot(redSide));
     routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
-    depotIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide), outpostIntake.cmd()));
+    depotIntake.done().onTrue(shoot);
+    shootIsFinished.onTrue(outpostIntake.cmd());
     outpostIntake.done().onTrue(returnBasicShoot(redSide));
 
     return routine;

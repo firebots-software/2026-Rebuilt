@@ -436,7 +436,8 @@ public final class Constants {
 
       public static enum Depot {
         DepotStart,
-        DepotSweep
+        DepotSweep,
+        DepotPranav
       }
 
       public static enum Outpost {
