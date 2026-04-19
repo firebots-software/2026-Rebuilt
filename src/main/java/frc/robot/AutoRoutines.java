@@ -402,8 +402,6 @@ public class AutoRoutines {
     return routine;
   }
 
-
-
   // //Outpost and Depot
   public AutoRoutine DrakeOutpostShort() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
@@ -413,8 +411,7 @@ public class AutoRoutines {
     routine
         .active()
         .onTrue(
-            Commands.sequence(
-                returnBasicShoot(redSide), outpostIntake.resetOdometry(), outpostIntake.cmd()));
+            Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
     outpostIntake.done().onTrue(returnBasicShoot(redSide));
 
@@ -466,8 +463,8 @@ public class AutoRoutines {
     autoChooser.addRoutine("Hub Sweep Left", () -> HubSweepLeft());
     autoChooser.addRoutine("Hub Sweep Right", () -> HubSweepRight());
 
-    autoChooser.addRoutine("Simple Outpost", () -> DrakeOutpostShort());
-    autoChooser.addRoutine("Simple Depot", () -> DrakeDepotShort());
+    autoChooser.addRoutine("Just Outpost", () -> DrakeOutpostShort());
+    autoChooser.addRoutine("Just Depot", () -> DrakeDepotShort());
     autoChooser.addRoutine("Outpost to Depot", () -> DrakeOutpostLong());
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
