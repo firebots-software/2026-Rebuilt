@@ -27,9 +27,12 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
+import frc.robot.util.MiscUtils;
+import frc.robot.util.Targeting;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -85,6 +88,11 @@ public class RobotContainer {
       Constants.intakeVisionOnRobot
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
+
+  public final LEDSubsystem leds =
+      new LEDSubsystem(
+          MiscUtils::areWeActive,
+          () -> Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4);
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
