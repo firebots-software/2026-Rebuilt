@@ -45,6 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
   private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
+  private final TorqueCurrentFOC m_torqueCurrentRequest = new TorqueCurrentFOC(0);
 
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
@@ -192,11 +193,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setPowerRetract() {
-    setPowerRetractWithCurrent(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT);
+    setTorqueCurrent(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT);
   }
 
-  public void setPowerRetractWithCurrent(double current) {
-    armMotor.setControl(new TorqueCurrentFOC(current));
+  public void setTorqueCurrent(double current) {
+    armMotor.setControl(m_torqueCurrentRequest.withOutput(current));
   }
 
   public void setPowerRetractPosition() {
@@ -305,7 +306,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command agitateArmCommand() {
     // stole these numbers from 5507, subject to change
     return Commands.sequence(
-            runOnce(() -> setPowerRetractWithCurrent(45.0)).withTimeout(0.04),
+            runOnce(this::setPowerRetract).withTimeout(0.04),
             Commands.waitSeconds(0.6),
             setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
             Commands.waitSeconds(0.6))
