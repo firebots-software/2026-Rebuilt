@@ -25,6 +25,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   public void updateState(LEDState newState) {
     if (newState == currentState) return;
+    currentState = newState;
     candle.setControl(newState.animation);
   }
 
@@ -38,9 +39,9 @@ public class LEDSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (active.getAsBoolean() && inRange.getAsBoolean()) currentState = LEDState.ACTIVE_IN_RANGE;
-    else if (active.getAsBoolean()) currentState = LEDState.ACTIVE;
-    else currentState = LEDState.INACTIVE;
+    if (active.getAsBoolean() && inRange.getAsBoolean()) updateState(LEDState.ACTIVE_IN_RANGE);
+    else if (active.getAsBoolean()) updateState(LEDState.ACTIVE);
+    else updateState(LEDState.INACTIVE);
 
     // switch the color of the active in range animation at a rate of 4hz
     if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 250 == 0)
