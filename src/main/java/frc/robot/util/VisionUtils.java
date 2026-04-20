@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -276,5 +278,9 @@ public class VisionUtils {
 
   public static double getHeadingThreshold() {
     return headingThreshold;
+  }
+
+  public static boolean visionResultInvalid(PhotonPipelineResult result) {
+    return result == null || result.getTargets().isEmpty();
   }
 }

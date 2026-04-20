@@ -127,8 +127,6 @@ public class VisionSubsystem extends SubsystemBase {
 
     throwOutHeadingChange(latestMeasuredPose);
 
-    // if (throwOutHeadingChange(latestMeasuredPose, swerve)) return;
-
     ChassisSpeeds fieldSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(
             swerve.getState().Speeds, swerve.getState().Pose.getRotation());
@@ -194,7 +192,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getMinDistance() {
     double minDist =
-        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
+        VisionUtils.visionResultInvalid(latestVisionResult)
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
@@ -207,7 +205,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getAverageDistance() {
     double avgDist =
-        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
+        VisionUtils.visionResultInvalid(latestVisionResult)
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
@@ -220,7 +218,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getMaxDistance() {
     double maxDist =
-        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
+        VisionUtils.visionResultInvalid(latestVisionResult)
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(t -> t.getBestCameraToTarget().getTranslation().getNorm())
@@ -233,7 +231,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getPoseAmbiguity() {
     double poseAmbiguity =
-        latestVisionResult == null || latestVisionResult.getTargets().isEmpty()
+        VisionUtils.visionResultInvalid(latestVisionResult)
             ? Double.MAX_VALUE
             : latestVisionResult.getTargets().stream()
                 .mapToDouble(PhotonTrackedTarget::getPoseAmbiguity)
