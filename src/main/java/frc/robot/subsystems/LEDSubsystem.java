@@ -18,10 +18,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
-  /**
-   * indices: [0, 7] candle onboard [8, 30] left side strip [31, 59] back strip [60, 76] right side
-   * strip
-   */
+  // indices:
+  // [0, 7] candle onboard
+  // [8, 30] left side strip
+  // [31, 59] back strip
+  // [60, 76] right side strip
   private static final int END_OF_STRIP = 76;
 
   private CANdle candle = new CANdle(0); // TODO
@@ -102,8 +103,7 @@ public class LEDSubsystem extends SubsystemBase {
             .withCooling(0.4)
             .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
             .withFrameRate(4)
-            .withSlot(0)
-        ),
+            .withSlot(0)),
     FLAME_RIGHT(
         "🔥",
         new FireAnimation(46, END_OF_STRIP)
@@ -111,28 +111,22 @@ public class LEDSubsystem extends SubsystemBase {
             .withCooling(0.4)
             .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
             .withFrameRate(4)
-            .withSlot(1)
-        ),
+            .withSlot(1)),
     SWEEP_LEFT(
-      "Sweep",
-      new LarsonAnimation(8, 45)
-        .withBounceMode(LarsonBounceValue.Center)
-        .withColor(new RGBWColor(Color.kGreen))
-        .withFrameRate(4)
-        .withSlot(0)
-    ),
+        "Sweep",
+        new LarsonAnimation(8, 45)
+            .withBounceMode(LarsonBounceValue.Center)
+            .withColor(new RGBWColor(Color.kGreen))
+            .withFrameRate(4)
+            .withSlot(0)),
     SWEEP_RIGHT(
-      "Sweep",
-      new LarsonAnimation(END_OF_STRIP, 46)
-        .withBounceMode(LarsonBounceValue.Center)
-        .withColor(new RGBWColor(Color.kGreen))
-        .withFrameRate(4)
-        .withSlot(1)
-    ),
-    RAINBOW(
-      "Rainbow",
-      new RainbowAnimation(8, END_OF_STRIP)
-    );
+        "Sweep",
+        new LarsonAnimation(END_OF_STRIP, 46)
+            .withBounceMode(LarsonBounceValue.Center)
+            .withColor(new RGBWColor(Color.kGreen))
+            .withFrameRate(4)
+            .withSlot(1)),
+    RAINBOW("Rainbow", new RainbowAnimation(8, END_OF_STRIP));
 
     String name;
     ControlRequest animation;
