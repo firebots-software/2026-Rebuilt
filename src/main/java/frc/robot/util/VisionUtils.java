@@ -1,7 +1,5 @@
 package frc.robot.util;
 
-import org.photonvision.targeting.PhotonPipelineResult;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -20,6 +18,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.VisionSubsystem;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 public class VisionUtils {
   private static VisionSubsystem visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft;
