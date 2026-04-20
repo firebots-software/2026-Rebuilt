@@ -3,10 +3,13 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.LarsonAnimation;
+import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
+import com.ctre.phoenix6.signals.LarsonBounceValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.util.Color;
@@ -88,17 +91,39 @@ public class LEDSubsystem extends SubsystemBase {
         new FireAnimation(8, 45)
             .withSparking(0.4)
             .withCooling(0.4)
-            .withFrameRate(4)
             .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
+            .withFrameRate(4)
+            .withSlot(0)
         ),
     FLAME_RIGHT(
         "🔥",
         new FireAnimation(46, END_OF_STRIP)
             .withSparking(0.4)
             .withCooling(0.4)
-            .withFrameRate(4)
             .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
-        );
+            .withFrameRate(4)
+            .withSlot(1)
+        ),
+    SWEEP_LEFT(
+      "Sweep",
+      new LarsonAnimation(8, 45)
+        .withBounceMode(LarsonBounceValue.Center)
+        .withColor(new RGBWColor(Color.kGreen))
+        .withFrameRate(4)
+        .withSlot(0)
+    ),
+    SWEEP_RIGHT(
+      "Sweep",
+      new LarsonAnimation(END_OF_STRIP, 46)
+        .withBounceMode(LarsonBounceValue.Center)
+        .withColor(new RGBWColor(Color.kGreen))
+        .withFrameRate(4)
+        .withSlot(1)
+    ),
+    RAINBOW(
+      "Rainbow",
+      new RainbowAnimation(8, END_OF_STRIP)
+    );
 
     String name;
     ControlRequest animation;
