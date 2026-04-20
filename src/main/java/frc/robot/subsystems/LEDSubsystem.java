@@ -25,7 +25,7 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int END_OF_STRIP = 76;
 
   private CANdle candle = new CANdle(0); // TODO
-  private LEDState currentState = LEDState.INACTIVE;
+  private LEDState currentState = LEDState.NONE;
   private BooleanSupplier active, inRange;
 
   public LEDSubsystem(BooleanSupplier active, BooleanSupplier inRange) {
@@ -46,12 +46,21 @@ public class LEDSubsystem extends SubsystemBase {
     for (int i = 0; i <= 8; i++) candle.setControl(newStates[i].animation);
   }
 
+  /** clear all slots */
+  public void clearAll() {
+    for (int i = 0; i <= 8; i++) candle.setControl(new EmptyAnimation(i));
+  }
+
   public Command updateStateCommand(LEDState newState) {
     return runOnce(() -> updateState(newState));
   }
 
   public Command updateStateCommand(LEDState... newStates) {
     return runOnce(() -> updateState(newStates));
+  }
+
+  public Command clearAllCommand() {
+    return runOnce(this::clearAll);
   }
 
   public void cycleStrobeColor() {
@@ -66,7 +75,7 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     if (active.getAsBoolean() && inRange.getAsBoolean()) updateState(LEDState.ACTIVE_IN_RANGE);
     else if (active.getAsBoolean()) updateState(LEDState.ACTIVE);
-    else updateState(LEDState.INACTIVE);
+    else updateState(LEDState.NONE);
 
     // switch the color of the active in range animation at a rate of 4hz
     if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 250 == 0)
@@ -75,7 +84,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public enum LEDState {
-    INACTIVE("None", new EmptyAnimation(0)),
+    NONE("None", new EmptyAnimation(0)),
     ACTIVE(
         "Active",
         new SingleFadeAnimation(8, END_OF_STRIP)
