@@ -422,7 +422,7 @@ public class AutoRoutines {
   public AutoRoutine DrakeOutpostShort() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStartPush);
 
     routine
         .active()

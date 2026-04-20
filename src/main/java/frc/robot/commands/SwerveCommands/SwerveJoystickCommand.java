@@ -54,8 +54,8 @@ public class SwerveJoystickCommand extends Command {
     this.doPassing = doPassing;
     this.redsideIfPointing = redSideIfPointing;
     this.capper = capper;
-    this.xLimiter = new SlewRateLimiter(3.5);
-    this.yLimiter = new SlewRateLimiter(3.5);
+    this.xLimiter = new SlewRateLimiter(5.0);
+    this.yLimiter = new SlewRateLimiter(5.0);
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -143,9 +143,9 @@ public class SwerveJoystickCommand extends Command {
     if (capper.getAsBoolean()) {
         xSpeed = xLimiter.calculate(xSpeed);
         ySpeed = yLimiter.calculate(ySpeed);
-      if (speedMagnitude > 2.5) {
-        xSpeed *= (2.5 / speedMagnitude);
-        ySpeed *= (2.5 / speedMagnitude);
+      if (speedMagnitude > 2.0) {
+        xSpeed *= (2.0 / speedMagnitude);
+        ySpeed *= (2.0 / speedMagnitude);
       }
     }
 

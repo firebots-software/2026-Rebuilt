@@ -442,7 +442,8 @@ public final class Constants {
 
       public static enum Outpost {
         OutpostStart,
-        OutpostSweep
+        OutpostSweep,
+        OutpostStartPush
       }
 
       public static enum MiscPaths {
