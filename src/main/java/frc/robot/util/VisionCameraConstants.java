@@ -130,13 +130,13 @@ public final class VisionCameraConstants {
     private static final double FY = 910.5580953980847;
     private static final double CY = 388.6942556055274;
     private static final double K1 = 0.04787004424953315;
-    private static final double K2 = 0.0;
-    private static final double P1 = 0.0;
-    private static final double P2 = 0.0;
-    private static final double K3 = 0.0;
-    private static final double K4 = 0.0;
-    private static final double K5 = 0.0;
-    private static final double K6 = 0.0;
+    private static final double K2 = -0.06567381272383281;
+    private static final double P1 = 3.7779485769898034E-4;
+    private static final double P2 = -3.4797638844685785E-4;
+    private static final double K3 = 0.009051433582570044;
+    private static final double K4 = -0.002113451011579978;
+    private static final double K5 = 0.005575990805806449;
+    private static final double K6 = 0.001987724097504375;
   }
 
   public static final class RearRight {
