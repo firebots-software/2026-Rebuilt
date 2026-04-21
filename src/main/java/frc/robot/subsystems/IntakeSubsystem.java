@@ -80,7 +80,7 @@ public class IntakeSubsystem extends SubsystemBase {
     CurrentLimitsConfigs armCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT)
-            .withStatorCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
+            .withSupplyCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
 
     MotionMagicConfigs mmc =
         new MotionMagicConfigs()
@@ -125,6 +125,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfiguration armConfig =
         new TalonFXConfiguration()
             .withSlot0(armSlot0Configs)
+            .withMotionMagic(mmc)
             .withCurrentLimits(armCurrentLimitsConfigs)
             .withFeedback(feedbackConfigs)
             .withMotorOutput(
@@ -136,7 +137,6 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();
 
     armMotorConfig.apply(armConfig);
-    armMotorConfig.apply(mmc);
     rollersMotorConfig.apply(rollersConfig);
 
     DogLog.log("Subsystems/Intake/Arm/Gains/kP", Constants.Intake.Arm.kP);

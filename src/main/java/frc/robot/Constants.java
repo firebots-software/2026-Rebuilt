@@ -133,7 +133,7 @@ public final class Constants {
       // JAMES_HARDEN(0.16901, 0d, 0d, 0.1593, 0.12143, 0.0091321); //0.041539
       // //0.12301
       JAMES_HARDEN(0.36, 0d, 0d, 0.2425, 0.11560693641, 0), // 0.041539 //0.12301
-      COBRA(0.1, 0d, 0d, 0d, 0.124, 0d); // 0.041539 //0.12301
+      COBRA(0.25, 0d, 0d, 0.2d, 0.124, 0d); // 0.041539 //0.12301
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveDrivePIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
