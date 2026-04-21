@@ -21,8 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootCommandGroups.DriveToAndShoot;
-import frc.robot.commandGroups.ShootCommandGroups.PulseShootWithAim;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
@@ -174,7 +172,14 @@ public class RobotContainer {
     //             drivetrain,
     //             redside));
 
-    joystick.a().whileTrue(new DriveToPose(drivetrain, () -> new Pose2d(new Translation2d(2.462480068206787, 2.26101016998291), new Rotation2d())));
+    joystick
+        .a()
+        .whileTrue(
+            new DriveToPose(
+                drivetrain,
+                () ->
+                    new Pose2d(
+                        new Translation2d(2.462480068206787, 2.26101016998291), new Rotation2d())));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick

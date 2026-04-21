@@ -2,7 +2,6 @@ package frc.robot.commands.SwerveCommands;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -141,8 +140,8 @@ public class SwerveJoystickCommand extends Command {
     double speedMagnitude = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
 
     if (capper.getAsBoolean()) {
-        xSpeed = xLimiter.calculate(xSpeed);
-        ySpeed = yLimiter.calculate(ySpeed);
+      xSpeed = xLimiter.calculate(xSpeed);
+      ySpeed = yLimiter.calculate(ySpeed);
       if (speedMagnitude > 2.0) {
         xSpeed *= (2.0 / speedMagnitude);
         ySpeed *= (2.0 / speedMagnitude);
