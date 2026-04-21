@@ -23,7 +23,7 @@ public final class VisionCameraConstants {
     private static final double CX = 0.0;
     private static final double FY = 0.0;
     private static final double CY = 0.0;
-    private static final double K1 = 0.0; // distancecoeffs
+    private static final double K1 = 0.0; // distortioncoeffs
     private static final double K2 = 0.0;
     private static final double P1 = 0.0;
     private static final double P2 = 0.0;
