@@ -19,18 +19,18 @@ public final class VisionCameraConstants {
     private static final double ROLL = Units.degreesToRadians(0.0);
     private static final double PITCH = Units.degreesToRadians(0.0);
     private static final double YAW = Units.degreesToRadians(-42.0); // mrd 310
-    private static final double FX = 0.0; // cameramatrix
-    private static final double CX = 0.0;
-    private static final double FY = 0.0;
-    private static final double CY = 0.0;
-    private static final double K1 = 0.0; // distortioncoeffs
-    private static final double K2 = 0.0;
-    private static final double P1 = 0.0;
-    private static final double P2 = 0.0;
-    private static final double K3 = 0.0;
-    private static final double K4 = 0.0;
-    private static final double K5 = 0.0;
-    private static final double K6 = 0.0;
+    private static final double FX = 913.9588182724549; // cameramatrix
+    private static final double CX = 635.3113759543929;
+    private static final double FY = 913.1110338032502;
+    private static final double CY = 426.1145158880936;
+    private static final double K1 = 0.053777333313074126; // distortioncoeffs
+    private static final double K2 = -0.09163028264269202;
+    private static final double P1 = 1.374201650684413E-4;
+    private static final double P2 = 1.705990575776099E-4;
+    private static final double K3 = 0.03043443776012655;
+    private static final double K4 = -0.0014003230555085467;
+    private static final double K5 = 0.003012682052878214;
+    private static final double K6 = -0.0018355589720653578;
   }
 
   public static final class FrontRight {
@@ -72,18 +72,18 @@ public final class VisionCameraConstants {
     private static final double ROLL = Units.degreesToRadians(0.0);
     private static final double PITCH = Units.degreesToRadians(0.0);
     private static final double YAW = Units.degreesToRadians(42.0); // mrd 50
-    private static final double FX = 0.0;
-    private static final double CX = 0.0;
-    private static final double FY = 0.0;
-    private static final double CY = 0.0;
-    private static final double K1 = 0.0;
-    private static final double K2 = 0.0;
-    private static final double P1 = 0.0;
-    private static final double P2 = 0.0;
-    private static final double K3 = 0.0;
-    private static final double K4 = 0.0;
-    private static final double K5 = 0.0;
-    private static final double K6 = 0.0;
+    private static final double FX = 912.5173606679848;
+    private static final double CX = 641.6860955338284;
+    private static final double FY = 911.7465912506361;
+    private static final double CY = 352.76061130405736;
+    private static final double K1 = 0.0510489487465398;
+    private static final double K2 = -0.08377140729235197;
+    private static final double P1 = 1.434092037672156E-4;
+    private static final double P2 = -6.852290091675845E-4;
+    private static final double K3 = 0.023945103433457356;
+    private static final double K4 = -0.0027178370025379562;
+    private static final double K5 = 0.005487814267694603;
+    private static final double K6 = 7.918351577621345E-4;
   }
 
   public static final class FrontLeft {
@@ -125,11 +125,11 @@ public final class VisionCameraConstants {
     private static final double ROLL = Units.degreesToRadians(0.0);
     private static final double PITCH = Units.degreesToRadians(330.321995);
     private static final double YAW = Units.degreesToRadians(148.35615); // mrd 328.35615
-    private static final double FX = 0.0;
-    private static final double CX = 0.0;
-    private static final double FY = 0.0;
-    private static final double CY = 0.0;
-    private static final double K1 = 0.0;
+    private static final double FX = 918.2654314246229;
+    private static final double CX = 633.0888048530759;
+    private static final double FY = 910.5580953980847;
+    private static final double CY = 388.6942556055274;
+    private static final double K1 = 0.04787004424953315;
     private static final double K2 = 0.0;
     private static final double P1 = 0.0;
     private static final double P2 = 0.0;
@@ -178,18 +178,18 @@ public final class VisionCameraConstants {
     private static final double ROLL = Units.degreesToRadians(0.0);
     private static final double PITCH = Units.degreesToRadians(330.321995);
     private static final double YAW = Units.degreesToRadians(211.64385); // mrd 31.643850
-    private static final double FX = 0.0;
-    private static final double CX = 0.0;
-    private static final double FY = 0.0;
-    private static final double CY = 0.0;
-    private static final double K1 = 0.0;
-    private static final double K2 = 0.0;
-    private static final double P1 = 0.0;
-    private static final double P2 = 0.0;
-    private static final double K3 = 0.0;
-    private static final double K4 = 0.0;
-    private static final double K5 = 0.0;
-    private static final double K6 = 0.0;
+    private static final double FX = 911.5328150353528;
+    private static final double CX = 669.4388048233077;
+    private static final double FY = 910.5580953980847;
+    private static final double CY = 388.6942556055274;
+    private static final double K1 = 0.04787004424953315;
+    private static final double K2 = -0.06567381272383281;
+    private static final double P1 = 3.7779485769898034E-4;
+    private static final double P2 = -3.4797638844685785E-4;
+    private static final double K3 = 0.009051433582570044; 
+    private static final double K4 = -0.002113451011579978;
+    private static final double K5 = 0.005575990805806449;
+    private static final double K6 = 0.001987724097504375;
   }
 
   public static final class RearLeft {
