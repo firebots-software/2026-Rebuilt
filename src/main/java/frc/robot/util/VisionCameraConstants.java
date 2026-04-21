@@ -186,7 +186,7 @@ public final class VisionCameraConstants {
     private static final double K2 = -0.06567381272383281;
     private static final double P1 = 3.7779485769898034E-4;
     private static final double P2 = -3.4797638844685785E-4;
-    private static final double K3 = 0.009051433582570044; 
+    private static final double K3 = 0.009051433582570044;
     private static final double K4 = -0.002113451011579978;
     private static final double K5 = 0.005575990805806449;
     private static final double K6 = 0.001987724097504375;
