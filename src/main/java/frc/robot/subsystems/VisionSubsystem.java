@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -38,6 +39,9 @@ public class VisionSubsystem extends SubsystemBase {
   private Optional<EstimatedRobotPose> visionEstimate;
 
   private boolean cameraConnectedStatus = false;
+
+  private Matrix<N3, N3> cameraIntrinsics;
+  private Matrix<N8,N1> distortionCoeffs;
 
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
@@ -67,6 +71,9 @@ public class VisionSubsystem extends SubsystemBase {
     loggingPath = "Subsystems/Vision/" + cameraTitle;
 
     this.swerve = drivetrain;
+
+    cameraIntrinsics = cameraID.getCameraMatrix();
+    distortionCoeffs = cameraID.getDistCoeffs();
   }
 
   public VisionCamera getCameraID() {
@@ -100,8 +107,8 @@ public class VisionSubsystem extends SubsystemBase {
           Constants.pnpReady
               ? poseEstimator.estimateConstrainedSolvepnpPose(
                   latestVisionResult,
-                  cameraID.getCameraMatrix(),
-                  cameraID.getDistCoeffs(),
+                  cameraIntrinsics,
+                  distortionCoeffs,
                   new Pose3d(swerve.getCurrentState().Pose).plus(camHeight),
                   false,
                   Constants.Vision.HDG_PENALTY)
