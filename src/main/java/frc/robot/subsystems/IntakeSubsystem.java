@@ -315,7 +315,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command powerRetractThenAgitateArmCommand() {
     return Commands.sequence(
-        powerRetractRollersCommand().withTimeout(2), agitateArmCommand());
+        powerRetractRollersCommand(), Commands.waitSeconds(2), agitateArmCommand());
   }
 
   @Override
