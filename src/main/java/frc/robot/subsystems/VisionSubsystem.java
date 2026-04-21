@@ -41,7 +41,7 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean cameraConnectedStatus = false;
 
   private Matrix<N3, N3> cameraIntrinsics;
-  private Matrix<N8,N1> distortionCoeffs;
+  private Matrix<N8, N1> distortionCoeffs;
 
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
@@ -49,7 +49,6 @@ public class VisionSubsystem extends SubsystemBase {
   private double latestFinalTimestamp;
   private Matrix<N3, N1> latestNoiseVector;
   private double latestMinDistance;
-  private double latestMaxDistance;
   private double latestAvgDistance;
   private int latestTagCount;
   private CommandSwerveDrivetrain swerve;
@@ -82,13 +81,17 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    visionEstimate = Optional.empty();
-    latestVisionResult = null;
-    hasValidMeasurement = false;
+    resetMeasurementValues();
 
     if (!cameraConnected()) return;
 
     updateEstimate(photonCamera.getAllUnreadResults());
+  }
+
+  private void resetMeasurementValues() {
+    visionEstimate = Optional.empty();
+    latestVisionResult = null;
+    hasValidMeasurement = false;
   }
 
   private boolean cameraConnected() {
@@ -127,7 +130,7 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/MeasuredPose", latestMeasuredPose);
 
     latestMinDistance = getMinDistance();
-    //latestMaxDistance = getMaxDistance();
+    // latestMaxDistance = getMaxDistance();
     latestAvgDistance = getAverageDistance();
 
     if (throwOutDistance(latestMinDistance)) return;
