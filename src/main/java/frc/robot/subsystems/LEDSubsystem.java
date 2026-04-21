@@ -3,94 +3,130 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
+import com.ctre.phoenix6.controls.LarsonAnimation;
+import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
-import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
+import com.ctre.phoenix6.signals.LarsonBounceValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
-  private static final int STRIP_LENGTH = 41; // TODO
+  // indices:
+  // [0, 7] candle onboard
+  // [8, 30] left side strip
+  // [31, 59] back strip
+  // [60, 76] right side strip
+  private static final int END_OF_STRIP = 76;
 
-  private static FireAnimation FLAME =
-      new FireAnimation(8, STRIP_LENGTH).withFrameRate(15).withSparking(0.4).withCooling(0.4);
+  private CANdle candle = new CANdle(0); // TODO
+  private LEDState currentState = LEDState.NONE;
+  private BooleanSupplier active, inRange;
 
-  private static SingleFadeAnimation MATCH_IDLE =
-      new SingleFadeAnimation(8, STRIP_LENGTH).withColor(new RGBWColor(255, 255, 255));
-  private static StrobeAnimation BLINK = new StrobeAnimation(8, STRIP_LENGTH);
-  private static SolidColor SOLID = new SolidColor(8, STRIP_LENGTH);
+  public LEDSubsystem(BooleanSupplier active, BooleanSupplier inRange) {
+    this.active = active;
+    this.inRange = inRange;
+  }
 
-  private CANdle candle;
-  private LEDState currentState;
-  private LEDStateGroup currentStateGroup;
+  public void updateState(LEDState newState) {
+    if (newState == currentState) return;
+    currentState = newState;
+    candle.setControl(newState.animation);
+  }
 
-  public LEDSubsystem() {
-    candle = new CANdle(39); // TODO: change when the bot gets LEDs
-    updateAlliance();
-    // reset all leds on init
-    LEDStateGroup.LEDS_OFF.run(candle);
+  /** sends up to 8 animations to the candle at once (for animations across multiple slots) */
+  public void updateState(LEDState... newStates) {
+    currentState = newStates[0];
+    // only go up to 8 because the candle only has 9 animation slots
+    for (int i = 0; i <= 8; i++) candle.setControl(newStates[i].animation);
+  }
+
+  /** clear all slots */
+  public void clearAll() {
+    for (int i = 0; i <= 8; i++) candle.setControl(new EmptyAnimation(i));
+  }
+
+  public Command updateStateCommand(LEDState newState) {
+    return runOnce(() -> updateState(newState));
+  }
+
+  public Command updateStateCommand(LEDState... newStates) {
+    return runOnce(() -> updateState(newStates));
+  }
+
+  public Command clearAllCommand() {
+    return runOnce(this::clearAll);
+  }
+
+  public void cycleStrobeColor() {
+    // please forgive me
+    RGBWColor currentColor = ((StrobeAnimation) (LEDState.ACTIVE_IN_RANGE.animation)).Color;
+    ((StrobeAnimation) (LEDState.ACTIVE_IN_RANGE.animation)).Color =
+        new RGBWColor(
+            currentColor.equals(new RGBWColor(Color.kOrange)) ? Color.kWhite : Color.kOrange);
   }
 
   @Override
   public void periodic() {
-    if (currentState != null) currentState.run(candle);
-    if (currentStateGroup != null) currentStateGroup.run(candle);
-    DogLog.log("Subsystems/LEDs/RunningAnimation", currentState != null ? currentState.name : null);
-    DogLog.log(
-        "Subsystems/LEDs/RunningAnimationGroup",
-        currentStateGroup != null ? currentStateGroup.name : null);
+    if (active.getAsBoolean() && inRange.getAsBoolean()) updateState(LEDState.ACTIVE_IN_RANGE);
+    else if (active.getAsBoolean()) updateState(LEDState.ACTIVE);
+    else updateState(LEDState.NONE);
+
+    // switch the color of the active in range animation at a rate of 4hz
+    if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 250 == 0)
+      cycleStrobeColor();
+    DogLog.log("Subsystems/LEDs/CurrentState", currentState.name);
   }
 
-  public void setState(LEDState state) {
-    currentState = state;
-    currentStateGroup = null;
-  }
-
-  public void setState(LEDStateGroup stateGroup) {
-    currentStateGroup = stateGroup;
-    currentState = null;
-  }
-
-  public void updateAlliance() {
-    if (DriverStation.getAlliance().isEmpty()) return;
-    RGBWColor allianceColor =
-        (DriverStation.getAlliance().get() == Alliance.Red)
-            ? new RGBWColor(255, 0, 0)
-            : new RGBWColor(0, 0, 255);
-    MATCH_IDLE.Color = allianceColor;
-    BLINK.Color = allianceColor;
-    SOLID.Color = allianceColor;
-  }
-
-  /** Enum for animation info */
   public enum LEDState {
-    NONE_SLOT_0("LEDs off (slot 0)", new EmptyAnimation(0)),
-    NONE_SLOT_1("LEDs off (slot 1)", new EmptyAnimation(1)),
-    NONE_SLOT_2("LEDs off (slot 2)", new EmptyAnimation(2)),
-    NONE_SLOT_3("LEDs off (slot 3)", new EmptyAnimation(3)),
-
-    IDLE("Idle", MATCH_IDLE),
-    ALLIANCE_BLINK("Blinking", BLINK),
-    ALLIANCE_BLINK_RAPID("Blinking", BLINK.clone().withFrameRate(15)),
-    ALLIANCE_SOLID("Solid", SOLID),
-
+    NONE("None", new EmptyAnimation(0)),
+    ACTIVE(
+        "Active",
+        new SingleFadeAnimation(8, END_OF_STRIP)
+            .withColor(new RGBWColor(Color.kOrange))
+            .withFrameRate(3)),
+    ACTIVE_IN_RANGE(
+        "Active (in range)",
+        new StrobeAnimation(8, END_OF_STRIP)
+            .withColor(new RGBWColor(Color.kOrange))
+            .withFrameRate(5)),
     FLAME_LEFT(
-        "Flame (left side LEDs)",
-        FLAME
-            .clone()
-            .withLEDStartIndex(28)
-            .withLEDEndIndex(STRIP_LENGTH)
-            .withFrameRate(15)
-            .withDirection(AnimationDirectionValue.Backward)
+        "🔥",
+        new FireAnimation(8, 45)
+            .withSparking(0.4)
+            .withCooling(0.4)
+            .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
+            .withFrameRate(4)
             .withSlot(0)),
     FLAME_RIGHT(
-        "Flame (right side LEDs)",
-        FLAME.clone().withLEDStartIndex(8).withLEDEndIndex(27).withFrameRate(15).withSlot(2));
+        "🔥",
+        new FireAnimation(46, END_OF_STRIP)
+            .withSparking(0.4)
+            .withCooling(0.4)
+            .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
+            .withFrameRate(4)
+            .withSlot(1)),
+    SWEEP_LEFT(
+        "Sweep",
+        new LarsonAnimation(8, 45)
+            .withBounceMode(LarsonBounceValue.Center)
+            .withColor(new RGBWColor(Color.kGreen))
+            .withFrameRate(4)
+            .withSlot(0)),
+    SWEEP_RIGHT(
+        "Sweep",
+        new LarsonAnimation(END_OF_STRIP, 46)
+            .withBounceMode(LarsonBounceValue.Center)
+            .withColor(new RGBWColor(Color.kGreen))
+            .withFrameRate(4)
+            .withSlot(1)),
+    RAINBOW("Rainbow", new RainbowAnimation(8, END_OF_STRIP));
 
     String name;
     ControlRequest animation;
@@ -98,39 +134,6 @@ public class LEDSubsystem extends SubsystemBase {
     LEDState(String name, ControlRequest animation) {
       this.name = name;
       this.animation = animation;
-    }
-
-    void run(CANdle candle) {
-      candle.setControl(animation);
-    }
-  }
-
-  /**
-   * Represents a group of LEDStates to run multiple at the same time, since some animations need to
-   * run across multiple slots simultaneously
-   */
-  public enum LEDStateGroup {
-    LEDS_OFF(
-        "LEDs off",
-        LEDState.NONE_SLOT_0,
-        LEDState.NONE_SLOT_1,
-        LEDState.NONE_SLOT_2,
-        LEDState.NONE_SLOT_3),
-    FLAME(
-        "Flame",
-        LEDState.FLAME_LEFT,
-        /* LEDState.FLAME_MIDDLE_LEFT, LEDState.FLAME_MIDDLE_RIGHT, */ LEDState.FLAME_RIGHT);
-
-    String name;
-    LEDState[] animations;
-
-    LEDStateGroup(String name, LEDState... animations) {
-      this.name = name;
-      this.animations = animations;
-    }
-
-    void run(CANdle candle) {
-      for (LEDState ledState : animations) ledState.run(candle);
     }
   }
 }
