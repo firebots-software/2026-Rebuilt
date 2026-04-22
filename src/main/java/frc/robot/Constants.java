@@ -658,6 +658,13 @@ public final class Constants {
   }
 
   public static class IntakeVision {
+    public static final double INTAKE_X = Units.inchesToMeters(0.0);
+    public static final double INTAKE_Y = Units.inchesToMeters(22.342);
+    public static final double INTAKE_Z = Units.inchesToMeters(18.9);
+    public static final double INTAKE_ROLL = Units.degreesToRadians(0.0);
+    public static final double INTAKE_PITCH = Units.degreesToRadians(9.789);
+    public static final double INTAKE_YAW = Units.degreesToRadians(0.0);
+
     public static final double OVERRIDE_ROT_INPUT = 0.5;
 
     public static final double kP = 0.2d;
@@ -674,7 +681,9 @@ public final class Constants {
     public static enum IntakeVisionCamera {
       INTAKE_CAM(
           "intakeCam",
-          VisionCameraConstants.IntakeVision.transform);
+          new Transform3d(
+              new Translation3d(INTAKE_X, INTAKE_Y, INTAKE_Z),
+              new Rotation3d(INTAKE_ROLL, INTAKE_PITCH, INTAKE_YAW)));
 
       private String loggingName;
       private Transform3d cameraTransform;
