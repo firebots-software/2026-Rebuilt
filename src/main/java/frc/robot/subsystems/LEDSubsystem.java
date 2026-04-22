@@ -25,7 +25,7 @@ public class LEDSubsystem extends SubsystemBase {
   // [60, 76] right side strip
   private static final int END_OF_STRIP = 76;
 
-  private CANdle candle = new CANdle(0); // TODO
+  private CANdle candle = new CANdle(5);
   private LEDState currentState = LEDState.NONE;
   private BooleanSupplier active, inRange;
 
@@ -85,6 +85,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public enum LEDState {
+    /** only works for single-slot animations, use clearAll() for multi-slot */
     NONE("None", new EmptyAnimation(0)),
     ACTIVE(
         "Active",
