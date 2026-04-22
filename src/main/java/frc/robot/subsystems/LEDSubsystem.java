@@ -23,10 +23,10 @@ public class LEDSubsystem extends SubsystemBase {
   // [8, 30] left side strip
   // [31, 59] back strip
   // [60, 76] right side strip
-  private static final int END_OF_STRIP = 76;
+  private static final int END_OF_STRIP = 77;
 
   private CANdle candle = new CANdle(5);
-  private LEDState currentState = LEDState.NONE;
+  private LEDState currentState = LEDState.RAINBOW;
   private BooleanSupplier active, inRange;
 
   public LEDSubsystem(BooleanSupplier active, BooleanSupplier inRange) {
@@ -35,9 +35,8 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void updateState(LEDState newState) {
-    if (newState == currentState) return;
     currentState = newState;
-    candle.setControl(newState.animation);
+    candle.setControl(currentState.animation);
   }
 
   /** sends up to 8 animations to the candle at once (for animations across multiple slots) */
@@ -74,13 +73,14 @@ public class LEDSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (active.getAsBoolean() && inRange.getAsBoolean()) updateState(LEDState.ACTIVE_IN_RANGE);
-    else if (active.getAsBoolean()) updateState(LEDState.ACTIVE);
-    else updateState(LEDState.NONE);
+    // if (active.getAsBoolean() && inRange.getAsBoolean()) updateState(LEDState.ACTIVE_IN_RANGE);
+    // else if (active.getAsBoolean()) updateState(LEDState.ACTIVE);
+    // else updateState(LEDState.NONE);
+    updateState(LEDState.ACTIVE_IN_RANGE, LEDState.STROBE_WHITE);
 
     // switch the color of the active in range animation at a rate of 4hz
-    if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 250 == 0)
-      cycleStrobeColor();
+    // if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 50 == 0)
+    //   cycleStrobeColor();
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.name);
   }
 
@@ -96,7 +96,14 @@ public class LEDSubsystem extends SubsystemBase {
         "Active (in range)",
         new StrobeAnimation(8, END_OF_STRIP)
             .withColor(new RGBWColor(Color.kOrange))
-            .withFrameRate(5)),
+            .withFrameRate(15)),
+    STROBE_WHITE(
+      "temp",
+      new StrobeAnimation(8, END_OF_STRIP)
+        .withColor(new RGBWColor(Color.kWhite))
+        .withFrameRate(0)
+        .withSlot(1)
+    ),
     FLAME_LEFT(
         "🔥",
         new FireAnimation(8, 45)

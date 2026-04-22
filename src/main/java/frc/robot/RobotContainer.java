@@ -5,7 +5,6 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
-import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -52,8 +51,8 @@ public class RobotContainer {
           .getDoubleTopic("Tunable/ShooterSpeedTunable")
           .getEntry(44.0);
   private Field2d field = new Field2d();
-//   private final Telemetry logger =
-//       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+  //   private final Telemetry logger =
+  //       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CustomController secondController = new CustomController(4);
@@ -116,21 +115,20 @@ public class RobotContainer {
     configureBindings();
   }
 
-//   public void doTelemetry() {
-//     logger.telemeterize(drivetrain.getCurrentState());
+  //   public void doTelemetry() {
+  //     logger.telemeterize(drivetrain.getCurrentState());
 
-//     String commandName = "nah";
+  //     String commandName = "nah";
 
-//     if (drivetrain.getCurrentCommand() != null) {
-//       commandName = drivetrain.getCurrentCommand().getName();
-//     }
-//     DogLog.log("Robot/SwerveDriveCommand", commandName);
-//   }
+  //     if (drivetrain.getCurrentCommand() != null) {
+  //       commandName = drivetrain.getCurrentCommand().getName();
+  //     }
+  //     DogLog.log("Robot/SwerveDriveCommand", commandName);
+  //   }
 
-
-//   public CommandSwerveDrivetrain getDrivetrain() {
-//     return drivetrain;
-//   }
+  //   public CommandSwerveDrivetrain getDrivetrain() {
+  //     return drivetrain;
+  //   }
 
   private void configureBindings() {
     // Swerve
