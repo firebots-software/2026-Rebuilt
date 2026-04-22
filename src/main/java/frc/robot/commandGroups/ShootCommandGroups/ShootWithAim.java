@@ -71,7 +71,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                                                 .getRadians()
                                             + Math.PI,
                                         drivetrain)),
-                            intakeSubsystem.powerRetractRollersCommand()))),
+                            intakeSubsystem.powerRetractThenAgitateArmCommand()))),
             manualOverride));
   }
 }
