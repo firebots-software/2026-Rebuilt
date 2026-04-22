@@ -306,11 +306,13 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command agitateArmCommand() {
     // stole these numbers from 5507, subject to change
     return Commands.sequence(
-            runOnce(this::setPowerRetract).withTimeout(0.04),
-            Commands.waitSeconds(0.3),
-            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
-            Commands.waitSeconds(0.3))
-        .repeatedly();
+        run(this::setPowerRetract).withTimeout(3),
+        Commands.sequence(
+                runOnce(this::setPowerRetract).withTimeout(0.04),
+                Commands.waitSeconds(0.3),
+                setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
+                Commands.waitSeconds(0.3))
+            .repeatedly());
   }
 
   public Command powerRetractThenAgitateArmCommand() {
