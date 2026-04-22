@@ -309,7 +309,7 @@ public class IntakeSubsystem extends SubsystemBase {
             runOnce(this::setPowerRetract).withTimeout(0.04),
             Commands.waitSeconds(0.3),
             setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
-            Commands.waitSeconds(0.3))
+            Commands.waitSeconds(0.6))
         .repeatedly();
   }
 
