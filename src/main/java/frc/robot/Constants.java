@@ -605,9 +605,7 @@ public final class Constants {
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
 
     public static enum FuelGaugeCamera {
-      FUEL_GAUGE_CAM(
-          "fuelGaugeCam",
-          VisionCameraConstants.FuelGauge.transform);
+      FUEL_GAUGE_CAM("fuelGaugeCam", VisionCameraConstants.FuelGauge.transform);
 
       private String loggingName;
       private Transform3d cameraTransform;

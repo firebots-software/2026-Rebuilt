@@ -224,7 +224,7 @@ public final class VisionCameraConstants {
             RearLeftVals.K6);
   }
 
-  private static final class FuelGaugeVals  {
+  private static final class FuelGaugeVals {
     private static final double X = Units.inchesToMeters(-3.454827);
     private static final double Y = Units.inchesToMeters(-7.056897);
     private static final double Z = Units.inchesToMeters(25.105416);
@@ -234,8 +234,9 @@ public final class VisionCameraConstants {
   }
 
   public static final class FuelGauge {
-    public static final Transform3d transform =new Transform3d(
-              new Translation3d(FuelGaugeVals.X, FuelGaugeVals.Y, FuelGaugeVals.Z),
-              new Rotation3d(FuelGaugeVals.ROLL, FuelGaugeVals.PITCH, FuelGaugeVals.YAW));
+    public static final Transform3d transform =
+        new Transform3d(
+            new Translation3d(FuelGaugeVals.X, FuelGaugeVals.Y, FuelGaugeVals.Z),
+            new Rotation3d(FuelGaugeVals.ROLL, FuelGaugeVals.PITCH, FuelGaugeVals.YAW));
   }
 }
