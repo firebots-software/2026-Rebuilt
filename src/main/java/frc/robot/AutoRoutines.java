@@ -48,7 +48,7 @@ public class AutoRoutines {
     addCommandstoAutoChooser();
   }
 
-   private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
+  private AutoTrajectory shoot(AutoRoutine routine, ShootPos type) {
     if (type == null) return null;
 
     AutoTrajectory traj = routine.trajectory(type + ".traj");
@@ -333,7 +333,14 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.HubRight);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE),
+                forward,
+                intake1.resetOdometry(),
+                intake1.cmd()));
 
     intake1
         .done()
@@ -389,7 +396,14 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.HubLeft);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE),
+                forward,
+                intake1.resetOdometry(),
+                intake1.cmd()));
 
     intake1
         .done()
@@ -424,10 +438,7 @@ public class AutoRoutines {
 
     AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStartPush);
 
-    routine
-        .active()
-        .onTrue(
-            Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
+    routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
     outpostIntake.done().onTrue(returnBasicShoot(redSide));
 
@@ -454,8 +465,10 @@ public class AutoRoutines {
     Command shoot = returnBasicShootLessTime(redSide);
     Trigger shootIsFinished = new Trigger(() -> shoot.isFinished());
 
-    // routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
-    // outpostIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide).asProxy(), depotIntake.cmd()));
+    // routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(),
+    // outpostIntake.cmd()));
+    // outpostIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide).asProxy(),
+    // depotIntake.cmd()));
     // depotIntake.done().onTrue(returnBasicShoot(redSide));
     routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
     outpostIntake.done().onTrue(shoot);
@@ -474,7 +487,8 @@ public class AutoRoutines {
     Trigger shootIsFinished = new Trigger(() -> shoot.isFinished());
 
     // routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
-    // depotIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide).asProxy(), outpostIntake.cmd()));
+    // depotIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide).asProxy(),
+    // outpostIntake.cmd()));
     // outpostIntake.done().onTrue(returnBasicShoot(redSide));
     routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
     depotIntake.done().onTrue(shoot);

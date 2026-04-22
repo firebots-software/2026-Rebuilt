@@ -313,6 +313,11 @@ public class IntakeSubsystem extends SubsystemBase {
         .repeatedly();
   }
 
+  public Command powerRetractThenAgitateArmCommand() {
+    return Commands.sequence(
+        powerRetractRollersCommand(), Commands.waitSeconds(1), agitateArmCommand());
+  }
+
   @Override
   public void periodic() {
     DogLog.log(
