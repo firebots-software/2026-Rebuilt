@@ -6,6 +6,7 @@ import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.LarsonAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
+import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
@@ -14,7 +15,13 @@ import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commandGroups.LEDStrobeInRange;
+
+import static edu.wpi.first.units.Units.Milliseconds;
+
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -81,6 +88,16 @@ public class LEDSubsystem extends SubsystemBase {
     // switch the color of the active in range animation at a rate of 4hz
     // if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 50 == 0)
     //   cycleStrobeColor();
+    if (currentState == LEDState.ACTIVE_IN_RANGE) {
+      CommandScheduler.getInstance().schedule(
+        Commands.sequence(
+          updateStateCommand(LEDState.ORANGE_SOLID),
+          Commands.waitTime(Milliseconds.of(100)),
+          updateStateCommand(LEDState.WHITE_SOLID),
+          Commands.waitTime(Milliseconds.of(100))
+        ).repeatedly().until(() -> currentState != LEDState.ACTIVE_IN_RANGE)
+      );
+    }
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.name);
   }
 
@@ -92,18 +109,7 @@ public class LEDSubsystem extends SubsystemBase {
         new SingleFadeAnimation(8, END_OF_STRIP)
             .withColor(new RGBWColor(Color.kOrange))
             .withFrameRate(3)),
-    ACTIVE_IN_RANGE(
-        "Active (in range)",
-        new StrobeAnimation(8, END_OF_STRIP)
-            .withColor(new RGBWColor(Color.kOrange))
-            .withFrameRate(15)),
-    STROBE_WHITE(
-      "temp",
-      new StrobeAnimation(8, END_OF_STRIP)
-        .withColor(new RGBWColor(Color.kWhite))
-        .withFrameRate(0)
-        .withSlot(1)
-    ),
+    ACTIVE_IN_RANGE("Active (in range)", new EmptyAnimation(0)),
     FLAME_LEFT(
         "🔥",
         new FireAnimation(8, 45)
@@ -134,7 +140,13 @@ public class LEDSubsystem extends SubsystemBase {
             .withColor(new RGBWColor(Color.kGreen))
             .withFrameRate(4)
             .withSlot(1)),
-    RAINBOW("Rainbow", new RainbowAnimation(8, END_OF_STRIP));
+    RAINBOW("Rainbow", new RainbowAnimation(8, END_OF_STRIP)),
+    ORANGE_SOLID(
+        "Active (in range)",
+        new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kOrange))),
+    WHITE_SOLID(
+        "Active (in range)",
+        new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kWhite)));
 
     String name;
     ControlRequest animation;

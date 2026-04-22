@@ -306,7 +306,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command agitateArmCommand() {
     // stole these numbers from 5507, subject to change
     return Commands.sequence(
-        run(this::setPowerRetract).withTimeout(4.5),
+        run(() -> setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED)).withTimeout(4.5),
         Commands.sequence(
                 runOnce(this::setPowerRetract).withTimeout(0.04),
                 Commands.waitSeconds(0.3),

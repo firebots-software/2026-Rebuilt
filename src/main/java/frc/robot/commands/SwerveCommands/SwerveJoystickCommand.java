@@ -124,7 +124,8 @@ public class SwerveJoystickCommand extends Command {
     xSpeed = xSpeed * xSpeed * Math.signum(xSpeed);
     ySpeed = ySpeed * ySpeed * Math.signum(ySpeed);
     if (squaredTurn) {
-      turningSpeed = turningSpeed * turningSpeed * turningSpeed * Math.signum(turningSpeed);
+      turningSpeed =
+          Math.abs(turningSpeed * turningSpeed * turningSpeed) * Math.signum(turningSpeed);
     }
     // 3. Apply deadband
     xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;
