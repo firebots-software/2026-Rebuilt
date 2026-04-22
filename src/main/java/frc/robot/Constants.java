@@ -415,8 +415,6 @@ public final class Constants {
       public static final double WAIT_TIME_FOR_ALLIANCE = 4.0;
 
       public static enum Intake {
-        LeftIntakeSweep,
-        RightIntakeSweep,
         LeftIntakeSweepShort,
         RightIntakeSweepShort,
         RightSecondDip,
@@ -436,8 +434,7 @@ public final class Constants {
 
       public static enum Depot {
         DepotStart,
-        DepotSweep,
-        DepotPranav
+        DepotSweep
       }
 
       public static enum Outpost {
