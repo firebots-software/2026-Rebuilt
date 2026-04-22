@@ -604,19 +604,10 @@ public final class Constants {
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
 
-    public static final double FUEL_GAUGE_X = Units.inchesToMeters(-3.454827);
-    public static final double FUEL_GAUGE_Y = Units.inchesToMeters(-7.056897);
-    public static final double FUEL_GAUGE_Z = Units.inchesToMeters(25.105416);
-    public static final double FUEL_GAUGE_ROLL = Units.degreesToRadians(286.894287);
-    public static final double FUEL_GAUGE_PITCH = Units.degreesToRadians(55.646896);
-    public static final double FUEL_GAUGE_YAW = Units.degreesToRadians(23.957651);
-
     public static enum FuelGaugeCamera {
       FUEL_GAUGE_CAM(
           "fuelGaugeCam",
-          new Transform3d(
-              new Translation3d(FUEL_GAUGE_X, FUEL_GAUGE_Y, FUEL_GAUGE_Z),
-              new Rotation3d(FUEL_GAUGE_ROLL, FUEL_GAUGE_PITCH, FUEL_GAUGE_YAW)));
+          VisionCameraConstants.FuelGauge.transform);
 
       private String loggingName;
       private Transform3d cameraTransform;

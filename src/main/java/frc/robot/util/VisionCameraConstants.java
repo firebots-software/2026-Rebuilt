@@ -223,4 +223,19 @@ public final class VisionCameraConstants {
             RearLeftVals.K5,
             RearLeftVals.K6);
   }
+
+  private static final class FuelGaugeVals  {
+    private static final double X = Units.inchesToMeters(-3.454827);
+    private static final double Y = Units.inchesToMeters(-7.056897);
+    private static final double Z = Units.inchesToMeters(25.105416);
+    private static final double ROLL = Units.degreesToRadians(286.894287);
+    private static final double PITCH = Units.degreesToRadians(55.646896);
+    private static final double YAW = Units.degreesToRadians(23.957651);
+  }
+
+  public static final class FuelGauge {
+    public static final Transform3d transform =new Transform3d(
+              new Translation3d(FuelGaugeVals.X, FuelGaugeVals.Y, FuelGaugeVals.Z),
+              new Rotation3d(FuelGaugeVals.ROLL, FuelGaugeVals.PITCH, FuelGaugeVals.YAW));
+  }
 }
