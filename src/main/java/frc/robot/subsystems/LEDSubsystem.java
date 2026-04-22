@@ -39,14 +39,14 @@ public class LEDSubsystem extends SubsystemBase {
 
   public void updateState(LEDState newState) {
     currentState = newState;
-    candle.setControl(currentState.animation);
+    if (newState.animation != null) candle.setControl(currentState.animation);
+    else runOnce(newState.animationFunc);
   }
 
   /** sends up to 8 animations to the candle at once (for animations across multiple slots) */
   public void updateState(LEDState... newStates) {
-    currentState = newStates[0];
     // only go up to 8 because the candle only has 9 animation slots
-    for (int i = 0; i < newStates.length; i++) candle.setControl(newStates[i].animation);
+    for (int i = 0; i < newStates.length; i++) updateState(newStates[i]);;
   }
 
   /** clear all slots */
@@ -155,10 +155,18 @@ public class LEDSubsystem extends SubsystemBase {
 
     String name;
     ControlRequest animation;
+    Runnable animationFunc;
 
     LEDState(String name, ControlRequest animation) {
       this.name = name;
       this.animation = animation;
+      this.animationFunc = null;
+    }
+
+    LEDState(String name, Runnable animationFunc) {
+      this.name = name;
+      this.animationFunc = animationFunc;
+      this.animation = null;
     }
   }
 }
