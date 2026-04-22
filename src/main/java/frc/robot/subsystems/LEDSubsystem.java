@@ -18,10 +18,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commandGroups.LEDStrobeInRange;
-
-import static edu.wpi.first.units.Units.Milliseconds;
-
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -33,7 +29,7 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int END_OF_STRIP = 77;
 
   private CANdle candle = new CANdle(5);
-  private LEDState currentState = LEDState.RAINBOW;
+  private LEDState currentState = LEDState.ACTIVE_IN_RANGE;
   private BooleanSupplier active, inRange;
 
   public LEDSubsystem(BooleanSupplier active, BooleanSupplier inRange) {
@@ -88,16 +84,25 @@ public class LEDSubsystem extends SubsystemBase {
     // switch the color of the active in range animation at a rate of 4hz
     // if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 50 == 0)
     //   cycleStrobeColor();
-    if (currentState == LEDState.ACTIVE_IN_RANGE) {
-      CommandScheduler.getInstance().schedule(
-        Commands.sequence(
-          updateStateCommand(LEDState.ORANGE_SOLID),
-          Commands.waitTime(Milliseconds.of(100)),
-          updateStateCommand(LEDState.WHITE_SOLID),
-          Commands.waitTime(Milliseconds.of(100))
-        ).repeatedly().until(() -> currentState != LEDState.ACTIVE_IN_RANGE)
-      );
+
+    if (currentState == LEDState.ACTIVE_IN_RANGE
+        || currentState == LEDState.ORANGE_SOLID
+        || currentState == LEDState.WHITE_SOLID) {
+      CommandScheduler.getInstance()
+          .schedule(
+              Commands.sequence(
+                      updateStateCommand(LEDState.ORANGE_SOLID),
+                      Commands.waitSeconds(0.1),
+                      updateStateCommand(LEDState.WHITE_SOLID),
+                      Commands.waitSeconds(0.1))
+                  .repeatedly()
+                  .until(
+                      () ->
+                          currentState != LEDState.ACTIVE_IN_RANGE
+                              && currentState != LEDState.ORANGE_SOLID
+                              && currentState != LEDState.WHITE_SOLID));
     }
+
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.name);
   }
 
