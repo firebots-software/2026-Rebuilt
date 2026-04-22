@@ -99,6 +99,8 @@ public final class Constants {
       public static final double TARGET_ROLLER_RPM = 2700;
       public static final double TARGET_ROLLER_RPS = TARGET_ROLLER_RPM / 60.0;
       public static final double TARGET_MOTOR_RPS = TARGET_ROLLER_RPS * MOTOR_ROTS_PER_ROLLERS_ROT;
+
+      public static final double IDLE_ROLLER_VELO_RPS = 5.0;
     }
   }
 
@@ -131,7 +133,7 @@ public final class Constants {
       // JAMES_HARDEN(0.16901, 0d, 0d, 0.1593, 0.12143, 0.0091321); //0.041539
       // //0.12301
       JAMES_HARDEN(0.36, 0d, 0d, 0.2425, 0.11560693641, 0), // 0.041539 //0.12301
-      COBRA(0.1, 0d, 0d, 0d, 0.124, 0d); // 0.041539 //0.12301
+      COBRA(0.25, 0d, 0d, 0.2d, 0.124, 0d); // 0.041539 //0.12301
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveDrivePIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -225,7 +227,7 @@ public final class Constants {
       SERRANO(0.1d, 0d, 0d, 0.1d, 0d, 0d, 3.867d, 0d, 0d),
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
-      COBRA(3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0);
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 3.4, 0, 0);
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -410,6 +412,7 @@ public final class Constants {
       public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
       public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
       public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.30;
+      public static final double WAIT_TIME_FOR_ALLIANCE = 4.0;
 
       public static enum Intake {
         LeftIntakeSweep,
@@ -420,16 +423,8 @@ public final class Constants {
         LeftSecondDip,
         LeftSecondDipLong,
         RightSecondDipLong,
-        OCLeft,
-        OCRight,
-        DCMPLeft,
-        DCMPRight,
-        DCMPTurnLeft,
-        DCMPTurnRight,
-        StraightLeft,
-        StraightRight,
-        GoLeft,
-        GoRight
+        HubLeft,
+        HubRight
       }
 
       public static enum ShootPos {
@@ -441,12 +436,14 @@ public final class Constants {
 
       public static enum Depot {
         DepotStart,
-        DepotSweep
+        DepotSweep,
+        DepotPranav
       }
 
       public static enum Outpost {
         OutpostStart,
-        OutpostSweep
+        OutpostSweep,
+        OutpostStartPush
       }
 
       public static enum MiscPaths {

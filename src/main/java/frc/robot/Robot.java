@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     RobotContainer.isRedAlliance();
     DogLog.setOptions(
         new DogLogOptions()
-            .withNtPublish(false)
+            .withNtPublish(true)
             .withCaptureDs(true)
             .withLogExtras(false)
             .withNtTunables(false));
@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.visionPeriodic();
     elasticLogging();
     MiscUtils.shiftSwitchIndicator(simulatedTime);
+    m_robotContainer.doTelemetry();
   }
 
   private void elasticLogging() {

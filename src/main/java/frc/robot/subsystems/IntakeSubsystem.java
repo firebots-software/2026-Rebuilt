@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
@@ -28,6 +29,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
@@ -42,6 +44,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final VelocityVoltage m_velocityRequest = new VelocityVoltage(0);
   private final MotionMagicVoltage m_motionMagicRequest = new MotionMagicVoltage(0);
   private final PositionVoltage m_positionRequest = new PositionVoltage(0);
+  private final DutyCycleOut m_dutyCycleRequest = new DutyCycleOut(0);
+  private final TorqueCurrentFOC m_torqueCurrentRequest = new TorqueCurrentFOC(0);
 
   public IntakeSubsystem() {
     rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
@@ -76,7 +80,7 @@ public class IntakeSubsystem extends SubsystemBase {
     CurrentLimitsConfigs armCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT)
-            .withStatorCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
+            .withSupplyCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
 
     MotionMagicConfigs mmc =
         new MotionMagicConfigs()
@@ -121,6 +125,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfiguration armConfig =
         new TalonFXConfiguration()
             .withSlot0(armSlot0Configs)
+            .withMotionMagic(mmc)
             .withCurrentLimits(armCurrentLimitsConfigs)
             .withFeedback(feedbackConfigs)
             .withMotorOutput(
@@ -132,7 +137,6 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();
 
     armMotorConfig.apply(armConfig);
-    armMotorConfig.apply(mmc);
     rollersMotorConfig.apply(rollersConfig);
 
     DogLog.log("Subsystems/Intake/Arm/Gains/kP", Constants.Intake.Arm.kP);
@@ -148,7 +152,19 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Rollers/Gains/kV", Constants.Intake.Rollers.kV);
   }
 
-  public void runRollers(double speedRollersRotationsPerSecond) {
+  public void runRollers(double output) {
+    rollersMotor.setControl(m_dutyCycleRequest.withOutput(output));
+  }
+
+  public void runRollers() {
+    runRollers(1);
+  }
+
+  public void runRollersInReverse() {
+    runRollers(-1);
+  }
+
+  public void runRollersWithVelocity(double speedRollersRotationsPerSecond) {
     targetRollersRPS = speedRollersRotationsPerSecond;
     rollersMotor.setControl(
         m_velocityRequest.withVelocity(
@@ -157,7 +173,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void stopRollers() {
     targetRollersRPS = 0;
-    rollersMotor.setControl(m_velocityRequest.withVelocity(0));
+    rollersMotor.setControl(m_dutyCycleRequest.withOutput(0));
   }
 
   public Command stopRollersCommand() {
@@ -177,7 +193,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setPowerRetract() {
-    armMotor.setControl(new TorqueCurrentFOC(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT));
+    setTorqueCurrent(Constants.Intake.Arm.POWER_RETRACT_TORQUE_CURRENT);
+  }
+
+  public void setTorqueCurrent(double current) {
+    armMotor.setControl(m_torqueCurrentRequest.withOutput(current));
   }
 
   public void setPowerRetractPosition() {
@@ -225,12 +245,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command runRollersUntilInterruptedCommand() {
-    return startEnd(
-        () -> runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS), this::stopRollers);
+    return startEnd(this::runRollers, this::stopRollers);
   }
 
   public Command runRollersUntilInterruptedCommand(double targetRollers_RPS) {
-    return startEnd(() -> runRollers(targetRollers_RPS), this::stopRollers);
+    return startEnd(this::runRollers, this::stopRollers);
   }
 
   public Command setArmToDegreesCommand(double degrees) {
@@ -249,7 +268,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return runOnce(
         () -> {
           setPowerRetract();
-          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+          runRollers();
         });
     // .beforeStarting(Commands.waitSeconds(Constants.Intake.Arm.POWER_RETRACT_DELAY));
   }
@@ -262,7 +281,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return runEnd(
         () -> {
           setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
-          runRollers(Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+          runRollers();
         },
         this::stopRollers);
   }
@@ -271,7 +290,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return runEnd(
         () -> {
           setArmDegrees(Constants.Intake.Arm.ARM_POS_EXTENDED);
-          runRollers(-Constants.Intake.Rollers.TARGET_ROLLER_RPS);
+          runRollersInReverse();
         },
         this::stopRollers);
   }
@@ -279,9 +298,19 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeDefault() {
     return runOnce(
         () -> {
-          runRollers(5.0);
+          runRollersWithVelocity(Constants.Intake.Rollers.IDLE_ROLLER_VELO_RPS);
           setArmDegrees(Constants.Intake.Arm.ARM_POS_IDLE);
         });
+  }
+
+  public Command agitateArmCommand() {
+    // stole these numbers from 5507, subject to change
+    return Commands.sequence(
+            runOnce(this::setPowerRetract).withTimeout(0.04),
+            Commands.waitSeconds(0.3),
+            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
+            Commands.waitSeconds(0.3))
+        .repeatedly();
   }
 
   @Override
@@ -291,7 +320,6 @@ public class IntakeSubsystem extends SubsystemBase {
         rollersMotor.getCachedVelocityRps() * Constants.Intake.Rollers.ROLLER_ROTS_PER_MOTOR_ROT);
     DogLog.log("Subsystems/Intake/Rollers/TargetSpeed (rps)", targetRollersRPS);
     DogLog.log("Subsystems/Intake/Rollers/AtTargetSpeed", atTargetSpeed());
-
     DogLog.log("Subsystems/Intake/Arm/AtTargetAngle", atTargetAngle());
     DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
     DogLog.log("Subsystems/Intake/Arm/FusedCurrentPosition (degs)", getArmPosition().getDegrees());
