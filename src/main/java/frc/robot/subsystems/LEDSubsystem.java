@@ -43,7 +43,7 @@ public class LEDSubsystem extends SubsystemBase {
   public void updateState(LEDState... newStates) {
     currentState = newStates[0];
     // only go up to 8 because the candle only has 9 animation slots
-    for (int i = 0; i <= 8; i++) candle.setControl(newStates[i].animation);
+    for (int i = 0; i < newStates.length; i++) candle.setControl(newStates[i].animation);
   }
 
   /** clear all slots */
@@ -76,7 +76,7 @@ public class LEDSubsystem extends SubsystemBase {
     // if (active.getAsBoolean() && inRange.getAsBoolean()) updateState(LEDState.ACTIVE_IN_RANGE);
     // else if (active.getAsBoolean()) updateState(LEDState.ACTIVE);
     // else updateState(LEDState.NONE);
-    updateState(LEDState.ACTIVE_IN_RANGE, LEDState.STROBE_WHITE);
+    // updateState(LEDState.ACTIVE_IN_RANGE, LEDState.STROBE_WHITE);
 
     // switch the color of the active in range animation at a rate of 4hz
     // if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 50 == 0)
