@@ -105,14 +105,17 @@ public class VisionSubsystem extends SubsystemBase {
     latestVisionResult = results.get(results.size() - 1);
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
-    if (visionEstimate.isEmpty()) visionEstimate = poseEstimator.estimateConstrainedSolvepnpPose(
-                  latestVisionResult,
-                  cameraIntrinsics,
-                  distortionCoeffs,
-                  new Pose3d(swerve.getCurrentState().Pose).plus(camHeight),
-                  false,
-                  Constants.Vision.HDG_PENALTY);
-    if (visionEstimate.isEmpty()) visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
+    if (visionEstimate.isEmpty())
+      visionEstimate =
+          poseEstimator.estimateConstrainedSolvepnpPose(
+              latestVisionResult,
+              cameraIntrinsics,
+              distortionCoeffs,
+              new Pose3d(swerve.getCurrentState().Pose).plus(camHeight),
+              false,
+              Constants.Vision.HDG_PENALTY);
+    if (visionEstimate.isEmpty())
+      visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
   }
 
   public void calculateFilteredPose() {
