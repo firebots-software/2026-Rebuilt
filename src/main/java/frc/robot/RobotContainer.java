@@ -94,7 +94,10 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-  public final LEDSubsystem leds = new LEDSubsystem(() -> false, () -> false);
+  public final LEDSubsystem leds =
+      new LEDSubsystem(
+          () -> true,
+          () -> Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4);
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
@@ -174,9 +177,6 @@ public class RobotContainer {
     //             hopperSubsystem,
     //             drivetrain,
     //             redside));
-
-    // led testing
-    joystick.leftStick().whileTrue(leds.getStateAsCommand(LEDState.ACTIVE_IN_RANGE));
 
     joystick
         .a()
