@@ -32,9 +32,9 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.LEDSubsystem.LEDState;
 import frc.robot.util.CustomController;
 import frc.robot.util.Targeting;
 import frc.robot.util.VisionUtils;
@@ -95,10 +95,9 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-    public final LEDSubsystem leds =
-        new LEDSubsystem(
-            () -> true,
-            () -> Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4);
+  public final LEDSubsystem leds =
+      new LEDSubsystem(
+          () -> true, () -> Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
@@ -111,7 +110,6 @@ public class RobotContainer {
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
     SmartDashboard.putData("Elastic/Field2d", field);
-
     configureBindings();
   }
 
@@ -153,6 +151,8 @@ public class RobotContainer {
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
+
+    joystick.leftStick().onTrue(leds.getStateAsCommand(LEDState.FLAME));
 
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -237,16 +237,23 @@ public class RobotContainer {
     // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
     // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
+  
+  public static boolean isRedAlliance() {
+    return DriverStation.getAlliance().isEmpty()
+        ? false
+        : DriverStation.getAlliance().get() == Alliance.Red;
+  }
 
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
   }
 
-  public static boolean isRedAlliance() {
-    return DriverStation.getAlliance().isEmpty()
-        ? false
-        : DriverStation.getAlliance().get() == Alliance.Red;
+
+  public boolean inAllianceSide() {
+    return redside.getAsBoolean()
+        ? drivetrain.getPose().getX() > Constants.Landmarks.RED_HUB.getX()
+        : drivetrain.getPose().getX() < Constants.Landmarks.BLUE_HUB.getX();
   }
 
   public Command getAutonomousCommand() {

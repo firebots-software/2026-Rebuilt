@@ -24,7 +24,7 @@ public class LEDSubsystem extends SubsystemBase {
   // [8, 30] left side strip
   // [31, 59] back strip
   // [60, 77] right side strip
-  private static final int END_OF_STRIP = 77;
+  private static final int END_OF_STRIP = 72;
 
   private CANdle candle = new CANdle(5);
   private LEDState defaultState = LEDState.ACTIVE_IN_RANGE;
@@ -66,8 +66,9 @@ public class LEDSubsystem extends SubsystemBase {
       case FLAME -> runOnce(
           () -> {
             clearAll();
-            candle.setControl(flame(8, 45, 0));
-            candle.setControl(flame(46, END_OF_STRIP, 1));
+            candle.setControl(flame(8, 36, 0).withDirection(AnimationDirectionValue.Forward));
+            candle.setControl(
+                flame(37, END_OF_STRIP, 1).withDirection(AnimationDirectionValue.Backward));
           });
       case RAINBOW -> runOnce(
           () -> {
@@ -88,8 +89,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private SingleFadeAnimation activeAnimation() {
-    return new SingleFadeAnimation(8, END_OF_STRIP)
-        .withColor(new RGBWColor(Color.kOrangeRed));
+    return new SingleFadeAnimation(8, END_OF_STRIP).withColor(new RGBWColor(Color.kOrangeRed));
   }
 
   private SolidColor solidColor(Color color) {
@@ -110,8 +110,7 @@ public class LEDSubsystem extends SubsystemBase {
     return new FireAnimation(startIndex, endIndex)
         .withSparking(0.4)
         .withCooling(0.4)
-        .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
-        .withFrameRate(4)
+        .withFrameRate(30)
         .withSlot(slot);
   }
 }
