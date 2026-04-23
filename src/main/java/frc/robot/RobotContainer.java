@@ -32,7 +32,6 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.subsystems.LEDSubsystem.LEDState;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
@@ -97,7 +96,9 @@ public class RobotContainer {
 
   public final LEDSubsystem leds =
       new LEDSubsystem(
-          () -> true, () -> Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
+          () -> true, // MiscUtils::areWeActive,
+          () ->
+              Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
@@ -151,8 +152,6 @@ public class RobotContainer {
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
-
-    joystick.leftStick().onTrue(leds.getStateAsCommand(LEDState.FLAME));
 
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
@@ -237,7 +236,7 @@ public class RobotContainer {
     // joystick.a().onTrue(new InstantCommand(() -> shooterSpeed+=0.5));
     // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
-  
+
   public static boolean isRedAlliance() {
     return DriverStation.getAlliance().isEmpty()
         ? false
@@ -248,7 +247,6 @@ public class RobotContainer {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
   }
-
 
   public boolean inAllianceSide() {
     return redside.getAsBoolean()

@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -27,34 +28,36 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int END_OF_STRIP = 72;
 
   private CANdle candle = new CANdle(5);
-  private LEDState defaultState = LEDState.ACTIVE_IN_RANGE;
-  private Trigger active, inRange;
+  private LEDState currentState, defaultState = LEDState.ACTIVE_IN_RANGE;
+  private Trigger active, inRange, isAuto;
 
   public enum LEDState {
     NONE,
     ACTIVE,
     ACTIVE_IN_RANGE,
     FLAME,
-    SWEEP,
     RAINBOW
   }
 
   public LEDSubsystem(BooleanSupplier activeSupplier, BooleanSupplier inRangeSupplier) {
     active = new Trigger(activeSupplier);
     inRange = new Trigger(inRangeSupplier);
+    isAuto = new Trigger(DriverStation::isAutonomousEnabled);
 
-    bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
+    bind(active.and(inRange), LEDState.NONE);
     bind(active.and(inRange.negate()), LEDState.ACTIVE);
     bind(active.negate(), defaultState);
+
+    bind(isAuto, LEDState.RAINBOW);
   }
 
   public void periodic() {
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
+    DogLog.log("Subsystems/LEDs/CurrentState", currentState.toString());
   }
 
   public Command getStateAsCommand(LEDState state) {
-    DogLog.log("Subsystems/LEDs/CurrentState", state.toString());
     return switch (state) {
       case NONE -> runOnce(this::clearAll);
       case ACTIVE -> runOnce(
@@ -81,7 +84,12 @@ public class LEDSubsystem extends SubsystemBase {
 
   // helper methods
   public void bind(Trigger trigger, LEDState state) {
-    trigger.whileTrue(defer(() -> getStateAsCommand(state)));
+    trigger.whileTrue(
+        defer(
+            () -> {
+              currentState = state;
+              return getStateAsCommand(state);
+            }));
   }
 
   public void clearAll() {
