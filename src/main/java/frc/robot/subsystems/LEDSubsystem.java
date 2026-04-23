@@ -10,7 +10,6 @@ import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
-
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -50,7 +49,8 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void periodic() {
-    DogLog.log("Subsystems/LEDs/CurrentRequestType", candle.getAppliedControl().getClass().toString());
+    DogLog.log(
+        "Subsystems/LEDs/CurrentRequestType", candle.getAppliedControl().getClass().toString());
   }
 
   public Command getStateAsCommand(LEDState state) {

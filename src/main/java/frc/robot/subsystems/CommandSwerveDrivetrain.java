@@ -65,7 +65,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
           Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kIR,
           Constants.Swerve.WHICH_SWERVE_ROBOT.CHOREO_PID_VALUES.kDR);
 
-
   private SwerveDriveState currentState;
 
   private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
@@ -79,7 +78,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
       new PIDController(
-          1.5, // 4 was good
+          0.5, // 4 was good
           0, //
           0); // -13 was good
   // 15, 0, 0 w/o FF
@@ -408,6 +407,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     if (Math.abs(angleDifference) < 0.52) {
       omegaFF = 0;
     }
+
+    //  if (Math.abs(angleDifference) < 0.06) {
+    //   omegaFF = 0;
+    // }
 
     double omega = (omegaFF) + omegaPID;
 
