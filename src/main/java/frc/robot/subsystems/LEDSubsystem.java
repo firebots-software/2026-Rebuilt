@@ -44,16 +44,18 @@ public class LEDSubsystem extends SubsystemBase {
     active = new Trigger(activeSupplier);
     inRange = new Trigger(inRangeSupplier);
 
-    // bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
-    // bind(active.and(inRange.negate()), LEDState.ACTIVE);
-    // bind(active.negate(), defaultState);
+    bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
+    bind(active.and(inRange.negate()), LEDState.ACTIVE);
+    bind(active.negate(), defaultState);
   }
 
   public void periodic() {
-    DogLog.log("Subsystems/LEDs/CurrentRequestType", candle.getAppliedControl().getClass().toString());
+    DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
+    DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
   }
 
   public Command getStateAsCommand(LEDState state) {
+    DogLog.log("Subsystems/LEDs/CurrentState", state.toString());
     return switch (state) {
       case NONE -> runOnce(this::clearAll);
       case ACTIVE -> runOnce(
