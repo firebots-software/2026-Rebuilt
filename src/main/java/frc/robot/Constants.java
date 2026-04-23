@@ -418,8 +418,8 @@ public final class Constants {
         LeftIntakeSweepShort,
         RightIntakeSweepShort,
         RightSecondDip,
-        LeftSecondDip, //outside in
-        LeftSecondDipLong, //inside out
+        LeftSecondDip, // outside in
+        LeftSecondDipLong, // inside out
         RightSecondDipLong,
         HubLeft,
         HubRight
