@@ -381,6 +381,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
               currentState.Speeds, currentState.Pose.getRotation());
       double vx = fieldSpeeds.vxMetersPerSecond;
       double vy = fieldSpeeds.vyMetersPerSecond;
+      DogLog.log("vx", vx);
+      DogLog.log("vy", vy);
 
       omegaFF = (dy * vx - dx * vy) / r2;
     }
@@ -408,6 +410,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       omegaFF = 0;
     }
 
+    if (Math.abs(angleDifference) < 0.1) {
+      omegaPID = 0;
+    }
+
     //  if (Math.abs(angleDifference) < 0.06) {
     //   omegaFF = 0;
     // }
@@ -418,6 +424,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log("Subsystems/Swerve/RotationController/omegaPID", omegaPID);
     DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
     DogLog.log("AngleDifference", angleDifference);
+    DogLog.log("dx", dx);
+    DogLog.log("dy", dy);
     return omega;
   }
 
