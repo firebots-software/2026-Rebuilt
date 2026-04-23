@@ -116,7 +116,8 @@ public class VisionSubsystem extends SubsystemBase {
                   false,
                   Constants.Vision.HDG_PENALTY)
               : poseEstimator.estimateClosestToReferencePose(
-                  latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
+              
+                   latestVisionResult, new Pose3d(swerve.getCurrentState().Pose).plus(camHeight));
   }
 
   public void calculateFilteredPose() {
