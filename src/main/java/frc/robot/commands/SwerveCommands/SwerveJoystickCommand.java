@@ -22,9 +22,6 @@ public class SwerveJoystickCommand extends Command {
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
-  // Limits rate of change (in this case x, y, and turning movement)
-  protected final SlewRateLimiter xLimiter, yLimiter;
-
   private final SwerveRequest.FieldCentric fieldCentricDrive =
       new SwerveRequest.FieldCentric().withDriveRequestType(DriveRequestType.Velocity);
   private final SwerveRequest.RobotCentric robotCentricDrive =
@@ -53,8 +50,6 @@ public class SwerveJoystickCommand extends Command {
     this.doPassing = doPassing;
     this.redsideIfPointing = redSideIfPointing;
     this.capper = capper;
-    this.xLimiter = new SlewRateLimiter(5.0);
-    this.yLimiter = new SlewRateLimiter(5.0);
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
@@ -141,8 +136,6 @@ public class SwerveJoystickCommand extends Command {
     double speedMagnitude = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
 
     if (capper.getAsBoolean()) {
-      xSpeed = xLimiter.calculate(xSpeed);
-      ySpeed = yLimiter.calculate(ySpeed);
       if (speedMagnitude > 2.0) {
         xSpeed *= (2.0 / speedMagnitude);
         ySpeed *= (2.0 / speedMagnitude);
