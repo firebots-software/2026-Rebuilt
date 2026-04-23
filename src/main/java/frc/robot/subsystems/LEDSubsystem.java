@@ -1,23 +1,20 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.ControlRequest;
+import static edu.wpi.first.units.Units.Milliseconds;
+
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
-import com.ctre.phoenix6.controls.LarsonAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
-import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
-import com.ctre.phoenix6.signals.LarsonBounceValue;
 import com.ctre.phoenix6.signals.RGBWColor;
-import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -25,148 +22,90 @@ public class LEDSubsystem extends SubsystemBase {
   // [0, 7] candle onboard
   // [8, 30] left side strip
   // [31, 59] back strip
-  // [60, 76] right side strip
+  // [60, 77] right side strip
   private static final int END_OF_STRIP = 77;
 
   private CANdle candle = new CANdle(5);
-  private LEDState currentState = LEDState.ACTIVE_IN_RANGE;
-  private BooleanSupplier active, inRange;
+  private LEDState defaultState = LEDState.NONE;
+  private Trigger active, inRange;
 
-  public LEDSubsystem(BooleanSupplier active, BooleanSupplier inRange) {
-    this.active = active;
-    this.inRange = inRange;
+  public enum LEDState {
+    NONE,
+    ACTIVE,
+    ACTIVE_IN_RANGE,
+    FLAME,
+    SWEEP,
+    RAINBOW
   }
 
-  public void updateState(LEDState newState) {
-    currentState = newState;
-    if (newState.animation != null) candle.setControl(currentState.animation);
-    else runOnce(newState.animationFunc);
+  public LEDSubsystem(BooleanSupplier activeSupplier, BooleanSupplier inRangeSupplier) {
+    active = new Trigger(activeSupplier);
+    inRange = new Trigger(inRangeSupplier);
+
+    bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
+    bind(active.and(inRange.negate()), LEDState.ACTIVE);
+    bind(active.negate(), defaultState);
   }
 
-  /** sends up to 8 animations to the candle at once (for animations across multiple slots) */
-  public void updateState(LEDState... newStates) {
-    // only go up to 8 because the candle only has 9 animation slots
-    for (int i = 0; i < newStates.length; i++) updateState(newStates[i]);;
+  public Command getStateAsCommand(LEDState state) {
+    return switch (state) {
+      case NONE -> runOnce(this::clearAll);
+      case ACTIVE -> runOnce(
+          () -> {
+            clearAll();
+            candle.setControl(activeAnimation());
+          });
+      case ACTIVE_IN_RANGE -> activeInRangeCommand();
+      case FLAME -> runOnce(
+          () -> {
+            clearAll();
+            candle.setControl(flame(8, 45, 0));
+            candle.setControl(flame(46, END_OF_STRIP, 1));
+          });
+      case RAINBOW -> runOnce(
+          () -> {
+            clearAll();
+            candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
+          });
+      default -> runOnce(this::clearAll);
+    };
   }
 
-  /** clear all slots */
+  // helper methods
+  public void bind(Trigger trigger, LEDState state) {
+    trigger.whileTrue(defer(() -> getStateAsCommand(state)));
+  }
+
   public void clearAll() {
     for (int i = 0; i <= 8; i++) candle.setControl(new EmptyAnimation(i));
   }
 
-  public Command updateStateCommand(LEDState newState) {
-    return runOnce(() -> updateState(newState));
+  private SingleFadeAnimation activeAnimation() {
+    return new SingleFadeAnimation(8, END_OF_STRIP)
+        .withColor(new RGBWColor(Color.kOrange))
+        .withFrameRate(3);
   }
 
-  public Command updateStateCommand(LEDState... newStates) {
-    return runOnce(() -> updateState(newStates));
+  private SolidColor solidColor(Color color) {
+    return new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(color));
   }
 
-  public Command clearAllCommand() {
-    return runOnce(this::clearAll);
+  private Command activeInRangeCommand() {
+    return runOnce(this::clearAll)
+        .andThen(
+            Commands.repeatingSequence(
+                runOnce(() -> candle.setControl(solidColor(Color.kOrange))),
+                Commands.waitTime(Milliseconds.of(100)),
+                runOnce(() -> candle.setControl(solidColor(Color.kWhite))),
+                Commands.waitTime(Milliseconds.of(100))));
   }
 
-  public void cycleStrobeColor() {
-    // please forgive me
-    RGBWColor currentColor = ((StrobeAnimation) (LEDState.ACTIVE_IN_RANGE.animation)).Color;
-    ((StrobeAnimation) (LEDState.ACTIVE_IN_RANGE.animation)).Color =
-        new RGBWColor(
-            currentColor.equals(new RGBWColor(Color.kOrange)) ? Color.kWhite : Color.kOrange);
-  }
-
-  @Override
-  public void periodic() {
-    // if (active.getAsBoolean() && inRange.getAsBoolean()) updateState(LEDState.ACTIVE_IN_RANGE);
-    // else if (active.getAsBoolean()) updateState(LEDState.ACTIVE);
-    // else updateState(LEDState.NONE);
-    // updateState(LEDState.ACTIVE_IN_RANGE, LEDState.STROBE_WHITE);
-
-    // switch the color of the active in range animation at a rate of 4hz
-    // if (currentState == LEDState.ACTIVE_IN_RANGE && System.currentTimeMillis() % 50 == 0)
-    //   cycleStrobeColor();
-
-    if (currentState == LEDState.ACTIVE_IN_RANGE
-        || currentState == LEDState.ORANGE_SOLID
-        || currentState == LEDState.WHITE_SOLID) {
-      CommandScheduler.getInstance()
-          .schedule(
-              Commands.sequence(
-                      updateStateCommand(LEDState.ORANGE_SOLID),
-                      Commands.waitSeconds(0.1),
-                      updateStateCommand(LEDState.WHITE_SOLID),
-                      Commands.waitSeconds(0.1))
-                  .repeatedly()
-                  .until(
-                      () ->
-                          currentState != LEDState.ACTIVE_IN_RANGE
-                              && currentState != LEDState.ORANGE_SOLID
-                              && currentState != LEDState.WHITE_SOLID));
-    }
-
-    DogLog.log("Subsystems/LEDs/CurrentState", currentState.name);
-  }
-
-  public enum LEDState {
-    /** only works for single-slot animations, use clearAll() for multi-slot */
-    NONE("None", new EmptyAnimation(0)),
-    ACTIVE(
-        "Active",
-        new SingleFadeAnimation(8, END_OF_STRIP)
-            .withColor(new RGBWColor(Color.kOrange))
-            .withFrameRate(3)),
-    ACTIVE_IN_RANGE("Active (in range)", new EmptyAnimation(0)),
-    FLAME_LEFT(
-        "🔥",
-        new FireAnimation(8, 45)
-            .withSparking(0.4)
-            .withCooling(0.4)
-            .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
-            .withFrameRate(4)
-            .withSlot(0)),
-    FLAME_RIGHT(
-        "🔥",
-        new FireAnimation(46, END_OF_STRIP)
-            .withSparking(0.4)
-            .withCooling(0.4)
-            .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
-            .withFrameRate(4)
-            .withSlot(1)),
-    SWEEP_LEFT(
-        "Sweep",
-        new LarsonAnimation(8, 45)
-            .withBounceMode(LarsonBounceValue.Center)
-            .withColor(new RGBWColor(Color.kGreen))
-            .withFrameRate(4)
-            .withSlot(0)),
-    SWEEP_RIGHT(
-        "Sweep",
-        new LarsonAnimation(END_OF_STRIP, 46)
-            .withBounceMode(LarsonBounceValue.Center)
-            .withColor(new RGBWColor(Color.kGreen))
-            .withFrameRate(4)
-            .withSlot(1)),
-    RAINBOW("Rainbow", new RainbowAnimation(8, END_OF_STRIP)),
-    ORANGE_SOLID(
-        "Active (in range)",
-        new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kOrange))),
-    WHITE_SOLID(
-        "Active (in range)",
-        new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kWhite)));
-
-    String name;
-    ControlRequest animation;
-    Runnable animationFunc;
-
-    LEDState(String name, ControlRequest animation) {
-      this.name = name;
-      this.animation = animation;
-      this.animationFunc = null;
-    }
-
-    LEDState(String name, Runnable animationFunc) {
-      this.name = name;
-      this.animationFunc = animationFunc;
-      this.animation = null;
-    }
+  private FireAnimation flame(int startIndex, int endIndex, int slot) {
+    return new FireAnimation(startIndex, endIndex)
+        .withSparking(0.4)
+        .withCooling(0.4)
+        .withDirection(AnimationDirectionValue.Forward) // backward = outwards from middle
+        .withFrameRate(4)
+        .withSlot(slot);
   }
 }
