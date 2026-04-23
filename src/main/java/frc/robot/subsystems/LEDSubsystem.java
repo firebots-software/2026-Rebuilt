@@ -10,6 +10,8 @@ import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,7 +28,7 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int END_OF_STRIP = 77;
 
   private CANdle candle = new CANdle(5);
-  private LEDState defaultState = LEDState.NONE;
+  private LEDState defaultState = LEDState.ACTIVE_IN_RANGE;
   private Trigger active, inRange;
 
   public enum LEDState {
@@ -42,9 +44,13 @@ public class LEDSubsystem extends SubsystemBase {
     active = new Trigger(activeSupplier);
     inRange = new Trigger(inRangeSupplier);
 
-    bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
-    bind(active.and(inRange.negate()), LEDState.ACTIVE);
-    bind(active.negate(), defaultState);
+    // bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
+    // bind(active.and(inRange.negate()), LEDState.ACTIVE);
+    // bind(active.negate(), defaultState);
+  }
+
+  public void periodic() {
+    DogLog.log("Subsystems/LEDs/CurrentRequestType", candle.getAppliedControl().getClass().toString());
   }
 
   public Command getStateAsCommand(LEDState state) {

@@ -34,6 +34,7 @@ import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.LEDSubsystem.LEDState;
 import frc.robot.util.CustomController;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
@@ -95,10 +96,10 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-//   public final LEDSubsystem leds =
-//       new LEDSubsystem(
-//           MiscUtils::areWeActive,
-//           () -> Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4);
+  public final LEDSubsystem leds =
+      new LEDSubsystem(
+          () -> false,
+          () -> false);
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
@@ -178,6 +179,9 @@ public class RobotContainer {
     //             hopperSubsystem,
     //             drivetrain,
     //             redside));
+
+    // led testing
+    joystick.leftStick().whileTrue(leds.getStateAsCommand(LEDState.ACTIVE_IN_RANGE));
 
     joystick
         .a()

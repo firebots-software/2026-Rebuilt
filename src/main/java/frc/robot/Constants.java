@@ -923,21 +923,37 @@ public final class Constants {
     public static Pose2d BLUE_TOWER_L =
         new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
 
+    // public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(10.908942222595215, 2.54630184173584),
+    //         new Rotation2d(1.5707963267948966));
+    // public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(10.921140670776367, 5.613290309906006),
+    //         new Rotation2d(-1.5707963267948966));
+    // public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(5.6342058181762695, 5.505496978759766),
+    //         new Rotation2d(-1.5649821399611368));
+    // public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(5.624283313751221, 2.4593770503997803),
+    //         new Rotation2d(1.57873264137917));
     public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(10.908942222595215, 2.54630184173584),
+            new Translation2d(10.908942222595215, 2.2220301628112793),
             new Rotation2d(1.5707963267948966));
     public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(10.921140670776367, 5.613290309906006),
+            new Translation2d(10.921140670776367, 5.914291858673096),
             new Rotation2d(-1.5707963267948966));
     public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(5.6342058181762695, 5.505496978759766),
+            new Translation2d(5.6342058181762695, 5.8613409996032715),
             new Rotation2d(-1.5649821399611368));
     public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(5.624283313751221, 2.4593770503997803),
+            new Translation2d(5.624283313751221, 2.281606435775757),
             new Rotation2d(1.57873264137917));
 
     public static Pose2d BLUE_PASSING_L = new Pose2d(2.111, 6.003, new Rotation2d());
