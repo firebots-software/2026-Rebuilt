@@ -89,8 +89,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   private SingleFadeAnimation activeAnimation() {
     return new SingleFadeAnimation(8, END_OF_STRIP)
-        .withColor(new RGBWColor(Color.kOrange))
-        .withFrameRate(3);
+        .withColor(new RGBWColor(Color.kOrangeRed));
   }
 
   private SolidColor solidColor(Color color) {
@@ -101,7 +100,7 @@ public class LEDSubsystem extends SubsystemBase {
     return runOnce(this::clearAll)
         .andThen(
             Commands.repeatingSequence(
-                runOnce(() -> candle.setControl(solidColor(Color.kOrange))),
+                runOnce(() -> candle.setControl(solidColor(Color.kOrangeRed))),
                 Commands.waitTime(Milliseconds.of(100)),
                 runOnce(() -> candle.setControl(solidColor(Color.kWhite))),
                 Commands.waitTime(Milliseconds.of(100))));
