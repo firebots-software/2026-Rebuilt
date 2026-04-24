@@ -31,6 +31,8 @@ import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
+import frc.robot.util.MathUtils.MiscMath;
+
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -72,23 +74,16 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
 
-  private final Field2d field = new Field2d();
+  // private final Field2d field = new Field2d();
 
   // private final StructPublisher<Pose2d> posePublisher =
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
       new PIDController(
-          0.1, // 4 was good
+          3.0, // 4 was good
           0, //
           0); // -13 was good
   // 15, 0, 0 w/o FF
-  public DoubleSubscriber headingKPTunable =
-      DogLog.tunable("Subsystems/Swerve/kPHeading", 15.0, headingPIDController::setP);
-  public DoubleSubscriber headingKITunable =
-      DogLog.tunable("Subsystems/Swerve/kIHeading", 0.0, headingPIDController::setI);
-  public DoubleSubscriber headingKIDunable =
-      DogLog.tunable("Subsystems/Swerve/kDHeading", 0.0, headingPIDController::setD);
-
   /**
    * Constructs a CTRE SwerveDrivetrain using the specified constants.
    *
@@ -109,7 +104,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     headingPIDController.enableContinuousInput(-Math.PI, Math.PI); // 0.3 before
     m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SmartDashboard.putData(field);
+    // SmartDashboard.putData(field);
   }
 
   /**
@@ -128,7 +123,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       double odometryUpdateFrequency,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(drivetrainConstants, odometryUpdateFrequency, modules);
-    SmartDashboard.putData(field);
+    // SmartDashboard.putData(field);
   }
 
   /**
@@ -158,7 +153,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         odometryStandardDeviation,
         visionStandardDeviation,
         modules);
-    SmartDashboard.putData(field);
+    // SmartDashboard.putData(field);
   }
 
   public AutoFactory createAutoFactory() {
@@ -388,10 +383,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx) + Math.PI);
+    double currentRads = MiscMath.normalizeAngle(currentState.Pose.getRotation()).getRadians();
+    double targetRads = MiscMath.normalizeAngle(targetRotation).getRadians();
     double omegaPID =
-        headingPIDController.calculate(
-            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+        headingPIDController.calculate(currentRads
+            , targetRads);
 
+    DogLog.log("CurrentRads", currentRads);
+    DogLog.log("TargetRads", targetRads);
     // double sign = 1;
     // if (omegaPID < 0) {
     //   sign = -1;

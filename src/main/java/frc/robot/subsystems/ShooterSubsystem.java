@@ -309,18 +309,18 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log(
         "Subsystems/Shooter/Targeting/TargetPlusLead",
         Targeting.positionToTarget(target, drivetrain));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target, drivetrain));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target, drivetrain));
     DogLog.log(
         "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
 
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TimeOfFlight",
-        Targeting.newtonTargetingInfo(target, drivetrain).getToF());
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/TimeOfFlight",
+    //     Targeting.newtonTargetingInfo(target, drivetrain).getToF());
     // DogLog.log("Subsystems/Shooter/CurrentSpeed (rps)",
     // shooter.getVelocity().getValueAsDouble());
     // "Subsystems/Shooter/Targeting/MappedShooterSpeedRPS",

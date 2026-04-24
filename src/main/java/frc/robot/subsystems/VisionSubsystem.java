@@ -75,14 +75,14 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
+public void periodic() {
     visionEstimate = Optional.empty();
     latestVisionResult = null;
     hasValidMeasurement = false;
 
     if (!cameraConnected()) return;
 
-    updateEstimate(photonCamera.getAllUnreadResults());
+    // updateEstimate(photonCamera.getAllUnreadResults());
   }
 
   private boolean cameraConnected() {
