@@ -74,7 +74,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
       new PIDController(
-          3.0, // 4 was good
+          3.65, // 4 was good
           0, //
           0); // -13 was good
 
