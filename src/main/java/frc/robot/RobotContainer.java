@@ -32,6 +32,7 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
+import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
@@ -87,7 +88,7 @@ public class RobotContainer {
 
   public final LEDSubsystem leds =
       new LEDSubsystem(
-          () -> true, // MiscUtils::areWeActive,
+          MiscUtils::areWeActive,
           () ->
               Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
 

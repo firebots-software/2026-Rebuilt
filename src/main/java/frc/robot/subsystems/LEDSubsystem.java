@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Milliseconds;
-
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
@@ -12,9 +10,8 @@ import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
 
@@ -25,8 +22,7 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int END_OF_STRIP = 76;
 
   private CANdle candle = new CANdle(5);
-  private LEDState defaultState = LEDState.NONE;
-  private LEDState currentState = defaultState;
+  private LEDState currentState = LEDState.NONE;
   private BooleanSupplier active, inRange;
 
   public enum LEDState {
@@ -40,57 +36,48 @@ public class LEDSubsystem extends SubsystemBase {
   public LEDSubsystem(BooleanSupplier activeSupplier, BooleanSupplier inRangeSupplier) {
     active = activeSupplier;
     inRange = inRangeSupplier;
-
-    setDefaultCommand(evaluateState());
   }
 
   public void periodic() {
+    LEDState computedState = computeState();
+    if (computedState != currentState) {
+      currentState = computedState;
+      applyState(computedState);
+    }
+    if (currentState == LEDState.ACTIVE_IN_RANGE) activeInRangeAnimation();
+
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.toString());
   }
 
-  public Command evaluateState() {
-    if (DriverStation.isDisabled()) return getStateAsCommand(LEDState.FLAME);
-    if (DriverStation.isAutonomousEnabled()) return getStateAsCommand(LEDState.RAINBOW);
+  public LEDState computeState() {
+    if (DriverStation.isDisabled()) return LEDState.FLAME;
+    if (DriverStation.isAutonomousEnabled()) return LEDState.RAINBOW;
 
-    if (active.getAsBoolean() && inRange.getAsBoolean())
-      return getStateAsCommand(LEDState.ACTIVE_IN_RANGE);
-    else if (active.getAsBoolean() && !inRange.getAsBoolean())
-      return getStateAsCommand(LEDState.ACTIVE);
-    else if (!active.getAsBoolean()) return getStateAsCommand(defaultState);
+    if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
+    else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
 
-    return getStateAsCommand(LEDState.NONE);
+    return LEDState.NONE;
   }
 
-  public Command getStateAsCommand(LEDState state) {
-    return switch (state) {
-      case NONE -> runOnce(this::clearAll);
-      case ACTIVE -> runOnce(
-          () -> {
-            clearAll();
-            candle.setControl(activeAnimation());
-          });
-      case ACTIVE_IN_RANGE -> activeInRangeCommand();
-      case FLAME -> runOnce(
-          () -> {
-            clearAll();
-            candle.setControl(flame(8, 38, 0).withDirection(AnimationDirectionValue.Forward));
-            candle.setControl(
-                flame(39, END_OF_STRIP, 1).withDirection(AnimationDirectionValue.Backward));
-          });
-      case RAINBOW -> runOnce(
-          () -> {
-            clearAll();
-            candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
-          });
-      default -> runOnce(this::clearAll);
-    };
+  public void applyState(LEDState state) {
+    clearAll();
+    // active in range animation handled in periodic
+    switch (state) {
+      case ACTIVE -> candle.setControl(activeAnimation());
+      case FLAME -> {
+        candle.setControl(flame(8, 38, 0, false));
+        candle.setControl(flame(39, END_OF_STRIP, 1, true));
+      }
+      case RAINBOW -> candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
+      default -> clearAll();
+    }
   }
 
   // helper methods
   public void clearAll() {
-    for (int i = 0; i <= 8; i++) candle.setControl(new EmptyAnimation(i));
+    for (int i = 0; i <= 7; i++) candle.setControl(new EmptyAnimation(i));
   }
 
   private SingleFadeAnimation activeAnimation() {
@@ -101,21 +88,18 @@ public class LEDSubsystem extends SubsystemBase {
     return new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(color));
   }
 
-  private Command activeInRangeCommand() {
-    return runOnce(this::clearAll)
-        .andThen(
-            Commands.repeatingSequence(
-                runOnce(() -> candle.setControl(solidColor(Color.kRed))),
-                Commands.waitTime(Milliseconds.of(100)),
-                runOnce(() -> candle.setControl(solidColor(Color.kWhite))),
-                Commands.waitTime(Milliseconds.of(100))));
+  private void activeInRangeAnimation() {
+    boolean orange = ((int) (Timer.getFPGATimestamp() * 10)) % 2 == 0;
+    candle.setControl(solidColor(orange ? Color.kRed : Color.kWhite));
   }
 
-  private FireAnimation flame(int startIndex, int endIndex, int slot) {
+  private FireAnimation flame(int startIndex, int endIndex, int slot, boolean backward) {
     return new FireAnimation(startIndex, endIndex)
         .withSparking(0.5)
         .withCooling(0.2)
         .withFrameRate(30)
+        .withDirection(
+            backward ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
         .withSlot(slot);
   }
 }
