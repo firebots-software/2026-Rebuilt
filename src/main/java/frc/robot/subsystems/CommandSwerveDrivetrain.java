@@ -364,13 +364,14 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     double dy = targetPoint.getY() - robotPos.getY();
     double r2 = dx * dx + dy * dy;
 
+    ChassisSpeeds fieldSpeeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(
+            currentState.Speeds, currentState.Pose.getRotation());
+    double vx = fieldSpeeds.vxMetersPerSecond;
+    double vy = fieldSpeeds.vyMetersPerSecond;
+
     double omegaFF = 0.0;
     if (r2 > Constants.Swerve.FF_RADIUS_M2) {
-      ChassisSpeeds fieldSpeeds =
-          ChassisSpeeds.fromRobotRelativeSpeeds(
-              currentState.Speeds, currentState.Pose.getRotation());
-      double vx = fieldSpeeds.vxMetersPerSecond;
-      double vy = fieldSpeeds.vyMetersPerSecond;
       DogLog.log("vx", vx);
       DogLog.log("vy", vy);
 

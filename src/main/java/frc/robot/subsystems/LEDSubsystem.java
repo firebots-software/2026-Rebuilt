@@ -43,7 +43,7 @@ public class LEDSubsystem extends SubsystemBase {
     inRange = new Trigger(inRangeSupplier);
     isAuto = new Trigger(DriverStation::isAutonomousEnabled);
 
-    bind(active.and(inRange), LEDState.NONE);
+    bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
     bind(active.and(inRange.negate()), LEDState.ACTIVE);
     bind(active.negate(), defaultState);
 
