@@ -24,8 +24,8 @@ public class LEDSubsystem extends SubsystemBase {
   private static final int END_OF_STRIP = 72;
 
   private CANdle candle = new CANdle(5);
-  private LEDState currentState = LEDState.NONE;
-  private LEDState defaultState = LEDState.ACTIVE_IN_RANGE;
+  private LEDState defaultState = LEDState.NONE;
+  private LEDState currentState = defaultState;
   private Trigger active, inRange, isAuto;
 
   public enum LEDState {
