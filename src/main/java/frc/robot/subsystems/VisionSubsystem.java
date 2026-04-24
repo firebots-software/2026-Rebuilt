@@ -105,7 +105,8 @@ public class VisionSubsystem extends SubsystemBase {
     latestVisionResult = results.get(results.size() - 1);
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
-    if (visionEstimate.isEmpty())
+    DogLog.log(loggingPath + "/EstimationMethod", "COPROC");
+    if (visionEstimate.isEmpty()) {
       visionEstimate =
           poseEstimator.estimateConstrainedSolvepnpPose(
               latestVisionResult,
@@ -114,8 +115,12 @@ public class VisionSubsystem extends SubsystemBase {
               new Pose3d(swerve.getCurrentState().Pose).plus(camHeight),
               false,
               Constants.Vision.HDG_PENALTY);
-    if (visionEstimate.isEmpty())
+      DogLog.log(loggingPath + "/EstimationMethod", "PNP");
+    }
+    if (visionEstimate.isEmpty()) {
       visionEstimate = poseEstimator.estimateLowestAmbiguityPose(latestVisionResult);
+      DogLog.log(loggingPath + "/EstimationMethod", "LOWESTAMBIGUITY");
+    }
   }
 
   public void calculateFilteredPose() {
