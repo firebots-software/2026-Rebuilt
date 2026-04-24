@@ -392,6 +392,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         headingPIDController.calculate(
             currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
 
+    DogLog.log("CurrentStateRotation", currentState.Pose.getRotation().getRadians());
+    DogLog.log("TargetRotation",targetRotation.getRadians());
+
     // double sign = 1;
     // if (omegaPID < 0) {
     //   sign = -1;

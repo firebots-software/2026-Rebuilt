@@ -94,11 +94,11 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-  public final LEDSubsystem leds =
-      new LEDSubsystem(
-          () -> true, // MiscUtils::areWeActive,
-          () ->
-              Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
+//   public final LEDSubsystem leds =
+//       new LEDSubsystem(
+//           () -> true, // MiscUtils::areWeActive,
+//           () ->
+//               Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
