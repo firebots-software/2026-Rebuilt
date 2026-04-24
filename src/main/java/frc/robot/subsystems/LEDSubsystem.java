@@ -47,6 +47,8 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
+    DogLog.log("Subsystems/LEDs/IsAuto", isAuto.getAsBoolean());
+    DogLog.log("Subsystems/LEDs/IsDisabled", isDisabled.getAsBoolean());
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.toString());
   }
 
@@ -94,7 +96,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private SingleFadeAnimation activeAnimation() {
-    return new SingleFadeAnimation(8, END_OF_STRIP).withColor(new RGBWColor(Color.kOrangeRed));
+    return new SingleFadeAnimation(8, END_OF_STRIP).withColor(new RGBWColor(Color.kRed));
   }
 
   private SolidColor solidColor(Color color) {
@@ -105,7 +107,7 @@ public class LEDSubsystem extends SubsystemBase {
     return runOnce(this::clearAll)
         .andThen(
             Commands.repeatingSequence(
-                runOnce(() -> candle.setControl(solidColor(Color.kOrangeRed))),
+                runOnce(() -> candle.setControl(solidColor(Color.kRed))),
                 Commands.waitTime(Milliseconds.of(100)),
                 runOnce(() -> candle.setControl(solidColor(Color.kWhite))),
                 Commands.waitTime(Milliseconds.of(100))));
