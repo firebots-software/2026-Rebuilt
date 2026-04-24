@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
 import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
@@ -75,6 +76,30 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  public void visionStatusIndicators(
+      VisionSubsystem frontLeft,
+      VisionSubsystem frontRight,
+      VisionSubsystem rearLeft,
+      VisionSubsystem rearRight) {
+    candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
+    candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
+    candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
+    candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
+
+    boolean seesTag = frontLeft.seesTags() || frontRight.seesTags() || rearLeft.seesTags() || rearRight.seesTags();
+    if (seesTag) {
+      candle.setControl(solidColor(Color.kGreen, 7));
+      candle.setControl(solidColor(Color.kGreen, 0));
+      candle.setControl(solidColor(Color.kGreen, 6));
+      candle.setControl(solidColor(Color.kGreen, 1));
+    } else {
+      candle.setControl(strobe(Color.kRed, 4, 7, 2));
+      candle.setControl(strobe(Color.kRed, 4, 0, 3));
+      candle.setControl(strobe(Color.kRed, 4, 6, 4));
+      candle.setControl(strobe(Color.kRed, 4, 1, 5));
+    }
+  }
+
   // helper methods
   public void clearAll() {
     for (int i = 0; i <= 7; i++) candle.setControl(new EmptyAnimation(i));
@@ -86,6 +111,14 @@ public class LEDSubsystem extends SubsystemBase {
 
   private SolidColor solidColor(Color color) {
     return new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(color));
+  }
+
+  private SolidColor solidColor(Color color, int ledIndex) {
+    return new SolidColor(ledIndex, ledIndex).withColor(new RGBWColor(color));
+  }
+
+  private StrobeAnimation strobe(Color color, int frameRate, int ledIndex, int slot) {
+    return new StrobeAnimation(ledIndex, ledIndex).withColor(new RGBWColor(color)).withFrameRate(frameRate).withSlot(slot);
   }
 
   private void activeInRangeAnimation() {
