@@ -39,6 +39,7 @@ public class VisionSubsystem extends SubsystemBase {
   private Optional<EstimatedRobotPose> visionEstimate;
 
   private boolean cameraConnectedStatus = false;
+  private boolean tagsValid = false;
 
   private Matrix<N3, N3> cameraIntrinsics;
   private Matrix<N8, N1> distortionCoeffs;
@@ -170,7 +171,7 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean tagsValid() {
     List<PhotonTrackedTarget> tags = latestVisionResult.getTargets();
 
-    boolean tagsValid = !tags.isEmpty();
+    tagsValid = !tags.isEmpty();
     DogLog.log(loggingPath + "/Tags", tagsValid);
 
     if (!tagsValid) return false;
@@ -202,6 +203,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   public boolean getCameraConnected() {
     return cameraConnectedStatus;
+  }
+
+  public boolean seesTags() {
+    return tagsValid;
   }
 
   public double getMinDistance() {
