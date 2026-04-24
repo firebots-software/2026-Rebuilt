@@ -402,9 +402,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       omegaFF = 0;
     }
 
-    if (Math.abs(angleDifference) < 0.1) {
-      omegaPID = 0;
-    }
+    // if (Math.abs(angleDifference) < 0.1) {
+    //   omegaPID = 0;
+    // }
 
     //  if (Math.abs(angleDifference) < 0.06) {
     //   omegaFF = 0;
