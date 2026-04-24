@@ -47,8 +47,6 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
-    DogLog.log("Subsystems/LEDs/IsAuto", isAuto.getAsBoolean());
-    DogLog.log("Subsystems/LEDs/IsDisabled", isDisabled.getAsBoolean());
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.toString());
   }
 
