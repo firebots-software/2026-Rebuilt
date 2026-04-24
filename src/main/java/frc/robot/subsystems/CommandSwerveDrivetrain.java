@@ -19,17 +19,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
-import frc.robot.util.MiscUtils;
+import frc.robot.util.MathUtils.MiscMath;
 import frc.robot.util.Targeting;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
@@ -72,23 +68,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
 
-  private final Field2d field = new Field2d();
+  // private final Field2d field = new Field2d();
 
   // private final StructPublisher<Pose2d> posePublisher =
   //     NetworkTableInstance.getDefault().getStructTopic("RobotPose", Pose2d.struct).publish();
   private PIDController headingPIDController =
       new PIDController(
-          4.87, // 4 was good
+          3.65, // 4 was good
           0, //
           0); // -13 was good
-  // 15, 0, 0 w/o FF
-  public DoubleSubscriber headingKPTunable =
-      DogLog.tunable("Subsystems/Swerve/kPHeading", 15.0, headingPIDController::setP);
-  public DoubleSubscriber headingKITunable =
-      DogLog.tunable("Subsystems/Swerve/kIHeading", 0.0, headingPIDController::setI);
-  public DoubleSubscriber headingKIDunable =
-      DogLog.tunable("Subsystems/Swerve/kDHeading", 0.0, headingPIDController::setD);
 
+  // 15, 0, 0 w/o FF
   /**
    * Constructs a CTRE SwerveDrivetrain using the specified constants.
    *
@@ -109,7 +99,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     headingPIDController.enableContinuousInput(-Math.PI, Math.PI); // 0.3 before
     m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SmartDashboard.putData(field);
+    // SmartDashboard.putData(field);
   }
 
   /**
@@ -128,7 +118,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       double odometryUpdateFrequency,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(drivetrainConstants, odometryUpdateFrequency, modules);
-    SmartDashboard.putData(field);
+    // SmartDashboard.putData(field);
   }
 
   /**
@@ -158,7 +148,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         odometryStandardDeviation,
         visionStandardDeviation,
         modules);
-    SmartDashboard.putData(field);
+    // SmartDashboard.putData(field);
   }
 
   public AutoFactory createAutoFactory() {
@@ -330,9 +320,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log(
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
 
-    DogLog.log(
-        "Subsystems/Swerve/DistanceToHub",
-        MiscUtils.getDistanceToHub(RobotContainer::isRedAlliance, this));
+    // DogLog.log(
+    //     "Subsystems/Swerve/DistanceToHub",
+    //     MiscUtils.getDistanceToHub(RobotContainer::isRedAlliance, this));
     DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
 
@@ -374,41 +364,60 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     double dy = targetPoint.getY() - robotPos.getY();
     double r2 = dx * dx + dy * dy;
 
+    ChassisSpeeds fieldSpeeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(currentState.Speeds, currentState.Pose.getRotation());
+    double vx = fieldSpeeds.vxMetersPerSecond;
+    double vy = fieldSpeeds.vyMetersPerSecond;
+
     double omegaFF = 0.0;
     if (r2 > Constants.Swerve.FF_RADIUS_M2) {
-      ChassisSpeeds fieldSpeeds =
-          ChassisSpeeds.fromRobotRelativeSpeeds(
-              currentState.Speeds, currentState.Pose.getRotation());
-      double vx = fieldSpeeds.vxMetersPerSecond;
-      double vy = fieldSpeeds.vyMetersPerSecond;
+      DogLog.log("vx", vx);
+      DogLog.log("vy", vy);
 
       omegaFF = (dy * vx - dx * vy) / r2;
     }
 
     Rotation2d targetRotation = new Rotation2d(Math.atan2(dy, dx) + Math.PI);
-    double omegaPID =
-        headingPIDController.calculate(
-            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
+    double currentRads = MiscMath.normalizeAngle(currentState.Pose.getRotation()).getRadians();
+    double targetRads = MiscMath.normalizeAngle(targetRotation).getRadians();
+    double omegaPID = headingPIDController.calculate(currentRads, targetRads);
 
-    double sign = 1;
-    if (omegaPID < 0) {
-      sign = -1;
-    }
+    DogLog.log("CurrentRads", currentRads);
+    DogLog.log("TargetRads", targetRads);
+    // double sign = 1;
+    // if (omegaPID < 0) {
+    //   sign = -1;
+    // }
 
     double angleDifference =
         Math.atan2(
             Math.sin(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()),
             Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
 
-    if ((Math.abs(angleDifference) < 0.87) && Math.abs(omegaPID) >= 1.295) {
-      omegaPID = Math.abs(angleDifference) * (3.6) * sign;
+    // if ((Math.abs(angleDifference) < 0.87) && Math.abs(omegaPID) >= 1.295) {
+    //   omegaPID = Math.abs(angleDifference) * 2.2 * sign;
+    // }
+
+    if (Math.abs(angleDifference) < 0.52) {
+      omegaFF = 0;
     }
+
+    // if (Math.abs(angleDifference) < 0.1) {
+    //   omegaPID = 0;
+    // }
+
+    //  if (Math.abs(angleDifference) < 0.06) {
+    //   omegaFF = 0;
+    // }
 
     double omega = (omegaFF) + omegaPID;
 
     DogLog.log("Subsystems/Swerve/RotationController/omegaFF", omegaFF);
     DogLog.log("Subsystems/Swerve/RotationController/omegaPID", omegaPID);
     DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
+    DogLog.log("AngleDifference", angleDifference);
+    DogLog.log("dx", dx);
+    DogLog.log("dy", dy);
     return omega;
   }
 

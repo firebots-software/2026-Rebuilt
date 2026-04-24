@@ -12,18 +12,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commandGroups.ShootCommandGroups.DriveToAndShoot;
-import frc.robot.commandGroups.ShootCommandGroups.PulseShootWithAim;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
+import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -31,9 +28,12 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
+import frc.robot.util.MiscUtils;
+import frc.robot.util.Targeting;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -41,13 +41,9 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
-  private final DoubleEntry hoodAngleTunable =
-      NetworkTableInstance.getDefault().getDoubleTopic("Tunable/HoodAngleTunable").getEntry(10.0);
-  private final DoubleEntry shooterSpeedTunable =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("Tunable/ShooterSpeedTunable")
-          .getEntry(44.0);
-  private Field2d field = new Field2d();
+  //   private Field2d field = new Field2d();
+  //   private final Telemetry logger =
+  //       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CustomController secondController = new CustomController(4);
@@ -90,24 +86,38 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
+  public final LEDSubsystem leds =
+      new LEDSubsystem(
+          MiscUtils::areWeActive,
+          () ->
+              Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
+
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
   //   private double shooterSpeed = 58.0;
 
   public RobotContainer() {
-    hoodAngleTunable.setDefault(10.0);
-    shooterSpeedTunable.setDefault(44.0);
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    SmartDashboard.putData("Elastic/Field2d", field);
-
+    // SmartDashboard.putData("Elastic/Field2d", field);
     configureBindings();
   }
 
-  public CommandSwerveDrivetrain getDrivetrain() {
-    return drivetrain;
-  }
+  //   public void doTelemetry() {
+  //     logger.telemeterize(drivetrain.getCurrentState());
+
+  //     String commandName = "nah";
+
+  //     if (drivetrain.getCurrentCommand() != null) {
+  //       commandName = drivetrain.getCurrentCommand().getName();
+  //     }
+  //     DogLog.log("Robot/SwerveDriveCommand", commandName);
+  //   }
+
+  //   public CommandSwerveDrivetrain getDrivetrain() {
+  //     return drivetrain;
+  //   }
 
   private void configureBindings() {
     // Swerve
@@ -147,16 +157,25 @@ public class RobotContainer {
     //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
 
     // * KEEP FOR WIN COMMAND
+    // joystick
+    //     .a()
+    //     .whileTrue(
+    //         new DriveToAndShoot(
+    //             () -> (new Pose2d(new Translation2d(3.0, 5.0), new Rotation2d())),
+    //             lebron,
+    //             intakeSubsystem,
+    //             hopperSubsystem,
+    //             drivetrain,
+    //             redside));
+
     joystick
         .a()
         .whileTrue(
-            new DriveToAndShoot(
-                () -> (new Pose2d(new Translation2d(3.0, 5.0), new Rotation2d())),
-                lebron,
-                intakeSubsystem,
-                hopperSubsystem,
+            new DriveToPose(
                 drivetrain,
-                redside));
+                () ->
+                    new Pose2d(
+                        new Translation2d(2.462480068206787, 2.26101016998291), new Rotation2d())));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick
@@ -178,7 +197,7 @@ public class RobotContainer {
     joystick
         .rightTrigger()
         .whileTrue(
-            new PulseShootWithAim(
+            new ShootWithAim(
                 frontBackFunction,
                 leftRightFunction,
                 lebron,
@@ -208,15 +227,21 @@ public class RobotContainer {
     // joystick.b().onTrue(new InstantCommand(() -> shooterSpeed-=0.5));
   }
 
+  public static boolean isRedAlliance() {
+    return DriverStation.getAlliance().isEmpty()
+        ? false
+        : DriverStation.getAlliance().get() == Alliance.Red;
+  }
+
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
   }
 
-  public static boolean isRedAlliance() {
-    return DriverStation.getAlliance().isEmpty()
-        ? false
-        : DriverStation.getAlliance().get() == Alliance.Red;
+  public boolean inAllianceSide() {
+    return redside.getAsBoolean()
+        ? drivetrain.getPose().getX() > Constants.Landmarks.RED_HUB.getX()
+        : drivetrain.getPose().getX() < Constants.Landmarks.BLUE_HUB.getX();
   }
 
   public Command getAutonomousCommand() {

@@ -80,7 +80,7 @@ public class IntakeSubsystem extends SubsystemBase {
     CurrentLimitsConfigs armCurrentLimitsConfigs =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(Constants.Intake.Arm.STATOR_CURRENT_LIMIT)
-            .withStatorCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
+            .withSupplyCurrentLimit(Constants.Intake.Arm.SUPPLY_CURRENT_LIMIT);
 
     MotionMagicConfigs mmc =
         new MotionMagicConfigs()
@@ -125,6 +125,7 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfiguration armConfig =
         new TalonFXConfiguration()
             .withSlot0(armSlot0Configs)
+            .withMotionMagic(mmc)
             .withCurrentLimits(armCurrentLimitsConfigs)
             .withFeedback(feedbackConfigs)
             .withMotorOutput(
@@ -136,7 +137,6 @@ public class IntakeSubsystem extends SubsystemBase {
     TalonFXConfigurator rollersMotorConfig = rollersMotor.getConfigurator();
 
     armMotorConfig.apply(armConfig);
-    armMotorConfig.apply(mmc);
     rollersMotorConfig.apply(rollersConfig);
 
     DogLog.log("Subsystems/Intake/Arm/Gains/kP", Constants.Intake.Arm.kP);
@@ -306,11 +306,18 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command agitateArmCommand() {
     // stole these numbers from 5507, subject to change
     return Commands.sequence(
-            runOnce(this::setPowerRetract).withTimeout(0.04),
-            Commands.waitSeconds(0.6),
-            setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
-            Commands.waitSeconds(0.6))
-        .repeatedly();
+        run(() -> setArmDegrees(Constants.Intake.Arm.ARM_POS_RETRACTED)).withTimeout(4.5),
+        Commands.sequence(
+                runOnce(this::setPowerRetract).withTimeout(0.04),
+                Commands.waitSeconds(0.3),
+                setArmToDegreesCommand(Constants.Intake.Arm.ARM_POS_IDLE).withTimeout(0.04),
+                Commands.waitSeconds(0.3))
+            .repeatedly());
+  }
+
+  public Command powerRetractThenAgitateArmCommand() {
+    return Commands.sequence(
+        powerRetractRollersCommand(), Commands.waitSeconds(1), agitateArmCommand());
   }
 
   @Override
@@ -321,11 +328,11 @@ public class IntakeSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Intake/Rollers/TargetSpeed (rps)", targetRollersRPS);
     DogLog.log("Subsystems/Intake/Rollers/AtTargetSpeed", atTargetSpeed());
     DogLog.log("Subsystems/Intake/Arm/AtTargetAngle", atTargetAngle());
-    DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
+    // DogLog.log("Subsystems/Intake/Arm/AbsoluteEncoderRaw (rots)", getCancoderPositionRaw());
     DogLog.log("Subsystems/Intake/Arm/FusedCurrentPosition (degs)", getArmPosition().getDegrees());
-    DogLog.log(
-        "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)",
-        getArmUnfusedPosition().getDegrees());
+    // DogLog.log(
+    //     "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)",
+    //     getArmUnfusedPosition().getDegrees());
     DogLog.log("Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
 
     SmartDashboard.putNumber("Arm Angle", getArmPosition().getDegrees());

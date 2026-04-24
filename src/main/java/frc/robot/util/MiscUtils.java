@@ -39,7 +39,7 @@ public class MiscUtils {
     };
   }
 
-  public static boolean areWeActive(double currentTime) {
+  public static boolean areWeActive() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
 
     if (alliance.isEmpty()) return false;
@@ -103,7 +103,7 @@ public class MiscUtils {
     double currentTimes = DriverStation.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
-    boolean isActive = areWeActive(currentTimes);
+    boolean isActive = areWeActive();
     boolean isTransition = currentShiftName(currentTimes).equals("Transition");
 
     if (isTransition || isEndgame) {
