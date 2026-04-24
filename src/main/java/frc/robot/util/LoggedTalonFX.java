@@ -206,7 +206,7 @@ public class LoggedTalonFX extends TalonFX {
 
   /** Initializes strings that will be outputted through the LoggedTalonFX class. */
   public void init() {
-    if ("Viper".equals(this.getNetwork())) {
+    if ("Viper".equals(this.getNetwork().getName())) {
       motorsOnCanivore.add(this);
     } else {
       motorsOnRio.add(this);
