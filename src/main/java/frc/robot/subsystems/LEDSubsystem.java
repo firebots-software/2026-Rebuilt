@@ -25,6 +25,7 @@ public class LEDSubsystem extends SubsystemBase {
   private CANdle candle = new CANdle(5);
   private LEDState currentState = LEDState.NONE;
   private BooleanSupplier active, inRange;
+  private boolean seesTagCached;
 
   public enum LEDState {
     NONE,
@@ -86,23 +87,36 @@ public class LEDSubsystem extends SubsystemBase {
     candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
     candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
 
-    boolean seesTag = frontLeft.seesTags() || frontRight.seesTags() || rearLeft.seesTags() || rearRight.seesTags();
+    boolean seesTag =
+        frontLeft.seesTags()
+            || frontRight.seesTags()
+            || rearLeft.seesTags()
+            || rearRight.seesTags();
+    if (seesTag != seesTagCached) {
+      clear(2, 5);
+      seesTagCached = seesTag;
+    }
+
     if (seesTag) {
       candle.setControl(solidColor(Color.kGreen, 7));
       candle.setControl(solidColor(Color.kGreen, 0));
       candle.setControl(solidColor(Color.kGreen, 6));
       candle.setControl(solidColor(Color.kGreen, 1));
     } else {
-      candle.setControl(strobe(Color.kRed, 4, 7, 2));
-      candle.setControl(strobe(Color.kRed, 4, 0, 3));
-      candle.setControl(strobe(Color.kRed, 4, 6, 4));
-      candle.setControl(strobe(Color.kRed, 4, 1, 5));
+      candle.setControl(strobe(Color.kRed, 6, 7, 2));
+      candle.setControl(strobe(Color.kRed, 6, 0, 3));
+      candle.setControl(strobe(Color.kRed, 6, 6, 4));
+      candle.setControl(strobe(Color.kRed, 6, 1, 5));
     }
   }
 
   // helper methods
+  public void clear(int start, int end) {
+    for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
+  }
+  
   public void clearAll() {
-    for (int i = 0; i <= 7; i++) candle.setControl(new EmptyAnimation(i));
+    clear(0, 7);
   }
 
   private SingleFadeAnimation activeAnimation() {
@@ -118,7 +132,10 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private StrobeAnimation strobe(Color color, int frameRate, int ledIndex, int slot) {
-    return new StrobeAnimation(ledIndex, ledIndex).withColor(new RGBWColor(color)).withFrameRate(frameRate).withSlot(slot);
+    return new StrobeAnimation(ledIndex, ledIndex)
+        .withColor(new RGBWColor(color))
+        .withFrameRate(frameRate)
+        .withSlot(slot);
   }
 
   private void activeInRangeAnimation() {
