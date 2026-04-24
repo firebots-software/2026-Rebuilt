@@ -12,11 +12,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Rotation2d;
 // import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoubleEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -31,11 +28,9 @@ import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.IntakeVisionDetection;
-import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
-import frc.robot.util.Targeting;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -43,7 +38,7 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
-//   private Field2d field = new Field2d();
+  //   private Field2d field = new Field2d();
   //   private final Telemetry logger =
   //       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
@@ -88,11 +83,12 @@ public class RobotContainer {
           ? new IntakeVisionDetection(Constants.IntakeVision.IntakeVisionCamera.INTAKE_CAM)
           : null;
 
-//   public final LEDSubsystem leds =
-//       new LEDSubsystem(
-//           () -> true, // MiscUtils::areWeActive,
-//           () ->
-//               Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 && inAllianceSide());
+  //   public final LEDSubsystem leds =
+  //       new LEDSubsystem(
+  //           () -> true, // MiscUtils::areWeActive,
+  //           () ->
+  //               Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4 &&
+  // inAllianceSide());
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;

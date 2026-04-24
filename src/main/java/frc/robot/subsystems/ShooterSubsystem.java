@@ -310,13 +310,15 @@ public class ShooterSubsystem extends SubsystemBase {
     //     "Subsystems/Shooter/Targeting/TargetPlusLead",
     //     Targeting.positionToTarget(target, drivetrain));
     // DogLog.log(
-    //     "Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target, drivetrain));
+    //     "Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target,
+    // drivetrain));
     DogLog.log(
         "Subsystems/Shooter/Targeting/DistanceMeters", Targeting.distMeters(drivetrain, target));
     // DogLog.log(
     //     "Subsystems/Shooter/Targeting/TargetAngle", Targeting.targetAngle(target, drivetrain));
     // DogLog.log(
-    //     "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target, drivetrain));
+    //     "Subsystems/Shooter/Targeting/IsPointing", Targeting.pointingAtTarget(target,
+    // drivetrain));
 
     // DogLog.log(
     //     "Subsystems/Shooter/Targeting/TimeOfFlight",
