@@ -20,15 +20,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
-  // indices:
-  // [0, 7] candle onboard
-  // [8, 30] left side strip
-  // [31, 59] back strip
-  // [60, 77] right side strip
+  // TODO recount indices for leds
   private static final int END_OF_STRIP = 72;
 
   private CANdle candle = new CANdle(5);
-  private LEDState currentState, defaultState = LEDState.ACTIVE_IN_RANGE;
+  private LEDState currentState = LEDState.NONE;
+  private LEDState defaultState = LEDState.ACTIVE_IN_RANGE;
   private Trigger active, inRange, isAuto;
 
   public enum LEDState {
