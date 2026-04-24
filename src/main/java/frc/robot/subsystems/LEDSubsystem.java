@@ -28,7 +28,7 @@ public class LEDSubsystem extends SubsystemBase {
   private CANdle candle = new CANdle(5);
   private LEDState defaultState = LEDState.NONE;
   private LEDState currentState = defaultState;
-  private Trigger active, inRange, isAuto;
+  private Trigger active, inRange, isAuto, isDisabled;
 
   public enum LEDState {
     NONE,
@@ -42,12 +42,14 @@ public class LEDSubsystem extends SubsystemBase {
     active = new Trigger(activeSupplier);
     inRange = new Trigger(inRangeSupplier);
     isAuto = new Trigger(DriverStation::isAutonomousEnabled);
+    isDisabled = new Trigger(DriverStation::isDisabled);
 
     bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
     bind(active.and(inRange.negate()), LEDState.ACTIVE);
     bind(active.negate(), defaultState);
 
     bind(isAuto, LEDState.RAINBOW);
+    bind(isDisabled, LEDState.FLAME);
   }
 
   public void periodic() {
