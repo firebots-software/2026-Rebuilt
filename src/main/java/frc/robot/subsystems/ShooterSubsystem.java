@@ -295,9 +295,9 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Hood/CurrentPositionDeg", currentHoodDeg);
     DogLog.log("Subsystems/Shooter/Hood/TargetPositionDeg", hoodTargetDeg);
     DogLog.log("Subsystems/Shooter/Hood/ErrorDeg", currentHoodDeg - hoodTargetDeg);
-    DogLog.log(
-        "Subsystems/Shooter/Hood/UnfusedCANcoderPositionDeg",
-        getHoodCancoderPositionRaw() * 360.0); // CANCAoder reading before fusion
+    // DogLog.log(
+    //     "Subsystems/Shooter/Hood/UnfusedCANcoderPositionDeg",
+    //     getHoodCancoderPositionRaw() * 360.0); // CANCAoder reading before fusion
 
     // Targeting
     Pose2d target = redside.getAsBoolean() ? Landmarks.RED_HUB : Landmarks.BLUE_HUB;
@@ -306,9 +306,9 @@ public class ShooterSubsystem extends SubsystemBase {
     DogLog.log("Subsystems/Shooter/Targeting/DistanceMeters", distanceMeters);
 
     // TODO: Cache this value
-    DogLog.log(
-        "Subsystems/Shooter/Targeting/TargetPlusLead",
-        Targeting.positionToTarget(target, drivetrain));
+    // DogLog.log(
+    //     "Subsystems/Shooter/Targeting/TargetPlusLead",
+    //     Targeting.positionToTarget(target, drivetrain));
     // DogLog.log(
     //     "Subsystems/Shooter/Targeting/ShootingSpeed", Targeting.shootingSpeed(target, drivetrain));
     DogLog.log(

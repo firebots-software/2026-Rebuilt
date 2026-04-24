@@ -82,7 +82,7 @@ public void periodic() {
 
     if (!cameraConnected()) return;
 
-    // updateEstimate(photonCamera.getAllUnreadResults());
+    updateEstimate(photonCamera.getAllUnreadResults());
   }
 
   private boolean cameraConnected() {

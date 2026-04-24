@@ -325,9 +325,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     DogLog.log(
         "Subsystems/Swerve/CurrPoseRotDegs", getCurrentState().Pose.getRotation().getDegrees());
 
-    DogLog.log(
-        "Subsystems/Swerve/DistanceToHub",
-        MiscUtils.getDistanceToHub(RobotContainer::isRedAlliance, this));
+    // DogLog.log(
+    //     "Subsystems/Swerve/DistanceToHub",
+    //     MiscUtils.getDistanceToHub(RobotContainer::isRedAlliance, this));
     DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
   }
 

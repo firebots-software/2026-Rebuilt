@@ -236,8 +236,8 @@ public class RobotContainer {
   }
 
   public void visionPeriodic() {
-    // VisionUtils.visionPeriodic(
-    //     visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
+    VisionUtils.visionPeriodic(
+        visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
   }
 
   public boolean inAllianceSide() {
