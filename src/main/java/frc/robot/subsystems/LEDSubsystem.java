@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
-  // TODO recount indices for leds
+  // left strip is [8, 23]
+  // middle strip is [24, 53]
+  // right strip is [51, 76]
   private static final int END_OF_STRIP = 72;
 
   private CANdle candle = new CANdle(5);
