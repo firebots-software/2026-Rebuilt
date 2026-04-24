@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -28,7 +27,7 @@ public class LEDSubsystem extends SubsystemBase {
   private CANdle candle = new CANdle(5);
   private LEDState defaultState = LEDState.NONE;
   private LEDState currentState = defaultState;
-  private Trigger active, inRange, isAuto, isDisabled;
+  private BooleanSupplier active, inRange;
 
   public enum LEDState {
     NONE,
@@ -39,23 +38,29 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public LEDSubsystem(BooleanSupplier activeSupplier, BooleanSupplier inRangeSupplier) {
-    active = new Trigger(activeSupplier);
-    inRange = new Trigger(inRangeSupplier);
-    isAuto = new Trigger(DriverStation::isAutonomousEnabled);
-    isDisabled = new Trigger(DriverStation::isDisabled);
+    active = activeSupplier;
+    inRange = inRangeSupplier;
 
-    bind(active.and(inRange), LEDState.ACTIVE_IN_RANGE);
-    bind(active.and(inRange.negate()), LEDState.ACTIVE);
-    bind(active.negate(), defaultState);
-
-    bind(isAuto, LEDState.RAINBOW);
-    bind(isDisabled, LEDState.FLAME);
+    setDefaultCommand(evaluateState());
   }
 
   public void periodic() {
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.toString());
+  }
+
+  public Command evaluateState() {
+    if (DriverStation.isDisabled()) return getStateAsCommand(LEDState.FLAME);
+    if (DriverStation.isAutonomousEnabled()) return getStateAsCommand(LEDState.RAINBOW);
+
+    if (active.getAsBoolean() && inRange.getAsBoolean())
+      return getStateAsCommand(LEDState.ACTIVE_IN_RANGE);
+    else if (active.getAsBoolean() && !inRange.getAsBoolean())
+      return getStateAsCommand(LEDState.ACTIVE);
+    else if (!active.getAsBoolean()) return getStateAsCommand(defaultState);
+
+    return getStateAsCommand(LEDState.NONE);
   }
 
   public Command getStateAsCommand(LEDState state) {
@@ -84,15 +89,6 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   // helper methods
-  public void bind(Trigger trigger, LEDState state) {
-    trigger.whileTrue(
-        defer(
-            () -> {
-              currentState = state;
-              return getStateAsCommand(state);
-            }));
-  }
-
   public void clearAll() {
     for (int i = 0; i <= 8; i++) candle.setControl(new EmptyAnimation(i));
   }
