@@ -106,6 +106,7 @@ public final class Constants {
 
   public static class Swerve {
     public static final double FF_RADIUS_M2 = 0.1;
+    public static final double MAX_TRANSLATIONAL_MOVEMENT_SQUARED = 0.0625;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
     public static final CANBus CAN_BUS =
         new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
@@ -133,7 +134,7 @@ public final class Constants {
       // JAMES_HARDEN(0.16901, 0d, 0d, 0.1593, 0.12143, 0.0091321); //0.041539
       // //0.12301
       JAMES_HARDEN(0.36, 0d, 0d, 0.2425, 0.11560693641, 0), // 0.041539 //0.12301
-      COBRA(0.1, 0d, 0d, 0d, 0.124, 0d); // 0.041539 //0.12301
+      COBRA(0.25, 0d, 0d, 0.2d, 0.124, 0d); // 0.041539 //0.12301
       public final double KP, KI, KD, KS, KV, KA;
 
       SwerveDrivePIDValues(double KP, double KI, double KD, double KS, double KV, double KA) {
@@ -227,7 +228,7 @@ public final class Constants {
       SERRANO(0.1d, 0d, 0d, 0.1d, 0d, 0d, 3.867d, 0d, 0d),
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
-      COBRA(3.467, 0, 0, 3.567, 0, 0, 2.867, 0, 0);
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 3.4, 0, 0);
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -412,26 +413,17 @@ public final class Constants {
       public static final double TIME_FOR_BUMP_FORWARDS = 0.95;
       public static final double TIME_FOR_BUMP_BACKWARDS = 1.05;
       public static final double TIME_FOR_BUMP_FORWARDS_SLOWER = 1.30;
+      public static final double WAIT_TIME_FOR_ALLIANCE = 4.0;
 
       public static enum Intake {
-        LeftIntakeSweep,
-        RightIntakeSweep,
         LeftIntakeSweepShort,
         RightIntakeSweepShort,
         RightSecondDip,
-        LeftSecondDip,
-        LeftSecondDipLong,
+        LeftSecondDip, // outside in
+        LeftSecondDipLong, // inside out
         RightSecondDipLong,
-        OCLeft,
-        OCRight,
-        DCMPLeft,
-        DCMPRight,
-        DCMPTurnLeft,
-        DCMPTurnRight,
-        StraightLeft,
-        StraightRight,
-        GoLeft,
-        GoRight
+        HubLeft,
+        HubRight
       }
 
       public static enum ShootPos {
@@ -448,7 +440,8 @@ public final class Constants {
 
       public static enum Outpost {
         OutpostStart,
-        OutpostSweep
+        OutpostSweep,
+        OutpostStartPush
       }
 
       public static enum MiscPaths {
@@ -931,21 +924,37 @@ public final class Constants {
     public static Pose2d BLUE_TOWER_L =
         new Pose2d(1.6428194046020508, 4.1721110343933105, new Rotation2d(Math.PI));
 
+    // public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(10.908942222595215, 2.54630184173584),
+    //         new Rotation2d(1.5707963267948966));
+    // public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(10.921140670776367, 5.613290309906006),
+    //         new Rotation2d(-1.5707963267948966));
+    // public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(5.6342058181762695, 5.505496978759766),
+    //         new Rotation2d(-1.5649821399611368));
+    // public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
+    //     new Pose2d(
+    //         new Translation2d(5.624283313751221, 2.4593770503997803),
+    //         new Rotation2d(1.57873264137917));
     public static Pose2d RED_LEFT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(10.908942222595215, 2.54630184173584),
+            new Translation2d(10.908942222595215, 2.2220301628112793),
             new Rotation2d(1.5707963267948966));
     public static Pose2d RED_RIGHT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(10.921140670776367, 5.613290309906006),
+            new Translation2d(10.921140670776367, 5.914291858673096),
             new Rotation2d(-1.5707963267948966));
     public static Pose2d BLUE_LEFT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(5.6342058181762695, 5.505496978759766),
+            new Translation2d(5.6342058181762695, 5.8613409996032715),
             new Rotation2d(-1.5649821399611368));
     public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
         new Pose2d(
-            new Translation2d(5.624283313751221, 2.4593770503997803),
+            new Translation2d(5.624283313751221, 2.281606435775757),
             new Rotation2d(1.57873264137917));
 
     public static Pose2d BLUE_PASSING_L = new Pose2d(2.111, 6.003, new Rotation2d());
