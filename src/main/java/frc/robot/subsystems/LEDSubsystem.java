@@ -21,9 +21,9 @@ import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
   // left strip is [8, 23]
-  // middle strip is [24, 53]
+  // middle strip is [24, 53] (center of middle is 38)
   // right strip is [51, 76]
-  private static final int END_OF_STRIP = 72;
+  private static final int END_OF_STRIP = 76;
 
   private CANdle candle = new CANdle(5);
   private LEDState defaultState = LEDState.NONE;
@@ -68,9 +68,9 @@ public class LEDSubsystem extends SubsystemBase {
       case FLAME -> runOnce(
           () -> {
             clearAll();
-            candle.setControl(flame(8, 36, 0).withDirection(AnimationDirectionValue.Forward));
+            candle.setControl(flame(8, 38, 0).withDirection(AnimationDirectionValue.Forward));
             candle.setControl(
-                flame(37, END_OF_STRIP, 1).withDirection(AnimationDirectionValue.Backward));
+                flame(39, END_OF_STRIP, 1).withDirection(AnimationDirectionValue.Backward));
           });
       case RAINBOW -> runOnce(
           () -> {
@@ -115,8 +115,8 @@ public class LEDSubsystem extends SubsystemBase {
 
   private FireAnimation flame(int startIndex, int endIndex, int slot) {
     return new FireAnimation(startIndex, endIndex)
-        .withSparking(0.4)
-        .withCooling(0.4)
+        .withSparking(0.5)
+        .withCooling(0.2)
         .withFrameRate(30)
         .withSlot(slot);
   }
