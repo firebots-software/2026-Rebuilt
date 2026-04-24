@@ -1,6 +1,7 @@
 package frc.robot.util.MathUtils;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class MiscMath {
   public static double clamp(double value, double min, double max) {
@@ -14,4 +15,10 @@ public class MiscMath {
         pose.getZ(),
         pose.getRotation());
   }
+
+  public static Rotation2d normalizeAngle(Rotation2d a) {
+    double radians = a.getRadians();
+    return new Rotation2d(radians - (2*Math.PI) * Math.floor(radians / (2*Math.PI)));
+  }
+
 }

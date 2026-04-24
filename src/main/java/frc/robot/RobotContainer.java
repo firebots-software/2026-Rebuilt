@@ -43,13 +43,7 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
-  private final DoubleEntry hoodAngleTunable =
-      NetworkTableInstance.getDefault().getDoubleTopic("Tunable/HoodAngleTunable").getEntry(10.0);
-  private final DoubleEntry shooterSpeedTunable =
-      NetworkTableInstance.getDefault()
-          .getDoubleTopic("Tunable/ShooterSpeedTunable")
-          .getEntry(44.0);
-  private Field2d field = new Field2d();
+//   private Field2d field = new Field2d();
   //   private final Telemetry logger =
   //       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
@@ -105,12 +99,10 @@ public class RobotContainer {
   //   private double shooterSpeed = 58.0;
 
   public RobotContainer() {
-    hoodAngleTunable.setDefault(10.0);
-    shooterSpeedTunable.setDefault(44.0);
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    SmartDashboard.putData("Elastic/Field2d", field);
+    // SmartDashboard.putData("Elastic/Field2d", field);
     configureBindings();
   }
 
