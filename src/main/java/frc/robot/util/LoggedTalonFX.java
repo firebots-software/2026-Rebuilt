@@ -3,11 +3,13 @@ package frc.robot.util;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.StatusSignalCollection;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Team 3501 Version of TalonFX class that automatically sets Current Limits and logs motor
@@ -17,6 +19,8 @@ public class LoggedTalonFX extends TalonFX {
 
   /** List of all LoggedTalonFX motors on our robot, defined. */
   private static ArrayList<LoggedTalonFX> motors = new ArrayList<>();
+
+  private static StatusSignalCollection allMotorSignals = new StatusSignalCollection();
 
   /** Name of motor instance. */
   private String name;
@@ -183,6 +187,14 @@ public class LoggedTalonFX extends TalonFX {
     init();
   }
 
+  private static void rebuildSignalCollection() {
+    allMotorSignals =
+        new StatusSignalCollection(
+            motors.stream()
+                .flatMap(m -> Arrays.stream(m.cachedSignals))
+                .toArray(BaseStatusSignal[]::new));
+  }
+
   /** Initializes strings that will be outputted through the LoggedTalonFX class. */
   public void init() {
     motors.add(this);
@@ -212,6 +224,7 @@ public class LoggedTalonFX extends TalonFX {
     motorConfiguration.CurrentLimits = clc;
     this.getConfigurator().apply(motorConfiguration);
     cacheSignals();
+    rebuildSignalCollection();
   }
 
   public void updateCurrentLimits(double statorCurrentLimit, double supplyCurrentLimit) {
@@ -225,50 +238,42 @@ public class LoggedTalonFX extends TalonFX {
     this.getConfigurator().apply(clc);
   }
 
-  public static void periodic_static() {
-    for (LoggedTalonFX l : motors) {
-      l.periodic();
-    }
-  }
-
-  public void periodic() {
-    BaseStatusSignal.refreshAll(cachedSignals);
-
-    // Cache values (read each signal once per loop)
+  public void updateCachedValues() {
     deviceTempC = deviceTempSignal.getValueAsDouble();
     closedLoopErrorVal = closedLoopErrorSignal.getValueAsDouble();
     closedLoopReferenceVal = closedLoopReferenceSignal.getValueAsDouble();
     rotorPositionVal = rotorPositionSignal.getValueAsDouble();
-
     positionRotations = positionSignal.getValueAsDouble();
     velocityRps = velocitySignal.getValueAsDouble();
     accelerationRps2 = accelerationSignal.getValueAsDouble();
-
     supplyCurrentA = supplyCurrentSignal.getValueAsDouble();
     statorCurrentA = statorCurrentSignal.getValueAsDouble();
     torqueCurrentA = torqueCurrentSignal.getValueAsDouble();
-
     motorVoltageV = motorVoltageSignal.getValueAsDouble();
     supplyVoltageV = supplyVoltageSignal.getValueAsDouble();
+  }
 
-    // Log cached values (no direct signal reads here)
+  public void logValues() {
     DogLog.log(temperature, getCachedDeviceTempC());
     DogLog.log(closedLoopError, getCachedClosedLoopError());
     DogLog.log(closedLoopReference, getCachedClosedLoopReference());
-
     DogLog.log(rotorPosition, getCachedRotorPosition());
-
     DogLog.log(position, getCachedPositionRotations());
     DogLog.log(velocity, getCachedVelocityRps());
     DogLog.log(acceleration, getCachedAccelerationRps2());
-
-    // Current
     DogLog.log(supplyCurrent, getCachedSupplyCurrentA());
     DogLog.log(statorCurrent, getCachedStatorCurrentA());
     DogLog.log(torqueCurrent, getCachedTorqueCurrentA());
-
-    // Voltage
     DogLog.log(motorVoltage, getCachedMotorVoltageV());
     DogLog.log(supplyVoltage, getCachedSupplyVoltageV());
+  }
+
+  public static void periodic_static() {
+    allMotorSignals.refreshAll();
+
+    for (LoggedTalonFX motor : motors) {
+      motor.updateCachedValues();
+      motor.logValues();
+    }
   }
 }

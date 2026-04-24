@@ -18,7 +18,6 @@ public class MiscMath {
 
   public static Rotation2d normalizeAngle(Rotation2d a) {
     double radians = a.getRadians();
-    return new Rotation2d(radians - (2*Math.PI) * Math.floor(radians / (2*Math.PI)));
+    return new Rotation2d(radians - (2 * Math.PI) * Math.floor(radians / (2 * Math.PI)));
   }
-
 }
