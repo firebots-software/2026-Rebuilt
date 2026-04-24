@@ -18,9 +18,12 @@ import java.util.Arrays;
 public class LoggedTalonFX extends TalonFX {
 
   /** List of all LoggedTalonFX motors on our robot, defined. */
-  private static ArrayList<LoggedTalonFX> motors = new ArrayList<>();
+  private static ArrayList<LoggedTalonFX> motorsOnCanivore = new ArrayList<>();
 
-  private static StatusSignalCollection allMotorSignals = new StatusSignalCollection();
+  private static ArrayList<LoggedTalonFX> motorsOnRio = new ArrayList<>();
+
+  private static StatusSignalCollection signalsOnCanivore = new StatusSignalCollection();
+  private static StatusSignalCollection signalsOnRio = new StatusSignalCollection();
 
   /** Name of motor instance. */
   private String name;
@@ -188,16 +191,27 @@ public class LoggedTalonFX extends TalonFX {
   }
 
   private static void rebuildSignalCollection() {
-    allMotorSignals =
+    signalsOnCanivore =
         new StatusSignalCollection(
-            motors.stream()
+            motorsOnCanivore.stream()
+                .flatMap(m -> Arrays.stream(m.cachedSignals))
+                .toArray(BaseStatusSignal[]::new));
+
+    signalsOnRio =
+        new StatusSignalCollection(
+            motorsOnRio.stream()
                 .flatMap(m -> Arrays.stream(m.cachedSignals))
                 .toArray(BaseStatusSignal[]::new));
   }
 
   /** Initializes strings that will be outputted through the LoggedTalonFX class. */
   public void init() {
-    motors.add(this);
+    if ("Viper".equals(this.getNetwork())) {
+      motorsOnCanivore.add(this);
+    } else {
+      motorsOnRio.add(this);
+    }
+
     this.getConfigurator().apply(new TalonFXConfiguration());
     this.temperature = name + "/temperature(degC)";
     this.closedLoopError = name + "/closedLoopError";
@@ -269,9 +283,14 @@ public class LoggedTalonFX extends TalonFX {
   }
 
   public static void periodic_static() {
-    allMotorSignals.refreshAll();
+    signalsOnCanivore.refreshAll();
+    for (LoggedTalonFX motor : motorsOnCanivore) {
+      motor.updateCachedValues();
+      motor.logValues();
+    }
 
-    for (LoggedTalonFX motor : motors) {
+    signalsOnRio.refreshAll();
+    for (LoggedTalonFX motor : motorsOnRio) {
       motor.updateCachedValues();
       motor.logValues();
     }
