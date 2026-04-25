@@ -169,7 +169,7 @@ public class VisionSubsystem extends SubsystemBase {
     latestFinalTimestamp = calculateTimestamp(estimatedPose.timestampSeconds);
     hasValidMeasurement = true;
 
-    DogLog.log(loggingPath + "/measuredPoseAvailable", latestMeasuredPose == null);
+    DogLog.log(loggingPath + "/measuredPoseAvailable", latestMeasuredPose != null);
   }
 
   private boolean resultValid() {
