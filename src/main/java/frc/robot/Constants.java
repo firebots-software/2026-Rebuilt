@@ -452,7 +452,8 @@ public final class Constants {
       public static enum MiscPaths {
         LeftShootToBump,
         RightShootToBump,
-        Nike
+        Nike,
+        anthony
       }
     }
   }
