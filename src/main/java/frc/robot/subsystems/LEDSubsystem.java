@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
@@ -14,6 +15,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -82,6 +85,8 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem frontRight,
       VisionSubsystem rearLeft,
       VisionSubsystem rearRight) {
+    
+    if (DriverStation.isDisabled()) {
     candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
     candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
     candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
@@ -93,7 +98,7 @@ public class LEDSubsystem extends SubsystemBase {
             || rearLeft.seesTags()
             || rearRight.seesTags();
     if (seesTag != seesTagCached) {
-      clear(2, 5);
+      clearSlots(2, 5);
       seesTagCached = seesTag;
     }
 
@@ -108,15 +113,19 @@ public class LEDSubsystem extends SubsystemBase {
       candle.setControl(strobe(Color.kRed, 6, 6, 4));
       candle.setControl(strobe(Color.kRed, 6, 1, 5));
     }
+  } else {
+    candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
+    seesTagCached = false;
+  }
   }
 
   // helper methods
-  public static void clear(int start, int end) {
+  public static void clearSlots(int start, int end) {
     for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
   }
 
   public void clearAll() {
-    clear(0, 7);
+    clearSlots(0, 7);
   }
 
   private SingleFadeAnimation activeAnimation() {

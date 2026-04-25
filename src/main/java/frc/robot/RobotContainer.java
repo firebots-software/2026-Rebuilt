@@ -236,14 +236,11 @@ public class RobotContainer {
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-    if (DriverStation.isDisabled())
       leds.visionStatusIndicators(
           visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
-  public void clearCANdle() {
-    LEDSubsystem.clear(0, 7);
-  }
+  
 
   public boolean inAllianceSide() {
     return redside.getAsBoolean()
