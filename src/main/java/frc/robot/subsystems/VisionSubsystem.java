@@ -34,8 +34,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private final AprilTagFieldLayout fieldLayout;
   private final PhotonPoseEstimator poseEstimator;
-  private PhotonPipelineResult latestVisionResult = new PhotonPipelineResult();
-  private PhotonPipelineResult previousVisionResult = new PhotonPipelineResult();
+  private PhotonPipelineResult latestVisionResult;
 
   private String cameraTitle;
   private String loggingPath;
@@ -108,9 +107,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private void updateEstimate(List<PhotonPipelineResult> results) {
     if (results.isEmpty()) return;
-    previousVisionResult = latestVisionResult;
     latestVisionResult = results.get(results.size() - 1);
-    updatedThisPeriodic = !previousVisionResult.equals(latestVisionResult);
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     DogLog.log(loggingPath + "/EstimationMethod", "COPROC");
