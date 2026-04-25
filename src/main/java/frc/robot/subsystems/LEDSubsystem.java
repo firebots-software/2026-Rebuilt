@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -82,6 +84,8 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem frontRight,
       VisionSubsystem rearLeft,
       VisionSubsystem rearRight) {
+    
+    if (DriverStation.isDisabled()) {
     candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
     candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
     candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
@@ -108,6 +112,9 @@ public class LEDSubsystem extends SubsystemBase {
       candle.setControl(strobe(Color.kRed, 6, 6, 4));
       candle.setControl(strobe(Color.kRed, 6, 1, 5));
     }
+  } else {
+    clear(0, 7);
+  }
   }
 
   // helper methods

@@ -242,9 +242,7 @@ public class RobotContainer {
           visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
-  public void clearCANdle() {
-    LEDSubsystem.clear(0,7);
-  }
+  
 
   public boolean inAllianceSide() {
     return redside.getAsBoolean()
