@@ -237,8 +237,7 @@ public class RobotContainer {
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-      leds.visionStatusIndicators(
-          visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
+    leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
     public void doTelemetry() {

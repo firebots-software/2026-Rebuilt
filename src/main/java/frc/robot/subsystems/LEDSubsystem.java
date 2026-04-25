@@ -7,7 +7,6 @@ import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
@@ -15,8 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import java.sql.Driver;
 import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -50,6 +47,7 @@ public class LEDSubsystem extends SubsystemBase {
       applyState(computedState);
     }
     if (currentState == LEDState.ACTIVE_IN_RANGE) activeInRangeAnimation();
+    if (currentState == LEDState.NONE) candle.setControl(new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kBlack)));
 
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
@@ -62,6 +60,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
     else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
+    else if (!active.getAsBoolean()) return LEDState.NONE;
 
     return LEDState.NONE;
   }
@@ -85,38 +84,38 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem frontRight,
       VisionSubsystem rearLeft,
       VisionSubsystem rearRight) {
-    
+
     if (DriverStation.isDisabled()) {
-    candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
-    candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
-    candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
-    candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
+      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
+      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
+      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
+      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
 
-    boolean seesTag =
-        frontLeft.seesTags()
-            || frontRight.seesTags()
-            || rearLeft.seesTags()
-            || rearRight.seesTags();
-    if (seesTag != seesTagCached) {
-      clearSlots(2, 5);
-      seesTagCached = seesTag;
-    }
+      boolean seesTag =
+          frontLeft.seesTags()
+              || frontRight.seesTags()
+              || rearLeft.seesTags()
+              || rearRight.seesTags();
+      if (seesTag != seesTagCached) {
+        clearSlots(2, 5);
+        seesTagCached = seesTag;
+      }
 
-    if (seesTag) {
-      candle.setControl(solidColor(Color.kGreen, 7));
-      candle.setControl(solidColor(Color.kGreen, 0));
-      candle.setControl(solidColor(Color.kGreen, 6));
-      candle.setControl(solidColor(Color.kGreen, 1));
+      if (seesTag) {
+        candle.setControl(solidColor(Color.kGreen, 7));
+        candle.setControl(solidColor(Color.kGreen, 0));
+        candle.setControl(solidColor(Color.kGreen, 6));
+        candle.setControl(solidColor(Color.kGreen, 1));
+      } else {
+        candle.setControl(strobe(Color.kRed, 6, 7, 2));
+        candle.setControl(strobe(Color.kRed, 6, 0, 3));
+        candle.setControl(strobe(Color.kRed, 6, 6, 4));
+        candle.setControl(strobe(Color.kRed, 6, 1, 5));
+      }
     } else {
-      candle.setControl(strobe(Color.kRed, 6, 7, 2));
-      candle.setControl(strobe(Color.kRed, 6, 0, 3));
-      candle.setControl(strobe(Color.kRed, 6, 6, 4));
-      candle.setControl(strobe(Color.kRed, 6, 1, 5));
+      candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
+      seesTagCached = false;
     }
-  } else {
-    candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
-    seesTagCached = false;
-  }
   }
 
   // helper methods
