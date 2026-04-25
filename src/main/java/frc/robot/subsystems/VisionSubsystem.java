@@ -221,10 +221,6 @@ public class VisionSubsystem extends SubsystemBase {
     return cameraConnectedStatus;
   }
 
-  // public boolean seesTags() {
-  //   return tagsValid;
-  // }
-
   public boolean seesTags() {
     if (!cameraConnectedStatus) return false;
     return (Timer.getFPGATimestamp() - lastTagSeenTimestamp) <= TAG_VISIBLE_THRESHOLD_SEC;
