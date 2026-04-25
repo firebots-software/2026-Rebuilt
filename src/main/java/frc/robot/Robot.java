@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    m_robotContainer.leds.clearVisionIndicators();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     VisionUtils.setHeadingThreshold(Constants.Vision.MAX_HEADING_DIFF_AUTO);
 
@@ -107,6 +108,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.leds.clearVisionIndicators();
     m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
     VisionUtils.setHeadingThreshold(Constants.Vision.MAX_HEADING_DIFF);
 
