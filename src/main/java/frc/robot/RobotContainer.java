@@ -174,7 +174,6 @@ public class RobotContainer {
     //                     new Translation2d(2.462480068206787, 2.26101016998291), new
     // Rotation2d())));
 
-    joystick.a().whileTrue(drivetrain.brakeSwerve());
     // * KEEP FOR INTERMAP TESTING
     // joystick
     //     .rightTrigger()
