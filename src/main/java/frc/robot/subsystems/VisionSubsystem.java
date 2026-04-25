@@ -35,6 +35,8 @@ public class VisionSubsystem extends SubsystemBase {
   private final AprilTagFieldLayout fieldLayout;
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
+  private double lastTagSeenTimestamp = -1.0;
+  private static final double TAG_VISIBLE_THRESHOLD_SEC = 0.2;
 
   private String cameraTitle;
   private String loggingPath;
@@ -117,6 +119,10 @@ public class VisionSubsystem extends SubsystemBase {
       return;
     }
     latestVisionResult = results.get(results.size() - 1);
+
+    if (!latestVisionResult.getTargets().isEmpty()) {
+      lastTagSeenTimestamp = Timer.getFPGATimestamp();
+    }
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
     DogLog.log(loggingPath + "/EstimationMethod", "COPROC");
@@ -218,8 +224,13 @@ public class VisionSubsystem extends SubsystemBase {
     return cameraConnectedStatus;
   }
 
+  // public boolean seesTags() {
+  //   return tagsValid;
+  // }
+
   public boolean seesTags() {
-    return tagsValid;
+    if (!cameraConnectedStatus) return false;
+    return (Timer.getFPGATimestamp() - lastTagSeenTimestamp) <= TAG_VISIBLE_THRESHOLD_SEC;
   }
 
   public double getMinDistance() {
