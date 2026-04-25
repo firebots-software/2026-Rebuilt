@@ -114,7 +114,6 @@ public class LEDSubsystem extends SubsystemBase {
       candle.setControl(strobe(Color.kRed, 6, 1, 5));
     }
   } else {
-    clear(0, 7);
     candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
     seesTagCached = false;
   }
