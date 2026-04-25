@@ -242,6 +242,10 @@ public class RobotContainer {
           visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
+  public void clearCANdle() {
+    LEDSubsystem.clear(0,7);
+  }
+
   public boolean inAllianceSide() {
     return redside.getAsBoolean()
         ? drivetrain.getPose().getX() > Constants.Landmarks.RED_HUB.getX()

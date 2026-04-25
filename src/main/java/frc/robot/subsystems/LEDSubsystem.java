@@ -22,7 +22,7 @@ public class LEDSubsystem extends SubsystemBase {
   // right strip is [51, 76]
   private static final int END_OF_STRIP = 76;
 
-  private CANdle candle = new CANdle(5);
+  private static CANdle candle = new CANdle(5);
   private LEDState currentState = LEDState.NONE;
   private BooleanSupplier active, inRange;
   private boolean seesTagCached;
@@ -111,7 +111,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   // helper methods
-  public void clear(int start, int end) {
+  public static void clear(int start, int end) {
     for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
   }
   
