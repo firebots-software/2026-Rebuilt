@@ -43,7 +43,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   private boolean cameraConnectedStatus = false;
   private boolean tagsValid = false;
-  private boolean updatedThisPeriodic = false;
 
   private Matrix<N3, N3> cameraIntrinsics;
   private Matrix<N8, N1> distortionCoeffs;
@@ -97,16 +96,26 @@ public class VisionSubsystem extends SubsystemBase {
     visionEstimate = Optional.empty();
     latestVisionResult = null;
     hasValidMeasurement = false;
+    tagsValid = false;
+    latestTagCount = 0;
   }
 
   private boolean cameraConnected() {
     cameraConnectedStatus = photonCamera.isConnected();
     DogLog.log(loggingPath + "/CameraConnected", cameraConnectedStatus);
+    if (!cameraConnectedStatus) {
+      tagsValid = false;
+      latestTagCount = 0;
+    }
     return cameraConnectedStatus;
   }
 
   private void updateEstimate(List<PhotonPipelineResult> results) {
-    if (results.isEmpty()) return;
+    if (results.isEmpty()) {
+      tagsValid = false;
+      latestTagCount = 0;
+      return;
+    }
     latestVisionResult = results.get(results.size() - 1);
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
@@ -210,7 +219,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean seesTags() {
-    return tagsValid && updatedThisPeriodic;
+    return tagsValid;
   }
 
   public double getMinDistance() {
