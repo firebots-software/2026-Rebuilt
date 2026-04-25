@@ -64,8 +64,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private SwerveDriveState currentState;
 
   private final SwerveRequest.SwerveDriveBrake m_brake = new SwerveRequest.SwerveDriveBrake();
-  // private final SwerveRequest m_better_brake = new SwerveRequest().apply(new SwerveControlParameters(), getModules())
- //* Front Left, Front Right, Back Left, Back Right. This means if you need
+  // private final SwerveRequest m_better_brake = new SwerveRequest().apply(new
+  // SwerveControlParameters(), getModules())
+  // * Front Left, Front Right, Back Left, Back Right. This means if you need
   private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
       new SwerveRequest.ApplyFieldSpeeds();
 
