@@ -5,9 +5,6 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 // * KEEP FOR WIN COMMAND TESTING
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -42,8 +38,8 @@ public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
   //   private Field2d field = new Field2d();
-  //   private final Telemetry logger =
-  //       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+  private final Telemetry logger =
+      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CustomController secondController = new CustomController(4);
@@ -168,15 +164,17 @@ public class RobotContainer {
     //             drivetrain,
     //             redside));
 
-    joystick
-        .a()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                () ->
-                    new Pose2d(
-                        new Translation2d(2.462480068206787, 2.26101016998291), new Rotation2d())));
+    // joystick
+    //     .a()
+    //     .whileTrue(
+    //         new DriveToPose(
+    //             drivetrain,
+    //             () ->
+    //                 new Pose2d(
+    //                     new Translation2d(2.462480068206787, 2.26101016998291), new
+    // Rotation2d())));
 
+    joystick.a().whileTrue(drivetrain.brakeSwerve());
     // * KEEP FOR INTERMAP TESTING
     // joystick
     //     .rightTrigger()
@@ -239,6 +237,16 @@ public class RobotContainer {
     if (DriverStation.isDisabled())
       leds.visionStatusIndicators(
           visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
+  }
+
+  public void doTelemetry() {
+    logger.telemeterize(drivetrain.getCurrentState());
+
+    String commandName = "nah";
+
+    if (drivetrain.getCurrentCommand() != null) {
+      commandName = drivetrain.getCurrentCommand().getName();
+    }
   }
 
   public boolean inAllianceSide() {

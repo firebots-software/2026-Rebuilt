@@ -498,6 +498,20 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine anthony() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    AutoTrajectory depotIntake = miscPaths(routine, Constants.Swerve.Auto.MiscPaths.anthony);
+
+    // routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+    // depotIntake.done().onTrue(Commands.sequence(returnBasicShoot(redSide).asProxy(),
+    // outpostIntake.cmd()));
+    // outpostIntake.done().onTrue(returnBasicShoot(redSide));
+    routine.active().onTrue(Commands.sequence(depotIntake.resetOdometry(), depotIntake.cmd()));
+
+    return routine;
+  }
+
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
     autoChooser.addRoutine("Right", () -> PedriShortRight());
@@ -511,6 +525,7 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
+    autoChooser.addRoutine("bad word", () -> anthony());
   }
 
   public AutoChooser getAutoChooser() {
