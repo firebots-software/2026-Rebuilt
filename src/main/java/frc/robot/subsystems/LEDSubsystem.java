@@ -84,10 +84,10 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem rearRight) {
 
     if (DriverStation.isDisabled()) {
-      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
-      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
-      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
-      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
+      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
+      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
+      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
+      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
 
       boolean seesTag =
           frontLeft.seesTags()
