@@ -41,7 +41,6 @@ public class VisionSubsystem extends SubsystemBase {
   private Optional<EstimatedRobotPose> visionEstimate;
 
   private boolean cameraConnectedStatus = false;
-  private boolean tagsValid = false;
 
   private Matrix<N3, N3> cameraIntrinsics;
   private Matrix<N8, N1> distortionCoeffs;
@@ -95,26 +94,16 @@ public class VisionSubsystem extends SubsystemBase {
     visionEstimate = Optional.empty();
     latestVisionResult = null;
     hasValidMeasurement = false;
-    tagsValid = false;
-    latestTagCount = 0;
   }
 
   private boolean cameraConnected() {
     cameraConnectedStatus = photonCamera.isConnected();
     DogLog.log(loggingPath + "/CameraConnected", cameraConnectedStatus);
-    if (!cameraConnectedStatus) {
-      tagsValid = false;
-      latestTagCount = 0;
-    }
     return cameraConnectedStatus;
   }
 
   private void updateEstimate(List<PhotonPipelineResult> results) {
-    if (results.isEmpty()) {
-      tagsValid = false;
-      latestTagCount = 0;
-      return;
-    }
+    if (results.isEmpty()) return;
     latestVisionResult = results.get(results.size() - 1);
 
     if (!latestVisionResult.getTargets().isEmpty()) {
@@ -187,7 +176,7 @@ public class VisionSubsystem extends SubsystemBase {
   private boolean tagsValid() {
     List<PhotonTrackedTarget> tags = latestVisionResult.getTargets();
 
-    tagsValid = !tags.isEmpty();
+    boolean tagsValid = !tags.isEmpty();
     DogLog.log(loggingPath + "/Tags", tagsValid);
 
     if (!tagsValid) return false;
