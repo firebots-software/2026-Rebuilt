@@ -59,6 +59,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
     else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
+    else if (!active.getAsBoolean()) return LEDState.NONE;
 
     return LEDState.NONE;
   }
@@ -73,6 +74,7 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(flame(39, END_OF_STRIP, 1, true));
       }
       case RAINBOW -> candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
+      case NONE -> setColor(8, END_OF_STRIP, Color.kBlack);
       default -> clearAll();
     }
   }
@@ -111,9 +113,13 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(strobe(Color.kRed, 6, 1, 5));
       }
     } else {
-      candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
+      setColor(0, 7, Color.kBlack);
       seesTagCached = false;
     }
+  }
+
+  private static void setColor(int start, int end, Color color) {
+    candle.setControl(new SolidColor(start, end).withColor(new RGBWColor(color)));
   }
 
   // helper methods
