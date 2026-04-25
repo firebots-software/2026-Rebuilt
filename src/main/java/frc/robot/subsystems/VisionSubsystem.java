@@ -185,7 +185,7 @@ public class VisionSubsystem extends SubsystemBase {
       DogLog.log(loggingPath + "/Tags/" + tag.getFiducialId() + "/Yaw", tag.getYaw());
     }
     latestTagCount = tags.size();
-    DogLog.log("Subsystems/Vision/tagCount", latestTagCount);
+    DogLog.log(loggingPath + "/TagCount", latestTagCount);
 
     return true;
   }
