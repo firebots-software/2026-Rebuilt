@@ -498,7 +498,6 @@ public class AutoRoutines {
     return routine;
   }
 
-
   public AutoRoutine anthony() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
