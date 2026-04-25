@@ -233,7 +233,8 @@ public class RobotContainer {
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-    leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
+    if (DriverStation.isDisabled()) 
+        leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
   public void doTelemetry() {
