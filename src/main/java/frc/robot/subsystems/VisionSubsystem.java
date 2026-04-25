@@ -139,7 +139,6 @@ public class VisionSubsystem extends SubsystemBase {
     DogLog.log(loggingPath + "/MeasuredPose", latestMeasuredPose);
 
     latestMinDistance = getMinDistance();
-    // latestMaxDistance = getMaxDistance();
     latestAvgDistance = getAverageDistance();
 
     if (throwOutDistance(latestMinDistance)) return;
