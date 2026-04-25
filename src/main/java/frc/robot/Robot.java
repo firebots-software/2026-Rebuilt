@@ -108,6 +108,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     m_robotContainer.intakeSubsystem.applyBrakeConfigArm();
+    m_robotContainer.leds.resetVisionStatusIndicators();
     VisionUtils.setHeadingThreshold(Constants.Vision.MAX_HEADING_DIFF);
 
     // This makes sure that the autonomous stops running when

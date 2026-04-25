@@ -47,7 +47,6 @@ public class LEDSubsystem extends SubsystemBase {
       applyState(computedState);
     }
     if (currentState == LEDState.ACTIVE_IN_RANGE) activeInRangeAnimation();
-    if (currentState == LEDState.NONE) candle.setControl(new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kBlack)));
 
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
@@ -66,7 +65,8 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void applyState(LEDState state) {
-    clearAll();
+    clearAllSlots();
+    clearLeds(8, END_OF_STRIP);
     // active in range animation handled in periodic
     switch (state) {
       case ACTIVE -> candle.setControl(activeAnimation());
@@ -75,7 +75,7 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(flame(39, END_OF_STRIP, 1, true));
       }
       case RAINBOW -> candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
-      default -> clearAll();
+      default -> {}
     }
   }
 
@@ -85,46 +85,51 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem rearLeft,
       VisionSubsystem rearRight) {
 
-    if (DriverStation.isDisabled()) {
-      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
-      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
-      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
-      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
+    candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
+    candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
+    candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
+    candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
 
-      boolean seesTag =
-          frontLeft.seesTags()
-              || frontRight.seesTags()
-              || rearLeft.seesTags()
-              || rearRight.seesTags();
-      if (seesTag != seesTagCached) {
-        clearSlots(2, 5);
-        seesTagCached = seesTag;
-      }
+    boolean seesTag =
+        frontLeft.seesTags()
+            || frontRight.seesTags()
+            || rearLeft.seesTags()
+            || rearRight.seesTags();
+    if (seesTag != seesTagCached) {
+      clearSlots(2, 5);
+      seesTagCached = seesTag;
+    }
 
-      if (seesTag) {
-        candle.setControl(solidColor(Color.kGreen, 7));
-        candle.setControl(solidColor(Color.kGreen, 0));
-        candle.setControl(solidColor(Color.kGreen, 6));
-        candle.setControl(solidColor(Color.kGreen, 1));
-      } else {
-        candle.setControl(strobe(Color.kRed, 6, 7, 2));
-        candle.setControl(strobe(Color.kRed, 6, 0, 3));
-        candle.setControl(strobe(Color.kRed, 6, 6, 4));
-        candle.setControl(strobe(Color.kRed, 6, 1, 5));
-      }
+    if (seesTag) {
+      candle.setControl(solidColor(Color.kGreen, 7));
+      candle.setControl(solidColor(Color.kGreen, 0));
+      candle.setControl(solidColor(Color.kGreen, 6));
+      candle.setControl(solidColor(Color.kGreen, 1));
     } else {
-      candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
-      seesTagCached = false;
+      candle.setControl(strobe(Color.kRed, 6, 7, 2));
+      candle.setControl(strobe(Color.kRed, 6, 0, 3));
+      candle.setControl(strobe(Color.kRed, 6, 6, 4));
+      candle.setControl(strobe(Color.kRed, 6, 1, 5));
     }
   }
 
+  public void resetVisionStatusIndicators() {
+    clearSlots(2, 5);
+    clearLeds(0, 7);
+    seesTagCached = false;
+  }
+
   // helper methods
-  public static void clearSlots(int start, int end) {
+  public void clearSlots(int start, int end) {
     for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
   }
 
-  public void clearAll() {
+  public void clearAllSlots() {
     clearSlots(0, 7);
+  }
+
+  public void clearLeds(int startIndex, int endIndex) {
+    candle.setControl(new SolidColor(startIndex, endIndex).withColor(new RGBWColor(Color.kBlack)));
   }
 
   private SingleFadeAnimation activeAnimation() {
