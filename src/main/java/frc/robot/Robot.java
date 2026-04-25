@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.visionPeriodic();
     elasticLogging();
     MiscUtils.shiftSwitchIndicator(simulatedTime);
-    // m_robotContainer.doTelemetry();
+    m_robotContainer.doTelemetry();
   }
 
   private void elasticLogging() {
