@@ -18,9 +18,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.util.VisionUtils;
-
-import static edu.wpi.first.units.Units.Newton;
-
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
