@@ -113,7 +113,7 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
-  public void resetVisionStatusIndicators() {
+  public void disableVisionStatusIndicators() {
     clearSlots(2, 5);
     clearLeds(0, 7);
     seesTagCached = false;
