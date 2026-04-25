@@ -150,9 +150,9 @@ public class SwerveJoystickCommand extends Command {
         && isPointed
         && intentionallyStationary) {
       swerveDrivetrain.brakeSwerve();
-      DogLog.log("braketypeshit", true);
+      DogLog.log("IsItBraking?", true);
     } else {
-      DogLog.log("braketypeshit", false);
+      DogLog.log("IsItBraking?", false);
       this.swerveDrivetrain.setControl(drive);
     }
   }
