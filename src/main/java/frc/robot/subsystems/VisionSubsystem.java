@@ -33,7 +33,6 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
   private double lastTagSeenTimestamp = -1.0;
-  private static final double TAG_VISIBLE_THRESHOLD_SEC = 0.2;
 
   private String cameraTitle;
   private String loggingPath;
@@ -212,7 +211,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   public boolean seesTags() {
     if (!cameraConnectedStatus) return false;
-    return (Timer.getFPGATimestamp() - lastTagSeenTimestamp) <= TAG_VISIBLE_THRESHOLD_SEC;
+    return (Timer.getFPGATimestamp() - lastTagSeenTimestamp)
+        <= Constants.Vision.TAG_VISIBLE_THRESHOLD_SEC;
   }
 
   public double getMinDistance() {

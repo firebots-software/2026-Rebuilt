@@ -521,6 +521,7 @@ public final class Constants {
 
     public static final double TIMESTAMP_THRESHOLD = 0.5;
     public static final double TIMESTAMP_FPGA_CORRECTION = -0.03;
+    public static final double TAG_VISIBLE_THRESHOLD_SEC = 0.2;
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
