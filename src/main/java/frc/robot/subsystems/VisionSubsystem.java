@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.util.VisionUtils;
+
+import static edu.wpi.first.units.Units.Newton;
+
 import java.util.List;
 import java.util.Optional;
 import org.photonvision.EstimatedRobotPose;
@@ -31,8 +34,8 @@ public class VisionSubsystem extends SubsystemBase {
   private final PhotonCamera photonCamera;
   private final AprilTagFieldLayout fieldLayout;
   private final PhotonPoseEstimator poseEstimator;
-  private PhotonPipelineResult latestVisionResult;
-  private PhotonPipelineResult previousVisionResult;
+  private PhotonPipelineResult latestVisionResult = new PhotonPipelineResult();
+  private PhotonPipelineResult previousVisionResult = new PhotonPipelineResult();
 
   private String cameraTitle;
   private String loggingPath;
