@@ -47,6 +47,7 @@ public class LEDSubsystem extends SubsystemBase {
       applyState(computedState);
     }
     if (currentState == LEDState.ACTIVE_IN_RANGE) activeInRangeAnimation();
+    if (currentState == LEDState.NONE) candle.setControl(new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kBlack)));
 
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
@@ -59,6 +60,7 @@ public class LEDSubsystem extends SubsystemBase {
 
     if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
     else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
+    else if (!active.getAsBoolean()) return LEDState.NONE;
 
     return LEDState.NONE;
   }
