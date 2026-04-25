@@ -174,7 +174,6 @@ public class RobotContainer {
     //                     new Translation2d(2.462480068206787, 2.26101016998291), new
     // Rotation2d())));
 
-    joystick.a().whileTrue(drivetrain.brakeSwerve());
     // * KEEP FOR INTERMAP TESTING
     // joystick
     //     .rightTrigger()
@@ -234,7 +233,8 @@ public class RobotContainer {
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
-    leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
+    if (DriverStation.isDisabled()) 
+        leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
   }
 
   public void doTelemetry() {

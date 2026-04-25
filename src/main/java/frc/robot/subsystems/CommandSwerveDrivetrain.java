@@ -423,7 +423,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return omega;
   }
 
-  public Command brakeSwerve() {
-    return run(() -> setControl(m_brake));
+  public void brakeSwerve() {
+    setControl(m_brake);
   }
 }
