@@ -47,7 +47,6 @@ public class LEDSubsystem extends SubsystemBase {
       applyState(computedState);
     }
     if (currentState == LEDState.ACTIVE_IN_RANGE) activeInRangeAnimation();
-    if (currentState == LEDState.NONE) candle.setControl(new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(Color.kBlack)));
 
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
@@ -75,6 +74,7 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(flame(39, END_OF_STRIP, 1, true));
       }
       case RAINBOW -> candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
+      case NONE -> setColor(8, END_OF_STRIP, Color.kBlack);
       default -> clearAll();
     }
   }
@@ -113,9 +113,13 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(strobe(Color.kRed, 6, 1, 5));
       }
     } else {
-      candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
+      setColor(0, 7, Color.kBlack);
       seesTagCached = false;
     }
+  }
+
+  private static void setColor(int start, int end, Color color) {
+    candle.setControl(new SolidColor(start, end).withColor(new RGBWColor(color)));
   }
 
   // helper methods
