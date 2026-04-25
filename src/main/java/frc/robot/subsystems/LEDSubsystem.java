@@ -84,51 +84,51 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem frontRight,
       VisionSubsystem rearLeft,
       VisionSubsystem rearRight) {
-    candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
-    candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
-    candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
-    candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
 
-    boolean seesTag =
-        frontLeft.seesTags()
-            || frontRight.seesTags()
-            || rearLeft.seesTags()
-            || rearRight.seesTags();
-    if (seesTag != seesTagCached) {
-      clearSlots(2, 5);
-      seesTagCached = seesTag;
-    }
+    if (DriverStation.isDisabled()) {
+      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
+      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
+      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
+      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
 
-    if (seesTag) {
-      candle.setControl(solidColor(Color.kGreen, 7));
-      candle.setControl(solidColor(Color.kGreen, 0));
-      candle.setControl(solidColor(Color.kGreen, 6));
-      candle.setControl(solidColor(Color.kGreen, 1));
+      boolean seesTag =
+          frontLeft.seesTags()
+              || frontRight.seesTags()
+              || rearLeft.seesTags()
+              || rearRight.seesTags();
+      if (seesTag != seesTagCached) {
+        clearSlots(2, 5);
+        seesTagCached = seesTag;
+      }
+
+      if (seesTag) {
+        candle.setControl(solidColor(Color.kGreen, 7));
+        candle.setControl(solidColor(Color.kGreen, 0));
+        candle.setControl(solidColor(Color.kGreen, 6));
+        candle.setControl(solidColor(Color.kGreen, 1));
+      } else {
+        candle.setControl(strobe(Color.kRed, 6, 7, 2));
+        candle.setControl(strobe(Color.kRed, 6, 0, 3));
+        candle.setControl(strobe(Color.kRed, 6, 6, 4));
+        candle.setControl(strobe(Color.kRed, 6, 1, 5));
+      }
     } else {
-      candle.setControl(strobe(Color.kRed, 6, 7, 2));
-      candle.setControl(strobe(Color.kRed, 6, 0, 3));
-      candle.setControl(strobe(Color.kRed, 6, 6, 4));
-      candle.setControl(strobe(Color.kRed, 6, 1, 5));
+      setColor(0, 7, Color.kBlack);
+      seesTagCached = false;
     }
   }
 
-  
+  private static void setColor(int start, int end, Color color) {
+    candle.setControl(new SolidColor(start, end).withColor(new RGBWColor(color)));
+  }
+
   // helper methods
   public static void clearSlots(int start, int end) {
     for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
   }
-  
-  private static void setColor(int start, int end, Color color) {
-    candle.setControl(new SolidColor(start, end).withColor(new RGBWColor(color)));
-  }
-  
+
   public void clearAll() {
     clearSlots(0, 7);
-  }
-  
-  public void clearVisionIndicators() {
-    setColor(0, 7, Color.kBlack);
-    seesTagCached = false;
   }
 
   private SingleFadeAnimation activeAnimation() {
@@ -152,7 +152,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   private void activeInRangeAnimation() {
     boolean red = ((int) (Timer.getFPGATimestamp() * 10)) % 2 == 0;
-    DogLog.log("Subsystems/LEDs/isRed", red);
+    DogLog.log("Subsystems/LEDs/Red", red);
     candle.setControl(solidColor(red ? Color.kRed : Color.kWhite));
   }
 
