@@ -34,15 +34,15 @@ public class VisionSubsystem extends SubsystemBase {
   private PhotonPipelineResult latestVisionResult;
   private double lastTagSeenTimestamp = -1.0;
 
-  private String cameraTitle;
-  private String loggingPath;
+  private final String cameraTitle;
+  private final String loggingPath;
 
   private Optional<EstimatedRobotPose> visionEstimate;
 
   private boolean cameraConnectedStatus = false;
 
-  private Matrix<N3, N3> cameraIntrinsics;
-  private Matrix<N8, N1> distortionCoeffs;
+  private final Matrix<N3, N3> cameraIntrinsics;
+  private final Matrix<N8, N1> distortionCoeffs;
 
   // addFilteredPose() vals
   private boolean hasValidMeasurement;
@@ -52,8 +52,8 @@ public class VisionSubsystem extends SubsystemBase {
   private double latestMinDistance;
   private double latestAvgDistance;
   private int latestTagCount;
-  private CommandSwerveDrivetrain swerve;
-  private Transform3d camHeight;
+  private final CommandSwerveDrivetrain swerve;
+  private final Transform3d camHeight;
 
   public VisionSubsystem(
       Constants.Vision.VisionCamera cameraID, CommandSwerveDrivetrain drivetrain) {
