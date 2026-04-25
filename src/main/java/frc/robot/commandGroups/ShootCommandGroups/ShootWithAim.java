@@ -54,6 +54,7 @@ public class ShootWithAim extends ParallelCommandGroup {
                     () -> false,
                     redside,
                     drivetrain,
+                    () -> true,
                     () -> true),
                 Commands.waitUntil(shooterSubsystem::isAtSpeed)
                     .andThen(

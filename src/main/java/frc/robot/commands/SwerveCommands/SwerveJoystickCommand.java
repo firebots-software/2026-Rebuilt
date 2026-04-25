@@ -17,7 +17,8 @@ public class SwerveJoystickCommand extends Command {
       doPointing,
       doPassing,
       redsideIfPointing,
-      capper;
+      capper,
+      braking;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
@@ -37,7 +38,8 @@ public class SwerveJoystickCommand extends Command {
       BooleanSupplier doPassing,
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
-      BooleanSupplier capper) {
+      BooleanSupplier capper,
+      BooleanSupplier braking) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
@@ -49,50 +51,10 @@ public class SwerveJoystickCommand extends Command {
     this.doPassing = doPassing;
     this.redsideIfPointing = redSideIfPointing;
     this.capper = capper;
+    this.braking = braking;
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
-  }
-
-  // Sets everything, not field relative
-  public SwerveJoystickCommand(
-      DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction,
-      DoubleSupplier turningSpdFunction,
-      DoubleSupplier speedControlFunction,
-      CommandSwerveDrivetrain swerveSubsystem,
-      BooleanSupplier capper) {
-
-    this(
-        frontBackFunction,
-        leftRightFunction,
-        turningSpdFunction,
-        speedControlFunction,
-        () -> false,
-        () -> false,
-        () -> false,
-        () -> false,
-        swerveSubsystem,
-        capper);
-  }
-
-  public SwerveJoystickCommand(
-      DoubleSupplier frontBackFunction,
-      DoubleSupplier leftRightFunction,
-      DoubleSupplier turningSpdFunction,
-      DoubleSupplier speedControlFunction,
-      CommandSwerveDrivetrain swerveSubsystem,
-      boolean squaredTurn,
-      BooleanSupplier capper) {
-
-    this(
-        frontBackFunction,
-        leftRightFunction,
-        turningSpdFunction,
-        speedControlFunction,
-        swerveSubsystem,
-        capper);
-    this.squaredTurn = squaredTurn;
   }
 
   @Override
@@ -173,8 +135,14 @@ public class SwerveJoystickCommand extends Command {
             : robotCentricDrive.withVelocityX(x).withVelocityY(y).withRotationalRate(turn);
 
     // Applies request
-    this.swerveDrivetrain.setControl(drive);
-  } // Drive counterclockwise with negative X (left))
+
+    if (braking.getAsBoolean()) {
+      swerveDrivetrain.brakeSwerve();
+    }
+    else {
+      this.swerveDrivetrain.setControl(drive);
+    }
+  } 
 
   @Override
   public void end(boolean interrupted) {

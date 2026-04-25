@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.DriveToPose;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -125,20 +126,20 @@ public class RobotContainer {
     DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
     DoubleSupplier rotationFunction = () -> -joystick.getRightX();
     DoubleSupplier speedFunction = () -> 1d;
-    SwerveJoystickDefaultCommand swerveJoystickDefaultCommand =
-        new SwerveJoystickDefaultCommand(
-            frontBackFunction,
-            leftRightFunction,
-            rotationFunction,
-            speedFunction,
-            () -> true,
-            joystick.leftTrigger()::getAsBoolean,
-            redside,
-            drivetrain,
-            visionIntake,
-            joystick.leftBumper()::getAsBoolean,
-            secondController.intakeVisionLockout(),
-            intakeSubsystem::atExtendedPosition);
+
+    SwerveJoystickCommand swerveJoystickDefaultCommand =
+                new SwerveJoystickCommand(
+                frontBackFunction,
+                leftRightFunction,
+                rotationFunction,
+                speedFunction,
+                () -> true,
+                joystick.leftTrigger()::getAsBoolean,
+                () -> false,
+                redside,
+                drivetrain,
+                () -> false,
+                () -> false);
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
