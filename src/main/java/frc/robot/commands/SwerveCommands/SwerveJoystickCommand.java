@@ -138,11 +138,10 @@ public class SwerveJoystickCommand extends Command {
 
     if (braking.getAsBoolean()) {
       swerveDrivetrain.brakeSwerve();
-    }
-    else {
+    } else {
       this.swerveDrivetrain.setControl(drive);
     }
-  } 
+  }
 
   @Override
   public void end(boolean interrupted) {

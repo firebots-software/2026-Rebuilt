@@ -22,7 +22,6 @@ import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
-import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
@@ -128,18 +127,18 @@ public class RobotContainer {
     DoubleSupplier speedFunction = () -> 1d;
 
     SwerveJoystickCommand swerveJoystickDefaultCommand =
-                new SwerveJoystickCommand(
-                frontBackFunction,
-                leftRightFunction,
-                rotationFunction,
-                speedFunction,
-                () -> true,
-                joystick.leftTrigger()::getAsBoolean,
-                () -> false,
-                redside,
-                drivetrain,
-                () -> false,
-                () -> false);
+        new SwerveJoystickCommand(
+            frontBackFunction,
+            leftRightFunction,
+            rotationFunction,
+            speedFunction,
+            () -> true,
+            joystick.leftTrigger()::getAsBoolean,
+            () -> false,
+            redside,
+            drivetrain,
+            () -> false,
+            () -> false);
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
@@ -243,7 +242,7 @@ public class RobotContainer {
   }
 
   public void clearCANdle() {
-    LEDSubsystem.clear(0,7);
+    LEDSubsystem.clear(0, 7);
   }
 
   public boolean inAllianceSide() {

@@ -114,7 +114,7 @@ public class LEDSubsystem extends SubsystemBase {
   public static void clear(int start, int end) {
     for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
   }
-  
+
   public void clearAll() {
     clear(0, 7);
   }
