@@ -98,7 +98,7 @@ public class LEDSubsystem extends SubsystemBase {
             || rearLeft.seesTags()
             || rearRight.seesTags();
     if (seesTag != seesTagCached) {
-      clear(2, 5);
+      clearSlots(2, 5);
       seesTagCached = seesTag;
     }
 
@@ -120,12 +120,12 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   // helper methods
-  public static void clear(int start, int end) {
+  public static void clearSlots(int start, int end) {
     for (int i = start; i <= end; i++) candle.setControl(new EmptyAnimation(i));
   }
 
   public void clearAll() {
-    clear(0, 7);
+    clearSlots(0, 7);
   }
 
   private SingleFadeAnimation activeAnimation() {
