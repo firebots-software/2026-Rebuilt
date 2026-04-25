@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.SingleFadeAnimation;
 import com.ctre.phoenix6.controls.SolidColor;
 import com.ctre.phoenix6.controls.StrobeAnimation;
 import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.SysIdSwerveSteerGains;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
@@ -114,6 +115,8 @@ public class LEDSubsystem extends SubsystemBase {
     }
   } else {
     clear(0, 7);
+    candle.setControl(new SolidColor(0, 7).withColor(new RGBWColor(Color.kBlack)));
+    seesTagCached = false;
   }
   }
 
