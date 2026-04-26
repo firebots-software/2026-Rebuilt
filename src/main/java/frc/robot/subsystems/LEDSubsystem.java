@@ -86,6 +86,7 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem rearRight) {
 
     if (DriverStation.isDisabled()) {
+      DogLog.log("Subsystems/LEDs/VisionIndicatorsEnabled", true);
       candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
       candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
       candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
@@ -113,6 +114,7 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(strobe(Color.kRed, 6, 1, 5));
       }
     } else {
+      DogLog.log("Subsystems/LEDs/VisionIndicatorsEnabled", false);
       setColor(0, 7, Color.kBlack);
       seesTagCached = false;
     }
@@ -152,7 +154,6 @@ public class LEDSubsystem extends SubsystemBase {
 
   private void activeInRangeAnimation() {
     boolean red = ((int) (Timer.getFPGATimestamp() * 10)) % 2 == 0;
-    DogLog.log("Subsystems/LEDs/Red", red);
     candle.setControl(solidColor(red ? Color.kRed : Color.kWhite));
   }
 
