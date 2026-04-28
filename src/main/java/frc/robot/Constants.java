@@ -3,6 +3,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -10,16 +11,20 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.numbers.N8;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import frc.robot.util.VisionCameraConstants;
 
 public final class Constants {
   public static final boolean hopperOnRobot = true;
   public static final boolean intakeOnRobot = true;
   public static final boolean visionOnRobot = true;
   public static final boolean fuelGaugeOnRobot = false;
-  public static final boolean intakeVisionOnRobot = true;
+  public static final boolean intakeVisionOnRobot = false;
   public static final boolean shooterOnRobot = true;
 
   public static class OperatorConstants {
@@ -228,7 +233,7 @@ public final class Constants {
       SERRANO(0.1d, 0d, 0d, 0.1d, 0d, 0d, 3.867d, 0d, 0d),
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
-      COBRA(3.467, 0, 0, 3.567, 0, 0, 3.4, 0, 0);
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 9.0, 0, 0); // 3.75 m/s^2 max accel while turning max,
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -447,7 +452,8 @@ public final class Constants {
       public static enum MiscPaths {
         LeftShootToBump,
         RightShootToBump,
-        Nike
+        Nike,
+        anthony
       }
     }
   }
@@ -515,75 +521,45 @@ public final class Constants {
 
     public static final double TIMESTAMP_THRESHOLD = 0.5;
     public static final double TIMESTAMP_FPGA_CORRECTION = -0.03;
-
-    private class FrontRight {
-      private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(-12.316702); // mrd negative
-      private static final double Z = Units.inchesToMeters(26.967089);
-      private static final double ROLL = Units.degreesToRadians(0.0);
-      private static final double PITCH = Units.degreesToRadians(0.0);
-      private static final double YAW = Units.degreesToRadians(-42.0); // mrd 310
-    }
-
-    private class FrontLeft {
-      private static final double X = Units.inchesToMeters(-2.160666);
-      private static final double Y = Units.inchesToMeters(12.316702); // mrd positive
-      private static final double Z = Units.inchesToMeters(26.967089);
-      private static final double ROLL = Units.degreesToRadians(0.0);
-      private static final double PITCH = Units.degreesToRadians(0.0);
-      private static final double YAW = Units.degreesToRadians(42.0); // mrd 50
-    }
-
-    private class RearRight {
-      private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(-11.537644); // mrd negative
-      private static final double Z = Units.inchesToMeters(23.570693);
-      private static final double ROLL = Units.degreesToRadians(0.0);
-      private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(148.35615); // mrd 328.35615
-    }
-
-    private class RearLeft {
-      private static final double X = Units.inchesToMeters(-14.106719);
-      private static final double Y = Units.inchesToMeters(11.537644); // mrd positive
-      private static final double Z = Units.inchesToMeters(23.570693);
-      private static final double ROLL = Units.degreesToRadians(0.0);
-      private static final double PITCH = Units.degreesToRadians(330.321995);
-      private static final double YAW = Units.degreesToRadians(211.64385); // mrd 31.643850
-    }
+    public static final double TAG_VISIBLE_THRESHOLD_SEC = 0.2;
 
     // initializes cameras for use in VisionSubsystem
     public static enum VisionCamera {
       FRONT_RIGHT_CAM(
           "frontRightCam",
-          new Transform3d(
-              new Translation3d(FrontRight.X, FrontRight.Y, FrontRight.Z),
-              new Rotation3d(FrontRight.ROLL, FrontRight.PITCH, FrontRight.YAW))),
+          VisionCameraConstants.FrontRight.transform,
+          VisionCameraConstants.FrontRight.cameraMatrix,
+          VisionCameraConstants.FrontRight.distCoeffs),
 
       FRONT_LEFT_CAM(
           "frontLeftCam",
-          new Transform3d(
-              new Translation3d(FrontLeft.X, FrontLeft.Y, FrontLeft.Z),
-              new Rotation3d(FrontLeft.ROLL, FrontLeft.PITCH, FrontLeft.YAW))),
+          VisionCameraConstants.FrontLeft.transform,
+          VisionCameraConstants.FrontLeft.cameraMatrix,
+          VisionCameraConstants.FrontLeft.distCoeffs),
 
       REAR_RIGHT_CAM(
           "rearRightCam",
-          new Transform3d(
-              new Translation3d(RearRight.X, RearRight.Y, RearRight.Z),
-              new Rotation3d(RearRight.ROLL, RearRight.PITCH, RearRight.YAW))),
+          VisionCameraConstants.RearRight.transform,
+          VisionCameraConstants.RearRight.cameraMatrix,
+          VisionCameraConstants.RearRight.distCoeffs),
 
       REAR_LEFT_CAM(
           "rearLeftCam",
-          new Transform3d(
-              new Translation3d(RearLeft.X, RearLeft.Y, RearLeft.Z),
-              new Rotation3d(RearLeft.ROLL, RearLeft.PITCH, RearLeft.YAW)));
+          VisionCameraConstants.RearLeft.transform,
+          VisionCameraConstants.RearLeft.cameraMatrix,
+          VisionCameraConstants.RearLeft.distCoeffs);
 
       private String loggingName;
       private Transform3d cameraTransform;
+      private Matrix<N3, N3> cameraMatrix;
+      private Matrix<N8, N1> distCoeffs;
 
-      VisionCamera(String name, Transform3d transform) {
+      VisionCamera(
+          String name, Transform3d transform, Matrix<N3, N3> matrix, Matrix<N8, N1> coeffs) {
         loggingName = name;
         cameraTransform = transform;
+        cameraMatrix = matrix;
+        distCoeffs = coeffs;
       }
 
       public String getLoggingName() {
@@ -593,20 +569,26 @@ public final class Constants {
       public Transform3d getCameraTransform() {
         return cameraTransform;
       }
+
+      public Matrix<N3, N3> getCameraMatrix() {
+        return cameraMatrix;
+      }
+
+      public Matrix<N8, N1> getDistCoeffs() {
+        return distCoeffs;
+      }
     }
 
     public static final CameraSelectionMethod CAMERA_SELECTION_METHOD = CameraSelectionMethod.MIN;
     public static final double MAX_HEADING_DIFF = 25.0;
     public static final double MAX_HEADING_DIFF_AUTO = 20.0;
-
-    public static int MAX_JITTER_MEASUREMENTS = 16;
+    public static final double HDG_PENALTY = 0.5;
 
     public static enum CameraSelectionMethod {
       MIN(),
       AVG(),
       MAX(),
-      POSE_AMBIGUITY(),
-      JITTER();
+      POSE_AMBIGUITY();
     }
   }
 
@@ -616,19 +598,8 @@ public final class Constants {
     public static final double MAX_DETECTABLE_FUEL_AREA_PERCENTAGE = 60.00;
     public static final double REALISTIC_MAX_DETECTABLE_AREA_PERCENTAGE = 15.00;
 
-    public static final double FUEL_GAUGE_X = Units.inchesToMeters(-3.454827);
-    public static final double FUEL_GAUGE_Y = Units.inchesToMeters(-7.056897);
-    public static final double FUEL_GAUGE_Z = Units.inchesToMeters(25.105416);
-    public static final double FUEL_GAUGE_ROLL = Units.degreesToRadians(286.894287);
-    public static final double FUEL_GAUGE_PITCH = Units.degreesToRadians(55.646896);
-    public static final double FUEL_GAUGE_YAW = Units.degreesToRadians(23.957651);
-
     public static enum FuelGaugeCamera {
-      FUEL_GAUGE_CAM(
-          "fuelGaugeCam",
-          new Transform3d(
-              new Translation3d(FUEL_GAUGE_X, FUEL_GAUGE_Y, FUEL_GAUGE_Z),
-              new Rotation3d(FUEL_GAUGE_ROLL, FUEL_GAUGE_PITCH, FUEL_GAUGE_YAW)));
+      FUEL_GAUGE_CAM("fuelGaugeCam", VisionCameraConstants.FuelGauge.transform);
 
       private String loggingName;
       private Transform3d cameraTransform;

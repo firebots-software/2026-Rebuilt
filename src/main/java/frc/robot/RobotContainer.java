@@ -5,9 +5,6 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 // * KEEP FOR WIN COMMAND TESTING
 // import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,8 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
-import frc.robot.commands.DriveToPose;
-import frc.robot.commands.SwerveCommands.SwerveJoystickDefaultCommand;
+import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
@@ -42,8 +38,8 @@ public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
   //   private Field2d field = new Field2d();
-  //   private final Telemetry logger =
-  //       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
+  private final Telemetry logger =
+      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
   private final CustomController secondController = new CustomController(4);
@@ -125,20 +121,20 @@ public class RobotContainer {
     DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
     DoubleSupplier rotationFunction = () -> -joystick.getRightX();
     DoubleSupplier speedFunction = () -> 1d;
-    SwerveJoystickDefaultCommand swerveJoystickDefaultCommand =
-        new SwerveJoystickDefaultCommand(
+
+    SwerveJoystickCommand swerveJoystickDefaultCommand =
+        new SwerveJoystickCommand(
             frontBackFunction,
             leftRightFunction,
             rotationFunction,
             speedFunction,
             () -> true,
             joystick.leftTrigger()::getAsBoolean,
+            () -> false,
             redside,
             drivetrain,
-            visionIntake,
-            joystick.leftBumper()::getAsBoolean,
-            secondController.intakeVisionLockout(),
-            intakeSubsystem::atExtendedPosition);
+            () -> false,
+            () -> false);
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
@@ -168,14 +164,15 @@ public class RobotContainer {
     //             drivetrain,
     //             redside));
 
-    joystick
-        .a()
-        .whileTrue(
-            new DriveToPose(
-                drivetrain,
-                () ->
-                    new Pose2d(
-                        new Translation2d(2.462480068206787, 2.26101016998291), new Rotation2d())));
+    // joystick
+    //     .a()
+    //     .whileTrue(
+    //         new DriveToPose(
+    //             drivetrain,
+    //             () ->
+    //                 new Pose2d(
+    //                     new Translation2d(2.462480068206787, 2.26101016998291), new
+    // Rotation2d())));
 
     // * KEEP FOR INTERMAP TESTING
     // joystick
@@ -236,6 +233,17 @@ public class RobotContainer {
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
+    leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
+  }
+
+  public void doTelemetry() {
+    logger.telemeterize(drivetrain.getCurrentState());
+
+    String commandName = "nah";
+
+    if (drivetrain.getCurrentCommand() != null) {
+      commandName = drivetrain.getCurrentCommand().getName();
+    }
   }
 
   public boolean inAllianceSide() {

@@ -18,6 +18,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.VisionSubsystem;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 public class VisionUtils {
   private static VisionSubsystem visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft;
@@ -276,5 +277,9 @@ public class VisionUtils {
 
   public static double getHeadingThreshold() {
     return headingThreshold;
+  }
+
+  public static boolean visionResultInvalid(PhotonPipelineResult result) {
+    return result == null || result.getTargets().isEmpty();
   }
 }
