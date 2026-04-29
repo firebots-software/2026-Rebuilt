@@ -110,7 +110,7 @@ public class AutoRoutines {
                 swerveSubsystem,
                 isRedSide,
                 () -> false)
-            .withTimeout(4.0);
+            .withTimeout(3.5);
 
     return shoot;
   }
@@ -525,7 +525,7 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
-    autoChooser.addRoutine("bad word", () -> anthony());
+    // autoChooser.addRoutine("bad word", () -> anthony());
   }
 
   public AutoChooser getAutoChooser() {
