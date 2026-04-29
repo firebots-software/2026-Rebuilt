@@ -86,7 +86,7 @@ public class RobotContainer {
       new LEDSubsystem(
           MiscUtils::areWeActive,
           () ->
-              Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4.3 && inAllianceSide());
+              Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4.47 && inAllianceSide());
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
