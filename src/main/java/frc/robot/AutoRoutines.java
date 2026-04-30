@@ -436,7 +436,7 @@ public class AutoRoutines {
   public AutoRoutine DrakeOutpostShort() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
 
-    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStartPush);
+    AutoTrajectory outpostIntake = outpost(routine, Constants.Swerve.Auto.Outpost.OutpostStart);
 
     routine.active().onTrue(Commands.sequence(outpostIntake.resetOdometry(), outpostIntake.cmd()));
 
