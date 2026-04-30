@@ -69,6 +69,8 @@ public class MiscUtils {
     DogLog.log("Elastic/AllianceChar", allianceChar == null || allianceChar.isEmpty() ? "Empty" : allianceChar);
 
     if (allianceChar == null || allianceChar.isEmpty()) return true;
+    Alliance secondAlliance = getSecondAlliance();
+    if (secondAlliance == null) return  true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
     boolean weAreActiveFirst =
