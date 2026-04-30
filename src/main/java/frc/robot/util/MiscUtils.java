@@ -41,7 +41,7 @@ public class MiscUtils {
 
   public static String activeFirst() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance == null || alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
+    if (alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
     Alliance allianceObj = alliance.get();
     Alliance ourAlliance = getSecondAlliance();
     if (ourAlliance == null) return "";
@@ -56,7 +56,7 @@ public class MiscUtils {
   public static boolean areWeActive(double howEarly) {
     Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    if (alliance == null ||alliance.isEmpty()) return false;
+    if (alliance.isEmpty()) return false;
     if (DriverStation.isAutonomousEnabled()) return true;
     if (!DriverStation.isTeleopEnabled()) return false;
 
