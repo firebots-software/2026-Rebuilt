@@ -67,8 +67,13 @@ public class MiscUtils {
           case Blue -> redInactiveFirst;
         };
 
+    DogLog.log("Subsystems/LEDs/matchTime", currentMatchTime);
+
     double earlyActiveFirst = weAreActiveFirst ? earlyMatchTime : currentMatchTime;
+    DogLog.log("Subsystems/LEDs/earlyActiveFirst", earlyActiveFirst);
     double earlyActiveSecond = !weAreActiveFirst ? earlyMatchTime : currentMatchTime;
+    DogLog.log("Subsystems/LEDs/earlyActiveSecond", earlyActiveFirst);
+
 
     if (currentMatchTime > 130) return true;
     else if (earlyActiveSecond > 105) return weAreActiveFirst;
