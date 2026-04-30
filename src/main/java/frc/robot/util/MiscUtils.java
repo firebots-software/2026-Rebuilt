@@ -40,6 +40,10 @@ public class MiscUtils {
   }
 
   public static boolean areWeActive() {
+    return areWeActive(0.0);
+  }
+
+  public static boolean areWeActive(double howEarly) {
     Optional<Alliance> alliance = DriverStation.getAlliance();
 
     if (alliance.isEmpty()) return false;
@@ -48,6 +52,8 @@ public class MiscUtils {
 
     // teleop is enabled
     double currentMatchTime = DriverStation.getMatchTime();
+    double earlyMatchTime = currentMatchTime + howEarly;
+    
     String allianceChar = DriverStation.getGameSpecificMessage();
 
     DogLog.log("Elastic/AllianceChar", allianceChar.isEmpty() ? "Empty" : allianceChar);
@@ -55,17 +61,20 @@ public class MiscUtils {
     if (allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
-    boolean shift1Active =
+    boolean weAreActive =
         switch (alliance.get()) {
           case Red -> !redInactiveFirst;
           case Blue -> redInactiveFirst;
-        };
+        }; 
+    
+    double earlyActiveFirst = weAreActive ? earlyMatchTime : currentMatchTime;
+    double earlyActiveSecond = !weAreActive ? earlyMatchTime : currentMatchTime;
 
-    if (currentMatchTime > 130) return true;
-    else if (currentMatchTime > 105) return shift1Active;
-    else if (currentMatchTime > 80) return !shift1Active;
-    else if (currentMatchTime > 55) return shift1Active;
-    else if (currentMatchTime > 30) return !shift1Active;
+    if (earlyMatchTime > 130) return true;
+    else if (earlyActiveFirst > 105) return weAreActive;
+    else if (earlyActiveSecond > 80) return !weAreActive;
+    else if (earlyActiveFirst > 55) return weAreActive;
+    else if (earlyActiveSecond > 30) return !weAreActive;
     else return true;
   }
 
