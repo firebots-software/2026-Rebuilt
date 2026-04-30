@@ -52,7 +52,7 @@ public class MiscUtils {
 
     // teleop is enabled
     double currentMatchTime = DriverStation.getMatchTime();
-    double earlyMatchTime = currentMatchTime + howEarly;
+    double earlyMatchTime = currentMatchTime - howEarly;
     
     String allianceChar = DriverStation.getGameSpecificMessage();
 
@@ -61,20 +61,20 @@ public class MiscUtils {
     if (allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
-    boolean weAreActive =
+    boolean weAreActiveFirst =
         switch (alliance.get()) {
           case Red -> !redInactiveFirst;
           case Blue -> redInactiveFirst;
         }; 
     
-    double earlyActiveFirst = weAreActive ? earlyMatchTime : currentMatchTime;
-    double earlyActiveSecond = !weAreActive ? earlyMatchTime : currentMatchTime;
+    double earlyActiveFirst = weAreActiveFirst ? earlyMatchTime : currentMatchTime;
+    double earlyActiveSecond = !weAreActiveFirst ? earlyMatchTime : currentMatchTime;
 
     if (earlyMatchTime > 130) return true;
-    else if (earlyActiveSecond > 105) return weAreActive;
-    else if (earlyActiveFirst > 80) return !weAreActive;
-    else if (earlyActiveSecond > 55) return weAreActive;
-    else if (earlyActiveFirst > 30) return !weAreActive;
+    else if (earlyActiveFirst > 105) return weAreActiveFirst;
+    else if (earlyActiveSecond > 80) return !weAreActiveFirst;
+    else if (earlyActiveFirst > 55) return weAreActiveFirst;
+    else if (earlyActiveSecond > 30) return !weAreActiveFirst;
     else return true;
   }
 
