@@ -42,6 +42,7 @@ public class MiscUtils {
   public static String activeFirst() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
+    DogLog.log("Subsystems/LEDs/allianceNotEmpty", true);
     Alliance ourAlliance = alliance.get();
     Alliance secondAlliance = getSecondAlliance();
     if (secondAlliance == null) return "";
