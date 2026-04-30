@@ -39,6 +39,14 @@ public class MiscUtils {
     };
   }
 
+  public static String activeFirst() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
+    Alliance allianceObj = alliance.get();
+    if (getSecondAlliance().equals(allianceObj)) return "LATER";
+    else return "NOW";
+  }
+
   public static boolean areWeActive() {
     return areWeActive(0.0);
   }

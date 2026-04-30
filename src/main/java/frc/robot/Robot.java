@@ -78,6 +78,7 @@ public class Robot extends TimedRobot {
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/AreWeActive", MiscUtils.areWeActive());
+    SmartDashboard.putString("Elastic/ActiveFirst", MiscUtils.activeFirst());
     DogLog.log("Elastic/TimeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
     SmartDashboard.putNumber(
         "Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
