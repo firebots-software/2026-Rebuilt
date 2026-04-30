@@ -71,10 +71,10 @@ public class MiscUtils {
     double earlyActiveSecond = !weAreActive ? earlyMatchTime : currentMatchTime;
 
     if (earlyMatchTime > 130) return true;
-    else if (earlyActiveFirst > 105) return weAreActive;
-    else if (earlyActiveSecond > 80) return !weAreActive;
-    else if (earlyActiveFirst > 55) return weAreActive;
-    else if (earlyActiveSecond > 30) return !weAreActive;
+    else if (earlyActiveSecond > 105) return weAreActive;
+    else if (earlyActiveFirst > 80) return !weAreActive;
+    else if (earlyActiveSecond > 55) return weAreActive;
+    else if (earlyActiveFirst > 30) return !weAreActive;
     else return true;
   }
 
