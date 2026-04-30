@@ -31,7 +31,7 @@ public class MiscUtils {
 
   public static Alliance getSecondAlliance() {
     String allianceChar = DriverStation.getGameSpecificMessage();
-    if (allianceChar.isEmpty()) return null;
+    if (allianceChar == null || allianceChar.isEmpty()) return null;
     return switch (allianceChar.charAt(0)) {
       case 'B' -> Alliance.Blue;
       case 'R' -> Alliance.Red;
@@ -41,9 +41,11 @@ public class MiscUtils {
 
   public static String activeFirst() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
+    if (alliance == null || alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
     Alliance allianceObj = alliance.get();
-    if (getSecondAlliance().equals(allianceObj)) return "LATER";
+    Alliance ourAlliance = getSecondAlliance();
+    if (ourAlliance == null) return "";
+    if (ourAlliance.equals(allianceObj)) return "LATER";
     else return "NOW";
   }
 
@@ -54,7 +56,7 @@ public class MiscUtils {
   public static boolean areWeActive(double howEarly) {
     Optional<Alliance> alliance = DriverStation.getAlliance();
 
-    if (alliance.isEmpty()) return false;
+    if (alliance == null ||alliance.isEmpty()) return false;
     if (DriverStation.isAutonomousEnabled()) return true;
     if (!DriverStation.isTeleopEnabled()) return false;
 
@@ -64,9 +66,9 @@ public class MiscUtils {
 
     String allianceChar = DriverStation.getGameSpecificMessage();
 
-    DogLog.log("Elastic/AllianceChar", allianceChar.isEmpty() ? "Empty" : allianceChar);
+    DogLog.log("Elastic/AllianceChar", allianceChar == null || allianceChar.isEmpty() ? "Empty" : allianceChar);
 
-    if (allianceChar.isEmpty()) return true;
+    if (allianceChar == null || allianceChar.isEmpty()) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
     boolean weAreActiveFirst =
