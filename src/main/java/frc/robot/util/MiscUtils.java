@@ -53,7 +53,7 @@ public class MiscUtils {
     // teleop is enabled
     double currentMatchTime = DriverStation.getMatchTime();
     double earlyMatchTime = currentMatchTime - howEarly;
-    
+
     String allianceChar = DriverStation.getGameSpecificMessage();
 
     DogLog.log("Elastic/AllianceChar", allianceChar.isEmpty() ? "Empty" : allianceChar);
@@ -65,8 +65,8 @@ public class MiscUtils {
         switch (alliance.get()) {
           case Red -> !redInactiveFirst;
           case Blue -> redInactiveFirst;
-        }; 
-    
+        };
+
     double earlyActiveFirst = weAreActiveFirst ? earlyMatchTime : currentMatchTime;
     double earlyActiveSecond = !weAreActiveFirst ? earlyMatchTime : currentMatchTime;
 
