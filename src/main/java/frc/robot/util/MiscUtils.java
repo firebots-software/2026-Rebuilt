@@ -42,10 +42,12 @@ public class MiscUtils {
   public static String activeFirst() {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
-    Alliance allianceObj = alliance.get();
-    Alliance ourAlliance = getSecondAlliance();
-    if (ourAlliance == null) return "";
-    if (ourAlliance.equals(allianceObj)) return "LATER";
+    Alliance ourAlliance = alliance.get();
+    Alliance secondAlliance = getSecondAlliance();
+    if (secondAlliance == null) return "";
+    DogLog.log("Subsystems/LEDs/ourAlliance", ourAlliance.toString());
+    DogLog.log("Subsystems/LEDs/secondAlliance", secondAlliance.toString());
+    if (secondAlliance.equals(ourAlliance)) return "LATER";
     else return "NOW";
   }
 
