@@ -69,11 +69,13 @@ public class MiscUtils {
 
     String allianceChar = DriverStation.getGameSpecificMessage();
 
-    DogLog.log("Elastic/AllianceChar", allianceChar == null || allianceChar.isEmpty() ? "Empty" : allianceChar);
+    DogLog.log(
+        "Elastic/AllianceChar",
+        allianceChar == null || allianceChar.isEmpty() ? "Empty" : allianceChar);
 
     if (allianceChar == null || allianceChar.isEmpty()) return true;
     Alliance secondAlliance = getSecondAlliance();
-    if (secondAlliance == null) return  true;
+    if (secondAlliance == null) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
     boolean weAreActiveFirst =
@@ -88,7 +90,6 @@ public class MiscUtils {
     DogLog.log("Subsystems/LEDs/earlyActiveFirst", earlyActiveFirst);
     double earlyActiveSecond = !weAreActiveFirst ? earlyMatchTime : currentMatchTime;
     DogLog.log("Subsystems/LEDs/earlyActiveSecond", earlyActiveFirst);
-
 
     if (currentMatchTime > 130) return true;
     else if (earlyActiveSecond > 105) return weAreActiveFirst;
