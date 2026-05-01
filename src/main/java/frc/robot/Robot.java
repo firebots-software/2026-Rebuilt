@@ -42,7 +42,7 @@ public class Robot extends TimedRobot {
     RobotContainer.isRedAlliance();
     DogLog.setOptions(
         new DogLogOptions()
-            .withNtPublish(true)
+            .withNtPublish(false)
             .withCaptureDs(true)
             .withLogExtras(false)
             .withNtTunables(false));
