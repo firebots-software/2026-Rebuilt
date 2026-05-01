@@ -233,7 +233,7 @@ public final class Constants {
       SERRANO(0.1d, 0d, 0d, 0.1d, 0d, 0d, 3.867d, 0d, 0d),
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
-      COBRA(3.467, 0, 0, 3.567, 0, 0, 5.0, 0, 0); // 3.75 m/s^2 max accel while turning max,
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 4.0, 0, 0); // 3.75 m/s^2 max accel while turning max,
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
@@ -924,6 +924,28 @@ public final class Constants {
             new Translation2d(5.6342058181762695, 5.8613409996032715),
             new Rotation2d(-1.5649821399611368));
     public static Pose2d BLUE_RIGHT_INTAKE_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.624283313751221, 2.281606435775757),
+            new Rotation2d(1.57873264137917));
+
+    
+
+
+
+
+    public static Pose2d RED_LEFT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.908942222595215, 2.2220301628112793),
+            new Rotation2d(1.5707963267948966));
+    public static Pose2d RED_RIGHT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(10.921140670776367, 5.914291858673096),
+            new Rotation2d(-1.5707963267948966));
+    public static Pose2d BLUE_LEFT_SHOOT_TO_BUMP =
+        new Pose2d(
+            new Translation2d(5.6342058181762695, 5.8613409996032715),
+            new Rotation2d(-1.5649821399611368));
+    public static Pose2d BLUE_RIGHT_SHOOT_TO_BUMP =
         new Pose2d(
             new Translation2d(5.624283313751221, 2.281606435775757),
             new Rotation2d(1.57873264137917));
