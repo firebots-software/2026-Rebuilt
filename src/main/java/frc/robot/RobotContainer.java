@@ -135,6 +135,7 @@ public class RobotContainer {
             redside,
             drivetrain,
             () -> false,
+            () -> false,
             () -> false);
 
     joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));

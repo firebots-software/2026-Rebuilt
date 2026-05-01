@@ -22,7 +22,8 @@ public class SwerveJoystickCommand extends Command {
       doPassing,
       redsideIfPointing,
       capper,
-      braking;
+      braking,
+      towerLock;
 
   protected final CommandSwerveDrivetrain swerveDrivetrain;
 
@@ -43,7 +44,8 @@ public class SwerveJoystickCommand extends Command {
       BooleanSupplier redSideIfPointing,
       CommandSwerveDrivetrain swerveSubsystem,
       BooleanSupplier capper,
-      BooleanSupplier braking) {
+      BooleanSupplier braking,
+      BooleanSupplier towerLock) {
     this.xSpdFunction = frontBackFunction;
     this.ySpdFunction = leftRightFunction;
     this.turningSpdFunction = turningSpdFunction;
@@ -56,6 +58,8 @@ public class SwerveJoystickCommand extends Command {
     this.redsideIfPointing = redSideIfPointing;
     this.capper = capper;
     this.braking = braking;
+    this.towerLock = towerLock;
+
 
     // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);

@@ -346,20 +346,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   }
 
   public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
-    double omega =
-        // headingProfiledPIDController.getSetpoint().velocity+
-        headingPIDController.calculate(
-            currentState.Pose.getRotation().getRadians(), targetRotation.getRadians());
-    double max = Constants.Swerve.MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND;
-    boolean clamp = Math.abs(omega) > max;
-    if (clamp) {
-      omega = MathUtil.clamp(omega, -max, max);
-    }
-    DogLog.log("Subsystems/Swerve/RotationController/clamped", clamp);
-    DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
-    return omega;
-  }
+    double currentRads = MiscMath.normalizeAngle(currentState.Pose.getRotation()).getRadians();
+    double targetRads = MiscMath.normalizeAngle(targetRotation).getRadians();
+    double omegaPID = headingPIDController.calculate(currentRads, targetRads);
 
+    double angleDifference =
+        Math.atan2(
+            Math.sin(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()),
+            Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
+            
+    DogLog.log("Subsystems/Swerve/RotConrollerNoFF/omegaPID", omegaPID);
+    DogLog.log("Subsystems/Swerve/RotConrollerNoFF/TargetRotationsDegrees", targetRotation.getDegrees());
+    DogLog.log("AngleDifference", angleDifference);
+    return omegaPID;
+  }
+  
   public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint) {
     Translation2d robotPos = getCurrentState().Pose.getTranslation();
     double dx = targetPoint.getX() - robotPos.getX();
