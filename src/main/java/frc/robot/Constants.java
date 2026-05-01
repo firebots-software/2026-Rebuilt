@@ -233,7 +233,7 @@ public final class Constants {
       SERRANO(0.1d, 0d, 0d, 0.1d, 0d, 0d, 3.867d, 0d, 0d),
       PROTO(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
       JAMES_HARDEN(0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d, 0d),
-      COBRA(3.467, 0, 0, 3.567, 0, 0, 9.0, 0, 0); // 3.75 m/s^2 max accel while turning max,
+      COBRA(3.467, 0, 0, 3.567, 0, 0, 5.0, 0, 0); // 3.75 m/s^2 max accel while turning max,
       public final double kPX, kIX, kDX, kPY, kIY, kDY, kPR, kIR, kDR;
 
       ChoreoPIDValues(
