@@ -144,14 +144,14 @@ public class RobotContainer {
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
-    // joystick
-    //     .a()
-    //     .whileTrue(
-    //         intakeSubsystem
-    //             .outtakeUntilInterruptedCommand()
-    //             .alongWith(
-    //                 hopperSubsystem.runHopperUntilInterruptedCommand(
-    //                     -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+    joystick
+        .b()
+        .whileTrue(
+            intakeSubsystem
+                .outtakeUntilInterruptedCommand()
+                .alongWith(
+                    hopperSubsystem.runHopperUntilInterruptedCommand(
+                        -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
 
     // * KEEP FOR WIN COMMAND
     // joystick
