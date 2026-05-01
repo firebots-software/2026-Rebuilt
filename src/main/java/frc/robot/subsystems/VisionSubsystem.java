@@ -118,7 +118,7 @@ public class VisionSubsystem extends SubsystemBase {
               cameraIntrinsics,
               distortionCoeffs,
               new Pose3d(swerve.getCurrentState().Pose).plus(camHeight),
-              false,
+              true,
               Constants.Vision.HDG_PENALTY);
       DogLog.log(loggingPath + "/EstimationMethod", "PNP");
     }
