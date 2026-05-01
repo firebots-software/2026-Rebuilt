@@ -131,6 +131,22 @@ public class AutoRoutines {
     return shoot;
   }
 
+  public Command returnBasicShootMoreTime(BooleanSupplier isRedSide) {
+    Command shoot =
+        new ShootWithAim(
+                () -> 0.0,
+                () -> 0.0,
+                lebronShooterSubsystem,
+                intakeSubsystem,
+                hopperSubsystem,
+                swerveSubsystem,
+                isRedSide,
+                () -> false)
+            .withTimeout(4.2);
+
+    return shoot;
+  }
+
   public Command driveForward(double time) {
     return Commands.run(
             () -> swerveSubsystem.applyFieldSpeeds(new ChassisSpeeds(3, 0, 0), new Feedforwards(4)),
@@ -512,10 +528,124 @@ public class AutoRoutines {
     return routine;
   }
 
+  public AutoRoutine PedriShortRightHub() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+    Command forward2 =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward2 =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShort);
+    AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+    AutoTrajectory shootToBump =
+        miscPaths(routine, Constants.Swerve.Auto.MiscPaths.RightShootToBump);
+    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.HubRight);
+    AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
+
+    intake1
+        .done()
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide, () -> false),
+                backward,
+                intakeToShoot1.resetOdometry(),
+                intakeToShoot1.cmd()));
+
+    intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShootMoreTime(redSide), shootToBump.cmd()));
+
+    shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
+
+    intake2
+        .done()
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide, () -> false),
+                backward2,
+                intakeToShoot2.resetOdometry(),
+                intakeToShoot2.cmd()));
+
+    intakeToShoot2.done().onTrue(returnBasicShootMoreTime(redSide));
+
+    return routine;
+  }
+
+  public AutoRoutine PedriShortLeftHub() {
+    AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+    Command forward =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+    Command forward2 =
+        redSide.getAsBoolean()
+            ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+            : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+    Command backward2 =
+        redSide.getAsBoolean()
+            ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+            : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+    AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.LeftIntakeSweepShort);
+    AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+    AutoTrajectory shootToBump =
+        miscPaths(routine, Constants.Swerve.Auto.MiscPaths.LeftShootToBump);
+    AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.HubLeft);
+    AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
+
+    routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
+
+    intake1
+        .done()
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide, () -> true),
+                backward,
+                intakeToShoot1.resetOdometry(),
+                intakeToShoot1.cmd()));
+
+    intakeToShoot1.done().onTrue(Commands.sequence(returnBasicShootMoreTime(redSide), shootToBump.cmd()));
+
+    shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
+
+    intake2
+        .done()
+        .onTrue(
+            Commands.sequence(
+                driveToBumpAfterIntake(redSide, () -> true),
+                backward2,
+                intakeToShoot2.resetOdometry(),
+                intakeToShoot2.cmd()));
+
+    intakeToShoot2.done().onTrue(returnBasicShootMoreTime(redSide));
+
+    return routine;
+  }
+
   // Add paths to chooser
   public void addCommandstoAutoChooser() {
     autoChooser.addRoutine("Right", () -> PedriShortRight());
     autoChooser.addRoutine("Left", () -> PedriShortLeft());
+    autoChooser.addRoutine("Right then Hub", () -> PedriShortRightHub());
+    autoChooser.addRoutine("Left then Hub", () -> PedriShortLeftHub());
     autoChooser.addRoutine("Hub Sweep Left", () -> HubSweepLeft());
     autoChooser.addRoutine("Hub Sweep Right", () -> HubSweepRight());
 
@@ -525,7 +655,6 @@ public class AutoRoutines {
     autoChooser.addRoutine("Depot to Outpost", () -> DrakeDepotLong());
 
     autoChooser.addRoutine("We are genuinely the worst robot on the field", () -> Nike());
-    // autoChooser.addRoutine("bad word", () -> anthony());
   }
 
   public AutoChooser getAutoChooser() {
