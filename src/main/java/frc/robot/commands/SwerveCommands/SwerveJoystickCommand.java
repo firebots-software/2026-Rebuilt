@@ -129,6 +129,10 @@ public class SwerveJoystickCommand extends Command {
               swerveDrivetrain.getPassingTarget(redsideIfPointing));
     }
 
+    if (towerLock.getAsBoolean()) {
+    
+    }
+    
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     SwerveRequest drive =
