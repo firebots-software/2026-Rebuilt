@@ -13,11 +13,11 @@ public class ShootToBumpDTP extends SequentialCommandGroup {
     Pose2d pose =
         isRedSide.getAsBoolean()
             ? isLeftSide.getAsBoolean()
-                ? Constants.Landmarks.RED_LEFT_INTAKE_TO_BUMP
-                : Constants.Landmarks.RED_RIGHT_INTAKE_TO_BUMP
+                ? Constants.Landmarks.RED_LEFT_SHOOT_TO_BUMP
+                : Constants.Landmarks.RED_RIGHT_SHOOT_TO_BUMP
             : isLeftSide.getAsBoolean()
-                ? Constants.Landmarks.BLUE_LEFT_INTAKE_TO_BUMP
-                : Constants.Landmarks.BLUE_RIGHT_INTAKE_TO_BUMP;
+                ? Constants.Landmarks.BLUE_LEFT_SHOOT_TO_BUMP
+                : Constants.Landmarks.BLUE_RIGHT_SHOOT_TO_BUMP;
 
     addCommands(new DriveToPose(swerve, () -> pose));
   }

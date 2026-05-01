@@ -15,6 +15,7 @@ import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.IntakeToBumpDTP;
+import frc.robot.commandGroups.ShootToBumpDTP;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -194,6 +195,11 @@ public class AutoRoutines {
   public Command driveToBumpAfterIntake(BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {
     // return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
     return new IntakeToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
+  }
+
+  public Command driveToBumpAfterShoot(BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {
+    // return new IntakeToBumpDTP(swerveSubsystem, isRedSide).withTimeout(0.5);
+    return new ShootToBumpDTP(swerveSubsystem, isRedSide, isLeftSide);
   }
 
   // Middle
@@ -585,6 +591,62 @@ public class AutoRoutines {
 
     return routine;
   }
+
+// public AutoRoutine PedriShortRightHub() {
+//     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
+
+//     Command forward =
+//         redSide.getAsBoolean()
+//             ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+//             : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+//     Command backward =
+//         redSide.getAsBoolean()
+//             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+//             : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+//     Command forward2 =
+//         redSide.getAsBoolean()
+//             ? driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS)
+//             : driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_FORWARDS);
+//     Command backward2 =
+//         redSide.getAsBoolean()
+//             ? driveForward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS)
+//             : driveBackward(Constants.Swerve.Auto.TIME_FOR_BUMP_BACKWARDS);
+
+//     AutoTrajectory intake1 = intake(routine, Constants.Swerve.Auto.Intake.RightIntakeSweepShort);
+//     AutoTrajectory intakeToShoot1 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+//     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.HubRight);
+//     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
+
+//     routine.active().onTrue(Commands.sequence(forward, intake1.resetOdometry(), intake1.cmd()));
+
+//     intake1
+//         .done()
+//         .onTrue(
+//             Commands.sequence(
+//                 driveToBumpAfterIntake(redSide, () -> false),
+//                 backward,
+//                 intakeToShoot1.resetOdometry(),
+//                 intakeToShoot1.cmd()));
+
+//     intakeToShoot1
+//         .done()
+//         .onTrue(Commands.sequence(returnBasicShootMoreTime(redSide), driveToBumpAfterShoot(redSide, () -> false)));
+
+//     shootToBump.done().onTrue(Commands.sequence(forward2, intake2.resetOdometry(), intake2.cmd()));
+
+//     intake2
+//         .done()
+//         .onTrue(
+//             Commands.sequence(
+//                 driveToBumpAfterIntake(redSide, () -> false),
+//                 backward2,
+//                 intakeToShoot2.resetOdometry(),
+//                 intakeToShoot2.cmd()));
+
+//     intakeToShoot2.done().onTrue(returnBasicShootMoreTime(redSide));
+
+//     return routine;
+//   }
 
   public AutoRoutine PedriShortLeftHub() {
     AutoRoutine routine = autoFactory.newRoutine("CristianoRonaldo.chor");
