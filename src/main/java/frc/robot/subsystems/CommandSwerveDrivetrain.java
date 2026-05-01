@@ -354,12 +354,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         Math.atan2(
             Math.sin(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()),
             Math.cos(targetRotation.getRadians() - currentState.Pose.getRotation().getRadians()));
-            
+
     DogLog.log("Subsystems/Swerve/RotConrollerNoFF/omegaPID", omegaPID);
     DogLog.log("Subsystems/Swerve/RotConrollerNoFF/TargetRotationsDegrees", targetRotation.getDegrees());
     DogLog.log("AngleDifference", angleDifference);
     return omegaPID;
   }
+
+  public Rotation2d grab67() {
+    Rotation2d currentRotation = currentState.Pose.getRotation();
+    double degrees = MiscMath.normalizeAngle(currentRotation).getDegrees();
+    
+    if (degrees > 0) {
+        return Rotation2d.fromDegrees(90);
+    } else {
+        return Rotation2d.fromDegrees(-90);
+    }
+}
   
   public double calculateRequiredRotationalRateWithFF(Translation2d targetPoint) {
     Translation2d robotPos = getCurrentState().Pose.getTranslation();
