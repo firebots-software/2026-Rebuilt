@@ -130,9 +130,9 @@ public class SwerveJoystickCommand extends Command {
     }
 
     if (towerLock.getAsBoolean()) {
-    
+      turn = swerveDrivetrain.calculateRequiredRotationalRate(swerveDrivetrain.grab67());
     }
-    
+
     // 5. Applying the drive request on the swerve drivetrain
     // Uses SwerveRequestFieldCentric (from java.frc.robot.util to apply module optimization)
     SwerveRequest drive =
