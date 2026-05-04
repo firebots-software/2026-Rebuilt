@@ -15,8 +15,8 @@ import frc.robot.Constants.Swerve.Auto.MiscPaths;
 import frc.robot.Constants.Swerve.Auto.Outpost;
 import frc.robot.Constants.Swerve.Auto.ShootPos;
 import frc.robot.commandGroups.IntakeToBumpDTP;
-import frc.robot.commandGroups.ShootToBumpDTP;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
+import frc.robot.commandGroups.ShootToBumpDTP;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -355,7 +355,14 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.RightSecondDip);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.RightShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE),
+                forward,
+                intake1.resetOdometry(),
+                intake1.cmd()));
 
     intake1
         .done()
@@ -411,7 +418,14 @@ public class AutoRoutines {
     AutoTrajectory intake2 = intake(routine, Constants.Swerve.Auto.Intake.LeftSecondDip);
     AutoTrajectory intakeToShoot2 = shoot(routine, Constants.Swerve.Auto.ShootPos.LeftShoot);
 
-    routine.active().onTrue(Commands.sequence(Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE), forward, intake1.resetOdometry(), intake1.cmd()));
+    routine
+        .active()
+        .onTrue(
+            Commands.sequence(
+                Commands.waitSeconds(Constants.Swerve.Auto.WAIT_TIME_FOR_ALLIANCE),
+                forward,
+                intake1.resetOdometry(),
+                intake1.cmd()));
 
     intake1
         .done()

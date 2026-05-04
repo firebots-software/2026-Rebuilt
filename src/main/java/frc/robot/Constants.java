@@ -928,11 +928,6 @@ public final class Constants {
             new Translation2d(5.624283313751221, 2.281606435775757),
             new Rotation2d(1.57873264137917));
 
-    
-
-
-
-
     public static Pose2d RED_LEFT_SHOOT_TO_BUMP =
         new Pose2d(
             new Translation2d(12.9309492111206055, 2.3620588779449463),
