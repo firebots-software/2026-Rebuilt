@@ -101,10 +101,12 @@ public class SwerveJoystickCommand extends Command {
     double speedMagnitude = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
 
     if (capper.getAsBoolean()) {
-      if (speedMagnitude > 2.0) {
-        xSpeed *= (2.0 / speedMagnitude);
-        ySpeed *= (2.0 / speedMagnitude);
-      }
+      xSpeed *= 0.3;
+      ySpeed *= 0.3;
+      // if (speedMagnitude > 2.0) {
+      //   xSpeed *= (2.0 / speedMagnitude);
+      //   ySpeed *= (2.0 / speedMagnitude);
+      // }
     }
 
     // Final values to apply to drivetrain

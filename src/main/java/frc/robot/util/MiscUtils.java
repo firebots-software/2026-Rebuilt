@@ -31,7 +31,7 @@ public class MiscUtils {
 
   public static Alliance getSecondAlliance() {
     String allianceChar = DriverStation.getGameSpecificMessage();
-    if (allianceChar.isEmpty()) return null;
+    if (allianceChar == null || allianceChar.isEmpty()) return null;
     return switch (allianceChar.charAt(0)) {
       case 'B' -> Alliance.Blue;
       case 'R' -> Alliance.Red;
@@ -39,7 +39,24 @@ public class MiscUtils {
     };
   }
 
+  public static String activeFirst() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if (alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
+    DogLog.log("Subsystems/LEDs/allianceNotEmpty", true);
+    Alliance ourAlliance = alliance.get();
+    Alliance secondAlliance = getSecondAlliance();
+    if (secondAlliance == null) return "";
+    DogLog.log("Subsystems/LEDs/ourAlliance", ourAlliance.toString());
+    DogLog.log("Subsystems/LEDs/secondAlliance", secondAlliance.toString());
+    if (secondAlliance.equals(ourAlliance)) return "LATER";
+    else return "NOW";
+  }
+
   public static boolean areWeActive() {
+    return areWeActive(0.0);
+  }
+
+  public static boolean areWeActive(double howEarly) {
     Optional<Alliance> alliance = DriverStation.getAlliance();
 
     if (alliance.isEmpty()) return false;
@@ -48,24 +65,37 @@ public class MiscUtils {
 
     // teleop is enabled
     double currentMatchTime = DriverStation.getMatchTime();
+    double earlyMatchTime = currentMatchTime - howEarly;
+
     String allianceChar = DriverStation.getGameSpecificMessage();
 
-    DogLog.log("Elastic/AllianceChar", allianceChar.isEmpty() ? "Empty" : allianceChar);
+    DogLog.log(
+        "Elastic/AllianceChar",
+        allianceChar == null || allianceChar.isEmpty() ? "Empty" : allianceChar);
 
-    if (allianceChar.isEmpty()) return true;
+    if (allianceChar == null || allianceChar.isEmpty()) return true;
+    Alliance secondAlliance = getSecondAlliance();
+    if (secondAlliance == null) return true;
     boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
 
-    boolean shift1Active =
+    boolean weAreActiveFirst =
         switch (alliance.get()) {
           case Red -> !redInactiveFirst;
           case Blue -> redInactiveFirst;
         };
 
+    DogLog.log("Subsystems/LEDs/matchTime", currentMatchTime);
+
+    double earlyActiveFirst = weAreActiveFirst ? earlyMatchTime : currentMatchTime;
+    DogLog.log("Subsystems/LEDs/earlyActiveFirst", earlyActiveFirst);
+    double earlyActiveSecond = !weAreActiveFirst ? earlyMatchTime : currentMatchTime;
+    DogLog.log("Subsystems/LEDs/earlyActiveSecond", earlyActiveFirst);
+
     if (currentMatchTime > 130) return true;
-    else if (currentMatchTime > 105) return shift1Active;
-    else if (currentMatchTime > 80) return !shift1Active;
-    else if (currentMatchTime > 55) return shift1Active;
-    else if (currentMatchTime > 30) return !shift1Active;
+    else if (earlyActiveSecond > 105) return weAreActiveFirst;
+    else if (earlyActiveFirst > 80) return !weAreActiveFirst;
+    else if (earlyActiveSecond > 55) return weAreActiveFirst;
+    else if (earlyActiveFirst > 30) return !weAreActiveFirst;
     else return true;
   }
 

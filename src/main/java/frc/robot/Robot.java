@@ -42,12 +42,13 @@ public class Robot extends TimedRobot {
     RobotContainer.isRedAlliance();
     DogLog.setOptions(
         new DogLogOptions()
-            .withNtPublish(true)
+            .withNtPublish(false)
             .withCaptureDs(true)
             .withLogExtras(false)
             .withNtTunables(false));
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/RedSide", RobotContainer.isRedAlliance());
+    RobotController.setBrownoutVoltage(6.0);
   }
 
   /**
@@ -78,6 +79,7 @@ public class Robot extends TimedRobot {
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/AreWeActive", MiscUtils.areWeActive());
+    SmartDashboard.putString("Elastic/ActiveFirst", MiscUtils.activeFirst());
     DogLog.log("Elastic/TimeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
     SmartDashboard.putNumber(
         "Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
