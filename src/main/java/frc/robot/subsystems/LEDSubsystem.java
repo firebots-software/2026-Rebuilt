@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.controls.ColorFlowAnimation;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
@@ -24,7 +25,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   private static CANdle candle = new CANdle(5);
   private LEDState currentState = LEDState.NONE;
-  private BooleanSupplier active, inRange;
+  private BooleanSupplier active, inRange, preShoot;
   private boolean seesTagCached;
 
   public enum LEDState {
@@ -32,12 +33,17 @@ public class LEDSubsystem extends SubsystemBase {
     ACTIVE,
     ACTIVE_IN_RANGE,
     FLAME,
+    PRE_SHOOT,
     RAINBOW
   }
 
-  public LEDSubsystem(BooleanSupplier activeSupplier, BooleanSupplier inRangeSupplier) {
+  public LEDSubsystem(
+      BooleanSupplier activeSupplier,
+      BooleanSupplier inRangeSupplier,
+      BooleanSupplier preShootSupplier) {
     active = activeSupplier;
     inRange = inRangeSupplier;
+    preShoot = preShootSupplier;
   }
 
   public void periodic() {
@@ -46,10 +52,10 @@ public class LEDSubsystem extends SubsystemBase {
       currentState = computedState;
       applyState(computedState);
     }
-    if (currentState == LEDState.ACTIVE_IN_RANGE) activeInRangeAnimation();
 
     DogLog.log("Subsystems/LEDs/Active", active.getAsBoolean());
     DogLog.log("Subsystems/LEDs/InRange", inRange.getAsBoolean());
+    DogLog.log("Subsystems/LEDs/PreShoot", preShoot.getAsBoolean());
     DogLog.log("Subsystems/LEDs/CurrentState", currentState.toString());
   }
 
@@ -57,9 +63,9 @@ public class LEDSubsystem extends SubsystemBase {
     if (DriverStation.isDisabled()) return LEDState.FLAME;
     if (DriverStation.isAutonomousEnabled()) return LEDState.RAINBOW;
 
-    if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
-    else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
-    else if (!active.getAsBoolean()) return LEDState.NONE;
+    if (preShoot.getAsBoolean()) return LEDState.PRE_SHOOT;
+    else if (active.getAsBoolean()) return LEDState.ACTIVE;
+    // in range animation disabled for outreach
 
     return LEDState.NONE;
   }
@@ -75,6 +81,10 @@ public class LEDSubsystem extends SubsystemBase {
       }
       case RAINBOW -> candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
       case NONE -> setColor(8, END_OF_STRIP, Color.kBlack);
+      case PRE_SHOOT -> {
+        candle.setControl(sweep(Color.kPink, 80, 8, 38, 0, false));
+        candle.setControl(sweep(Color.kPink, 80, 39, END_OF_STRIP, 1, true));
+      }
       default -> clearAll();
     }
   }
@@ -152,6 +162,16 @@ public class LEDSubsystem extends SubsystemBase {
         .withSlot(slot);
   }
 
+  private ColorFlowAnimation sweep(
+      Color color, int frameRate, int ledStartIndex, int ledEndIndex, int slot, boolean reverse) {
+    return new ColorFlowAnimation(ledStartIndex, ledEndIndex)
+        .withFrameRate(frameRate)
+        .withColor(new RGBWColor(color))
+        .withSlot(slot)
+        .withDirection(
+            reverse ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward);
+  }
+
   private void activeInRangeAnimation() {
     boolean red = ((int) (Timer.getFPGATimestamp() * 10)) % 2 == 0;
     candle.setControl(solidColor(red ? Color.kRed : Color.kWhite));
@@ -161,7 +181,7 @@ public class LEDSubsystem extends SubsystemBase {
     return new FireAnimation(startIndex, endIndex)
         .withSparking(0.5)
         .withCooling(0.2)
-        .withFrameRate(40)
+        .withFrameRate(28)
         .withDirection(
             backward ? AnimationDirectionValue.Backward : AnimationDirectionValue.Forward)
         .withSlot(slot);

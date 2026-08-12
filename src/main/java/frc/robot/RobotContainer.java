@@ -87,7 +87,8 @@ public class RobotContainer {
           () -> MiscUtils.areWeActive(2.0),
           () ->
               Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4.47
-                  && inAllianceSide());
+                  && inAllianceSide(),
+          secondController.outreachPreShoot());
 
   // * KEEP FOR INTERMAP TESTING
   //   private double hoodAngle = 18.369;
