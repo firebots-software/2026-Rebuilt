@@ -6,11 +6,11 @@ package frc.robot;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.wpilib.system.RobotController;
+import org.wpilib.framework.TimedRobot;
+import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.CommandScheduler;
 import frc.robot.util.LoggedTalonFX;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.VisionUtils;
@@ -34,15 +34,14 @@ public class Robot extends TimedRobot {
   public Robot() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    robotInit();
     m_robotContainer = new RobotContainer();
   }
 
-  @Override
-  public void robotInit() {
+  private void robotInit() {
     RobotContainer.isRedAlliance();
     DogLog.setOptions(
         new DogLogOptions()
-            .withNtPublish(false)
             .withCaptureDs(true)
             .withLogExtras(false)
             .withNtTunables(false));
@@ -125,14 +124,14 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {}
 
   @Override
-  public void testInit() {
+  public void utilityInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
   }
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void utilityPeriodic() {}
 
   /** This function is called once when the robot is first started up. */
   @Override

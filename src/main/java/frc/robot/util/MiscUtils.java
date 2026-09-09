@@ -1,13 +1,15 @@
 package frc.robot.util;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
@@ -30,18 +32,19 @@ public class MiscUtils {
   }
 
   public static Alliance getSecondAlliance() {
-    String allianceChar = DriverStation.getGameSpecificMessage();
+    Optional<String> allianceOpt = MatchState.getGameData();
+    String allianceChar = allianceOpt.isPresent() ? allianceOpt.get() : null;
     if (allianceChar == null || allianceChar.isEmpty()) return null;
     return switch (allianceChar.charAt(0)) {
-      case 'B' -> Alliance.Blue;
-      case 'R' -> Alliance.Red;
+      case 'B' -> Alliance.BLUE;
+      case 'R' -> Alliance.RED;
       default -> null;
     };
   }
 
   public static String activeFirst() {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isEmpty() || DriverStation.getMatchTime() < 105) return "";
+    Optional<Alliance> alliance = MatchState.getAlliance();
+    if (alliance.isEmpty() || MatchState.getMatchTime() < 105) return "";
     DogLog.log("Subsystems/LEDs/allianceNotEmpty", true);
     Alliance ourAlliance = alliance.get();
     Alliance secondAlliance = getSecondAlliance();
@@ -57,17 +60,18 @@ public class MiscUtils {
   }
 
   public static boolean areWeActive(double howEarly) {
-    Optional<Alliance> alliance = DriverStation.getAlliance();
+    Optional<Alliance> alliance = MatchState.getAlliance();
 
     if (alliance.isEmpty()) return false;
-    if (DriverStation.isAutonomousEnabled()) return true;
-    if (!DriverStation.isTeleopEnabled()) return false;
+    if (RobotState.isAutonomousEnabled()) return true;
+    if (!RobotState.isTeleopEnabled()) return false;
 
     // teleop is enabled
-    double currentMatchTime = DriverStation.getMatchTime();
+    double currentMatchTime = MatchState.getMatchTime();
     double earlyMatchTime = currentMatchTime - howEarly;
 
-    String allianceChar = DriverStation.getGameSpecificMessage();
+    Optional<String> allianceOpt = MatchState.getGameData();
+    String allianceChar = allianceOpt.isPresent() ? allianceOpt.get() : null;
 
     DogLog.log(
         "Elastic/AllianceChar",
@@ -76,12 +80,12 @@ public class MiscUtils {
     if (allianceChar == null || allianceChar.isEmpty()) return true;
     Alliance secondAlliance = getSecondAlliance();
     if (secondAlliance == null) return true;
-    boolean redInactiveFirst = getSecondAlliance() == Alliance.Red;
+    boolean redInactiveFirst = getSecondAlliance() == Alliance.RED;
 
     boolean weAreActiveFirst =
         switch (alliance.get()) {
-          case Red -> !redInactiveFirst;
-          case Blue -> redInactiveFirst;
+          case RED -> !redInactiveFirst;
+          case BLUE -> redInactiveFirst;
         };
 
     DogLog.log("Subsystems/LEDs/matchTime", currentMatchTime);
@@ -101,8 +105,8 @@ public class MiscUtils {
 
   public static double countdownTillNextShift(double currentTime) {
     // double currentMatchTime = currentTime;
-    double currentMatchTime = DriverStation.getMatchTime();
-    if (DriverStation.isAutonomous()) {
+    double currentMatchTime = MatchState.getMatchTime();
+    if (RobotState.isAutonomous()) {
       return currentMatchTime;
     } else {
       if (currentMatchTime > 140) return currentMatchTime - 140;
@@ -117,8 +121,8 @@ public class MiscUtils {
 
   public static String currentShiftName(double currentTime) {
     // double currentMatchTime = currentTime;
-    double currentMatchTime = DriverStation.getMatchTime();
-    if (DriverStation.isAutonomous()) return "Auto";
+    double currentMatchTime = MatchState.getMatchTime();
+    if (RobotState.isAutonomous()) return "Auto";
 
     if (currentMatchTime > 130) return "Transition";
     else if (currentMatchTime > 105) return "ALS 1";
@@ -130,7 +134,7 @@ public class MiscUtils {
 
   public static void shiftSwitchIndicator(double currentTime) {
     // double currentTimes = currentTime;
-    double currentTimes = DriverStation.getMatchTime();
+    double currentTimes = MatchState.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
     boolean isActive = areWeActive();

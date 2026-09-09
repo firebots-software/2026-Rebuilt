@@ -1,7 +1,7 @@
 package frc.robot.commandGroups;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.command2.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.CommandSwerveDrivetrain;

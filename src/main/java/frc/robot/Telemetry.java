@@ -2,22 +2,22 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.kinematics.SwerveModulePosition;
+import org.wpilib.math.kinematics.SwerveModuleVelocity;
+import org.wpilib.networktables.DoubleArrayPublisher;
+import org.wpilib.networktables.DoublePublisher;
+import org.wpilib.networktables.NetworkTable;
+import org.wpilib.networktables.NetworkTableInstance;
+import org.wpilib.networktables.StringPublisher;
+import org.wpilib.networktables.StructArrayPublisher;
+import org.wpilib.networktables.StructPublisher;
+import org.wpilib.smartdashboard.Mechanism2d;
+import org.wpilib.smartdashboard.MechanismLigament2d;
+import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.util.Color;
+import org.wpilib.util.Color8Bit;
 
 public class Telemetry {
   private final double MaxSpeed;
@@ -39,12 +39,12 @@ public class Telemetry {
   private final NetworkTable driveStateTable = inst.getTable("DriveState");
   private final StructPublisher<Pose2d> drivePose =
       driveStateTable.getStructTopic("Pose", Pose2d.struct).publish();
-  private final StructPublisher<ChassisSpeeds> driveSpeeds =
-      driveStateTable.getStructTopic("Speeds", ChassisSpeeds.struct).publish();
-  private final StructArrayPublisher<SwerveModuleState> driveModuleStates =
-      driveStateTable.getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
-  private final StructArrayPublisher<SwerveModuleState> driveModuleTargets =
-      driveStateTable.getStructArrayTopic("ModuleTargets", SwerveModuleState.struct).publish();
+  private final StructPublisher<ChassisVelocities> driveSpeeds =
+      driveStateTable.getStructTopic("Speeds", ChassisVelocities.struct).publish();
+  private final StructArrayPublisher<SwerveModuleVelocity> driveModuleStates =
+      driveStateTable.getStructArrayTopic("ModuleStates", SwerveModuleVelocity.struct).publish();
+  private final StructArrayPublisher<SwerveModuleVelocity> driveModuleTargets =
+      driveStateTable.getStructArrayTopic("ModuleTargets", SwerveModuleVelocity.struct).publish();
   private final StructArrayPublisher<SwerveModulePosition> driveModulePositions =
       driveStateTable.getStructArrayTopic("ModulePositions", SwerveModulePosition.struct).publish();
   private final DoublePublisher driveTimestamp =
@@ -83,16 +83,16 @@ public class Telemetry {
       new MechanismLigament2d[] {
         m_moduleMechanisms[0]
             .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.WHITE))),
         m_moduleMechanisms[1]
             .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.WHITE))),
         m_moduleMechanisms[2]
             .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.WHITE))),
         m_moduleMechanisms[3]
             .getRoot("RootDirection", 0.5, 0.5)
-            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.kWhite))),
+            .append(new MechanismLigament2d("Direction", 0.1, 0, 0, new Color8Bit(Color.WHITE))),
       };
 
   private final double[] m_poseArray = new double[3];
@@ -103,8 +103,8 @@ public class Telemetry {
   public void telemeterize(SwerveDriveState state) {
     /* Telemeterize the swerve drive state */
     drivePose.set(state.Pose);
-    driveSpeeds.set(state.Speeds);
-    driveModuleStates.set(state.ModuleStates);
+    driveSpeeds.set(state.Velocity);
+    driveModuleStates.set(state.ModuleVelocities);
     driveModuleTargets.set(state.ModuleTargets);
     driveModulePositions.set(state.ModulePositions);
     driveTimestamp.set(state.Timestamp);
@@ -115,10 +115,10 @@ public class Telemetry {
     m_poseArray[1] = state.Pose.getY();
     m_poseArray[2] = state.Pose.getRotation().getDegrees();
     for (int i = 0; i < 4; ++i) {
-      m_moduleStatesArray[i * 2 + 0] = state.ModuleStates[i].angle.getRadians();
-      m_moduleStatesArray[i * 2 + 1] = state.ModuleStates[i].speedMetersPerSecond;
+      m_moduleStatesArray[i * 2 + 0] = state.ModuleVelocities[i].angle.getRadians();
+      m_moduleStatesArray[i * 2 + 1] = state.ModuleVelocities[i].velocity;
       m_moduleTargetsArray[i * 2 + 0] = state.ModuleTargets[i].angle.getRadians();
-      m_moduleTargetsArray[i * 2 + 1] = state.ModuleTargets[i].speedMetersPerSecond;
+      m_moduleTargetsArray[i * 2 + 1] = state.ModuleTargets[i].velocity;
     }
 
     SignalLogger.writeDoubleArray("DriveState/Pose", m_poseArray);
@@ -132,9 +132,9 @@ public class Telemetry {
 
     /* Telemeterize the module states to a Mechanism2d */
     for (int i = 0; i < 4; ++i) {
-      m_moduleSpeeds[i].setAngle(state.ModuleStates[i].angle);
-      m_moduleDirections[i].setAngle(state.ModuleStates[i].angle);
-      m_moduleSpeeds[i].setLength(state.ModuleStates[i].speedMetersPerSecond / (2 * MaxSpeed));
+      m_moduleSpeeds[i].setAngle(state.ModuleVelocities[i].angle);
+      m_moduleDirections[i].setAngle(state.ModuleVelocities[i].angle);
+      m_moduleSpeeds[i].setLength(state.ModuleVelocities[i].velocity / (2 * MaxSpeed));
 
       SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
     }

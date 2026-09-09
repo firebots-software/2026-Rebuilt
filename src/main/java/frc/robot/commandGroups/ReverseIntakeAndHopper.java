@@ -1,6 +1,6 @@
 package frc.robot.commandGroups;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import org.wpilib.command2.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;

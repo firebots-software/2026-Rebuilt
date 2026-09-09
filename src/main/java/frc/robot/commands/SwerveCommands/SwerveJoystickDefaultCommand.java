@@ -1,7 +1,7 @@
 package frc.robot.commands.SwerveCommands;
 
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SequentialCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeVisionDetection;
 import java.util.function.BooleanSupplier;

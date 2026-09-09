@@ -10,19 +10,22 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.wpilib.math.util.MathUtil;
+import org.wpilib.system.Timer;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Subsystem;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MathUtils.MiscMath;
@@ -67,8 +70,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   // private final SwerveRequest m_better_brake = new SwerveRequest().apply(new
   // SwerveControlParameters(), getModules())
   // * Front Left, Front Right, Back Left, Back Right. This means if you need
-  private final SwerveRequest.ApplyFieldSpeeds m_pathApplyFieldSpeeds =
-      new SwerveRequest.ApplyFieldSpeeds();
+  private final SwerveRequest.ApplyFieldVelocity m_pathApplyFieldSpeeds =
+      new SwerveRequest.ApplyFieldVelocity();
 
   // private final Field2d field = new Field2d();
 
@@ -172,15 +175,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     Pose2d pose = getState().Pose;
 
-    ChassisSpeeds targetSpeeds = sample.getChassisSpeeds();
-    targetSpeeds.vxMetersPerSecond += m_pathXController.calculate(pose.getX(), sample.x);
-    targetSpeeds.vyMetersPerSecond += m_pathYController.calculate(pose.getY(), sample.y);
-    targetSpeeds.omegaRadiansPerSecond +=
+    ChassisVelocities targetSpeeds = sample.getChassisSpeeds();
+    targetSpeeds.vx += m_pathXController.calculate(pose.getX(), sample.x);
+    targetSpeeds.vy += m_pathYController.calculate(pose.getY(), sample.y);
+    targetSpeeds.omega +=
         m_pathThetaController.calculate(pose.getRotation().getRadians(), sample.heading);
 
     setControl(
         m_pathApplyFieldSpeeds
-            .withSpeeds(targetSpeeds)
+            .withVelocity(targetSpeeds)
             .withWheelForceFeedforwardsX(sample.moduleForcesX())
             .withWheelForceFeedforwardsY(sample.moduleForcesY()));
 
@@ -239,27 +242,27 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     return currentState;
   }
 
-  public ChassisSpeeds getRobotSpeeds() {
-    return currentState.Speeds;
+  public ChassisVelocities getRobotSpeeds() {
+    return currentState.Velocity;
   }
 
   public void applyFieldSpeeds(
-      ChassisSpeeds speeds, WheelForceCalculator.Feedforwards feedforwards) {
+      ChassisVelocities speeds, WheelForceCalculator.Feedforwards feedforwards) {
     setControl(
         m_pathApplyFieldSpeeds
-            .withSpeeds(speeds)
+            .withVelocity(speeds)
             .withWheelForceFeedforwardsX(feedforwards.x_newtons)
             .withWheelForceFeedforwardsY(feedforwards.y_newtons));
   }
 
-  public void applyOneFieldSpeeds(ChassisSpeeds speeds) {
+  public void applyOneFieldSpeeds(ChassisVelocities speeds) {
     setControl(
-        m_pathApplyFieldSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity));
+        m_pathApplyFieldSpeeds.withVelocity(speeds).withDriveRequestType(DriveRequestType.Velocity));
   }
 
   public double getSpeedMagnitude() {
-    double xSpeed = getFieldSpeeds().vxMetersPerSecond;
-    double ySpeed = getFieldSpeeds().vyMetersPerSecond;
+    double xSpeed = getFieldSpeeds().vx;
+    double ySpeed = getFieldSpeeds().vy;
     return Math.sqrt((xSpeed * xSpeed) + (ySpeed * ySpeed));
   }
 
@@ -299,12 +302,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     currentState = getState();
     DogLog.log("Subsystems/Swerve/AccumulatedError", headingPIDController.getAccumulatedError());
 
-    if (!m_hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-      DriverStation.getAlliance()
+    if (!m_hasAppliedOperatorPerspective || RobotState.isDisabled()) {
+      MatchState.getAlliance()
           .ifPresent(
               allianceColor -> {
                 setOperatorPerspectiveForward(
-                    allianceColor == Alliance.Red
+                    allianceColor == Alliance.RED
                         ? kRedAlliancePerspectiveRotation
                         : kBlueAlliancePerspectiveRotation);
                 m_hasAppliedOperatorPerspective = true;
@@ -325,24 +328,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     // DogLog.log(
     //     "Subsystems/Swerve/DistanceToHub",
     //     MiscUtils.getDistanceToHub(RobotContainer::isRedAlliance, this));
-    DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omegaRadiansPerSecond);
+    DogLog.log("Subsystems/Swerve/TurningSpeedActual", getFieldSpeeds().omega);
   }
 
   @Override
   public void addVisionMeasurement(Pose2d visionRobotPose, double timestampSeconds) {
-    super.addVisionMeasurement(visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds));
+    super.addVisionMeasurement(visionRobotPose, Timer.getTimestamp());
   }
 
   @Override
   public void addVisionMeasurement(
       Pose2d visionRobotPose, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
     super.addVisionMeasurement(
-        visionRobotPose, Utils.fpgaToCurrentTime(timestampSeconds), visionMeasurementStdDevs);
+        visionRobotPose, Timer.getTimestamp(), visionMeasurementStdDevs);
   }
 
-  public ChassisSpeeds getFieldSpeeds() {
-    return ChassisSpeeds.fromRobotRelativeSpeeds(
-        currentState.Speeds, currentState.Pose.getRotation());
+  public ChassisVelocities getFieldSpeeds() {
+    return currentState.Velocity.toFieldRelative(currentState.Pose.getRotation());
   }
 
   public double calculateRequiredRotationalRate(Rotation2d targetRotation) {
@@ -353,7 +355,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     double max = Constants.Swerve.MAX_HEADING_TRACKING_ROT_RATE_RADS_PER_SECOND;
     boolean clamp = Math.abs(omega) > max;
     if (clamp) {
-      omega = MathUtil.clamp(omega, -max, max);
+      omega = Math.clamp(omega, -max, max);
     }
     DogLog.log("Subsystems/Swerve/RotationController/clamped", clamp);
     DogLog.log("Subsystems/Swerve/TargetRotationsDegrees", targetRotation.getDegrees());
@@ -366,10 +368,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     double dy = targetPoint.getY() - robotPos.getY();
     double r2 = dx * dx + dy * dy;
 
-    ChassisSpeeds fieldSpeeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(currentState.Speeds, currentState.Pose.getRotation());
-    double vx = fieldSpeeds.vxMetersPerSecond;
-    double vy = fieldSpeeds.vyMetersPerSecond;
+    ChassisVelocities fieldSpeeds =
+        currentState.Velocity.toFieldRelative(currentState.Pose.getRotation());
+    double vx = fieldSpeeds.vx;
+    double vy = fieldSpeeds.vy;
 
     double omegaFF = 0.0;
     if (r2 > Constants.Swerve.FF_RADIUS_M2) {

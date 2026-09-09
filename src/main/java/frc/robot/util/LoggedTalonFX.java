@@ -8,6 +8,8 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
+import frc.robot.Constants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -166,7 +168,7 @@ public class LoggedTalonFX extends TalonFX {
    * @param deviceId Motor ID of this LoggedTalonFX
    */
   public LoggedTalonFX(String deviceName, int deviceId) {
-    super(deviceId);
+    super(deviceId, Constants.Swerve.CAN_BUS);
     name = "Motors/" + deviceName;
     init();
   }
@@ -184,11 +186,11 @@ public class LoggedTalonFX extends TalonFX {
   /**
    * @param deviceId Motor ID of this LoggedTalonFX
    */
-  public LoggedTalonFX(int deviceId) {
-    super(deviceId);
-    name = "Motors/Motor " + deviceId;
-    init();
-  }
+  // public LoggedTalonFX(int deviceId) {
+  //   super(deviceId);
+  //   name = "Motors/Motor " + deviceId;
+  //   init();
+  // }
 
   private static void rebuildSignalCollection() {
     signalsOnCanivore =

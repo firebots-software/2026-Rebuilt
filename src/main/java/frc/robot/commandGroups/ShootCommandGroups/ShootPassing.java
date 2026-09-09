@@ -1,10 +1,10 @@
 package frc.robot.commandGroups.ShootCommandGroups;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommandWithPointing;
 import frc.robot.subsystems.CommandSwerveDrivetrain;

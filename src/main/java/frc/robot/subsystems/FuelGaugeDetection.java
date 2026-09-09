@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.command2.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.FuelGaugeDetection.GaugeCalculationType;

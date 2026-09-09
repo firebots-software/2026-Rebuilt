@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
+import static org.wpilib.units.Units.Rotations;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
@@ -24,13 +24,12 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.util.Units;
+import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
@@ -186,7 +185,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setArmDegrees(double angleDeg) {
     targetAngleDeg =
-        MathUtil.clamp(
+        Math.clamp(
             angleDeg, Constants.Intake.Arm.ARM_POS_MIN, Constants.Intake.Arm.ARM_POS_RETRACTED);
     double targetArmRotations = targetAngleDeg / 360.0;
     armMotor.setControl(m_motionMagicRequest.withPosition(targetArmRotations));
@@ -216,11 +215,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void applyCoastConfigArm() {
-    armMotor.setNeutralMode(NeutralModeValue.Coast);
+    armMotor.configNeutralMode(NeutralModeValue.Coast);
   }
 
   public void applyBrakeConfigArm() {
-    armMotor.setNeutralMode(NeutralModeValue.Brake);
+    armMotor.configNeutralMode(NeutralModeValue.Brake);
   }
 
   public double getCancoderPositionRaw() {

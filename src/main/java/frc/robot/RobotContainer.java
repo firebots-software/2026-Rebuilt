@@ -6,14 +6,15 @@ package frc.robot;
 
 import choreo.auto.AutoChooser;
 // * KEEP FOR WIN COMMAND TESTING
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+// import org.wpilib.math.geometry.Pose2d;
+// import org.wpilib.math.geometry.Rotation2d;
+// import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.smartdashboard.SmartDashboard;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.button.CommandGamepad;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
@@ -41,7 +42,7 @@ public class RobotContainer {
   private final Telemetry logger =
       new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandGamepad joystick = new CommandGamepad(0);
   private final CustomController secondController = new CustomController(4);
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -137,7 +138,7 @@ public class RobotContainer {
             () -> false,
             () -> false);
 
-    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    joystick.westFace().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // Intake
@@ -145,7 +146,7 @@ public class RobotContainer {
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     joystick
-        .b()
+        .eastFace()
         .whileTrue(
             intakeSubsystem
                 .outtakeUntilInterruptedCommand()
@@ -226,9 +227,9 @@ public class RobotContainer {
   }
 
   public static boolean isRedAlliance() {
-    return DriverStation.getAlliance().isEmpty()
+    return MatchState.getAlliance().isEmpty()
         ? false
-        : DriverStation.getAlliance().get() == Alliance.Red;
+        : MatchState.getAlliance().get() == Alliance.RED;
   }
 
   public void visionPeriodic() {

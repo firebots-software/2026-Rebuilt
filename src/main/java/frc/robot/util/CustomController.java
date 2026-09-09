@@ -1,7 +1,7 @@
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.wpilib.driverstation.GenericHID;
+import org.wpilib.command2.button.Trigger;
 
 public class CustomController extends GenericHID {
   private Trigger visionShootingLockout, intakeVisionLockout;

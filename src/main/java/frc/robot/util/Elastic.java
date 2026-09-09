@@ -8,10 +8,10 @@ package frc.robot.util;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.PubSubOption;
-import edu.wpi.first.networktables.StringPublisher;
-import edu.wpi.first.networktables.StringTopic;
+import org.wpilib.networktables.NetworkTableInstance;
+import org.wpilib.networktables.PubSubOption;
+import org.wpilib.networktables.StringPublisher;
+import org.wpilib.networktables.StringTopic;
 
 public final class Elastic {
   private static final StringTopic notificationTopic =
