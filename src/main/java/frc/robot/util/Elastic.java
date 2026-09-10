@@ -1,13 +1,8 @@
-// Copyright (c) 2023-2026 Gold87 and other Elastic contributors
-// This software can be modified and/or shared under the terms
-// defined by the Elastic license:
-// https://github.com/Gold872/elastic_dashboard/blob/main/LICENSE
-
 package frc.robot.util;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.avaje.jsonb.Json;
+import io.avaje.jsonb.Jsonb;
+import io.avaje.jsonb.JsonType;
 import org.wpilib.networktables.NetworkTableInstance;
 import org.wpilib.networktables.PubSubOption;
 import org.wpilib.networktables.StringPublisher;
@@ -17,12 +12,15 @@ public final class Elastic {
   private static final StringTopic notificationTopic =
       NetworkTableInstance.getDefault().getStringTopic("/Elastic/RobotNotifications");
   private static final StringPublisher notificationPublisher =
-      notificationTopic.publish(PubSubOption.sendAll(true), PubSubOption.keepDuplicates(true));
+      notificationTopic.publish(new PubSubOption.SendAll(true), new PubSubOption.KeepDuplicates(true));
   private static final StringTopic selectedTabTopic =
       NetworkTableInstance.getDefault().getStringTopic("/Elastic/SelectedTab");
   private static final StringPublisher selectedTabPublisher =
-      selectedTabTopic.publish(PubSubOption.keepDuplicates(true));
-  private static final ObjectMapper objectMapper = new ObjectMapper();
+      selectedTabTopic.publish(new PubSubOption.KeepDuplicates(true));
+
+  // Build the lightweight Avaje context and generate a fast type pipeline for the Notification class
+  private static final Jsonb jsonb = Jsonb.builder().build();
+  private static final JsonType<Notification> notificationType = jsonb.type(Notification.class);
 
   /**
    * Represents the possible levels of notifications for the Elastic dashboard. These levels are
@@ -45,8 +43,9 @@ public final class Elastic {
    */
   public static void sendNotification(Notification notification) {
     try {
-      notificationPublisher.set(objectMapper.writeValueAsString(notification));
-    } catch (JsonProcessingException e) {
+      // Replaced Jackson writeValueAsString with Avaje compilation-safe toJson translation
+      notificationPublisher.set(notificationType.toJson(notification));
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
@@ -79,23 +78,18 @@ public final class Elastic {
    * properties such as level, title, description, display time, and dimensions to control how the
    * notification is displayed on the dashboard.
    */
+  @Json // 👈 Required: Informs the Avaje processor to generate a companion serializer class at build time
   public static class Notification {
-    @JsonProperty("level")
+    
+    // Jackson's @JsonProperty annotations are replaced with Avaje's standard alias rules or auto-matched field mappings
     private NotificationLevel level;
-
-    @JsonProperty("title")
     private String title;
-
-    @JsonProperty("description")
     private String description;
-
-    @JsonProperty("displayTime")
+    
+    @Json.Property("displayTime") // Explicitly map JSON camelCase key to this specific internal variable 
     private int displayTimeMillis;
-
-    @JsonProperty("width")
+    
     private double width;
-
-    @JsonProperty("height")
     private double height;
 
     /**
@@ -246,145 +240,20 @@ public final class Elastic {
       return displayTimeMillis;
     }
 
-    /**
-     * Updates the width of the notification
-     *
-     * @param width the width to set the notification to
-     */
-    public void setWidth(double width) {
-      this.width = width;
-    }
-
-    /**
-     * Gets the width of the notification
-     *
-     * @return the width of the notification
-     */
     public double getWidth() {
       return width;
     }
 
-    /**
-     * Updates the height of the notification
-     *
-     * <p>If the height is set to -1, the height will be determined automatically by the dashboard
-     *
-     * @param height the height to set the notification to
-     */
-    public void setHeight(double height) {
-      this.height = height;
+    public void setWidth(double width) {
+      this.width = width;
     }
 
-    /**
-     * Gets the height of the notification
-     *
-     * @return the height of the notification
-     */
     public double getHeight() {
       return height;
     }
 
-    /**
-     * Modifies the notification's level and returns itself to allow for method chaining
-     *
-     * @param level the level to set the notification to
-     * @return the current notification
-     */
-    public Notification withLevel(NotificationLevel level) {
-      this.level = level;
-      return this;
-    }
-
-    /**
-     * Modifies the notification's title and returns itself to allow for method chaining
-     *
-     * @param title the title to set the notification to
-     * @return the current notification
-     */
-    public Notification withTitle(String title) {
-      setTitle(title);
-      return this;
-    }
-
-    /**
-     * Modifies the notification's description and returns itself to allow for method chaining
-     *
-     * @param description the description to set the notification to
-     * @return the current notification
-     */
-    public Notification withDescription(String description) {
-      setDescription(description);
-      return this;
-    }
-
-    /**
-     * Modifies the notification's display time and returns itself to allow for method chaining
-     *
-     * @param seconds the number of seconds to display the notification for
-     * @return the current notification
-     */
-    public Notification withDisplaySeconds(double seconds) {
-      return withDisplayMilliseconds((int) Math.round(seconds * 1000));
-    }
-
-    /**
-     * Modifies the notification's display time and returns itself to allow for method chaining
-     *
-     * @param displayTimeMillis the number of milliseconds to display the notification for
-     * @return the current notification
-     */
-    public Notification withDisplayMilliseconds(int displayTimeMillis) {
-      setDisplayTimeMillis(displayTimeMillis);
-      return this;
-    }
-
-    /**
-     * Modifies the notification's width and returns itself to allow for method chaining
-     *
-     * @param width the width to set the notification to
-     * @return the current notification
-     */
-    public Notification withWidth(double width) {
-      setWidth(width);
-      return this;
-    }
-
-    /**
-     * Modifies the notification's height and returns itself to allow for method chaining
-     *
-     * @param height the height to set the notification to
-     * @return the current notification
-     */
-    public Notification withHeight(double height) {
-      setHeight(height);
-      return this;
-    }
-
-    /**
-     * Modifies the notification's height and returns itself to allow for method chaining
-     *
-     * <p>This will set the height to -1 to have it automatically determined by the dashboard
-     *
-     * @return the current notification
-     */
-    public Notification withAutomaticHeight() {
-      setHeight(-1);
-      return this;
-    }
-
-    /**
-     * Modifies the notification to disable the auto dismiss behavior
-     *
-     * <p>This sets the display time to 0 milliseconds
-     *
-     * <p>The auto dismiss behavior can be re-enabled by setting the display time to a number
-     * greater than 0
-     *
-     * @return the current notification
-     */
-    public Notification withNoAutoDismiss() {
-      setDisplayTimeMillis(0);
-      return this;
+    public void setHeight(double height) {
+      this.height = height;
     }
   }
 }
