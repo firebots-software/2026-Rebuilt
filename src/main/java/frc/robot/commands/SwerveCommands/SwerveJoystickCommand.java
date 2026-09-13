@@ -57,7 +57,6 @@ public class SwerveJoystickCommand extends Command {
     this.capper = capper;
     this.braking = braking;
 
-    // Adds the subsystem as a requirement (prevents two commands from acting on subsystem at once)
     addRequirements(swerveDrivetrain);
   }
 
@@ -66,34 +65,36 @@ public class SwerveJoystickCommand extends Command {
 
   @Override
   public void execute() {
-    // 1. Get real-time joystick inputs
-    double xSpeed = xSpdFunction.getAsDouble(); // xSpeed is actually front back (front +, back -)
-    double ySpeed = ySpdFunction.getAsDouble(); // ySpeed is actually left right (left +, right -)
-    double turningSpeed =
-        turningSpdFunction.getAsDouble(); // turning speed is (anti-clockwise +, clockwise -)
+    double xSpeed = xSpdFunction.getAsDouble(); 
+    double ySpeed = ySpdFunction.getAsDouble(); 
+    double turningSpeed = turningSpdFunction.getAsDouble(); 
+    
+    double magnitude = Math.hypot(xSpeed, ySpeed);
 
-    // 2. Normalize inputs
-    double length = xSpeed * xSpeed + ySpeed * ySpeed; // acutally length squared
-    if (length > 1d) {
-      length = Math.sqrt(length);
-      xSpeed /= length;
-      ySpeed /= length;
+    if (magnitude < Constants.OI.LEFT_JOYSTICK_DEADBAND) {
+      xSpeed = 0.0;
+      ySpeed = 0.0;
+    } else {
+      double directionX = xSpeed / magnitude;
+      double directionY = ySpeed / magnitude;
+
+      if (magnitude > 1.0) magnitude = 1.0;
+
+      magnitude = (magnitude - Constants.OI.LEFT_JOYSTICK_DEADBAND) / (1.0 - Constants.OI.LEFT_JOYSTICK_DEADBAND);
+
+      double squaredMagnitude = magnitude * magnitude;
+      squaredMagnitude *= Constants.Swerve.SWERVE_MULT;
+
+      xSpeed = directionX * squaredMagnitude;
+      ySpeed = directionY * squaredMagnitude;
     }
 
-    // Apply Square (will be [0,1] since `speed` is [0,1])
-    xSpeed = xSpeed * xSpeed * Math.signum(xSpeed);
-    ySpeed = ySpeed * ySpeed * Math.signum(ySpeed);
-    if (squaredTurn) {
-      turningSpeed =
-          Math.abs(turningSpeed * turningSpeed * turningSpeed) * Math.signum(turningSpeed);
+    if (Math.abs(turningSpeed) < Constants.OI.RIGHT_JOYSTICK_DEADBAND) {
+      turningSpeed = 0.0;
+    } else if (squaredTurn) {
+      turningSpeed = Math.abs(turningSpeed * turningSpeed * turningSpeed) * Math.signum(turningSpeed);
     }
-    // 3. Apply deadband
-    xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;
-    ySpeed = Math.abs(ySpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? ySpeed : 0.0;
-    turningSpeed =
-        Math.abs(turningSpeed) > Constants.OI.RIGHT_JOYSTICK_DEADBAND ? turningSpeed : 0.0;
 
-    // Applies slew rate limiter
     xSpeed = xSpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     ySpeed = ySpeed * Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND;
     turningSpeed = turningSpeed * Constants.Swerve.PHYSICAL_MAX_ANGLUAR_SPEED_RADIANS_PER_SECOND;

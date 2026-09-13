@@ -142,6 +142,7 @@ public class RobotContainer {
 
     // Intake
     intakeSubsystem.setDefaultCommand(intakeSubsystem.intakeDefault());
+    // DISABLE HERE
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     joystick
@@ -152,6 +153,7 @@ public class RobotContainer {
                 .alongWith(
                     hopperSubsystem.runHopperUntilInterruptedCommand(
                         -Constants.Hopper.TARGET_SURFACE_SPEED_MPS)));
+    //TO HERE
 
     // * KEEP FOR WIN COMMAND
     // joystick
