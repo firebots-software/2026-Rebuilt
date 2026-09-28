@@ -310,7 +310,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       MatchState.getAlliance()
           .ifPresent(
               allianceColor -> {
-                setOperatorPerspectiveForward(
+                setOperatorForwardDirection(
                     allianceColor == Alliance.RED
                         ? kRedAlliancePerspectiveRotation
                         : kBlueAlliancePerspectiveRotation);
