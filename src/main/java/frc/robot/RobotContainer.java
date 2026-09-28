@@ -142,7 +142,7 @@ public class RobotContainer {
             () -> false,
             () -> false);
 
-    joystick.westFace().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    joystick.faceLeft().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // Intake
@@ -150,7 +150,7 @@ public class RobotContainer {
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     joystick
-        .eastFace()
+        .faceRight()
         .whileTrue(
             intakeSubsystem
                 .outtakeUntilInterruptedCommand()
