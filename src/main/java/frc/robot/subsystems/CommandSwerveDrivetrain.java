@@ -20,7 +20,11 @@ import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.numbers.N1;
 import org.wpilib.math.numbers.N3;
-import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchType;
+import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.driverstation.RobotState;
 import org.wpilib.driverstation.Alliance;
@@ -42,7 +46,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private Translation2d virtualTarget = null;
   private boolean virtualTargetComputedThisLoop = false;
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
-  private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
+  private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.ZERO;
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
   private static final Rotation2d kRedAlliancePerspectiveRotation = Rotation2d.k180deg;
   /* Keep track if we've ever applied the operator perspective before or not */

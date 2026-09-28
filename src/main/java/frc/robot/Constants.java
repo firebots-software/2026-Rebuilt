@@ -114,7 +114,8 @@ public final class Constants {
     public static final double MAX_TRANSLATIONAL_MOVEMENT_SQUARED = 0.0625;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
     public static final CANBus CAN_BUS =
-        new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
+        new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME);
+        //new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
 
     public static final double TARGET_POS_ERROR = 0.07;

@@ -44,9 +44,9 @@ public class Targeting {
 
     // Twist2d twist =
     //     new Twist2d(
-    //         fieldSpeeds.vxMetersPerSecond * 0.03,
-    //         fieldSpeeds.vyMetersPerSecond * 0.03,
-    //         fieldSpeeds.omegaRadiansPerSecond * 0.03);
+    //         fieldSpeeds.vx * 0.03,
+    //         fieldSpeeds.vy * 0.03,
+    //         fieldSpeeds.omega * 0.03);
     // Pose2d lookaheadPose = currPose.exp(twist);
 
     double initDX = target.getX() - currPose.getX();
@@ -56,7 +56,7 @@ public class Targeting {
     if (initialDistance < 1e-6) return target.getTranslation();
 
     // double radialVelocity =
-    //     (initDX * fieldSpeeds.vxMetersPerSecond + initDY * fieldSpeeds.vyMetersPerSecond)
+    //     (initDX * fieldSpeeds.vx + initDY * fieldSpeeds.vy)
     //         / initialDistance;
 
     double tof = Constants.Shooter.TIME_OF_FLIGHT_MAP.get(initialDistance);
@@ -131,8 +131,8 @@ public class Targeting {
   //   Vector3 relativeVel =
   //       Vector3.mult(
   //           new Vector3(
-  //               drivetrain.getFieldSpeeds().vxMetersPerSecond,
-  //               drivetrain.getFieldSpeeds().vyMetersPerSecond,
+  //               drivetrain.getFieldSpeeds().vx,
+  //               drivetrain.getFieldSpeeds().vy,
   //               0),
   //           -1);
 
