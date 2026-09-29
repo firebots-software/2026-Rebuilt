@@ -1,8 +1,6 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
-import org.wpilib.vision.apriltag.AprilTagFieldLayout;
-import org.wpilib.vision.apriltag.AprilTagFields;
 import org.wpilib.math.linalg.Matrix;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Pose3d;
@@ -15,6 +13,9 @@ import org.wpilib.math.numbers.N3;
 import org.wpilib.math.numbers.N8;
 import org.wpilib.system.Timer;
 import org.wpilib.command2.SubsystemBase;
+import org.wpilib.fields.Fields;
+import org.wpilib.fields.Field;
+
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.util.VisionUtils;
@@ -29,7 +30,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 public class VisionSubsystem extends SubsystemBase {
   private final Constants.Vision.VisionCamera cameraID;
   private final PhotonCamera photonCamera;
-  private final AprilTagFieldLayout fieldLayout;
+  private final Field fieldLayout;
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
   private double lastTagSeenTimestamp = -1.0;
@@ -62,7 +63,7 @@ public class VisionSubsystem extends SubsystemBase {
     Transform3d robotToCamera = cameraID.getCameraTransform();
     camHeight = new Transform3d(0.0, 0.0, robotToCamera.getZ(), new Rotation3d(0.0, 0.0, 0.0));
 
-    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    fieldLayout = Fields.FRC_2026_REBUILT_WELDED.loadField();
 
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
     latestVisionResult = null;
@@ -70,7 +71,7 @@ public class VisionSubsystem extends SubsystemBase {
     cameraTitle = cameraID.getLoggingName();
     loggingPath = "Subsystems/Vision/" + cameraTitle;
 
-    this.swerve = drivetrain;
+    this.swerve = drivetrain; 
 
     cameraIntrinsics = cameraID.getCameraMatrix();
     distortionCoeffs = cameraID.getDistCoeffs();
