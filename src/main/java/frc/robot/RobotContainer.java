@@ -44,7 +44,7 @@ public class RobotContainer {
 
   //   private Field2d field = new Field2d();
   private final CommandGamepad joystick = new CommandGamepad(0);
-  private final CustomController secondController = new CustomController(4);
+  private final CustomController secondController = Constants.secondControllerConnected ? new CustomController(4) : null;
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -186,7 +186,9 @@ public class RobotContainer {
     //
     // (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
 
-    secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
+    if (Constants.secondControllerConnected) {
+        secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
+    }
 
     // Hopper
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
@@ -204,7 +206,7 @@ public class RobotContainer {
                 hopperSubsystem,
                 drivetrain,
                 redside,
-                secondController.visionShootingLockout()));
+                Constants.secondControllerConnected ? secondController.visionShootingLockout() : () -> false));
 
     joystick
         .rightBumper()
@@ -217,7 +219,10 @@ public class RobotContainer {
                 hopperSubsystem,
                 drivetrain,
                 redside));
-    secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+
+    if (Constants.secondControllerConnected) {
+        secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+    }
 
     // * KEEP FOR INTERMAP TESTING
     // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
