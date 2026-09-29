@@ -13,7 +13,6 @@ import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.driverstation.RobotState;
 import org.wpilib.driverstation.Alliance;
-import org.wpilib.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.io.File;
@@ -146,7 +145,7 @@ public class MiscUtils {
 
     if (isTransition || isEndgame) {
       shiftIndicatorSum = 0;
-      SmartDashboard.putString("Elastic/ShiftSwitchIndicator", "#00FF00");
+      TelemetryUtils.elasticTelemetry.log("Elastic/ShiftSwitchIndicator", "#00FF00");
       return;
     }
 
@@ -174,7 +173,7 @@ public class MiscUtils {
         color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
       else color = "#000000";
     }
-    SmartDashboard.putString("Elastic/ShiftSwitchIndicator", color);
+    TelemetryUtils.elasticTelemetry.log("Elastic/ShiftSwitchIndicator", color);
   }
 
   public static double get3dDistance(Transform3d transform) {

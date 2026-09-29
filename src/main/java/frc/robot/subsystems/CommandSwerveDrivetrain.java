@@ -107,8 +107,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     headingPIDController.setIntegratorRange(0.0, Math.PI / 4); // 0.3 before
     headingPIDController.enableContinuousInput(-Math.PI, Math.PI); // 0.3 before
     m_pathThetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    // SmartDashboard.putData(field);
   }
 
   /**
@@ -127,7 +125,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       double odometryUpdateFrequency,
       SwerveModuleConstants<?, ?, ?>... modules) {
     super(drivetrainConstants, odometryUpdateFrequency, modules);
-    // SmartDashboard.putData(field);
   }
 
   /**
@@ -157,7 +154,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         odometryStandardDeviation,
         visionStandardDeviation,
         modules);
-    // SmartDashboard.putData(field);
   }
 
   public AutoFactory createAutoFactory() {

@@ -16,7 +16,6 @@ import org.wpilib.driverstation.MatchType;
 import org.wpilib.driverstation.DriverStationErrors;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.driverstation.Alliance;
-import org.wpilib.smartdashboard.SmartDashboard;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.button.CommandGamepad;
 // * KEEP FOR WIN COMMAND TESTING
@@ -35,6 +34,7 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
+import frc.robot.util.TelemetryUtils;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -43,9 +43,6 @@ public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
   //   private Field2d field = new Field2d();
-  private final Telemetry logger =
-      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
-
   private final CommandGamepad joystick = new CommandGamepad(0);
   private final CustomController secondController = new CustomController(4);
 
@@ -101,8 +98,7 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    // SmartDashboard.putData("Elastic/Field2d", field);
+    TelemetryUtils.elasticTelemetry.log("Auto Chooser", autoChooser);
     configureBindings();
   }
 
@@ -240,16 +236,6 @@ public class RobotContainer {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
     leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
-  }
-
-  public void doTelemetry() {
-    logger.telemeterize(drivetrain.getCurrentState());
-
-    String commandName = "nah";
-
-    if (drivetrain.getCurrentCommand() != null) {
-      commandName = drivetrain.getCurrentCommand().getName();
-    }
   }
 
   public boolean inAllianceSide() {

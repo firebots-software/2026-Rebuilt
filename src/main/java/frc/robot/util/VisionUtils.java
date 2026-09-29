@@ -9,7 +9,6 @@ import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.numbers.N1;
 import org.wpilib.math.numbers.N3;
 import org.wpilib.math.util.Units;
-import org.wpilib.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.IntakeVision.TargetingMode;
@@ -137,19 +136,21 @@ public class VisionUtils {
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
   }
 
-  public static void fuelGaugeLogs(FuelGaugeDetection visionFuelGauge) {
-    if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
-      FuelGauge gaugeState = visionFuelGauge.getGaugeDefault();
-      String gaugeStateHex = getColorOrDefault(gaugeState);
-      DogLog.log("Elastic/FuelGauge", gaugeState.toString());
-      SmartDashboard.putString("Elastic/FuelGaugeHex", gaugeStateHex);
-      DogLog.log("Elastic/FuelGauge/CameraConnected", true);
-    } else {
-      DogLog.log("Elastic/FuelGauge", "N/A");
-      SmartDashboard.putString("Elastic/FuelGaugeHex", "#00FFFF");
-      DogLog.log("Elastic/FuelGauge/CameraConnected", false);
-    }
-  }
+  // note: fuel gauge disabled
+  //
+  // public static void fuelGaugeLogs(FuelGaugeDetection visionFuelGauge) {
+  //   if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
+  //     FuelGauge gaugeState = visionFuelGauge.getGaugeDefault();
+  //     String gaugeStateHex = getColorOrDefault(gaugeState);
+  //     DogLog.log("Elastic/FuelGauge", gaugeState.toString());
+  //     TelemetryUtils.elasticTelemetry.log("Elastic/FuelGaugeHex", gaugeStateHex);
+  //     DogLog.log("Elastic/FuelGauge/CameraConnected", true);
+  //   } else {
+  //     DogLog.log("Elastic/FuelGauge", "N/A");
+  //     TelemetryUtils.elasticTelemetry.log("Elastic/FuelGaugeHex", "#00FFFF");
+  //     DogLog.log("Elastic/FuelGauge/CameraConnected", false);
+  //   }
+  // }
 
   private static String getColorOrDefault(FuelGauge gauge) {
     return gauge == null ? "#FFFFFF" : gauge.getColor();

@@ -26,7 +26,6 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.util.Units;
-import org.wpilib.smartdashboard.SmartDashboard;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.SubsystemBase;
@@ -333,7 +332,5 @@ public class IntakeSubsystem extends SubsystemBase {
     //     "Subsystems/Intake/Arm/AbsoluteCurrentPosition (degs)",
     //     getArmUnfusedPosition().getDegrees());
     DogLog.log("Subsystems/Intake/Arm/TargetPosition (degs)", targetAngleDeg);
-
-    SmartDashboard.putNumber("Arm Angle", getArmPosition().getDegrees());
   }
 }

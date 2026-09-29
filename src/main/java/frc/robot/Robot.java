@@ -7,12 +7,14 @@ package frc.robot;
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import org.wpilib.system.RobotController;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 import org.wpilib.framework.TimedRobot;
-import org.wpilib.smartdashboard.SmartDashboard;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import frc.robot.util.LoggedTalonFX;
 import frc.robot.util.MiscUtils;
+import frc.robot.util.TelemetryUtils;
 import frc.robot.util.VisionUtils;
 
 /**
@@ -22,7 +24,6 @@ import frc.robot.util.VisionUtils;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private final RobotContainer m_robotContainer;
 
   private static double simulatedTime = 160;
@@ -55,7 +56,7 @@ public class Robot extends TimedRobot {
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
    * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
+   * Telemetry integrated updating.
    */
   @Override
   public void robotPeriodic() {
@@ -69,7 +70,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.visionPeriodic();
     elasticLogging();
     MiscUtils.shiftSwitchIndicator(simulatedTime);
-    m_robotContainer.doTelemetry();
   }
 
   private void elasticLogging() {
@@ -78,11 +78,11 @@ public class Robot extends TimedRobot {
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/AreWeActive", MiscUtils.areWeActive());
-    SmartDashboard.putString("Elastic/ActiveFirst", MiscUtils.activeFirst());
     DogLog.log("Elastic/TimeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
-    SmartDashboard.putNumber(
-        "Elastic/timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
     DogLog.log("Elastic/CurrentShiftName", MiscUtils.currentShiftName(simulatedTime));
+    TelemetryUtils.elasticTelemetry.log("CurrentShiftName", MiscUtils.currentShiftName(simulatedTime));
+    TelemetryUtils.elasticTelemetry.log("ActiveFirst", MiscUtils.activeFirst());
+    TelemetryUtils.elasticTelemetry.log("timeUntilNextShift", MiscUtils.countdownTillNextShift(simulatedTime));
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
