@@ -111,6 +111,8 @@ public final class Constants {
   }
 
   public static class Swerve {
+    public static final double GLOBAL_SWERVE_MULT = 1.0;
+
     public static final double FF_RADIUS_M2 = 0.1;
     public static final double MAX_TRANSLATIONAL_MOVEMENT_SQUARED = 0.0625;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
