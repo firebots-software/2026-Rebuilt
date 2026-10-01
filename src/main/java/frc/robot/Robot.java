@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
             .withCaptureDs(true)
             .withLogExtras(false)
             .withNtTunables(false));
-    DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
+    // DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/RedSide", RobotContainer.isRedAlliance());
     RobotController.setBrownoutVoltages(6.0, 6.75);
   }
