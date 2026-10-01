@@ -26,7 +26,7 @@ public final class Constants {
   public static final boolean fuelGaugeOnRobot = false;
   public static final boolean intakeVisionOnRobot = false;
   public static final boolean shooterOnRobot = true;
-  public static final boolean secondControllerConnected = true;
+  public static final boolean secondControllerConnected = false;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
