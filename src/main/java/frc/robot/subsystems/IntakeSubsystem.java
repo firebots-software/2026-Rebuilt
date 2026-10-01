@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static org.wpilib.units.Units.Rotations;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -29,6 +30,8 @@ import org.wpilib.math.util.Units;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.SubsystemBase;
+import org.wpilib.hardware.bus.CANPort;
+
 import frc.robot.Constants;
 import frc.robot.util.LoggedTalonFX;
 
@@ -46,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TorqueCurrentFOC m_torqueCurrentRequest = new TorqueCurrentFOC(0);
 
   public IntakeSubsystem() {
-    rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
+    rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID, new CANBus(CANPort.CAN_S0));
     armMotor =
         new LoggedTalonFX("IntakeArm", Constants.Intake.Arm.CAN_ID, Constants.Swerve.CAN_BUS);
     targetAngleDeg = 0;
