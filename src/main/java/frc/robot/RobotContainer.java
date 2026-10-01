@@ -11,6 +11,7 @@ import choreo.auto.AutoChooser;
 // import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.driverstation.RobotState;
+import org.wpilib.tunable.Tunables;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchType;
 import org.wpilib.driverstation.DriverStationErrors;
@@ -98,7 +99,7 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
-    TelemetryUtils.elasticTelemetry.log("Auto Chooser", autoChooser);
+    Tunables.publish("Auto", autoChooser);
     configureBindings();
   }
 
