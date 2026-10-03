@@ -120,8 +120,8 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Swerve
-    DoubleSupplier frontBackFunction = () -> -joystick.getLeftY();
-    DoubleSupplier leftRightFunction = () -> -joystick.getLeftX();
+    DoubleSupplier frontBackFunction = () -> joystick.getLeftY();
+    DoubleSupplier leftRightFunction = () -> joystick.getLeftX();
     DoubleSupplier rotationFunction = () -> -joystick.getRightX();
     DoubleSupplier speedFunction = () -> 1d;
 
