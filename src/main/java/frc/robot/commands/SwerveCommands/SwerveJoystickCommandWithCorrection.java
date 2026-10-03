@@ -121,7 +121,7 @@ public class SwerveJoystickCommandWithCorrection extends Command {
     if (Math.abs(turningSpeed) < Constants.OI.RIGHT_JOYSTICK_DEADBAND) {
         turningSpeed = 0.0;
     } else if (squaredTurn) {
-        turningSpeed = Math.abs(turningSpeed * turningSpeed * turningSpeed);
+        turningSpeed = turningSpeed * turningSpeed * turningSpeed;
     }
    
     // slew rate
