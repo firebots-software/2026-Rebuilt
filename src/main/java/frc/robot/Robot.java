@@ -25,7 +25,7 @@ public class Robot extends OpModeRobot { //
 
     @Override
     public void robotPeriodic() {
-        m_robotContainer.visionPeriodic();
+        // m_robotContainer.visionPeriodic();
         CommandScheduler.getInstance().run();
         LoggedTalonFX.periodic_static();
     }
