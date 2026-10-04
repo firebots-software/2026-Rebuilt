@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import dev.doglog.DogLog;
 import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.util.Units;
@@ -97,33 +98,29 @@ public class Targeting {
 
   public static boolean pointingAtTarget(
       Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
-    double desiredRobotHullAngle =
-        targetAngle(targetNoOffset, drivetrain) + (2 * Math.PI) % (2 * Math.PI);
+    
+    Rotation2d desiredAngle = targetAngle(targetNoOffset, drivetrain);
+    Rotation2d currentAngle = drivetrain.getCurrentState().Pose.getRotation();
 
-    double robotHullAngle =
-        drivetrain.getCurrentState().Pose.getRotation().getRadians()
-            + (2 * Math.PI) % (2 * Math.PI);
-
-    double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
-    if (diff > Math.PI) diff = 2 * Math.PI - diff;
+    double diff = Math.abs(desiredAngle.minus(currentAngle).getRadians());
+    
     DogLog.log("Subsystems/Shooter/Shoot/RotationalErrorRadians", diff);
     boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
     DogLog.log("Subsystems/Shooter/Shoot/Pointing", hullAimed);
+    
     return hullAimed;
   }
 
   public static boolean pointingAtTarget(double angle, CommandSwerveDrivetrain drivetrain) {
-    double desiredRobotHullAngle = angle;
+    Rotation2d desiredAngle = new Rotation2d(angle);
+    Rotation2d currentAngle = drivetrain.getCurrentState().Pose.getRotation();
 
-    double robotHullAngle =
-        drivetrain.getCurrentState().Pose.getRotation().getRadians()
-            + (2 * Math.PI) % (2 * Math.PI);
-    DogLog.log("PointingAtTarget/DesiredAngle", desiredRobotHullAngle);
-    DogLog.log("PointingAtTarget/RobotAngle", robotHullAngle);
-    double diff = Math.abs(desiredRobotHullAngle - robotHullAngle) % (2 * Math.PI);
-    if (diff > Math.PI) diff = 2 * Math.PI - diff;
-    boolean hullAimed = diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
-    return hullAimed;
+    DogLog.log("PointingAtTarget/DesiredAngle", desiredAngle.getRadians());
+    DogLog.log("PointingAtTarget/RobotAngle", currentAngle.getRadians());
+    
+    double diff = Math.abs(desiredAngle.minus(currentAngle).getRadians());
+    
+    return diff <= Constants.Shooter.ANGULAR_TOLERANCE_FOR_AUTO_AIM_RAD;
   }
 
   // public static TargetingInfo targetingInfo(
@@ -243,12 +240,17 @@ public class Targeting {
     return Constants.Shooter.TIME_OF_FLIGHT_MAP.get(d);
   }
 
-  public static double targetAngle(Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
+public static Rotation2d targetAngle(Pose2d targetNoOffset, CommandSwerveDrivetrain drivetrain) {
     Pose2d target = positionToTarget(targetNoOffset, drivetrain);
-    return Math.atan2(
-            Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).y,
-            Vector3.subtract(new Vector3(target), new Vector3(drivetrain.getCurrentState().Pose)).x)
-        + (Constants.Shooter.SHOOTS_BACKWARDS ? Math.PI : 0);
+    Translation2d robotToTarget = target.getTranslation().minus(drivetrain.getCurrentState().Pose.getTranslation());
+    
+    Rotation2d angle = robotToTarget.getAngle().isPresent() ? robotToTarget.getAngle().get() : drivetrain.getCurrentState().Pose.getRotation();
+    
+    if (Constants.Shooter.SHOOTS_BACKWARDS) {
+        return angle.rotateBy(Rotation2d.fromRadians(Math.PI)); 
+    }
+    
+    return angle;
   }
 
   public static double distMeters(CommandSwerveDrivetrain drivetrain, Pose2d target) {
