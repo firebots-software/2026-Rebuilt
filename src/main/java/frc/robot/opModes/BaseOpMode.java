@@ -25,6 +25,7 @@ public abstract class BaseOpMode extends PeriodicOpMode {
 
     @Override
     public void periodic() {
+        m_robotContainer.visionPeriodic();
         // Handled every 20ms during execution
         elasticLogging();
         MiscUtils.shiftSwitchIndicator(simulatedTime);
