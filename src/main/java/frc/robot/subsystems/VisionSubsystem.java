@@ -38,7 +38,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final String cameraTitle;
   private final String loggingPath;
 
-  private Optional<EstimatedRobotPose> visionEstimate;
+  private Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
 
   private boolean cameraConnectedStatus = false;
 
