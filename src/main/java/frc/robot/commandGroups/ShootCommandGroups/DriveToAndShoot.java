@@ -3,14 +3,6 @@ package frc.robot.commandGroups.ShootCommandGroups;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.LinearPath;
 import dev.doglog.DogLog;
-import org.wpilib.math.controller.PIDController;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.math.trajectory.TrapezoidProfile;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -20,6 +12,14 @@ import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.ParallelCommandGroup;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.TrapezoidProfile;
 
 public class DriveToAndShoot extends ParallelCommandGroup {
 

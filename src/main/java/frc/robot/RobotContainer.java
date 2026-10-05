@@ -9,16 +9,7 @@ import choreo.auto.AutoChooser;
 // import org.wpilib.math.geometry.Pose2d;
 // import org.wpilib.math.geometry.Rotation2d;
 // import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.tunable.Tunables;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.button.CommandGamepad;
+import frc.robot.Constants.Swerve.Auto.AutoList;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
@@ -35,17 +26,22 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
-import frc.robot.util.TelemetryUtils;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.button.CommandGamepad;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.tunable.Tunables;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
   //   private Field2d field = new Field2d();
   private final CommandGamepad joystick = new CommandGamepad(0);
-  private final CustomController secondController = Constants.secondControllerConnected ? new CustomController(4) : null;
+  private final CustomController secondController =
+      Constants.secondControllerConnected ? new CustomController(4) : null;
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -188,7 +184,7 @@ public class RobotContainer {
     // (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
 
     if (Constants.secondControllerConnected) {
-        secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
+      secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
     }
 
     // Hopper
@@ -207,7 +203,9 @@ public class RobotContainer {
                 hopperSubsystem,
                 drivetrain,
                 redside,
-                Constants.secondControllerConnected ? secondController.visionShootingLockout() : () -> false));
+                Constants.secondControllerConnected
+                    ? secondController.visionShootingLockout()
+                    : () -> false));
 
     joystick
         .rightBumper()
@@ -222,7 +220,7 @@ public class RobotContainer {
                 redside));
 
     if (Constants.secondControllerConnected) {
-        secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+      secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
     }
 
     // * KEEP FOR INTERMAP TESTING
@@ -251,6 +249,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    return autoChooser.selectedCommand();
+  }
+
+  public Command getAutonomousCommand(AutoList auto) {
+    String selected = autoChooser.select(auto.getInternalName());
+    if (!selected.equals(auto.getInternalName())) return null;
     return autoChooser.selectedCommand();
   }
 }

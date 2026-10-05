@@ -1,23 +1,24 @@
-package frc.robot.opModes;
+package frc.robot.opModes.autos;
 
+import frc.robot.Constants.Swerve.Auto.AutoList;
 import frc.robot.Robot;
-import org.wpilib.command2.Command; // 2027 Commands v2 package
+import frc.robot.opModes.BaseOpMode;
+import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
-import org.wpilib.opmode.Autonomous; // 2027 OpMode namespace
+import org.wpilib.opmode.Autonomous;
 
 @Autonomous
-public class PrimaryAutonomous extends BaseOpMode {
+public class HubSweepLeft extends BaseOpMode {
   private Command m_autoCommand;
 
-  public PrimaryAutonomous(Robot robot) {
+  public HubSweepLeft(Robot robot) {
     super(robot);
   }
 
   @Override
   public void start() {
     super.start();
-
-    m_autoCommand = m_robotContainer.getAutonomousCommand();
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT_HUB_SWEEP_WAIT);
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }
