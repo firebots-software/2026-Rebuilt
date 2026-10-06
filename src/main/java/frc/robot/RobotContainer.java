@@ -96,7 +96,7 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
-    Tunables.publish("Auto", autoChooser);
+    // Tunables.publish("Auto", autoChooser);
     configureBindings();
   }
 

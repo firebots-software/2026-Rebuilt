@@ -5,7 +5,7 @@ import org.wpilib.command2.Command; // 2027 Commands v2 package
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous; // 2027 OpMode namespace
 
-@Autonomous
+// @Autonomous
 public class PrimaryAutonomous extends BaseOpMode {
   private Command m_autoCommand;
 
