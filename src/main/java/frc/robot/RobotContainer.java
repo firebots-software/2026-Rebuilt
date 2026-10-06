@@ -5,6 +5,7 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
+import dev.doglog.DogLog;
 // * KEEP FOR WIN COMMAND TESTING
 // import org.wpilib.math.geometry.Pose2d;
 // import org.wpilib.math.geometry.Rotation2d;
@@ -249,12 +250,15 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    DogLog.log("Robot/selectedAuto", autoChooser.selectedCommand().toString());
     return autoChooser.selectedCommand();
+
   }
 
   public Command getAutonomousCommand(AutoList auto) {
     String selected = autoChooser.select(auto.getInternalName());
-    if (!selected.equals(auto.getInternalName())) return null;
+    DogLog.log("Robot/selectedAuto", selected);
+    // if (!selected.equals(auto.getInternalName())) return null;
     return autoChooser.selectedCommand();
   }
 }

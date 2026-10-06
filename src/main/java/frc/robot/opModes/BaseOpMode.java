@@ -23,7 +23,7 @@ public abstract class BaseOpMode extends PeriodicOpMode {
     // Shared configuration when the OpMode begins
     DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/RedSide", RobotContainer.isRedAlliance());
-    VisionUtils.setHeadingThreshold(Constants.Vision.MAX_HEADING_DIFF_AUTO);
+    // VisionUtils.setHeadingThreshold(Constants.Vision.MAX_HEADING_DIFF_AUTO);
   }
 
   @Override

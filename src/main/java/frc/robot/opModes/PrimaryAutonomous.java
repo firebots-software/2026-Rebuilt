@@ -11,13 +11,14 @@ public class PrimaryAutonomous extends BaseOpMode {
 
   public PrimaryAutonomous(Robot robot) {
     super(robot);
+    m_autoCommand = m_robotContainer.getAutonomousCommand();
+
   }
 
   @Override
   public void start() {
     super.start();
 
-    m_autoCommand = m_robotContainer.getAutonomousCommand();
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }
