@@ -14,7 +14,6 @@ public class PedriShortRight extends BaseOpMode {
   public PedriShortRight(Robot robot) {
     super(robot);
     m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT);
-
   }
 
   @Override

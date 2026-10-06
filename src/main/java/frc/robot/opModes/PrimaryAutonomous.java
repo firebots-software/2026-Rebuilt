@@ -3,7 +3,8 @@ package frc.robot.opModes;
 import frc.robot.Robot;
 import org.wpilib.command2.Command; // 2027 Commands v2 package
 import org.wpilib.command2.CommandScheduler;
-import org.wpilib.opmode.Autonomous; // 2027 OpMode namespace
+
+// 2027 OpMode namespace
 
 // @Autonomous
 public class PrimaryAutonomous extends BaseOpMode {
@@ -12,7 +13,6 @@ public class PrimaryAutonomous extends BaseOpMode {
   public PrimaryAutonomous(Robot robot) {
     super(robot);
     m_autoCommand = m_robotContainer.getAutonomousCommand();
-
   }
 
   @Override

@@ -1,12 +1,10 @@
 package frc.robot.opModes;
 
 import dev.doglog.DogLog;
-import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.TelemetryUtils;
-import frc.robot.util.VisionUtils;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.system.RobotController;
 
