@@ -42,6 +42,7 @@ import java.util.function.DoubleSupplier;
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
+
   //   private Field2d field = new Field2d();
   private final CommandGamepad joystick = new CommandGamepad(0);
   private final CustomController secondController = Constants.secondControllerConnected ? new CustomController(4) : null;
@@ -98,6 +99,7 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
+
     TelemetryUtils.elasticTelemetry.log("Auto Chooser", autoChooser);
     configureBindings();
   }
