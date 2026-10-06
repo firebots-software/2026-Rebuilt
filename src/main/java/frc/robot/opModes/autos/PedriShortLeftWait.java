@@ -13,12 +13,12 @@ public class PedriShortLeftWait extends BaseOpMode {
 
   public PedriShortLeftWait(Robot robot) {
     super(robot);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT_WAIT);
   }
 
   @Override
   public void start() {
     super.start();
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT_WAIT);
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }

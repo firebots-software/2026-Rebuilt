@@ -13,12 +13,12 @@ public class DrakeDepotLong extends BaseOpMode {
 
   public DrakeDepotLong(Robot robot) {
     super(robot);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.DEPOT_TO_OUTPOST);
   }
 
   @Override
   public void start() {
     super.start();
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.DEPOT_TO_OUTPOST);
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }

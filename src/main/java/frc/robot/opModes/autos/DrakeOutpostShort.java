@@ -13,12 +13,12 @@ public class DrakeOutpostShort extends BaseOpMode {
 
   public DrakeOutpostShort(Robot robot) {
     super(robot);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.OUTPOST);
   }
 
   @Override
   public void start() {
     super.start();
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.OUTPOST);
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }

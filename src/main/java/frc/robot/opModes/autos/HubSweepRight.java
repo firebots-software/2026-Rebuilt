@@ -13,12 +13,12 @@ public class HubSweepRight extends BaseOpMode {
 
   public HubSweepRight(Robot robot) {
     super(robot);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_HUB_SWEEP_WAIT);
   }
 
   @Override
   public void start() {
     super.start();
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_HUB_SWEEP_WAIT);
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }
