@@ -137,7 +137,8 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private SingleFadeAnimation activeAnimation() {
-    return new SingleFadeAnimation(START_OF_STRIP, END_OF_STRIP).withColor(new RGBWColor(Color.RED));
+    return new SingleFadeAnimation(START_OF_STRIP, END_OF_STRIP)
+        .withColor(new RGBWColor(Color.RED));
   }
 
   private SolidColor solidColor(Color color) {
