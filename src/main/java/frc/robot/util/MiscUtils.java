@@ -102,8 +102,8 @@ public class MiscUtils {
   }
 
   public static double countdownTillNextShift(double currentTime) {
-    // double currentMatchTime = currentTime;
-    double currentMatchTime = MatchState.getMatchTime();
+    double currentMatchTime = currentTime;
+    // double currentMatchTime = MatchState.getMatchTime();
     if (RobotState.isAutonomous()) {
       return currentMatchTime;
     } else {
@@ -118,8 +118,8 @@ public class MiscUtils {
   }
 
   public static String currentShiftName(double currentTime) {
-    // double currentMatchTime = currentTime;
-    double currentMatchTime = MatchState.getMatchTime();
+    double currentMatchTime = currentTime;
+    // double currentMatchTime = MatchState.getMatchTime();
     if (RobotState.isAutonomous()) return "Auto";
 
     if (currentMatchTime > 130) return "Transition";
@@ -131,8 +131,8 @@ public class MiscUtils {
   }
 
   public static void shiftSwitchIndicator(double currentTime) {
-    // double currentTimes = currentTime;
-    double currentTimes = MatchState.getMatchTime();
+    double currentTimes = currentTime;
+    // double currentTimes = MatchState.getMatchTime();
     double timeUntilNextShift = countdownTillNextShift(currentTimes);
     boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
     boolean isActive = areWeActive();
@@ -140,7 +140,7 @@ public class MiscUtils {
 
     if (isTransition || isEndgame) {
       shiftIndicatorSum = 0;
-      TelemetryUtils.elasticTelemetry.log("Elastic/ShiftSwitchIndicator", "#00FF00");
+      TelemetryUtils.elasticTelemetry.log("ShiftSwitchIndicator", "#00FF00");
       return;
     }
 
@@ -168,7 +168,7 @@ public class MiscUtils {
         color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
       else color = "#000000";
     }
-    TelemetryUtils.elasticTelemetry.log("Elastic/ShiftSwitchIndicator", color);
+    TelemetryUtils.elasticTelemetry.log("ShiftSwitchIndicator", color);
   }
 
   public static double get3dDistance(Transform3d transform) {

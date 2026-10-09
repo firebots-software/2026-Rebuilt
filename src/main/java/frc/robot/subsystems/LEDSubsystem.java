@@ -22,8 +22,8 @@ public class LEDSubsystem extends SubsystemBase {
   // left strip is [8, 23]
   // middle strip is [24, 53] (center of middle is 38)
   // right strip is [51, 76]
-  private static final int START_OF_STRIP = 24;
-  private static final int END_OF_STRIP = 76;
+  private static final int START_OF_STRIP = 8;
+  private static final int END_OF_STRIP = 53;
 
   private static CANdle candle = new CANdle(5, new CANBus(CANPort.CAN_S0));
   private LEDState currentState = LEDState.NONE;
