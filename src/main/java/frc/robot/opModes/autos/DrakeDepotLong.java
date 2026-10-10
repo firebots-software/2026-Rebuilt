@@ -7,7 +7,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous
+@Autonomous(name="Depot to Outpost", group = "Depot")
 public class DrakeDepotLong extends BaseOpMode {
   private Command m_autoCommand;
 

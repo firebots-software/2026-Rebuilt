@@ -469,7 +469,8 @@ public final class Constants {
         OUTPOST("Just Outpost"),
         DEPOT("Just Depot"),
         OUTPOST_TO_DEPOT("Outpost to Depot"),
-        DEPOT_TO_OUTPOST("Depot to Outpost");
+        DEPOT_TO_OUTPOST("Depot to Outpost"),
+        CENTER("We are genuinely the worst robot on the field");
 
         private String internalName;
 

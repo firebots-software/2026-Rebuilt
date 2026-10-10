@@ -7,13 +7,13 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous(name="Hub Sweep Right Wait", group="Hub Sweep")
-public class HubSweepRight extends BaseOpMode {
+@Autonomous(name="Genuinely the worst on the field", group="Center")
+public class Nike extends BaseOpMode {
   private Command m_autoCommand;
 
-  public HubSweepRight(Robot robot) {
+  public Nike(Robot robot) {
     super(robot);
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.RIGHT_HUB_SWEEP_WAIT);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.CENTER);
   }
 
   @Override

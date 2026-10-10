@@ -7,7 +7,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous
+@Autonomous(name="Right Wait", group="Wait Normal")
 public class PedriShortRightWait extends BaseOpMode {
   private Command m_autoCommand;
 
