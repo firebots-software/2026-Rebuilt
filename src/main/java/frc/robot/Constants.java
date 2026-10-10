@@ -26,7 +26,7 @@ public final class Constants {
   public static final boolean fuelGaugeOnRobot = false;
   public static final boolean intakeVisionOnRobot = false;
   public static final boolean shooterOnRobot = true;
-  public static final boolean secondControllerConnected = false;
+  public static final boolean secondControllerConnected = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -460,16 +460,17 @@ public final class Constants {
       }
 
       public static enum AutoList {
-        RIGHT("PedriShortRight"),
-        LEFT("PedriShortLeft"),
-        RIGHT_WAIT("PedriShortRightWait"),
-        LEFT_WAIT("PedriShortLeftWait"),
-        RIGHT_HUB_SWEEP_WAIT("HubSweepRight"),
-        LEFT_HUB_SWEEP_WAIT("HubSweepLeft"),
-        OUTPOST("DrakeOutpostShort"),
-        DEPOT("DrakeDepotShort"),
-        OUTPOST_TO_DEPOT("DrakeOutpostLong"),
-        DEPOT_TO_OUTPOST("DrakeDepotLong");
+        RIGHT("Right"),
+        LEFT("Left"),
+        RIGHT_WAIT("Right Wait"),
+        LEFT_WAIT("Left Wait"),
+        RIGHT_HUB_SWEEP_WAIT("Hub Sweep Right Wait"),
+        LEFT_HUB_SWEEP_WAIT("Hub Sweep Left Wait"),
+        OUTPOST("Just Outpost"),
+        DEPOT("Just Depot"),
+        OUTPOST_TO_DEPOT("Outpost to Depot"),
+        DEPOT_TO_OUTPOST("Depot to Outpost"),
+        CENTER("We are genuinely the worst robot on the field");
 
         private String internalName;
 

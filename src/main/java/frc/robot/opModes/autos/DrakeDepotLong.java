@@ -7,18 +7,18 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous
+@Autonomous(name="Depot to Outpost", group = "Depot")
 public class DrakeDepotLong extends BaseOpMode {
   private Command m_autoCommand;
 
   public DrakeDepotLong(Robot robot) {
     super(robot);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.DEPOT_TO_OUTPOST);
   }
 
   @Override
   public void start() {
     super.start();
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.DEPOT_TO_OUTPOST);
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }

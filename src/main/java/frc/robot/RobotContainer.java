@@ -5,6 +5,7 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
+import dev.doglog.DogLog;
 // * KEEP FOR WIN COMMAND TESTING
 // import org.wpilib.math.geometry.Pose2d;
 // import org.wpilib.math.geometry.Rotation2d;
@@ -33,7 +34,6 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.button.CommandGamepad;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
-import org.wpilib.tunable.Tunables;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
@@ -96,7 +96,7 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
-    Tunables.publish("Auto", autoChooser);
+    // Tunables.publish("Auto", autoChooser);
     configureBindings();
   }
 
@@ -250,12 +250,14 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    DogLog.log("Robot/selectedAuto", autoChooser.selectedCommand().toString());
     return autoChooser.selectedCommand();
   }
 
   public Command getAutonomousCommand(AutoList auto) {
     String selected = autoChooser.select(auto.getInternalName());
-    if (!selected.equals(auto.getInternalName())) return null;
+    DogLog.log("Robot/selectedAuto", selected);
+    // if (!selected.equals(auto.getInternalName())) return null;
     return autoChooser.selectedCommand();
   }
 }

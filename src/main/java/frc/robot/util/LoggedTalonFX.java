@@ -3,14 +3,12 @@ package frc.robot.util;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.StatusSignalCollection;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import dev.doglog.DogLog;
 import frc.robot.Constants;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Team 3501 Version of TalonFX class that automatically sets Current Limits and logs motor
@@ -18,13 +16,8 @@ import java.util.Arrays;
  */
 public class LoggedTalonFX extends TalonFX {
 
-  /** List of all LoggedTalonFX motors on our robot, defined. */
-  private static ArrayList<LoggedTalonFX> motorsOnCanivore = new ArrayList<>();
-
-  private static ArrayList<LoggedTalonFX> motorsOnRio = new ArrayList<>();
-
-  private static StatusSignalCollection signalsOnCanivore = new StatusSignalCollection();
-  private static StatusSignalCollection signalsOnRio = new StatusSignalCollection();
+  /** List of all LoggedTalonFX motors on our robot. */
+  private static final ArrayList<LoggedTalonFX> allMotors = new ArrayList<>();
 
   /** Name of motor instance. */
   private String name;
@@ -149,71 +142,49 @@ public class LoggedTalonFX extends TalonFX {
           motorVoltageSignal,
           supplyVoltageSignal
         };
+
+    // CRITICAL: Phoenix 6 defaults acceleration, torqueCurrent, and closedLoopError to 0 Hz.
+    // We must explicitly set their update frequencies, or refreshAll() will timeout and freeze.
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        positionSignal,
+        velocitySignal,
+        motorVoltageSignal,
+        supplyCurrentSignal,
+        statorCurrentSignal,
+        rotorPositionSignal);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        20.0,
+        accelerationSignal,
+        torqueCurrentSignal,
+        closedLoopErrorSignal,
+        closedLoopReferenceSignal);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(4.0, deviceTempSignal, supplyVoltageSignal);
   }
 
-  /**
-   * @param deviceName Designated name of this LoggedTalonFX
-   * @param deviceId Motor ID of this LoggedTalonFX
-   * @param canbus CAN Bus object Associated with this LoggedTalonFX.
-   */
   public LoggedTalonFX(String deviceName, int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = "Motors/" + deviceName;
     init();
   }
 
-  /**
-   * @param deviceName Designated name of this LoggedTalonFX
-   * @param deviceId Motor ID of this LoggedTalonFX
-   */
   public LoggedTalonFX(String deviceName, int deviceId) {
     super(deviceId, Constants.Swerve.CAN_BUS);
     name = "Motors/" + deviceName;
     init();
   }
 
-  /**
-   * @param deviceId Motor ID of this LoggedTalonFX
-   * @param canbus CAN Bus object Associated with this LoggedTalonFX.
-   */
   public LoggedTalonFX(int deviceId, CANBus canbus) {
     super(deviceId, canbus);
     name = "Motors/Motor " + deviceId;
     init();
   }
 
-  /**
-   * @param deviceId Motor ID of this LoggedTalonFX
-   */
-  // public LoggedTalonFX(int deviceId) {
-  //   super(deviceId);
-  //   name = "Motors/Motor " + deviceId;
-  //   init();
-  // }
-
-  private static void rebuildSignalCollection() {
-    signalsOnCanivore =
-        new StatusSignalCollection(
-            motorsOnCanivore.stream()
-                .flatMap(m -> Arrays.stream(m.cachedSignals))
-                .toArray(BaseStatusSignal[]::new));
-
-    signalsOnRio =
-        new StatusSignalCollection(
-            motorsOnRio.stream()
-                .flatMap(m -> Arrays.stream(m.cachedSignals))
-                .toArray(BaseStatusSignal[]::new));
-  }
-
-  /** Initializes strings that will be outputted through the LoggedTalonFX class. */
   public void init() {
-    if ("Viper".equals(this.getNetwork().getName())) {
-      motorsOnCanivore.add(this);
-    } else {
-      motorsOnRio.add(this);
-    }
+    allMotors.add(this);
 
-    this.getConfigurator().apply(new TalonFXConfiguration());
     this.temperature = name + "/temperature(degC)";
     this.closedLoopError = name + "/closedLoopError";
     this.closedLoopReference = name + "/closedLoopReference";
@@ -227,19 +198,16 @@ public class LoggedTalonFX extends TalonFX {
     this.supplyVoltage = name + "/voltage/supply(V)";
     this.rotorPosition = name + "/closedloop/rotorPosition";
 
-    // Applying current limits
     CurrentLimitsConfigs clc =
         new CurrentLimitsConfigs()
             .withStatorCurrentLimitEnable(true)
             .withStatorCurrentLimit(80)
             .withSupplyCurrentLimitEnable(true)
             .withSupplyCurrentLimit(40);
-    // WITH A HIGH POWER MECHANISM, MAKE SURE TO INCREASE THE CURRENT LIMITS
 
     motorConfiguration.CurrentLimits = clc;
     this.getConfigurator().apply(motorConfiguration);
     cacheSignals();
-    rebuildSignalCollection();
   }
 
   public void updateCurrentLimits(double statorCurrentLimit, double supplyCurrentLimit) {
@@ -284,14 +252,9 @@ public class LoggedTalonFX extends TalonFX {
   }
 
   public static void periodic_static() {
-    signalsOnCanivore.refreshAll();
-    for (LoggedTalonFX motor : motorsOnCanivore) {
-      motor.updateCachedValues();
-      motor.logValues();
-    }
-
-    signalsOnRio.refreshAll();
-    for (LoggedTalonFX motor : motorsOnRio) {
+    for (LoggedTalonFX motor : allMotors) {
+      // Refresh per motor so an offline motor never blocks other motors
+      BaseStatusSignal.refreshAll(motor.cachedSignals);
       motor.updateCachedValues();
       motor.logValues();
     }

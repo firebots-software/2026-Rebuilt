@@ -22,7 +22,8 @@ public class LEDSubsystem extends SubsystemBase {
   // left strip is [8, 23]
   // middle strip is [24, 53] (center of middle is 38)
   // right strip is [51, 76]
-  private static final int END_OF_STRIP = 76;
+  private static final int START_OF_STRIP = 8;
+  private static final int END_OF_STRIP = 53;
 
   private static CANdle candle = new CANdle(5, new CANBus(CANPort.CAN_S0));
   private LEDState currentState = LEDState.NONE;
@@ -72,11 +73,11 @@ public class LEDSubsystem extends SubsystemBase {
     switch (state) {
       case ACTIVE -> candle.setControl(activeAnimation());
       case FLAME -> {
-        candle.setControl(flame(8, 38, 0, false));
+        candle.setControl(flame(START_OF_STRIP, 38, 0, false));
         candle.setControl(flame(39, END_OF_STRIP, 1, true));
       }
-      case RAINBOW -> candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
-      case NONE -> setColor(8, END_OF_STRIP, Color.BLACK);
+      case RAINBOW -> candle.setControl(new RainbowAnimation(START_OF_STRIP, END_OF_STRIP));
+      case NONE -> setColor(START_OF_STRIP, END_OF_STRIP, Color.BLACK);
       default -> clearAll();
     }
   }
@@ -136,11 +137,12 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private SingleFadeAnimation activeAnimation() {
-    return new SingleFadeAnimation(8, END_OF_STRIP).withColor(new RGBWColor(Color.RED));
+    return new SingleFadeAnimation(START_OF_STRIP, END_OF_STRIP)
+        .withColor(new RGBWColor(Color.RED));
   }
 
   private SolidColor solidColor(Color color) {
-    return new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(color));
+    return new SolidColor(START_OF_STRIP, END_OF_STRIP).withColor(new RGBWColor(color));
   }
 
   private SolidColor solidColor(Color color, int ledIndex) {

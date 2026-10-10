@@ -7,18 +7,18 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous
+@Autonomous(name="Left", group="Normal")
 public class PedriShortLeft extends BaseOpMode {
   private Command m_autoCommand;
 
   public PedriShortLeft(Robot robot) {
     super(robot);
+    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT);
   }
 
   @Override
   public void start() {
     super.start();
-    m_autoCommand = m_robotContainer.getAutonomousCommand(AutoList.LEFT);
     if (m_autoCommand != null) {
       CommandScheduler.getInstance().schedule(m_autoCommand);
     }
