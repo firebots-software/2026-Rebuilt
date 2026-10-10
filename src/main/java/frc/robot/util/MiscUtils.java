@@ -17,22 +17,10 @@ import org.wpilib.math.geometry.Translation2d;
 public class MiscUtils {
   private static int shiftIndicatorCounter = 0;
 
-  public static Pose2d plus(Pose2d a, Translation2d b) {
-    return new Pose2d(
-        a.getX() + b.getX(), a.getY() + b.getY(), new Rotation2d(a.getRotation().getRadians()));
-  }
-
-  public static Pose2d plusWithRotation(Pose2d a, Pose2d b) { // Transform2d used to be Pose2d
-    return new Pose2d(
-        a.getX() + b.getX(),
-        a.getY() + b.getY(),
-        new Rotation2d(a.getRotation().getRadians() + b.getRotation().getRadians()));
-  }
-
   public static Alliance getSecondAlliance() {
     Optional<String> allianceOpt = MatchState.getGameData();
-    String allianceChar = allianceOpt.orElse(null);
-    if (allianceChar == null || allianceChar.isEmpty()) return null;
+    String allianceChar = allianceOpt.orElse("");
+    if (allianceChar.isEmpty()) return null;
     return switch (allianceChar.charAt(0)) {
       case 'B' -> Alliance.BLUE;
       case 'R' -> Alliance.RED;
@@ -57,12 +45,9 @@ public class MiscUtils {
     // transition + endgame
     if (currentMatchTime > 130.0 || currentMatchTime <= 30.0) return true;
 
-    Optional<String> allianceOpt = MatchState.getGameData();
-    String allianceChar = allianceOpt.orElse(null);
-    if (allianceChar == null || allianceChar.isEmpty()) return true;
-
     Alliance secondAlliance = getSecondAlliance();
-    if (secondAlliance == null) return true;
+    // falls back to red
+    if (secondAlliance == null) secondAlliance = Alliance.RED;
 
     boolean weAreActiveFirst = (alliance.get() != secondAlliance);
     if (currentMatchTime > 105.0) {
@@ -89,7 +74,7 @@ public class MiscUtils {
     else if (currentMatchTime > 80.0) return currentMatchTime - 80.0;
     else if (currentMatchTime > 55.0) return currentMatchTime - 55.0;
     else if (currentMatchTime > 30.0) return currentMatchTime - 30.0;
-    else return Math.max(0.0, currentMatchTime); // Endgame counts down to 0
+    else return Math.max(0.0, currentMatchTime);
   }
 
   public static String currentShiftName(double currentMatchTime) {
@@ -124,9 +109,9 @@ public class MiscUtils {
       } else if (timeUntilNextShift < 2.0) {
         color = "#000000";
       } else if (timeUntilNextShift < 5.0) {
-        color = ((shiftIndicatorCounter / 8) % 2 == 0) ? "#FF0000" : "#000000";
+        color = ((shiftIndicatorCounter / 8) % 2 == 0) ? "#00FF00" : "#000000";
       } else {
-        color = ((shiftIndicatorCounter / 20) % 2 == 0) ? "#FF0000" : "#000000";
+        color = ((shiftIndicatorCounter / 20) % 2 == 0) ? "#00FF00" : "#000000";
       }
     } else {
       if (timeUntilNextShift >= 8.0) {
