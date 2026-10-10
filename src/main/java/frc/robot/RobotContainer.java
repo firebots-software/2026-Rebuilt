@@ -267,6 +267,7 @@ public class RobotContainer {
     double matchTime = MatchState.getMatchTime();
     MiscUtils.shiftSwitchIndicator(matchTime);
 
+    DogLog.log("Elastic/RawMatchTime", matchTime);
     DogLog.log("Elastic/FieldPose", drivetrain.getCurrentState().Pose);
     DogLog.log("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
     DogLog.log("Elastic/AreWeActive", MiscUtils.areWeActive(matchTime));
