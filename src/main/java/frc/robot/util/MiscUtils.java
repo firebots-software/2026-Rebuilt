@@ -15,7 +15,7 @@ import org.wpilib.math.geometry.Transform3d;
 import org.wpilib.math.geometry.Translation2d;
 
 public class MiscUtils {
-  public static int shiftIndicatorSum = 0;
+  private static int shiftIndicatorCounter = 0;
 
   public static Pose2d plus(Pose2d a, Translation2d b) {
     return new Pose2d(
@@ -31,7 +31,7 @@ public class MiscUtils {
 
   public static Alliance getSecondAlliance() {
     Optional<String> allianceOpt = MatchState.getGameData();
-    String allianceChar = allianceOpt.isPresent() ? allianceOpt.get() : null;
+    String allianceChar = allianceOpt.orElse(null);
     if (allianceChar == null || allianceChar.isEmpty()) return null;
     return switch (allianceChar.charAt(0)) {
       case 'B' -> Alliance.BLUE;
@@ -43,131 +43,103 @@ public class MiscUtils {
   public static String activeFirst() {
     Optional<Alliance> alliance = MatchState.getAlliance();
     if (alliance.isEmpty() || MatchState.getMatchTime() < 105) return "";
-    DogLog.log("Subsystems/LEDs/allianceNotEmpty", true);
     Alliance ourAlliance = alliance.get();
     Alliance secondAlliance = getSecondAlliance();
     if (secondAlliance == null) return "";
-    DogLog.log("Subsystems/LEDs/ourAlliance", ourAlliance.toString());
-    DogLog.log("Subsystems/LEDs/secondAlliance", secondAlliance.toString());
-    if (secondAlliance.equals(ourAlliance)) return "LATER";
-    else return "NOW";
+    return secondAlliance.equals(ourAlliance) ? "LATER" : "NOW";
   }
-
-  public static boolean areWeActive() {
-    return areWeActive(0.0);
-  }
-
-  public static boolean areWeActive(double howEarly) {
+  public static boolean areWeActive(double currentMatchTime) {
     Optional<Alliance> alliance = MatchState.getAlliance();
-
     if (alliance.isEmpty()) return false;
-    if (RobotState.isAutonomousEnabled()) return true;
-    if (!RobotState.isTeleopEnabled()) return false;
+    if (RobotState.isAutonomous()) return true;
+    if (!RobotState.isTeleop()) return false;
 
-    // teleop is enabled
-    double currentMatchTime = MatchState.getMatchTime();
-    double earlyMatchTime = currentMatchTime - howEarly;
+    // transition + endgame
+    if (currentMatchTime > 130.0 || currentMatchTime <= 30.0) return true;
 
     Optional<String> allianceOpt = MatchState.getGameData();
-    String allianceChar = allianceOpt.isPresent() ? allianceOpt.get() : null;
-
-    DogLog.log(
-        "Elastic/AllianceChar",
-        allianceChar == null || allianceChar.isEmpty() ? "Empty" : allianceChar);
-
+    String allianceChar = allianceOpt.orElse(null);
     if (allianceChar == null || allianceChar.isEmpty()) return true;
+
     Alliance secondAlliance = getSecondAlliance();
     if (secondAlliance == null) return true;
-    boolean redInactiveFirst = getSecondAlliance() == Alliance.RED;
 
-    boolean weAreActiveFirst =
-        switch (alliance.get()) {
-          case RED -> !redInactiveFirst;
-          case BLUE -> redInactiveFirst;
-        };
-
-    DogLog.log("Subsystems/LEDs/matchTime", currentMatchTime);
-
-    double earlyActiveFirst = weAreActiveFirst ? earlyMatchTime : currentMatchTime;
-    DogLog.log("Subsystems/LEDs/earlyActiveFirst", earlyActiveFirst);
-    double earlyActiveSecond = !weAreActiveFirst ? earlyMatchTime : currentMatchTime;
-    DogLog.log("Subsystems/LEDs/earlyActiveSecond", earlyActiveFirst);
-
-    if (currentMatchTime > 130) return true;
-    else if (earlyActiveSecond > 105) return weAreActiveFirst;
-    else if (earlyActiveFirst > 80) return !weAreActiveFirst;
-    else if (earlyActiveSecond > 55) return weAreActiveFirst;
-    else if (earlyActiveFirst > 30) return !weAreActiveFirst;
-    else return true;
-  }
-
-  public static double countdownTillNextShift(double currentTime) {
-    double currentMatchTime = currentTime;
-    // double currentMatchTime = MatchState.getMatchTime();
-    if (RobotState.isAutonomous()) {
-      return currentMatchTime;
+    boolean weAreActiveFirst = (alliance.get() != secondAlliance);
+    if (currentMatchTime > 105.0) {
+      return weAreActiveFirst;
+    } else if (currentMatchTime > 80.0) {
+      return !weAreActiveFirst;
+    } else if (currentMatchTime > 55.0) {
+      return weAreActiveFirst;
     } else {
-      if (currentMatchTime > 140) return currentMatchTime - 140;
-      else if (currentMatchTime > 130) return currentMatchTime - 130;
-      else if (currentMatchTime > 105) return currentMatchTime - 105;
-      else if (currentMatchTime > 80) return currentMatchTime - 80;
-      else if (currentMatchTime > 55) return currentMatchTime - 55;
-      else if (currentMatchTime > 30) return currentMatchTime - 30;
-      else return currentMatchTime;
+      return !weAreActiveFirst;
     }
   }
 
-  public static String currentShiftName(double currentTime) {
-    double currentMatchTime = currentTime;
-    // double currentMatchTime = MatchState.getMatchTime();
-    if (RobotState.isAutonomous()) return "Auto";
+  public static boolean areWeActive() {
+    return areWeActive(MatchState.getMatchTime());
+  }
 
-    if (currentMatchTime > 130) return "Transition";
-    else if (currentMatchTime > 105) return "ALS 1";
-    else if (currentMatchTime > 80) return "ALS 2";
-    else if (currentMatchTime > 55) return "ALS 3";
-    else if (currentMatchTime > 30) return "ALS 4";
+  public static double countdownTillNextShift(double currentMatchTime) {
+    if (RobotState.isAutonomous()) {
+      return Math.max(0.0, currentMatchTime);
+    }
+    if (currentMatchTime > 130.0) return currentMatchTime - 130.0;
+    else if (currentMatchTime > 105.0) return currentMatchTime - 105.0;
+    else if (currentMatchTime > 80.0) return currentMatchTime - 80.0;
+    else if (currentMatchTime > 55.0) return currentMatchTime - 55.0;
+    else if (currentMatchTime > 30.0) return currentMatchTime - 30.0;
+    else return Math.max(0.0, currentMatchTime); // Endgame counts down to 0
+  }
+
+  public static String currentShiftName(double currentMatchTime) {
+    if (RobotState.isAutonomous()) return "Auto";
+    if (currentMatchTime > 130.0) return "Transition";
+    else if (currentMatchTime > 105.0) return "ALS 1";
+    else if (currentMatchTime > 80.0) return "ALS 2";
+    else if (currentMatchTime > 55.0) return "ALS 3";
+    else if (currentMatchTime > 30.0) return "ALS 4";
     else return "Endgame";
   }
 
-  public static void shiftSwitchIndicator(double currentTime) {
-    double currentTimes = currentTime;
-    // double currentTimes = MatchState.getMatchTime();
-    double timeUntilNextShift = countdownTillNextShift(currentTimes);
-    boolean isEndgame = currentShiftName(currentTimes).equals("Endgame");
-    boolean isActive = areWeActive();
-    boolean isTransition = currentShiftName(currentTimes).equals("Transition");
+  public static void shiftSwitchIndicator(double currentMatchTime) {
+    double timeUntilNextShift = countdownTillNextShift(currentMatchTime);
+    String shiftName = currentShiftName(currentMatchTime);
+    boolean isTransition = shiftName.equals("Transition");
+    boolean isEndgame = shiftName.equals("Endgame");
+    boolean isActive = areWeActive(currentMatchTime);
 
     if (isTransition || isEndgame) {
-      shiftIndicatorSum = 0;
+      shiftIndicatorCounter = 0;
       TelemetryUtils.elasticTelemetry.log("ShiftSwitchIndicator", "#00FF00");
       return;
     }
 
-    String color = "";
+    shiftIndicatorCounter++;
+    String color;
+
     if (isActive) {
-      shiftIndicatorSum = timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
-      if (timeUntilNextShift >= 8) color = "#00FF00";
-      else if (timeUntilNextShift < 2) color = "#000000";
-      // fast blink
-      else if (timeUntilNextShift < 5)
-        color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FF0000" : "#000000";
-      // slow blink
-      else if (timeUntilNextShift < 8)
-        color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FF0000" : "#000000";
+      if (timeUntilNextShift >= 8.0) {
+        color = "#00FF00";
+      } else if (timeUntilNextShift < 2.0) {
+        color = "#000000";
+      } else if (timeUntilNextShift < 5.0) {
+        color = ((shiftIndicatorCounter / 8) % 2 == 0) ? "#FF0000" : "#000000";
+      } else {
+        color = ((shiftIndicatorCounter / 20) % 2 == 0) ? "#FF0000" : "#000000";
+      }
     } else {
-      // alliance hub inactive
-      shiftIndicatorSum =
-          timeUntilNextShift < 2 || timeUntilNextShift >= 8 ? 0 : shiftIndicatorSum + 1;
-      if (timeUntilNextShift < 2) color = "#00FF00";
-      // fast blink
-      else if (timeUntilNextShift < 5)
-        color = (shiftIndicatorSum / 8) % 2 == 0 ? "#FFFF00" : "#000000";
-      // slow blink
-      else if (timeUntilNextShift < 8)
-        color = (shiftIndicatorSum / 20) % 2 == 0 ? "#FFFF00" : "#000000";
-      else color = "#000000";
+      if (timeUntilNextShift >= 8.0) {
+        color = "#000000";
+      } else if (timeUntilNextShift < 2.0) {
+        color = "#00FF00";
+      } else if (timeUntilNextShift < 5.0) {
+        color = ((shiftIndicatorCounter / 8) % 2 == 0) ? "#FFFF00" : "#000000";
+      } else {
+        color = ((shiftIndicatorCounter / 20) % 2 == 0) ? "#FFFF00" : "#000000";
+      }
     }
+
     TelemetryUtils.elasticTelemetry.log("ShiftSwitchIndicator", color);
   }
 
