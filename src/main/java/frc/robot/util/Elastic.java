@@ -1,8 +1,8 @@
 package frc.robot.util;
 
 import io.avaje.jsonb.Json;
-import io.avaje.jsonb.Jsonb;
 import io.avaje.jsonb.JsonType;
+import io.avaje.jsonb.Jsonb;
 import org.wpilib.networktables.NetworkTableInstance;
 import org.wpilib.networktables.PubSubOption;
 import org.wpilib.networktables.StringPublisher;
@@ -12,13 +12,15 @@ public final class Elastic {
   private static final StringTopic notificationTopic =
       NetworkTableInstance.getDefault().getStringTopic("/Elastic/RobotNotifications");
   private static final StringPublisher notificationPublisher =
-      notificationTopic.publish(new PubSubOption.SendAll(true), new PubSubOption.KeepDuplicates(true));
+      notificationTopic.publish(
+          new PubSubOption.SendAll(true), new PubSubOption.KeepDuplicates(true));
   private static final StringTopic selectedTabTopic =
       NetworkTableInstance.getDefault().getStringTopic("/Elastic/SelectedTab");
   private static final StringPublisher selectedTabPublisher =
       selectedTabTopic.publish(new PubSubOption.KeepDuplicates(true));
 
-  // Build the lightweight Avaje context and generate a fast type pipeline for the Notification class
+  // Build the lightweight Avaje context and generate a fast type pipeline for the Notification
+  // class
   private static final Jsonb jsonb = Jsonb.builder().build();
   private static final JsonType<Notification> notificationType = jsonb.type(Notification.class);
 
@@ -78,17 +80,20 @@ public final class Elastic {
    * properties such as level, title, description, display time, and dimensions to control how the
    * notification is displayed on the dashboard.
    */
-  @Json // 👈 Required: Informs the Avaje processor to generate a companion serializer class at build time
+  @Json // 👈 Required: Informs the Avaje processor to generate a companion serializer class at
+  // build time
   public static class Notification {
-    
-    // Jackson's @JsonProperty annotations are replaced with Avaje's standard alias rules or auto-matched field mappings
+
+    // Jackson's @JsonProperty annotations are replaced with Avaje's standard alias rules or
+    // auto-matched field mappings
     private NotificationLevel level;
     private String title;
     private String description;
-    
-    @Json.Property("displayTime") // Explicitly map JSON camelCase key to this specific internal variable 
+
+    @Json.Property(
+        "displayTime") // Explicitly map JSON camelCase key to this specific internal variable
     private int displayTimeMillis;
-    
+
     private double width;
     private double height;
 

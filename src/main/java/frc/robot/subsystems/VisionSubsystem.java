@@ -1,21 +1,6 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
-import org.wpilib.math.linalg.Matrix;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Pose3d;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Rotation3d;
-import org.wpilib.math.geometry.Transform3d;
-import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.math.numbers.N1;
-import org.wpilib.math.numbers.N3;
-import org.wpilib.math.numbers.N8;
-import org.wpilib.system.Timer;
-import org.wpilib.command2.SubsystemBase;
-import org.wpilib.fields.Fields;
-import org.wpilib.fields.Field;
-
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.util.VisionUtils;
@@ -26,6 +11,20 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.fields.Field;
+import org.wpilib.fields.Fields;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.math.numbers.N8;
+import org.wpilib.system.Timer;
 
 public class VisionSubsystem extends SubsystemBase {
   private final Constants.Vision.VisionCamera cameraID;
@@ -38,7 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final String cameraTitle;
   private final String loggingPath;
 
-  private Optional<EstimatedRobotPose> visionEstimate;
+  private Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
 
   private boolean cameraConnectedStatus = false;
 
@@ -71,7 +70,7 @@ public class VisionSubsystem extends SubsystemBase {
     cameraTitle = cameraID.getLoggingName();
     loggingPath = "Subsystems/Vision/" + cameraTitle;
 
-    this.swerve = drivetrain; 
+    this.swerve = drivetrain;
 
     cameraIntrinsics = cameraID.getCameraMatrix();
     distortionCoeffs = cameraID.getDistCoeffs();
@@ -146,7 +145,8 @@ public class VisionSubsystem extends SubsystemBase {
 
     throwOutHeadingChange(latestMeasuredPose);
 
-    ChassisVelocities fieldSpeeds = swerve.getState().Velocity.toFieldRelative(swerve.getState().Pose.getRotation());
+    ChassisVelocities fieldSpeeds =
+        swerve.getState().Velocity.toFieldRelative(swerve.getState().Pose.getRotation());
 
     double currentSpeed = Math.hypot(fieldSpeeds.vx, fieldSpeeds.vy);
 

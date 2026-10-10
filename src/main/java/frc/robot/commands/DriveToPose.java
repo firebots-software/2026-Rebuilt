@@ -3,14 +3,14 @@ package frc.robot.commands;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.LinearPath;
 import dev.doglog.DogLog;
+import frc.robot.Constants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import java.util.function.Supplier;
+import org.wpilib.command2.Command;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.math.trajectory.TrapezoidProfile;
-import org.wpilib.command2.Command;
-import frc.robot.Constants;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import java.util.function.Supplier;
 
 /** This Command drives the robot in a linear path to a specific pose. */
 public class DriveToPose extends Command {

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import static org.wpilib.units.Units.Rotations;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -24,13 +25,14 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.util.Units;
+import frc.robot.Constants;
+import frc.robot.util.LoggedTalonFX;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.Commands;
 import org.wpilib.command2.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.util.LoggedTalonFX;
+import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.util.Units;
 
 public class IntakeSubsystem extends SubsystemBase {
   private LoggedTalonFX armMotor, rollersMotor;
@@ -46,7 +48,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private final TorqueCurrentFOC m_torqueCurrentRequest = new TorqueCurrentFOC(0);
 
   public IntakeSubsystem() {
-    rollersMotor = new LoggedTalonFX("IntakeRollers", Constants.Intake.Rollers.CAN_ID);
+    rollersMotor =
+        new LoggedTalonFX(
+            "IntakeRollers", Constants.Intake.Rollers.CAN_ID, new CANBus(CANPort.CAN_S0));
     armMotor =
         new LoggedTalonFX("IntakeArm", Constants.Intake.Arm.CAN_ID, Constants.Swerve.CAN_BUS);
     targetAngleDeg = 0;

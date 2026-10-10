@@ -1,11 +1,11 @@
 package frc.robot.commandGroups;
 
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.command2.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
+import org.wpilib.command2.SequentialCommandGroup;
+import org.wpilib.math.geometry.Pose2d;
 
 public class IntakeToBumpDTP extends SequentialCommandGroup {
   public IntakeToBumpDTP(

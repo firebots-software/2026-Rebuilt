@@ -5,10 +5,6 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator.Feedforwards;
-import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.button.Trigger;
 import frc.robot.Constants.Swerve.Auto.Depot;
 import frc.robot.Constants.Swerve.Auto.Intake;
 import frc.robot.Constants.Swerve.Auto.MiscPaths;
@@ -22,6 +18,10 @@ import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.BooleanSupplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.button.Trigger;
+import org.wpilib.math.kinematics.ChassisVelocities;
 
 public class AutoRoutines {
   private final AutoFactory autoFactory;
@@ -150,34 +150,41 @@ public class AutoRoutines {
 
   public Command driveForward(double time) {
     return Commands.run(
-            () -> swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(3, 0, 0), new Feedforwards(4)),
+            () ->
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(3, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time)
         .andThen(
             () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
   }
 
   public Command driveBackward(double time) {
     return Commands.run(
             () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(-3, 0, 0), new Feedforwards(4)),
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(-3, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time)
         .andThen(
             () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
   }
 
   public Command driveForwardSlower(double time) {
     return Commands.run(
             () ->
-                swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(2.7, 0, 0), new Feedforwards(4)),
+                swerveSubsystem.applyFieldSpeeds(
+                    new ChassisVelocities(2.7, 0, 0), new Feedforwards(4)),
             swerveSubsystem)
         .withTimeout(time);
     // .andThen(
     //     () ->
-    //         swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
+    //         swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(0, 0, 0), new
+    // Feedforwards(4)));
   }
 
   public Command driveBackwardSlower(double time) {
@@ -189,7 +196,8 @@ public class AutoRoutines {
         .withTimeout(time);
     // .andThen(
     //     () ->
-    //         swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(0, 0, 0), new Feedforwards(4)));
+    //         swerveSubsystem.applyFieldSpeeds(new ChassisVelocities(0, 0, 0), new
+    // Feedforwards(4)));
   }
 
   public Command driveToBumpAfterIntake(BooleanSupplier isRedSide, BooleanSupplier isLeftSide) {

@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
@@ -10,13 +11,12 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
-import frc.robot.Constants;
-
+import java.util.function.BooleanSupplier;
+import org.wpilib.command2.SubsystemBase;
 import org.wpilib.driverstation.RobotState;
+import org.wpilib.hardware.bus.CANPort;
 import org.wpilib.system.Timer;
 import org.wpilib.util.Color;
-import org.wpilib.command2.SubsystemBase;
-import java.util.function.BooleanSupplier;
 
 public class LEDSubsystem extends SubsystemBase {
   // left strip is [8, 23]
@@ -24,7 +24,7 @@ public class LEDSubsystem extends SubsystemBase {
   // right strip is [51, 76]
   private static final int END_OF_STRIP = 76;
 
-  private static CANdle candle = new CANdle(5, Constants.Swerve.CAN_BUS);
+  private static CANdle candle = new CANdle(5, new CANBus(CANPort.CAN_S0));
   private LEDState currentState = LEDState.NONE;
   private BooleanSupplier active, inRange;
   private boolean seesTagCached;

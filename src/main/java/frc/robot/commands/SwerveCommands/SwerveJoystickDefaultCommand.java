@@ -1,11 +1,11 @@
 package frc.robot.commands.SwerveCommands;
 
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.SequentialCommandGroup;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.IntakeVisionDetection;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.SequentialCommandGroup;
 
 public class SwerveJoystickDefaultCommand extends SequentialCommandGroup {
   public SwerveJoystickDefaultCommand(

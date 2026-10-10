@@ -22,19 +22,18 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
-import org.wpilib.math.util.MathUtil;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
-// import org.wpilib.math.geometry.Pose3d;
-import org.wpilib.math.util.Units;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
 import frc.robot.util.LoggedTalonFX;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+// import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.util.Units;
 
 public class ShooterSubsystem extends SubsystemBase {
 

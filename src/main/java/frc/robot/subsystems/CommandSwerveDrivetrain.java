@@ -3,33 +3,12 @@ package frc.robot.subsystems;
 import choreo.Choreo.TrajectoryLogger;
 import choreo.auto.AutoFactory;
 import choreo.trajectory.SwerveSample;
-import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import dev.doglog.DogLog;
-import org.wpilib.math.util.MathUtil;
-import org.wpilib.system.Timer;
-import org.wpilib.math.linalg.Matrix;
-import org.wpilib.math.controller.PIDController;
-import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.math.kinematics.ChassisVelocities;
-import org.wpilib.math.numbers.N1;
-import org.wpilib.math.numbers.N3;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.driverstation.MatchType;
-import org.wpilib.driverstation.DriverStationErrors;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
-import org.wpilib.driverstation.Alliance;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.Subsystem;
 import frc.robot.Constants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MathUtils.MiscMath;
@@ -37,6 +16,20 @@ import frc.robot.util.Targeting;
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Subsystem;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.system.Timer;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements Subsystem so it can easily
@@ -257,7 +250,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
   public void applyOneFieldSpeeds(ChassisVelocities speeds) {
     setControl(
-        m_pathApplyFieldSpeeds.withVelocity(speeds).withDriveRequestType(DriveRequestType.Velocity));
+        m_pathApplyFieldSpeeds
+            .withVelocity(speeds)
+            .withDriveRequestType(DriveRequestType.Velocity));
   }
 
   public double getSpeedMagnitude() {
@@ -339,8 +334,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   @Override
   public void addVisionMeasurement(
       Pose2d visionRobotPose, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
-    super.addVisionMeasurement(
-        visionRobotPose, Timer.getTimestamp(), visionMeasurementStdDevs);
+    super.addVisionMeasurement(visionRobotPose, Timer.getTimestamp(), visionMeasurementStdDevs);
   }
 
   public ChassisVelocities getFieldSpeeds() {

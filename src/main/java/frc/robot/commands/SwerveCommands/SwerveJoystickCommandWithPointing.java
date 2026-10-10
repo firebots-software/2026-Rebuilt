@@ -3,13 +3,13 @@ package frc.robot.commands.SwerveCommands;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import dev.doglog.DogLog;
-import org.wpilib.math.geometry.Translation2d;
-import org.wpilib.command2.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.wpilib.command2.Command;
+import org.wpilib.math.geometry.Translation2d;
 
 public class SwerveJoystickCommandWithPointing extends Command {
   protected final DoubleSupplier xSpdFunction, ySpdFunction;
@@ -48,29 +48,30 @@ public class SwerveJoystickCommandWithPointing extends Command {
 
   @Override
   public void execute() {
-    // 1. Get real-time joystick inputs
+    // x+ front, x- back; y+ left, y- right; turn+ ccw, turn- cw
     double xSpeed = xSpdFunction.getAsDouble(); // xSpeed is actually front back (front +, back -)
     double ySpeed = ySpdFunction.getAsDouble(); // ySpeed is actually left right (left +, right -)
 
-    // 2. Normalize inputs
-    double length = xSpeed * xSpeed + ySpeed * ySpeed; // actually length squared
-    if (length > 1d) {
-      length = Math.sqrt(length);
-      xSpeed /= length;
-      ySpeed /= length;
+    double magnitude = Math.hypot(xSpeed, ySpeed);
+
+    if (magnitude < Constants.OI.LEFT_JOYSTICK_DEADBAND) {
+      xSpeed = 0.0;
+      ySpeed = 0.0;
+    } else {
+      double xDir = xSpeed / magnitude;
+      double yDir = ySpeed / magnitude;
+
+      magnitude =
+          (magnitude - Constants.OI.LEFT_JOYSTICK_DEADBAND)
+              / (1.0 - Constants.OI.LEFT_JOYSTICK_DEADBAND);
+
+      double magnitudeSquared = magnitude * magnitude;
+      magnitudeSquared *= Constants.Swerve.GLOBAL_SWERVE_MULT;
+
+      xSpeed = xDir * magnitudeSquared;
+      ySpeed = yDir * magnitudeSquared;
     }
 
-    // Apply Square (will be [0,1] since `speed` is [0,1])
-    xSpeed = xSpeed * xSpeed * Math.signum(xSpeed);
-    ySpeed = ySpeed * ySpeed * Math.signum(ySpeed);
-
-    // 3. Apply deadband
-    xSpeed = Math.abs(xSpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? xSpeed : 0.0;
-    ySpeed = Math.abs(ySpeed) > Constants.OI.LEFT_JOYSTICK_DEADBAND ? ySpeed : 0.0;
-
-    // 4. Make the driving smoother
-    // This is a double between TELE_DRIVE_SLOW_MODE_SPEED_PERCENT and
-    // TELE_DRIVE_FAST_MODE_SPEED_PERCENT
     double driveSpeed =
         (Constants.Swerve.TELE_DRIVE_PERCENT_SPEED_RANGE * (speedControlFunction.getAsDouble()))
             + Constants.Swerve.TELE_DRIVE_SLOW_MODE_SPEED_PERCENT;
