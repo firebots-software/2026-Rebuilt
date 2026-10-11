@@ -86,7 +86,7 @@ public class RobotContainer {
 
   public final LEDSubsystem leds =
       new LEDSubsystem(
-          () -> MiscUtils.areWeActive(2.0),
+          () -> MiscUtils.areWeActive(),
           () ->
               Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4.47
                   && inAllianceSide());

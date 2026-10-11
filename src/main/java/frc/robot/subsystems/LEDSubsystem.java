@@ -62,8 +62,6 @@ public class LEDSubsystem extends SubsystemBase {
 
     if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
     else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
-    else if (!active.getAsBoolean()) return LEDState.NONE;
-
     return LEDState.NONE;
   }
 
