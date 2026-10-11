@@ -27,6 +27,7 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
+import frc.robot.util.TelemetryUtils;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -34,6 +35,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.button.CommandGamepad;
 import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
+import org.wpilib.system.RobotController;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
@@ -259,5 +261,21 @@ public class RobotContainer {
     DogLog.log("Robot/selectedAuto", selected);
     // if (!selected.equals(auto.getInternalName())) return null;
     return autoChooser.selectedCommand();
+  }
+
+  public void elasticLogging() {
+    double matchTime = MatchState.getMatchTime();
+    MiscUtils.shiftSwitchIndicator(matchTime);
+
+    DogLog.log("Elastic/RawMatchTime", matchTime);
+    DogLog.log("Elastic/FieldPose", drivetrain.getCurrentState().Pose);
+    DogLog.log("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
+    DogLog.log("Elastic/AreWeActive", MiscUtils.areWeActive(matchTime));
+    DogLog.log("Elastic/TimeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
+    DogLog.log("Elastic/CurrentShiftName", MiscUtils.currentShiftName(matchTime));
+
+    TelemetryUtils.elasticTelemetry.log("CurrentShiftName", MiscUtils.currentShiftName(matchTime));
+    TelemetryUtils.elasticTelemetry.log("ActiveFirst", MiscUtils.activeFirst());
+    TelemetryUtils.elasticTelemetry.log("timeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
   }
 }

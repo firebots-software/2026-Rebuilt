@@ -25,21 +25,5 @@ public abstract class BaseOpMode extends PeriodicOpMode {
 
   @Override
   public void periodic() {
-    elasticLogging();
-  }
-
-  private void elasticLogging() {
-    double matchTime = MatchState.getMatchTime();
-    MiscUtils.shiftSwitchIndicator(matchTime);
-
-    DogLog.log("Elastic/FieldPose", m_robotContainer.drivetrain.getCurrentState().Pose);
-    DogLog.log("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
-    DogLog.log("Elastic/AreWeActive", MiscUtils.areWeActive(matchTime));
-    DogLog.log("Elastic/TimeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
-    DogLog.log("Elastic/CurrentShiftName", MiscUtils.currentShiftName(matchTime));
-
-    TelemetryUtils.elasticTelemetry.log("CurrentShiftName", MiscUtils.currentShiftName(matchTime));
-    TelemetryUtils.elasticTelemetry.log("ActiveFirst", MiscUtils.activeFirst());
-    TelemetryUtils.elasticTelemetry.log("timeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
   }
 }
