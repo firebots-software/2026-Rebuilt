@@ -40,7 +40,6 @@ import org.wpilib.system.RobotController;
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
-
   //   private Field2d field = new Field2d();
   private final CommandGamepad joystick = new CommandGamepad(0);
   private final CustomController secondController =
@@ -276,6 +275,7 @@ public class RobotContainer {
 
     TelemetryUtils.elasticTelemetry.log("CurrentShiftName", MiscUtils.currentShiftName(matchTime));
     TelemetryUtils.elasticTelemetry.log("ActiveFirst", MiscUtils.activeFirst());
-    TelemetryUtils.elasticTelemetry.log("timeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
+    TelemetryUtils.elasticTelemetry.log(
+        "timeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
   }
 }

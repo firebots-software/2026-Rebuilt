@@ -7,7 +7,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous(name="Genuinely the worst on the field", group="Center")
+@Autonomous(name = "Genuinely the worst on the field", group = "Center")
 public class Nike extends BaseOpMode {
   private Command m_autoCommand;
 

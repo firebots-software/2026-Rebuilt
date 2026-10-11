@@ -10,7 +10,6 @@ import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.MatchState;
 import org.wpilib.driverstation.RobotState;
 import org.wpilib.math.geometry.Pose2d;
-import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform3d;
 import org.wpilib.math.geometry.Translation2d;
 
@@ -36,6 +35,7 @@ public class MiscUtils {
     if (secondAlliance == null) return "";
     return secondAlliance.equals(ourAlliance) ? "LATER" : "NOW";
   }
+
   public static boolean areWeActive(double currentMatchTime) {
     Optional<Alliance> alliance = MatchState.getAlliance();
     if (alliance.isEmpty()) return false;

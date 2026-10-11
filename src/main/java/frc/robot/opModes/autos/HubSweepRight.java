@@ -7,7 +7,7 @@ import org.wpilib.command2.Command;
 import org.wpilib.command2.CommandScheduler;
 import org.wpilib.opmode.Autonomous;
 
-@Autonomous(name="Hub Sweep Right Wait", group="Hub Sweep")
+@Autonomous(name = "Hub Sweep Right Wait", group = "Hub Sweep")
 public class HubSweepRight extends BaseOpMode {
   private Command m_autoCommand;
 

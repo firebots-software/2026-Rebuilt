@@ -3,12 +3,7 @@ package frc.robot.opModes;
 import dev.doglog.DogLog;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.util.MiscUtils;
-import frc.robot.util.TelemetryUtils;
-import org.wpilib.driverstation.MatchState;
-import org.wpilib.driverstation.RobotState;
 import org.wpilib.opmode.PeriodicOpMode;
-import org.wpilib.system.RobotController;
 
 public abstract class BaseOpMode extends PeriodicOpMode {
   protected final RobotContainer m_robotContainer;
@@ -24,6 +19,5 @@ public abstract class BaseOpMode extends PeriodicOpMode {
   }
 
   @Override
-  public void periodic() {
-  }
+  public void periodic() {}
 }
