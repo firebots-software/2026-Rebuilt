@@ -1,9 +1,9 @@
 package frc.robot.commandGroups;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import org.wpilib.command2.ParallelCommandGroup;
 
 public class ReverseIntakeAndHopper extends ParallelCommandGroup {
   public ReverseIntakeAndHopper(IntakeSubsystem intakeSubsystem, HopperSubsystem hopperSubsystem) {

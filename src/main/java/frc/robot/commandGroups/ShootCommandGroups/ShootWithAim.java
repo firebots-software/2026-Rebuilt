@@ -1,9 +1,5 @@
 package frc.robot.commandGroups.ShootCommandGroups;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.SwerveCommands.SwerveJoystickCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -13,6 +9,10 @@ import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.ParallelCommandGroup;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
 
 public class ShootWithAim extends ParallelCommandGroup {
   public ShootWithAim(
@@ -34,7 +34,7 @@ public class ShootWithAim extends ParallelCommandGroup {
         Commands.either(
             Commands.parallel( // shoot without aim
                 shooterSubsystem.shootAtSpeedHoodCommand(
-                    44.2, Constants.Shooter.Hood.MAX_HOOD_POSITION),
+                    44.2, Constants.Shooter.Hood.MIN_HOOD_POSITION),
                 Commands.waitUntil(shooterSubsystem::isShooterReady)
                     .andThen(
                         Commands.parallel(

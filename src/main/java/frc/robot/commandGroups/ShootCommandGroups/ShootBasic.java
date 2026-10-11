@@ -1,11 +1,11 @@
 package frc.robot.commandGroups.ShootCommandGroups;
 
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.HopperSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.ParallelCommandGroup;
 
 public class ShootBasic extends ParallelCommandGroup {
   public ShootBasic(

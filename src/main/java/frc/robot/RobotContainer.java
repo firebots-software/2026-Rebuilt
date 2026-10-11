@@ -5,15 +5,12 @@
 package frc.robot;
 
 import choreo.auto.AutoChooser;
+import dev.doglog.DogLog;
 // * KEEP FOR WIN COMMAND TESTING
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+// import org.wpilib.math.geometry.Pose2d;
+// import org.wpilib.math.geometry.Rotation2d;
+// import org.wpilib.math.geometry.Translation2d;
+import frc.robot.Constants.Swerve.Auto.AutoList;
 // * KEEP FOR WIN COMMAND TESTING
 import frc.robot.commandGroups.ShootCommandGroups.ShootPassing;
 import frc.robot.commandGroups.ShootCommandGroups.ShootWithAim;
@@ -30,19 +27,24 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.util.CustomController;
 import frc.robot.util.MiscUtils;
 import frc.robot.util.Targeting;
+import frc.robot.util.TelemetryUtils;
 import frc.robot.util.VisionUtils;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.button.CommandGamepad;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
+import org.wpilib.system.RobotController;
 
 public class RobotContainer {
   private BooleanSupplier redside = RobotContainer::isRedAlliance;
 
-  //   private Field2d field = new Field2d();
-  private final Telemetry logger =
-      new Telemetry(Constants.Swerve.PHYSICAL_MAX_SPEED_METERS_PER_SECOND);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
-  private final CustomController secondController = new CustomController(4);
+  //   private Field2d field = new Field2d();
+  private final CommandGamepad joystick = new CommandGamepad(0);
+  private final CustomController secondController =
+      Constants.secondControllerConnected ? new CustomController(4) : null;
 
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -84,7 +86,7 @@ public class RobotContainer {
 
   public final LEDSubsystem leds =
       new LEDSubsystem(
-          () -> MiscUtils.areWeActive(2.0),
+          () -> MiscUtils.areWeActive(),
           () ->
               Targeting.distMeters(drivetrain, Targeting.getHub(redside)) < 4.47
                   && inAllianceSide());
@@ -96,8 +98,7 @@ public class RobotContainer {
   public RobotContainer() {
     autoRoutines = new AutoRoutines(intakeSubsystem, lebron, hopperSubsystem, drivetrain, redside);
     autoChooser = autoRoutines.getAutoChooser();
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    // SmartDashboard.putData("Elastic/Field2d", field);
+    // Tunables.publish("Auto", autoChooser);
     configureBindings();
   }
 
@@ -137,7 +138,7 @@ public class RobotContainer {
             () -> false,
             () -> false);
 
-    joystick.x().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
+    joystick.faceLeft().onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
     drivetrain.setDefaultCommand(swerveJoystickDefaultCommand);
 
     // Intake
@@ -145,7 +146,7 @@ public class RobotContainer {
     joystick.leftBumper().whileTrue(intakeSubsystem.intakeUntilInterruptedCommand());
 
     joystick
-        .b()
+        .faceRight()
         .whileTrue(
             intakeSubsystem
                 .outtakeUntilInterruptedCommand()
@@ -185,7 +186,9 @@ public class RobotContainer {
     //
     // (hopperSubsystem.runHopperUntilInterruptedCommand().alongWith(Commands.waitSeconds(0.4).andThen(intakeSubsystem.powerRetractRollersCommand())))));
 
-    secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
+    if (Constants.secondControllerConnected) {
+      secondController.intakeOverride().whileTrue(intakeSubsystem.retractIntakeCommand());
+    }
 
     // Hopper
     hopperSubsystem.setDefaultCommand(hopperSubsystem.run(hopperSubsystem::stop));
@@ -203,7 +206,9 @@ public class RobotContainer {
                 hopperSubsystem,
                 drivetrain,
                 redside,
-                secondController.visionShootingLockout()));
+                Constants.secondControllerConnected
+                    ? secondController.visionShootingLockout()
+                    : () -> false));
 
     joystick
         .rightBumper()
@@ -216,7 +221,10 @@ public class RobotContainer {
                 hopperSubsystem,
                 drivetrain,
                 redside));
-    secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+
+    if (Constants.secondControllerConnected) {
+      secondController.reverseShoot().whileTrue(lebron.shootAtSpeedCommand(-45.0));
+    }
 
     // * KEEP FOR INTERMAP TESTING
     // joystick.x().onTrue(new InstantCommand(() -> hoodAngle+=0.2));
@@ -226,25 +234,15 @@ public class RobotContainer {
   }
 
   public static boolean isRedAlliance() {
-    return DriverStation.getAlliance().isEmpty()
+    return MatchState.getAlliance().isEmpty()
         ? false
-        : DriverStation.getAlliance().get() == Alliance.Red;
+        : MatchState.getAlliance().get() == Alliance.RED;
   }
 
   public void visionPeriodic() {
     VisionUtils.visionPeriodic(
         visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft, drivetrain);
     leds.visionStatusIndicators(visionFrontLeft, visionFrontRight, visionRearLeft, visionRearRight);
-  }
-
-  public void doTelemetry() {
-    logger.telemeterize(drivetrain.getCurrentState());
-
-    String commandName = "nah";
-
-    if (drivetrain.getCurrentCommand() != null) {
-      commandName = drivetrain.getCurrentCommand().getName();
-    }
   }
 
   public boolean inAllianceSide() {
@@ -254,6 +252,30 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
+    DogLog.log("Robot/selectedAuto", autoChooser.selectedCommand().toString());
     return autoChooser.selectedCommand();
+  }
+
+  public Command getAutonomousCommand(AutoList auto) {
+    String selected = autoChooser.select(auto.getInternalName());
+    DogLog.log("Robot/selectedAuto", selected);
+    // if (!selected.equals(auto.getInternalName())) return null;
+    return autoChooser.selectedCommand();
+  }
+
+  public void elasticLogging() {
+    double matchTime = MatchState.getMatchTime();
+    MiscUtils.shiftSwitchIndicator(matchTime);
+
+    DogLog.log("Elastic/RawMatchTime", matchTime);
+    DogLog.log("Elastic/FieldPose", drivetrain.getCurrentState().Pose);
+    DogLog.log("Elastic/BatteryVoltage", RobotController.getBatteryVoltage());
+    DogLog.log("Elastic/AreWeActive", MiscUtils.areWeActive(matchTime));
+    DogLog.log("Elastic/TimeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
+    DogLog.log("Elastic/CurrentShiftName", MiscUtils.currentShiftName(matchTime));
+
+    TelemetryUtils.elasticTelemetry.log("CurrentShiftName", MiscUtils.currentShiftName(matchTime));
+    TelemetryUtils.elasticTelemetry.log("ActiveFirst", MiscUtils.activeFirst());
+    TelemetryUtils.elasticTelemetry.log("timeUntilNextShift", MiscUtils.countdownTillNextShift(matchTime));
   }
 }

@@ -1,23 +1,23 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static org.wpilib.units.Units.*;
 
 import com.ctre.phoenix6.CANBus;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.numbers.N8;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import frc.robot.util.VisionCameraConstants;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.geometry.Translation3d;
+import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.math.numbers.N8;
+import org.wpilib.math.util.Units;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.Distance;
 
 public final class Constants {
   public static final boolean hopperOnRobot = true;
@@ -26,6 +26,7 @@ public final class Constants {
   public static final boolean fuelGaugeOnRobot = false;
   public static final boolean intakeVisionOnRobot = false;
   public static final boolean shooterOnRobot = true;
+  public static final boolean secondControllerConnected = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -110,11 +111,13 @@ public final class Constants {
   }
 
   public static class Swerve {
+    public static final double GLOBAL_SWERVE_MULT = 1.0;
+
     public static final double FF_RADIUS_M2 = 0.1;
     public static final double MAX_TRANSLATIONAL_MOVEMENT_SQUARED = 0.0625;
     public static final SwerveType WHICH_SWERVE_ROBOT = SwerveType.COBRA;
-    public static final CANBus CAN_BUS =
-        new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
+    public static final CANBus CAN_BUS = new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME);
+    // new CANBus(WHICH_SWERVE_ROBOT.CANBUS_NAME, "./logs/example.hoot");
     // the distance over the bump in meters
 
     public static final double TARGET_POS_ERROR = 0.07;
@@ -454,6 +457,30 @@ public final class Constants {
         RightShootToBump,
         Nike,
         anthony
+      }
+
+      public static enum AutoList {
+        RIGHT("Right"),
+        LEFT("Left"),
+        RIGHT_WAIT("Right Wait"),
+        LEFT_WAIT("Left Wait"),
+        RIGHT_HUB_SWEEP_WAIT("Hub Sweep Right Wait"),
+        LEFT_HUB_SWEEP_WAIT("Hub Sweep Left Wait"),
+        OUTPOST("Just Outpost"),
+        DEPOT("Just Depot"),
+        OUTPOST_TO_DEPOT("Outpost to Depot"),
+        DEPOT_TO_OUTPOST("Depot to Outpost"),
+        CENTER("We are genuinely the worst robot on the field");
+
+        private String internalName;
+
+        AutoList(String internalName) {
+          this.internalName = internalName;
+        }
+
+        public String getInternalName() {
+          return this.internalName;
+        }
       }
     }
   }

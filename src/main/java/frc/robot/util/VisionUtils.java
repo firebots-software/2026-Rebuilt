@@ -1,24 +1,22 @@
 package frc.robot.util;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.FuelGaugeDetection.FuelGauge;
 import frc.robot.Constants.IntakeVision.TargetingMode;
 import frc.robot.Constants.Vision.CameraSelectionMethod;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.FuelGaugeDetection;
 import frc.robot.subsystems.IntakeVisionDetection;
 import frc.robot.subsystems.VisionSubsystem;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.linalg.VecBuilder;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.math.util.Units;
 
 public class VisionUtils {
   private static VisionSubsystem visionFrontRight, visionFrontLeft, visionRearRight, visionRearLeft;
@@ -137,19 +135,21 @@ public class VisionUtils {
     DogLog.log("Subsystems/Vision/RawPoseEstimate", preferredVision.getFilteredPose());
   }
 
-  public static void fuelGaugeLogs(FuelGaugeDetection visionFuelGauge) {
-    if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
-      FuelGauge gaugeState = visionFuelGauge.getGaugeDefault();
-      String gaugeStateHex = getColorOrDefault(gaugeState);
-      DogLog.log("Elastic/FuelGauge", gaugeState.toString());
-      SmartDashboard.putString("Elastic/FuelGaugeHex", gaugeStateHex);
-      DogLog.log("Elastic/FuelGauge/CameraConnected", true);
-    } else {
-      DogLog.log("Elastic/FuelGauge", "N/A");
-      SmartDashboard.putString("Elastic/FuelGaugeHex", "#00FFFF");
-      DogLog.log("Elastic/FuelGauge/CameraConnected", false);
-    }
-  }
+  // note: fuel gauge disabled
+  //
+  // public static void fuelGaugeLogs(FuelGaugeDetection visionFuelGauge) {
+  //   if (Constants.fuelGaugeOnRobot && visionFuelGauge != null) {
+  //     FuelGauge gaugeState = visionFuelGauge.getGaugeDefault();
+  //     String gaugeStateHex = getColorOrDefault(gaugeState);
+  //     DogLog.log("Elastic/FuelGauge", gaugeState.toString());
+  //     TelemetryUtils.elasticTelemetry.log("Elastic/FuelGaugeHex", gaugeStateHex);
+  //     DogLog.log("Elastic/FuelGauge/CameraConnected", true);
+  //   } else {
+  //     DogLog.log("Elastic/FuelGauge", "N/A");
+  //     TelemetryUtils.elasticTelemetry.log("Elastic/FuelGaugeHex", "#00FFFF");
+  //     DogLog.log("Elastic/FuelGauge/CameraConnected", false);
+  //   }
+  // }
 
   private static String getColorOrDefault(FuelGauge gauge) {
     return gauge == null ? "#FFFFFF" : gauge.getColor();

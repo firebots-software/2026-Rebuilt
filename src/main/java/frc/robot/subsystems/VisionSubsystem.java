@@ -1,20 +1,6 @@
 package frc.robot.subsystems;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.math.numbers.N8;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.VisionCamera;
 import frc.robot.util.VisionUtils;
@@ -25,11 +11,25 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.fields.Field;
+import org.wpilib.fields.Fields;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Rotation3d;
+import org.wpilib.math.geometry.Transform3d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.linalg.Matrix;
+import org.wpilib.math.numbers.N1;
+import org.wpilib.math.numbers.N3;
+import org.wpilib.math.numbers.N8;
+import org.wpilib.system.Timer;
 
 public class VisionSubsystem extends SubsystemBase {
   private final Constants.Vision.VisionCamera cameraID;
   private final PhotonCamera photonCamera;
-  private final AprilTagFieldLayout fieldLayout;
+  private final Field fieldLayout;
   private final PhotonPoseEstimator poseEstimator;
   private PhotonPipelineResult latestVisionResult;
   private double lastTagSeenTimestamp = -1.0;
@@ -37,7 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
   private final String cameraTitle;
   private final String loggingPath;
 
-  private Optional<EstimatedRobotPose> visionEstimate;
+  private Optional<EstimatedRobotPose> visionEstimate = Optional.empty();
 
   private boolean cameraConnectedStatus = false;
 
@@ -62,7 +62,7 @@ public class VisionSubsystem extends SubsystemBase {
     Transform3d robotToCamera = cameraID.getCameraTransform();
     camHeight = new Transform3d(0.0, 0.0, robotToCamera.getZ(), new Rotation3d(0.0, 0.0, 0.0));
 
-    fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+    fieldLayout = Fields.FRC_2026_REBUILT_WELDED.loadField();
 
     poseEstimator = new PhotonPoseEstimator(fieldLayout, robotToCamera);
     latestVisionResult = null;
@@ -106,7 +106,7 @@ public class VisionSubsystem extends SubsystemBase {
     latestVisionResult = results.get(results.size() - 1);
 
     if (!latestVisionResult.getTargets().isEmpty()) {
-      lastTagSeenTimestamp = Timer.getFPGATimestamp();
+      lastTagSeenTimestamp = Timer.getTimestamp();
     }
 
     visionEstimate = poseEstimator.estimateCoprocMultiTagPose(latestVisionResult);
@@ -145,11 +145,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     throwOutHeadingChange(latestMeasuredPose);
 
-    ChassisSpeeds fieldSpeeds =
-        ChassisSpeeds.fromRobotRelativeSpeeds(
-            swerve.getState().Speeds, swerve.getState().Pose.getRotation());
+    ChassisVelocities fieldSpeeds =
+        swerve.getState().Velocity.toFieldRelative(swerve.getState().Pose.getRotation());
 
-    double currentSpeed = Math.hypot(fieldSpeeds.vxMetersPerSecond, fieldSpeeds.vyMetersPerSecond);
+    double currentSpeed = Math.hypot(fieldSpeeds.vx, fieldSpeeds.vy);
 
     latestNoiseVector =
         VisionUtils.computeNoiseVector(latestAvgDistance, currentSpeed, latestTagCount);
@@ -210,7 +209,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public boolean seesTags() {
     if (!cameraConnectedStatus) return false;
-    return (Timer.getFPGATimestamp() - lastTagSeenTimestamp)
+    return (Timer.getTimestamp() - lastTagSeenTimestamp)
         <= Constants.Vision.TAG_VISIBLE_THRESHOLD_SEC;
   }
 
@@ -271,7 +270,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   private double calculateTimestamp(double timestamp) {
-    double fpgaTimestamp = Timer.getFPGATimestamp();
+    double fpgaTimestamp = Timer.getTimestamp();
     double timestampDiff = Math.abs(timestamp - fpgaTimestamp);
     double finalTimestamp =
         timestampDiff > Constants.Vision.TIMESTAMP_THRESHOLD

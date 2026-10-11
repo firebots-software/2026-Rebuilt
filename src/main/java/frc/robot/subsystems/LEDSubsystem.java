@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.controls.EmptyAnimation;
 import com.ctre.phoenix6.controls.FireAnimation;
 import com.ctre.phoenix6.controls.RainbowAnimation;
@@ -10,19 +11,21 @@ import com.ctre.phoenix6.hardware.CANdle;
 import com.ctre.phoenix6.signals.AnimationDirectionValue;
 import com.ctre.phoenix6.signals.RGBWColor;
 import dev.doglog.DogLog;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.BooleanSupplier;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.driverstation.RobotState;
+import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.system.Timer;
+import org.wpilib.util.Color;
 
 public class LEDSubsystem extends SubsystemBase {
   // left strip is [8, 23]
   // middle strip is [24, 53] (center of middle is 38)
   // right strip is [51, 76]
-  private static final int END_OF_STRIP = 76;
+  private static final int START_OF_STRIP = 8;
+  private static final int END_OF_STRIP = 53;
 
-  private static CANdle candle = new CANdle(5);
+  private static CANdle candle = new CANdle(5, new CANBus(CANPort.CAN_S0));
   private LEDState currentState = LEDState.NONE;
   private BooleanSupplier active, inRange;
   private boolean seesTagCached;
@@ -54,13 +57,11 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public LEDState computeState() {
-    if (DriverStation.isDisabled()) return LEDState.FLAME;
-    if (DriverStation.isAutonomousEnabled()) return LEDState.RAINBOW;
+    if (RobotState.isDisabled()) return LEDState.FLAME;
+    if (RobotState.isAutonomousEnabled()) return LEDState.RAINBOW;
 
     if (active.getAsBoolean() && inRange.getAsBoolean()) return LEDState.ACTIVE_IN_RANGE;
     else if (active.getAsBoolean() && !inRange.getAsBoolean()) return LEDState.ACTIVE;
-    else if (!active.getAsBoolean()) return LEDState.NONE;
-
     return LEDState.NONE;
   }
 
@@ -70,11 +71,11 @@ public class LEDSubsystem extends SubsystemBase {
     switch (state) {
       case ACTIVE -> candle.setControl(activeAnimation());
       case FLAME -> {
-        candle.setControl(flame(8, 38, 0, false));
+        candle.setControl(flame(START_OF_STRIP, 38, 0, false));
         candle.setControl(flame(39, END_OF_STRIP, 1, true));
       }
-      case RAINBOW -> candle.setControl(new RainbowAnimation(8, END_OF_STRIP));
-      case NONE -> setColor(8, END_OF_STRIP, Color.kBlack);
+      case RAINBOW -> candle.setControl(new RainbowAnimation(START_OF_STRIP, END_OF_STRIP));
+      case NONE -> setColor(START_OF_STRIP, END_OF_STRIP, Color.BLACK);
       default -> clearAll();
     }
   }
@@ -85,12 +86,12 @@ public class LEDSubsystem extends SubsystemBase {
       VisionSubsystem rearLeft,
       VisionSubsystem rearRight) {
 
-    if (DriverStation.isDisabled()) {
+    if (RobotState.isDisabled()) {
       DogLog.log("Subsystems/LEDs/VisionIndicatorsEnabled", true);
-      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 3));
-      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.kGreen : Color.kRed, 4));
-      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.kGreen : Color.kRed, 2));
-      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.kGreen : Color.kRed, 5));
+      candle.setControl(solidColor(frontLeft.getCameraConnected() ? Color.GREEN : Color.RED, 3));
+      candle.setControl(solidColor(frontRight.getCameraConnected() ? Color.GREEN : Color.RED, 4));
+      candle.setControl(solidColor(rearLeft.getCameraConnected() ? Color.GREEN : Color.RED, 2));
+      candle.setControl(solidColor(rearRight.getCameraConnected() ? Color.GREEN : Color.RED, 5));
 
       boolean seesTag =
           frontLeft.seesTags()
@@ -103,19 +104,19 @@ public class LEDSubsystem extends SubsystemBase {
       }
 
       if (seesTag) {
-        candle.setControl(solidColor(Color.kGreen, 7));
-        candle.setControl(solidColor(Color.kGreen, 0));
-        candle.setControl(solidColor(Color.kGreen, 6));
-        candle.setControl(solidColor(Color.kGreen, 1));
+        candle.setControl(solidColor(Color.GREEN, 7));
+        candle.setControl(solidColor(Color.GREEN, 0));
+        candle.setControl(solidColor(Color.GREEN, 6));
+        candle.setControl(solidColor(Color.GREEN, 1));
       } else {
-        candle.setControl(strobe(Color.kRed, 6, 7, 2));
-        candle.setControl(strobe(Color.kRed, 6, 0, 3));
-        candle.setControl(strobe(Color.kRed, 6, 6, 4));
-        candle.setControl(strobe(Color.kRed, 6, 1, 5));
+        candle.setControl(strobe(Color.RED, 6, 7, 2));
+        candle.setControl(strobe(Color.RED, 6, 0, 3));
+        candle.setControl(strobe(Color.RED, 6, 6, 4));
+        candle.setControl(strobe(Color.RED, 6, 1, 5));
       }
     } else {
       DogLog.log("Subsystems/LEDs/VisionIndicatorsEnabled", false);
-      setColor(0, 7, Color.kBlack);
+      setColor(0, 7, Color.BLACK);
       seesTagCached = false;
     }
   }
@@ -134,11 +135,12 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private SingleFadeAnimation activeAnimation() {
-    return new SingleFadeAnimation(8, END_OF_STRIP).withColor(new RGBWColor(Color.kRed));
+    return new SingleFadeAnimation(START_OF_STRIP, END_OF_STRIP)
+        .withColor(new RGBWColor(Color.RED));
   }
 
   private SolidColor solidColor(Color color) {
-    return new SolidColor(8, END_OF_STRIP).withColor(new RGBWColor(color));
+    return new SolidColor(START_OF_STRIP, END_OF_STRIP).withColor(new RGBWColor(color));
   }
 
   private SolidColor solidColor(Color color, int ledIndex) {
@@ -153,8 +155,8 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private void activeInRangeAnimation() {
-    boolean red = ((int) (Timer.getFPGATimestamp() * 10)) % 2 == 0;
-    candle.setControl(solidColor(red ? Color.kRed : Color.kWhite));
+    boolean red = ((int) (Timer.getTimestamp() * 10)) % 2 == 0;
+    candle.setControl(solidColor(red ? Color.RED : Color.WHITE));
   }
 
   private FireAnimation flame(int startIndex, int endIndex, int slot, boolean backward) {
