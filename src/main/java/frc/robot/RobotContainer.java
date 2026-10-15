@@ -207,7 +207,7 @@ public class RobotContainer {
                 redside,
                 Constants.secondControllerConnected
                     ? secondController.visionShootingLockout()
-                    : () -> false));
+                    : () -> true));
 
     joystick
         .rightBumper()
