@@ -1,18 +1,20 @@
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.wpilib.command2.button.CommandGenericHID;
+import org.wpilib.command2.button.Trigger;
 
-public class CustomController extends GenericHID {
+public class CustomController {
   private Trigger visionShootingLockout, intakeVisionLockout;
   private Trigger reverseShoot, intakeOverride;
+  private final CommandGenericHID hid;
 
   public CustomController(int port) {
-    super(port);
-    visionShootingLockout = new Trigger(() -> this.getRawButton(10));
-    intakeVisionLockout = new Trigger(() -> this.getRawButton(11));
-    reverseShoot = new Trigger(() -> this.getRawButton(1));
-    intakeOverride = new Trigger(() -> this.getRawButton(2));
+    hid = new CommandGenericHID(port);
+    // super(port);
+    visionShootingLockout = hid.button(10);
+    intakeVisionLockout = hid.button(11);
+    reverseShoot = hid.button(1);
+    intakeOverride = hid.button(2);
   }
 
   public Trigger visionShootingLockout() {

@@ -3,14 +3,6 @@ package frc.robot.commandGroups.ShootCommandGroups;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.LinearPath;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.HopperSubsystem;
@@ -20,6 +12,14 @@ import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.Commands;
+import org.wpilib.command2.ParallelCommandGroup;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.TrapezoidProfile;
 
 public class DriveToAndShoot extends ParallelCommandGroup {
 
@@ -112,7 +112,7 @@ public class DriveToAndShoot extends ParallelCommandGroup {
       targetPose = targetPoseSupplier.get();
 
       pathState =
-          new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
+          new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Velocity);
 
       DogLog.log("Subsystems/Swerve/DriveToAndShoot/InitTargetPoseX", targetPose.getX());
       DogLog.log("Subsystems/Swerve/DriveToAndShoot/InitTargetPoseY", targetPose.getY());
@@ -127,17 +127,17 @@ public class DriveToAndShoot extends ParallelCommandGroup {
       pathState = path.calculate(currTime, pathState, targetPose);
 
       double vx =
-          pathState.speeds.vxMetersPerSecond
+          pathState.velocity.vx
               + xController.calculate(swerve.getCurrentState().Pose.getX(), pathState.pose.getX());
       double vy =
-          pathState.speeds.vyMetersPerSecond
+          pathState.velocity.vy
               + yController.calculate(swerve.getCurrentState().Pose.getY(), pathState.pose.getY());
 
       double omega =
           swerve.calculateRequiredRotationalRateWithFF(
               swerve.getVirtualTarget(redside, () -> false));
 
-      swerve.applyOneFieldSpeeds(new ChassisSpeeds(vx, vy, omega));
+      swerve.applyOneFieldSpeeds(new ChassisVelocities(vx, vy, omega));
     }
 
     @Override

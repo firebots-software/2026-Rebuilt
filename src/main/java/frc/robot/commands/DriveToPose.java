@@ -3,14 +3,14 @@ package frc.robot.commands;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.utility.LinearPath;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import java.util.function.Supplier;
+import org.wpilib.command2.Command;
+import org.wpilib.math.controller.PIDController;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
+import org.wpilib.math.trajectory.TrapezoidProfile;
 
 /** This Command drives the robot in a linear path to a specific pose. */
 public class DriveToPose extends Command {
@@ -82,7 +82,7 @@ public class DriveToPose extends Command {
     }
 
     pathState =
-        new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Speeds);
+        new LinearPath.State(swerve.getCurrentState().Pose, swerve.getCurrentState().Velocity);
 
     DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseX", targetPose.getX());
     DogLog.log("Subsystems/Swerve/DTP/InitTargetPoseY", targetPose.getY());
@@ -99,15 +99,15 @@ public class DriveToPose extends Command {
     pathState = path.calculate(currTime, pathState, targetPose);
 
     // Generate the next speeds for the robot
-    ChassisSpeeds speeds =
-        new ChassisSpeeds(
-            pathState.speeds.vxMetersPerSecond
+    ChassisVelocities speeds =
+        new ChassisVelocities(
+            pathState.velocity.vx
                 + xController.calculate(
                     swerve.getCurrentState().Pose.getX(), pathState.pose.getX()),
-            pathState.speeds.vyMetersPerSecond
+            pathState.velocity.vy
                 + yController.calculate(
                     swerve.getCurrentState().Pose.getY(), pathState.pose.getY()),
-            pathState.speeds.omegaRadiansPerSecond
+            pathState.velocity.omega
                 + headingController.calculate(
                     swerve.getCurrentState().Pose.getRotation().getRadians(),
                     pathState.pose.getRotation().getRadians()));

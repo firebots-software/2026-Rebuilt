@@ -1,7 +1,7 @@
 package frc.robot.util.MathUtils;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.geometry.Rotation2d;
 
 public class MiscMath {
   public static double clamp(double value, double min, double max) {

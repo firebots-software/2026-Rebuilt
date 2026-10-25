@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Rotations;
+import static org.wpilib.units.Units.Rotations;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
@@ -22,19 +22,18 @@ import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import dev.doglog.DogLog;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Landmarks;
 import frc.robot.util.LoggedTalonFX;
 import frc.robot.util.Targeting;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import org.wpilib.command2.Command;
+import org.wpilib.command2.SubsystemBase;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
+// import org.wpilib.math.geometry.Pose3d;
+import org.wpilib.math.util.Units;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -157,7 +156,7 @@ public class ShooterSubsystem extends SubsystemBase {
     hoodTargetDeg = degrees;
     hood.setControl(
         m_positionRequest.withPosition(
-            MathUtil.clamp(
+            Math.clamp(
                     degrees,
                     Constants.Shooter.Hood.MIN_HOOD_POSITION,
                     Constants.Shooter.Hood.MAX_HOOD_POSITION)
