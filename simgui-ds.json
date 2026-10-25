@@ -37,7 +37,8 @@
     }],
     "axisCount": 2,
     "buttonCount": 4,
-    "buttonKeys": [558, 597, 599, 600]
+    "buttonKeys": [558, 597, 599, 600],
+    "povCount": 0
   }, {
     "axisConfig": [{
       "decKey": 513,
@@ -48,6 +49,11 @@
     }],
     "axisCount": 2,
     "buttonCount": 6,
-    "buttonKeys": [521, 519, 517, 522, 520, 518]
+    "buttonKeys": [521, 519, 517, 522, 520, 518],
+    "povCount": 0
+  }, {
+    "axisCount": 0,
+    "buttonCount": 0,
+    "povCount": 0
   }]
 }

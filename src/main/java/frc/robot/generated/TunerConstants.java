@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 import frc.robot.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.LoggedTalonFX;
 import org.wpilib.math.linalg.Matrix;
 import org.wpilib.math.numbers.N1;
 import org.wpilib.math.numbers.N3;
@@ -306,12 +307,34 @@ public class TunerConstants {
         double odometryUpdateFrequency,
         SwerveModuleConstants<?, ?, ?>... modules) {
       super(
-          TalonFX::new,
-          TalonFX::new,
+          (deviceId, canBus) ->
+              new LoggedTalonFX("SwerveDrive-" + driveName(deviceId), deviceId, canBus),
+          (deviceId, canBus) ->
+              new LoggedTalonFX("SwerveSteer-" + steerName(deviceId), deviceId, canBus),
           CANcoder::new,
           drivetrainConstants,
           odometryUpdateFrequency,
           modules);
+    }
+
+    private static String driveName(int deviceId) {
+      return switch (deviceId) {
+        case 4 -> "FL";
+        case 6 -> "FR";
+        case 8 -> "RL";
+        case 10 -> "RR";
+        default -> "Unknown-" + deviceId;
+      };
+    }
+
+    private static String steerName(int deviceId) {
+      return switch (deviceId) {
+        case 3 -> "FL";
+        case 5 -> "FR";
+        case 7 -> "RL";
+        case 9 -> "RR";
+        default -> "Unknown-" + deviceId;
+      };
     }
 
     /**
